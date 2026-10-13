@@ -1,0 +1,366 @@
+{
+ "fetched_at": "2026-10-13T21:15:01.309488+02:00",
+ "steamid64": "76561198754159593",
+ "profile_xml_error": "HTTP Error 429: Too Many Requests",
+ "steamID": null,
+ "privacyState": null,
+ "onlineState": null,
+ "memberSince": null,
+ "hoursPlayed2Wk": null,
+ "location": null,
+ "vacBanned": null,
+ "level": 6,
+ "recent": {
+  "total_count": 2,
+  "games": [
+   {
+    "appid": 1888930,
+    "name": "The Last of Us™ Part I",
+    "playtime_2weeks": 226,
+    "playtime_forever": 377,
+    "img_icon_url": "6991d13038a61e35bade3aabea400c74bbbf966d",
+    "playtime_windows_forever": 377,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 0,
+    "playtime_deck_forever": 0
+   },
+   {
+    "appid": 3159330,
+    "name": "Assassin's Creed Shadows",
+    "playtime_2weeks": 9,
+    "playtime_forever": 4351,
+    "img_icon_url": "1f8f5a64b174f9cc07d5b277e7b08219c262511f",
+    "playtime_windows_forever": 4351,
+    "playtime_mac_forever": 0,
+    "playtime_linux_forever": 0,
+    "playtime_deck_forever": 0
+   }
+  ]
+ },
+ "games": [
+  {
+   "appid": 3159330,
+   "name": "Assassin's Creed Shadows",
+   "playtime_2weeks": 9,
+   "playtime_forever": 4351,
+   "img_icon_url": "1f8f5a64b174f9cc07d5b277e7b08219c262511f",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 4351,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1791713379,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 72.5,
+   "ach_unlocked": 31,
+   "ach_total": 75
+  },
+  {
+   "appid": 1449690,
+   "name": "The Walking Dead: The Telltale Definitive Series",
+   "playtime_forever": 1480,
+   "img_icon_url": "bd1fd090e72bc6584f1b271341a1be6d7fe6881e",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 1480,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1790517145,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 24.7,
+   "ach_unlocked": 9,
+   "ach_total": 23
+  },
+  {
+   "appid": 532210,
+   "name": "Life is Strange 2",
+   "playtime_forever": 1279,
+   "img_icon_url": "4bc11557267819da12bb45488ffd3f1fb3945279",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 1279,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1778098270,
+   "content_descriptorids": [
+    1,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 21.3,
+   "ach_unlocked": 25,
+   "ach_total": 46
+  },
+  {
+   "appid": 960990,
+   "name": "Beyond: Two Souls",
+   "playtime_forever": 769,
+   "img_icon_url": "651960ab55d9385730101dc2cef12dd8ac57d5a0",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 769,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1785061801,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 12.8,
+   "ach_unlocked": 21,
+   "ach_total": 45
+  },
+  {
+   "appid": 730,
+   "name": "Counter-Strike 2",
+   "playtime_forever": 497,
+   "img_icon_url": "8dbc71957312bbd3baea65848b545be9eae2a355",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 497,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1780489097,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 8.3,
+   "ach_unlocked": 1,
+   "ach_total": 1
+  },
+  {
+   "appid": 1888930,
+   "name": "The Last of Us™ Part I",
+   "playtime_2weeks": 226,
+   "playtime_forever": 377,
+   "img_icon_url": "6991d13038a61e35bade3aabea400c74bbbf966d",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 377,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1791493578,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 6.3,
+   "ach_unlocked": 1,
+   "ach_total": 29
+  },
+  {
+   "appid": 1672500,
+   "name": "GUNDAM BREAKER 4",
+   "playtime_forever": 197,
+   "img_icon_url": "f1307024458cf7c7404bfc0187572b475c315215",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 197,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1788624734,
+   "playtime_disconnected": 0,
+   "hours": 3.3,
+   "ach_unlocked": 4,
+   "ach_total": 51
+  },
+  {
+   "appid": 845070,
+   "name": "The Awesome Adventures of Captain Spirit",
+   "playtime_forever": 167,
+   "img_icon_url": "b0a58984e1e24531843f2bfe0b3d70135b0a8e57",
+   "playtime_windows_forever": 167,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1775137939,
+   "content_descriptorids": [
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 2.8,
+   "ach_total": 0,
+   "ach_note": 400
+  },
+  {
+   "appid": 945360,
+   "name": "Among Us",
+   "playtime_forever": 94,
+   "img_icon_url": "b82c3f46da8f3c918e1c9e0d18bd6fa8fcef6801",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 94,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1786437592,
+   "playtime_disconnected": 0,
+   "hours": 1.6,
+   "ach_unlocked": 4,
+   "ach_total": 33
+  },
+  {
+   "appid": 4126040,
+   "name": "Aniimo",
+   "playtime_forever": 53,
+   "img_icon_url": "911829a13677bc978f6408f89e221aaabc0e4de6",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 53,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1790021387,
+   "playtime_disconnected": 0,
+   "hours": 0.9,
+   "ach_unlocked": 0,
+   "ach_total": 64
+  },
+  {
+   "appid": 312840,
+   "name": "Fahrenheit: Indigo Prophecy Remastered",
+   "playtime_forever": 20,
+   "img_icon_url": "d232a53093cd49a04df465bdc72c36332da7d18f",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 20,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1783246355,
+   "content_descriptorids": [
+    1,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.3,
+   "ach_unlocked": 1,
+   "ach_total": 17
+  },
+  {
+   "appid": 2373990,
+   "name": "Solo Leveling: ARISE OVERDRIVE",
+   "playtime_forever": 1,
+   "img_icon_url": "af61c5a19e582bacaa73cb7b50f448266ad1c441",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 1,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 1785180627,
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 58
+  },
+  {
+   "appid": 936790,
+   "name": "Life is Strange: True Colors",
+   "playtime_forever": 0,
+   "img_icon_url": "d779927517f9ba9a078016c47d50e3a5648f0585",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 0,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 0,
+   "content_descriptorids": [
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 40
+  },
+  {
+   "appid": 960910,
+   "name": "Heavy Rain",
+   "playtime_forever": 0,
+   "img_icon_url": "ddc1b819a9c00d9642d290fc521e48d708af7329",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 0,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 0,
+   "content_descriptorids": [
+    1,
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 56
+  },
+  {
+   "appid": 1180660,
+   "name": "Tell Me Why",
+   "playtime_forever": 0,
+   "img_icon_url": "6eb40e6f71226ce5bea75601a1ec0f9d6f647dd1",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 0,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 0,
+   "content_descriptorids": [
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 30
+  },
+  {
+   "appid": 1222140,
+   "name": "Detroit: Become Human",
+   "playtime_forever": 0,
+   "img_icon_url": "3d9f5bc971d44398aef740c0d8e79a358be2e800",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 0,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 0,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 48
+  },
+  {
+   "appid": 1938090,
+   "name": "Call of Duty®",
+   "playtime_forever": 0,
+   "img_icon_url": "8eaf32220060344996cbf11f697a4f4be943e5f3",
+   "has_community_visible_stats": true,
+   "playtime_windows_forever": 0,
+   "playtime_mac_forever": 0,
+   "playtime_linux_forever": 0,
+   "playtime_deck_forever": 0,
+   "rtime_last_played": 0,
+   "content_descriptorids": [
+    2,
+    5
+   ],
+   "playtime_disconnected": 0,
+   "hours": 0.0,
+   "ach_unlocked": 0,
+   "ach_total": 157
+  }
+ ],
+ "status": "ok"
+}

@@ -1,0 +1,6 @@
+{
+ "fetched_at": "2026-10-13T21:15:01.309488+02:00",
+ "status": "error",
+ "http": 401,
+ "reason": "{\"message\":\"Invalid authentication credentials\"}"
+}

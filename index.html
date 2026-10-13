@@ -1,0 +1,28 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gaming Tracker – Blood</title><script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>body{font-family:system-ui,sans-serif;background:#12151c;color:#ddd;max-width:1100px;margin:auto;padding:1rem}h1{color:#ff4655}section{background:#1c212b;border-radius:10px;padding:1rem;margin:1rem 0}table{width:100%;border-collapse:collapse}td,th{padding:.3rem;border-bottom:1px solid #333;text-align:left}.wait{color:#f0b429;font-weight:bold}.bar{background:#333;height:8px;border-radius:4px}.bar i{display:block;height:8px;background:#4caf50;border-radius:4px}</style></head><body>
+<h1>🎮 Gaming Tracker – Blood</h1><p id="upd"></p>
+<section><h2>Steam</h2><p id="steamInfo"></p><canvas id="steamChart" height="110"></canvas><table id="steamTbl"></table></section>
+<section><h2>Valorant</h2><div id="valorant"></div></section>
+<section><h2>Rocket League</h2><div id="rocket_league"></div></section>
+<section><h2>Call of Duty Mobile</h2><div id="cod"></div><canvas id="codChart" height="90"></canvas></section>
+<script>
+const jl=async f=>(await (await fetch(f+'?'+Date.now())).text()).trim().split('\n').filter(Boolean).map(JSON.parse);
+const d=s=>new Date(s).toLocaleString('fr-FR',{timeZone:'Europe/Paris'});
+(async()=>{
+ const st=(await jl('history/steam.jsonl')).filter(x=>x.games);const last=st.at(-1);
+ if(last){document.getElementById('upd').textContent='Dernière mise à jour : '+d(last.fetched_at);
+  const tot=last.games.reduce((a,g)=>a+g.hours,0);
+  document.getElementById('steamInfo').textContent=`Niveau ${last.level??'?'} · ${last.games.length} jeux · ${tot.toFixed(1)} h au total`;
+  document.getElementById('steamTbl').innerHTML='<tr><th>Jeu</th><th>Heures</th><th>Succès</th><th></th></tr>'+last.games.map(g=>{const p=g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null;return `<tr><td>${g.name}</td><td>${g.hours}</td><td>${g.ach_total?`${g.ach_unlocked||0}/${g.ach_total} (${p}%)`:'—'}</td><td style="width:120px">${p!=null?`<div class=bar><i style="width:${p}%"></i></div>`:''}</td></tr>`}).join('');
+  const top=last.games.filter(g=>g.hours>0).slice(0,8);
+  new Chart(steamChart,{type:'line',data:{labels:st.map(x=>d(x.fetched_at).slice(0,10)),datasets:top.map(t=>({label:t.name,data:st.map(x=>(x.games.find(g=>g.appid==t.appid)||{}).hours??null)}))},options:{plugins:{title:{display:true,text:'Évolution du temps de jeu (h)',color:'#ddd'}}}});}
+ for(const g of['valorant','rocket_league']){const h=(await jl(`history/${g}.jsonl`)).filter(x=>x.status=='ok');const el=document.getElementById(g);
+  if(!h.length){el.innerHTML='<p class=wait>En attente de données (clé API Tracker Network non validée)</p>';continue}
+  const segs=(h.at(-1).raw?.data?.segments||[]);el.innerHTML='<table>'+segs.map(s=>`<tr><th colspan=2>${s.metadata?.name||s.type}</th></tr>`+Object.values(s.stats||{}).slice(0,10).map(v=>`<tr><td>${v.displayName}</td><td>${v.displayValue}${v.metadata?.tierName?' – '+v.metadata.tierName:''}</td></tr>`).join('')).join('')+'</table>';}
+ const cod=await (await fetch('cod_mobile.json?'+Date.now())).json();const m=cod.matches||[];const ce=document.getElementById('cod');
+ if(!m.length)ce.innerHTML='<p class=wait>En attente – envoie une capture après chaque partie</p>';
+ else{ce.innerHTML=`<p>${m.length} parties · K/D moyen ${(m.reduce((a,x)=>a+x.kills,0)/Math.max(1,m.reduce((a,x)=>a+x.deaths,0))).toFixed(2)}</p>`;
+  new Chart(codChart,{type:'line',data:{labels:m.map(x=>x.date.slice(0,10)),datasets:[{label:'K/D',data:m.map(x=>x.deaths?x.kills/x.deaths:x.kills)}]}})}
+})();
+</script></body></html>
