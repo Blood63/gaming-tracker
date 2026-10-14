@@ -21,19 +21,21 @@ const animBars=()=>setTimeout(()=>$$('.bar i[data-w]').forEach(i=>i.style.width=
 const stat=(k,v,d='',cls='')=>`<div class="glass stat ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${d?`<div class="d">${d}</div>`:''}</div>`;
 const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
 const ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml',RANK_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-rank.yml';
+const SETUP_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=setup.yml';
 const RTIERS=['Recrue','Régulier','Vaillant','Élite','Pro','Maître','Grand maître','Légendaire'],RICON=['🔰','🥉','🥈','🥇','💎','💠','👑','🔥'];
 const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" rel="noopener">📸 Ajouter une partie COD</a>`;
 
 /* ========== données ========== */
 const D={};
 async function load(){
-  const [steamH,store,val,rl,cod,codp,codr]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json')]);
+  const [steamH,store,val,rl,cod,codp,codr,setup]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
+  D.setup=setup;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -298,6 +300,51 @@ function cod(){
   chart($('#c4'),{type:'line',data:{labels:lab,datasets:[lineDS('Score',m.map(x=>num(x.score)),COL.vi)]},options:{plugins:{legend:{display:false},title:{display:true,text:'Score par partie'}}}});
   chart($('#c3'),{type:'line',data:{labels:lab,datasets:[lineDS('Cumulé %',m.map((_,i)=>wr(m.slice(0,i+1))),COL.pk),lineDS('10 dernières %',m.map((_,i)=>wr(m.slice(Math.max(0,i-9),i+1))),COL.cy,{fill:false})]},options:{scales:{y:{min:0,max:100}},plugins:{title:{display:true,text:'Taux de victoire'}}}});
 }
+const eur=v=>v==null?'—':Number(v).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const SICON={cpu:'🧠',mb:'🧩',ram:'💾',ssd:'💽',gpu:'🎴',cooler:'❄️',psu:'🔌',case:'🗄️',wifi:'📶',build:'🔧',kb:'⌨️',mouse:'🖱️',pad:'🎮',padpack:'🎒',phone:'📱'};
+const scCol=v=>v>=9?'var(--gr)':v>=7?'var(--cy)':v>=5?'var(--warn)':'var(--bad)';
+function setupPage(){
+  const S=D.setup;if(!S){app.innerHTML='<div class="glass wait"><div class="ico">🖥️</div><h3>Setup indisponible</h3></div>';return}
+  const cats=S.categories.filter(c=>S.items.some(i=>i.cat==c.id)),tot=S.items.reduce((a,i)=>a+(i.price||0),0),unk=S.items.filter(i=>i.price==null).length;
+  const g=S.groups?.pc,ct=c=>S.items.filter(i=>i.cat==c).reduce((a,i)=>a+(i.price||0),0);
+  const link=i=>i.url||'https://www.idealo.fr/prechcat.html?q='+encodeURIComponent(i.name);
+  const card=i=>`<div class="glass row" style="align-items:flex-start"><span class="ic" style="font-size:1.6rem;width:44px;text-align:center;flex:none">${SICON[i.id]||S.categories.find(c=>c.id==i.cat)?.icon||'📦'}</span><span class="n"><b>${esc(i.name)}</b>${i.to_confirm?' <span class="pill warn">à confirmer</span>':''}${i.spec?`<br><small>${esc(i.spec)}</small>`:''}${i.notes?`<br><small class="mut">${esc(i.notes)}</small>`:''}${i.date?`<br><small class="mut">Acheté le ${fdate(i.date)}</small>`:''}${i.value_score!=null?`<br><span class="pill" style="color:${scCol(i.value_score)};border-color:${scCol(i.value_score)}66">Qualité-prix ${i.value_score}/10</span><small class="mut" style="display:block;line-height:1.3">${esc(i.value_note)}</small>`:i.value_note?`<br><small class="mut">${esc(i.value_note)}</small>`:''}<br><a href="${esc(link(i))}" target="_blank" rel="noopener" style="font-size:.82rem">${i.url?'Voir le produit ›':'Comparer les prix ›'}</a></span><span class="p">${i.price!=null?eur(i.price):'<small class="mut">prix ?</small>'}</span></div>`;
+  const sc=S.items.filter(i=>i.value_score!=null&&i.price),vs=sc.length?sc.reduce((a,i)=>a+i.value_score*i.price,0)/sc.reduce((a,i)=>a+i.price,0):null,best=sc.slice().sort((a,b)=>b.value_score-a.value_score)[0],worst=sc.slice().sort((a,b)=>a.value_score-b.value_score)[0];
+  app.innerHTML=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,rgba(34,211,238,.35),transparent 60%),radial-gradient(100% 100% at 100% 0,rgba(168,85,247,.35),transparent 60%)"><div class="ttl"><h3>Mon setup</h3><span class="pill">${S.items.length} éléments</span><span class="pill">MAJ ${fdate(S.updated)}</span></div></div>
+  <div class="stats">${stat('Valeur totale',eur(tot),unk?`${unk} prix inconnu${unk>1?'s':''}`:'')}${vs!=null?stat('Qualité-prix global',`<span style="color:${scCol(vs)}">${fnum(vs,1)}/10</span>`,'moyenne pondérée par le prix (avis)'):''}${cats.slice(0,2).map(c=>stat(c.icon+' '+c.name,eur(ct(c.id)),S.items.filter(i=>i.cat==c.id).length+' éléments')).join('')}</div>
+  <div class="tool" style="margin-top:.8rem"><a class="btn" href="${SETUP_ISSUE}" target="_blank" rel="noopener">➕ Ajouter / modifier</a><a class="btn ghost" href="#/setup/conseils">💡 Conseils d'upgrade</a><a class="btn ghost" href="#/setup/reglages">⚙️ Réglages conseillés</a></div>
+  ${best?`<div class="glass pad" style="margin-top:.7rem"><b>💎 Meilleure affaire :</b> ${esc(best.name)} (${best.value_score}/10)<br><b>🤔 Moins rentable :</b> ${esc(worst.name)} (${worst.value_score}/10)<br><small class="mut">Notes « qualité-prix » = avis basé sur les prix du marché français constatés le ${fdate(S.value_date)} (estimations, susceptibles d'évoluer).</small></div>`:''}
+  <div class="glass chart" style="height:250px"><canvas id="s1"></canvas></div>
+  ${cats.map(c=>`<h2>${c.icon} ${esc(c.name)} <span class="more" style="color:var(--gr)">${eur(ct(c.id))}</span></h2>
+   ${c.id=='pc'&&g?`<div class="glass kv" style="margin-bottom:.5rem"><span>Monté par</span><span>${esc(g.assembled_by)}</span><span>Acheté le</span><span>${fdate(g.purchase_date)}</span><span>Total facture</span><span>${eur(g.invoice_total)}</span><span>Garantie</span><span>${esc(g.warranty)} · jusqu'au ${fdate(g.warranty_until)} <small class="up">(${Math.max(0,Math.ceil((new Date(g.warranty_until)-Date.now())/864e5/30.4))} mois restants)</small></span></div>`:''}
+   <div class="list">${S.items.filter(i=>i.cat==c.id).map(card).join('')}</div>`).join('')}
+  <p class="mut" style="font-size:.8rem;margin-top:1rem">Pour modifier : « Ajouter / modifier » ouvre un formulaire (action, catégorie, nom, prix, date…). L'app se met à jour quelques minutes après. Dépôt public : aucune info personnelle (pas de n° de facture ni d'adresse).</p>`;
+  const pc=S.items.filter(i=>i.cat=='pc'&&i.price);
+  chart($('#s1'),{type:'doughnut',data:{labels:pc.map(i=>i.name.replace(/^(AMD|Gigabyte GeForce|Gigabyte|Corsair|Kingston|Xigmatek|SilverStone|ASUS) /,'')),datasets:[{data:pc.map(i=>i.price),backgroundColor:[...PAL,'#94a3b8','#f472b6'],borderColor:'#0a0920',borderWidth:3}]},options:{cutout:'60%',plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:11}}},title:{display:true,text:'Répartition du prix du PC'},tooltip:{callbacks:{label:c=>` ${eur(c.raw)} (${fnum(100*c.raw/pc.reduce((a,i)=>a+i.price,0),0)} %)`}}}}});
+}
+function reglages(){
+  const R=D.setup?.settings;if(!R){app.innerHTML='<div class="glass empty">Aucun réglage.</div>';return}
+  const sel=sessionStorage.getItem('rg')||'global';
+  app.innerHTML=`<h2>Réglages conseillés <span class="pill" style="margin-left:.3rem">${fdate(D.setup.settings_date)}</span></h2>
+  <p class="mut" style="margin:.2rem 0 .6rem">Adaptés à ta config : Ryzen 5 5600 · RTX 5070 12 Go · écran 1080p 300 Hz · Xiaomi 14T.</p>
+  <div class="seg" id="rseg"><button data-g="global">🛠️ Général</button>${R.games.map((g,i)=>`<button data-g="${i}">${g.icon} ${esc(g.name)}</button>`).join('')}</div><div id="rv"></div>
+  <p class="mut" style="font-size:.8rem;margin-top:1rem">Les FPS indiqués sont des estimations (ils varient selon la carte, la scène et les mises à jour). Le Ryzen 5 5600 est le facteur limitant dans les jeux compétitifs à très haut FPS.</p>`;
+  const draw=k=>{sessionStorage.setItem('rg',k);$$('#rseg button').forEach(b=>b.classList.toggle('on',b.dataset.g==k));
+    if(k=='global'){$('#rv').innerHTML=`<div class="list">${R.global.map(([t,x])=>`<div class="glass pad"><b>${esc(t)}</b><div class="desc" style="padding:.3rem 0 0">${esc(x)}</div></div>`).join('')}</div>`;return}
+    const g=R.games[+k];if(!g)return draw('global');
+    $('#rv').innerHTML=`<div class="stats" style="grid-template-columns:repeat(2,1fr)">${stat('Objectif',esc(g.goal))}${stat('FPS attendus',`<span style="font-size:1rem">${esc(g.fps)}</span>`)}</div>
+    <div class="glass tbl" style="margin-top:.7rem"><table>${g.items.map(([a,b])=>`<tr><td style="white-space:normal;color:var(--mut);width:40%">${esc(a)}</td><td style="white-space:normal"><b>${esc(b)}</b></td></tr>`).join('')}</table></div>`};
+  $$('#rseg button').forEach(b=>b.onclick=()=>draw(b.dataset.g));draw(sel);
+}
+function advice(){
+  const S=D.setup,A=(S?.advice||[]).slice().sort((a,b)=>a.prio-b.prio);
+  app.innerHTML=`<h2>Conseils d'upgrade <span class="pill" style="margin-left:.3rem">${fdate(S?.advice_date)}</span></h2>
+  <div class="list">${A.map(a=>`<div class="glass pad" style="border-left:3px solid ${a.prio<=2?'var(--gr)':a.prio<=4?'var(--cy)':'var(--vi)'}"><div style="display:flex;justify-content:space-between;gap:.6rem;align-items:start"><b style="font-size:1.05rem">${a.prio}. ${esc(a.title)}</b></div>
+   <div style="margin:.35rem 0">${(a.tags||[]).map(t=>`<span class="pill">${esc(t)}</span>`).join('')}<span class="pill ${a.cost.startsWith('0')?'ok':'warn'}">💶 ${esc(a.cost)}</span></div>
+   <div class="desc" style="padding:0">${esc(a.text)}</div>${(a.links||[]).map(l=>`<a href="${esc(l.u)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:.5rem;font-size:.88rem">${esc(l.t)} ›</a>`).join(' · ')}</div>`).join('')}</div>
+  <p class="mut" style="font-size:.8rem;margin-top:1rem">Les coûts sont des estimations (prix constatés en France mi-octobre 2026, susceptibles de varier). Classés par priorité / rapport gain-prix.</p>
+  <a class="btn ghost full" href="#/setup" style="margin-top:.6rem">‹ Retour au setup</a>`;
+}
 function codModes(){
   const m=D.cod,mp=m.filter(x=>(x.type||'MP')=='MP'),br=m.filter(x=>x.type=='BR');
   const grp=(a,f)=>{const g={};a.forEach(x=>(g[f(x)||'Inconnu']??=[]).push(x));return Object.entries(g).sort((a,b)=>b[1].length-a[1].length)};
@@ -415,7 +462,7 @@ function activite(){
 }
 
 /* ========== routeur ========== */
-const TITLES={'':'GameTrack',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité'};
+const TITLES={'':'GameTrack',setup:'Mon setup',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité'};
 function lb(u){$('#lb img').src=u;$('#lb').style.display='flex'}
 function go(h){location.hash=h}
 let navCount=0;
@@ -423,17 +470,17 @@ function goBack(){if(navCount>0){navCount-=2;history.back()}else location.hash='
 function render(){
   charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
   const p=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean),r=p[0]||'';
-  const top=['','steam','compet','objectifs','profil'].includes(r)&&!p[1];
+  const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
   document.body.classList.toggle('sub',!top);
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
-  $('#ttl').textContent=r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>tracker('valorant'),rl:()=>tracker('rl'),cod:()=>p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
+  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
+  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>tracker('valorant'),rl:()=>tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }
 function route(){
   navCount++;
-  if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.startViewTransition(render);
+  if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches){try{const t=document.startViewTransition(render);[t.ready,t.finished,t.updateCallbackDone].forEach(x=>x&&x.catch(()=>{}))}catch(e){render()}}
   else{app.classList.remove('view');void app.offsetWidth;app.classList.add('view');render()}
 }
 window.addEventListener('hashchange',route);

@@ -1,0 +1,559 @@
+{
+ "updated": "2026-10-13",
+ "categories": [
+  {
+   "id": "pc",
+   "name": "PC (tour)",
+   "icon": "🖥️"
+  },
+  {
+   "id": "peri",
+   "name": "Périphériques",
+   "icon": "🎮"
+  },
+  {
+   "id": "screen",
+   "name": "Écran & audio",
+   "icon": "🎧"
+  },
+  {
+   "id": "mobile",
+   "name": "Mobile",
+   "icon": "📱"
+  },
+  {
+   "id": "console",
+   "name": "Consoles",
+   "icon": "🕹️"
+  },
+  {
+   "id": "other",
+   "name": "Autre",
+   "icon": "📦"
+  }
+ ],
+ "groups": {
+  "pc": {
+   "assembled_by": "LDLC (Nantes)",
+   "purchase_date": "2025-12-29",
+   "invoice_total": 1384.9,
+   "warranty_until": "2030-12-29",
+   "warranty": "5 ans"
+  }
+ },
+ "items": [
+  {
+   "id": "cpu",
+   "cat": "pc",
+   "name": "AMD Ryzen 5 5600",
+   "price": 109.95,
+   "date": "2025-12-29",
+   "spec": "6 cœurs / 12 threads · 3,5 / 4,4 GHz · AM4",
+   "value_score": 8,
+   "value_note": "Payé ≈ 110 €, encore ≈ 115–130 € neuf mi-oct. 2026 : bon prix pour 6 cœurs Zen 3. Mais c'est la pièce qui limite le plus un écran 300 Hz."
+  },
+  {
+   "id": "mb",
+   "cat": "pc",
+   "name": "Gigabyte A520 AORUS ELITE",
+   "price": 99.95,
+   "date": "2025-12-29",
+   "spec": "AM4 · PCIe 3.0 · 1 slot M.2",
+   "value_score": 5,
+   "value_note": "Une B550 d'entrée de gamme se trouve ≈ 75 € (PCIe 4.0, souvent 2 slots M.2) ; la A520 à 100 € n'a qu'1 M.2 et du PCIe 3.0. Fonctionnelle mais payée cher pour ce qu'elle offre."
+  },
+  {
+   "id": "ram",
+   "cat": "pc",
+   "name": "Corsair Vengeance RGB RS DDR4-3200",
+   "price": 169.95,
+   "date": "2025-12-29",
+   "notes": "Capacité non précisée sur la facture (probablement 2 × 16 Go)",
+   "spec": "DDR4-3200",
+   "to_confirm": true,
+   "value_score": 8,
+   "value_note": "Si c'est bien 2 × 16 Go : le kit DDR4-3200 32 Go le moins cher est à ≈ 210 € mi-oct. 2026 (crise de la mémoire), donc très bon achat. Note à revoir si la capacité est de 16 Go."
+  },
+  {
+   "id": "ssd",
+   "cat": "pc",
+   "name": "Kingston NV3 1 To",
+   "price": 179.95,
+   "date": "2025-12-29",
+   "spec": "NVMe PCIe 4.0 (tourne en 3.0 sur cette carte mère)",
+   "value_score": 6,
+   "value_note": "SSD d'entrée de gamme (sans DRAM, souvent QLC) payé ≈ 180 € ; il est à ≈ 155 € aujourd'hui (moyenne des NVMe 1 To ≈ 205 €). Correct pour jouer mais pas une affaire."
+  },
+  {
+   "id": "gpu",
+   "cat": "pc",
+   "name": "Gigabyte GeForce RTX 5070 WINDFORCE SFF 12G",
+   "price": 490.35,
+   "date": "2025-12-29",
+   "notes": "Remise de 139,60 € incluse",
+   "spec": "12 Go GDDR7",
+   "value_score": 10,
+   "value_note": "Excellente affaire : 490 € après remise alors que les RTX 5070 se vendent ≈ 855–940 € neuves mi-oct. 2026. Le cœur du PC, très bien choisi."
+  },
+  {
+   "id": "cooler",
+   "cat": "pc",
+   "name": "Xigmatek AK4 Digital Noir",
+   "price": 39.95,
+   "date": "2025-12-29",
+   "spec": "Ventirad",
+   "value_score": 7,
+   "value_note": "Ventirad tour avec affichage de température à ≈ 40 € : largement suffisant pour un Ryzen 5 5600 (et même un 5700X3D)."
+  },
+  {
+   "id": "psu",
+   "cat": "pc",
+   "name": "Corsair CX750 80+ Bronze",
+   "price": 79.95,
+   "date": "2025-12-29",
+   "spec": "750 W",
+   "value_score": 7,
+   "value_note": "750 W de marque reconnue, suffisant avec marge pour la RTX 5070 ; une 80+ Gold aurait été un peu plus efficace pour ≈ 10–20 € de plus (estimation)."
+  },
+  {
+   "id": "case",
+   "cat": "pc",
+   "name": "SilverStone FARA 512Z V2",
+   "price": 79.95,
+   "date": "2025-12-29",
+   "spec": "Boîtier",
+   "value_score": 7,
+   "value_note": "Boîtier correct avec bonne ventilation pour ≈ 80 €, prix dans la moyenne."
+  },
+  {
+   "id": "wifi",
+   "cat": "pc",
+   "name": "ASUS PCE-AX1800",
+   "price": 34.95,
+   "date": "2025-12-29",
+   "spec": "Carte Wi-Fi 6 PCIe",
+   "value_score": 7,
+   "value_note": "Wi-Fi 6 + Bluetooth à ≈ 35 € : bon prix (la carte mère n'a pas de Wi-Fi). Le câble Ethernet reste préférable en jeu compétitif."
+  },
+  {
+   "id": "build",
+   "cat": "pc",
+   "name": "Montage + installation",
+   "price": 99.95,
+   "date": "2025-12-29",
+   "spec": "Service",
+   "value_score": 6,
+   "value_note": "Service de montage pratique (≈ 100 €) et PC garanti 5 ans ; on économise en montant soi-même, mais tranquillité appréciable."
+  },
+  {
+   "id": "kb",
+   "cat": "peri",
+   "name": "Corsair K70 CORE TKL RGB (FR)",
+   "price": 79.99,
+   "value_score": 8,
+   "value_note": "TKL mécanique Corsair complet à ≈ 80 € : bon rapport qualité-prix face aux concurrents (Logitech, Razer) souvent plus chers."
+  },
+  {
+   "id": "mouse",
+   "cat": "peri",
+   "name": "Logitech G502 X (filaire)",
+   "price": 59.99,
+   "notes": "Prix vu en promo",
+   "to_confirm": true,
+   "value_score": 8,
+   "value_note": "Souris FPS de référence, excellent capteur ; ≈ 60 € en promo est un bon prix (à confirmer)."
+  },
+  {
+   "id": "pad",
+   "cat": "peri",
+   "name": "Manette Envision Pro Wireless Gentle Mates",
+   "price": 209.99,
+   "value_score": 6,
+   "value_note": "Manette PC haut de gamme (sticks Hall, palettes, gâchettes instantanées) très bien notée, mais 210 € c'est cher : elle est régulièrement à ≈ 169 € sur le site SCUF."
+  },
+  {
+   "id": "padpack",
+   "cat": "peri",
+   "name": "Envision Player Pack Black",
+   "price": 44.99,
+   "value_score": null,
+   "value_note": "Accessoires : difficile à comparer, non noté."
+  },
+  {
+   "id": "phone",
+   "cat": "mobile",
+   "name": "Xiaomi 14T",
+   "notes": "Prix inconnu",
+   "value_score": null,
+   "value_note": "Prix inconnu : non noté."
+  },
+  {
+   "id": "monitor",
+   "cat": "screen",
+   "name": "TCL 24G645 24\" QD-Mini LED",
+   "price": 229.99,
+   "spec": "1920×1080 · 300 Hz (via DisplayPort) · Fast IPS 1 ms · HDR 600 · G-Sync Compatible",
+   "notes": "Vendu 249 € sur la boutique Gentle Mates",
+   "value_score": 9,
+   "value_note": "Écran 300 Hz QD-Mini LED HDR 600 à ≈ 230 € (249 € sur la boutique Gentle Mates) : très bon rapport qualité-prix pour du jeu compétitif."
+  },
+  {
+   "id": "headset",
+   "cat": "screen",
+   "name": "Razer BlackShark V2 X blanc (filaire) + support aluminium",
+   "price": 69.99,
+   "notes": "Pack Fnac/Darty",
+   "value_score": 7,
+   "value_note": "Casque très apprécié pour le son positionnel (≈ 35–40 $ seul aux États-Unis) ; le pack avec support alu à 70 € reste raisonnable."
+  },
+  {
+   "id": "chair",
+   "cat": "other",
+   "name": "Chaise gaming SKILLKORP C20",
+   "price": 279.99,
+   "value_score": 7,
+   "value_note": "Chaise bien notée (≈ 4,3/5, accoudoirs 4D, 150 kg), vue entre ≈ 229 et 287 € : prix normal pour ce niveau."
+  }
+ ],
+ "advice_date": "2026-10-13",
+ "advice": [
+  {
+   "prio": 1,
+   "title": "Réglages gratuits à vérifier d'abord",
+   "cost": "0 €",
+   "tags": [
+    "Gratuit",
+    "Performances"
+   ],
+   "text": "Mettre le BIOS de la A520 AORUS ELITE à jour (dernière version F22a, avril 2026, via Q-Flash), activer le profil mémoire XMP/DOCP pour que la RAM tourne bien à 3200 MHz (souvent 2133/2400 par défaut), activer Resizable BAR (« Above 4G Decoding » + « Re-Size BAR ») et garder le pilote NVIDIA à jour. Dans les jeux compatibles, DLSS 4 et la génération d'images de la RTX 5070 compensent une bonne partie de la limite CPU. Vérifie aussi que l'écran est branché en DisplayPort (le 300 Hz passe par le DP 1.4) et réglé sur 300 Hz dans Windows.",
+   "links": [
+    {
+     "t": "BIOS Gigabyte A520 AORUS ELITE",
+     "u": "https://www.gigabyte.com/Motherboard/A520-AORUS-ELITE-rev-11/support"
+    }
+   ]
+  },
+  {
+   "prio": 2,
+   "title": "Processeur : Ryzen 7 5700X3D (le vrai goulot avec un écran 300 Hz)",
+   "cost": "≈ 390–460 € neuf constaté mi-oct. 2026 — intéressant seulement sous ≈ 250 € (occasion)",
+   "tags": [
+    "CPU",
+    "Compétitif",
+    "Priorité"
+   ],
+   "text": "Avec ton écran 1080p 300 Hz, c'est le Ryzen 5 5600 qui plafonne les FPS (Valorant, CS2, COD Warzone/MP, Rocket League) bien avant la RTX 5070. Le Ryzen 7 5700X3D (cache 3D V-Cache 96 Mo) est l'upgrade « drop-in » idéal : même carte mère après mise à jour du BIOS, ventirad AK4 suffisant, alim OK — gains souvent importants sur le 1 % low et les FPS max en jeu compétitif. Bémol : il est en fin de vie chez AMD et se trouve ≈ 390–460 € neuf mi-octobre 2026 ; vise l'occasion (≈ 200–280 €, estimation) ou un 5800X3D d'occasion. Alternative long terme : passage AM5 (CPU + carte mère + DDR5)."
+  },
+  {
+   "prio": 3,
+   "title": "Plus de stockage pour les jeux",
+   "cost": "≈ 220–300 € pour 2 To (estimation, prix du stockage très élevés en 2026)",
+   "tags": [
+    "Stockage"
+   ],
+   "text": "Le Kingston NV3 1 To est un SSD sans DRAM (souvent en QLC) : correct pour jouer, mais 1 To se remplit vite (COD, AC Shadows…) et il ralentit fortement en écriture quand il est presque plein. Point important : ta carte mère n'a qu'un seul emplacement M.2 (PCIe 3.0). Options : 1) ajouter un SSD SATA 2 To (4 ports SATA libres, le plus simple) ; 2) remplacer le NV3 par un NVMe TLC 2 To avec DRAM (PCIe 3.0/4.0, le 4.0 tournera en 3.0) et cloner Windows. Avec la crise de la mémoire (prix des SSD ×2 en un an), ce n'est à faire que si l'espace manque vraiment : désinstaller les jeux terminés reste gratuit.",
+   "links": [
+    {
+     "t": "Fiche technique carte mère",
+     "u": "https://www.gigabyte.com/Motherboard/A520-AORUS-ELITE-rev-12/sp"
+    }
+   ]
+  },
+  {
+   "prio": 4,
+   "title": "Petit plus : tapis de souris XL et/ou casque sans fil",
+   "cost": "≈ 20–60 € / 80–150 € (estimation)",
+   "tags": [
+    "Confort",
+    "Optionnel"
+   ],
+   "text": "Pas indispensable : un grand tapis (type XL/XXL) améliore la régularité de la visée à basse sensibilité ; un casque sans fil 2,4 GHz apporte du confort si le câble gêne. Ton BlackShark V2 X reste un très bon casque pour entendre les pas."
+  },
+  {
+   "prio": 5,
+   "title": "Ce qui n'a pas besoin d'être changé",
+   "cost": "0 €",
+   "tags": [
+    "Bon choix"
+   ],
+   "text": "Alimentation Corsair CX750 80+ Bronze : largement suffisante pour la RTX 5070 (~250 W) même avec un futur X3D. Le PCIe 3.0 de la A520 ne coûte que ~1–3 % de perf à la RTX 5070 : changer de carte mère n'en vaut pas la peine. Écran TCL 24G645 300 Hz, clavier K70 CORE TKL, souris G502 X, casque BlackShark V2 X et manette Envision Pro : très bon niveau, rien à changer. Garantie du PC : 5 ans jusqu'au 29/12/2030. Bonne nouvelle : ta RTX 5070 payée 490 € se vend aujourd'hui ≈ 855–940 € neuve."
+  },
+  {
+   "prio": 6,
+   "title": "À compléter dans l'app",
+   "cost": "—",
+   "tags": [
+    "Info"
+   ],
+   "text": "Confirme la capacité exacte de ta RAM (probablement 2 × 16 Go). Si c'était 2 × 8 Go, passer à 32 Go deviendrait une priorité, mais c'est cher en ce moment (≈ 210 € le kit DDR4-3200 32 Go mi-octobre 2026)."
+  }
+ ],
+ "settings_date": "2026-10-13",
+ "settings": {
+  "global": [
+   [
+    "Écran 300 Hz",
+    "Branche l'écran en DisplayPort (DP 1.4), puis Paramètres Windows › Affichage › Affichage avancé › 300 Hz. Vérifie aussi dans le panneau NVIDIA › Modifier la résolution."
+   ],
+   [
+    "G-Sync",
+    "Panneau NVIDIA › Configurer G-SYNC › activer pour plein écran et fenêtré (écran G-Sync Compatible). Dans Paramètres 3D : V-Sync « Activé » au niveau du pilote, V-Sync désactivé en jeu, et limite d'images ≈ 3 FPS sous la fréquence (ou laisse Reflex le faire)."
+   ],
+   [
+    "NVIDIA Reflex",
+    "Toujours « Activé + Boost » dans les jeux compétitifs qui le proposent (Valorant, CS2, COD…) : moins de latence. Avec G-Sync + V-Sync pilote, Reflex plafonne automatiquement sous 300 Hz."
+   ],
+   [
+    "DLSS 4 / génération d'images",
+    "Utile dans les jeux solo lourds (AC Shadows, The Last of Us) pour viser 120 FPS+. À éviter en compétitif : la génération d'images ajoute de la latence et les jeux e-sport tournent déjà très vite."
+   ],
+   [
+    "RAM XMP/DOCP",
+    "BIOS › Tweaker › X.M.P. Profile 1 pour faire tourner la RAM à 3200 MHz (sinon elle reste à 2133/2400 et le Ryzen perd des FPS)."
+   ],
+   [
+    "Windows",
+    "Mode Jeu activé, « Planification du GPU à accélération matérielle » activée, plan d'alimentation « Performances élevées », pilotes NVIDIA à jour (Game Ready), overlays inutiles fermés (Discord, etc.)."
+   ],
+   [
+    "Resizable BAR",
+    "BIOS › Settings › IO Ports : Above 4G Decoding + Re-Size BAR Support activés (après MAJ du BIOS)."
+   ]
+  ],
+  "games": [
+   {
+    "name": "Valorant",
+    "icon": "🎯",
+    "goal": "300 FPS stables",
+    "fps": "≈ 300–450 FPS (estimation, limité par le CPU)",
+    "items": [
+     [
+      "Mode d'affichage",
+      "Plein écran, 1920×1080, 300 Hz"
+     ],
+     [
+      "Qualité",
+      "Matériaux/Textures/Détails : Bas · UI : Bas"
+     ],
+     [
+      "Anticrénelage",
+      "MSAA 2x (ou désactivé)"
+     ],
+     [
+      "Filtrage anisotrope",
+      "4x"
+     ],
+     [
+      "Améliorer la netteté",
+      "Activé"
+     ],
+     [
+      "Ombres, distorsion, bloom, vignettage",
+      "Désactivés"
+     ],
+     [
+      "NVIDIA Reflex",
+      "Activé + Boost"
+     ],
+     [
+      "Limite d'IPS",
+      "Désactivée ou ≈ 400 (pour moins de variations)"
+     ]
+    ]
+   },
+   {
+    "name": "Counter-Strike 2",
+    "icon": "💣",
+    "goal": "300 FPS + bon 1 % low",
+    "fps": "≈ 250–400 FPS selon la carte (estimation)",
+    "items": [
+     [
+      "Résolution",
+      "1920×1080, 300 Hz, plein écran"
+     ],
+     [
+      "Ombres globales",
+      "Moyen (aide à voir les adversaires)"
+     ],
+     [
+      "Modèles / textures / shaders",
+      "Bas"
+     ],
+     [
+      "Particules",
+      "Bas"
+     ],
+     [
+      "Anti-aliasing",
+      "MSAA 4x (léger pour la 5070)"
+     ],
+     [
+      "Occlusion ambiante, HDR",
+      "Désactivé / Performance"
+     ],
+     [
+      "NVIDIA Reflex",
+      "Activé + Boost"
+     ],
+     [
+      "FidelityFX Super Resolution",
+      "Désactivé (qualité max)"
+     ]
+    ]
+   },
+   {
+    "name": "Rocket League",
+    "icon": "🚗",
+    "goal": "Plafonner à 300 FPS",
+    "fps": "300 FPS (plafond) facile (estimation)",
+    "items": [
+     [
+      "Fenêtre",
+      "Plein écran, 1920×1080"
+     ],
+     [
+      "Limite d'IPS",
+      "Non plafonné ou 360 (le jeu propose plusieurs paliers)"
+     ],
+     [
+      "Rendu",
+      "Haute qualité · Échelle 100 %"
+     ],
+     [
+      "Textures / modèles",
+      "Haute qualité / Haute qualité"
+     ],
+     [
+      "Effets de monde, transparence, bloom, flou",
+      "Désactivés pour la lisibilité"
+     ],
+     [
+      "Synchronisation verticale",
+      "Désactivée"
+     ]
+    ]
+   },
+   {
+    "name": "COD Mobile (Xiaomi 14T)",
+    "icon": "📱",
+    "goal": "120 FPS stables",
+    "fps": "≈ 120 FPS en MJ (Ultra), plus bas en BR (estimation)",
+    "items": [
+     [
+      "Écran du téléphone",
+      "Paramètres › Écran › Taux de rafraîchissement : 144 Hz / Personnalisé"
+     ],
+     [
+      "Qualité graphique",
+      "Moyenne (ou Basse si chauffe/baisse de FPS)"
+     ],
+     [
+      "Fréquence d'images",
+      "Ultra / Max (120 FPS en Multijoueur)"
+     ],
+     [
+      "BR",
+      "Profondeur de champ, Bloom, Reflets de l'eau, Godray, Ragdoll : désactivés ; Ombres en temps réel : au choix"
+     ],
+     [
+      "Système",
+      "Game Turbo activé, mode Performance, économiseur de batterie désactivé, applis en arrière-plan fermées"
+     ],
+     [
+      "Chauffe",
+      "Éviter de jouer en charge ; une coque fine ou un ventilateur de téléphone aide en sessions longues"
+     ]
+    ]
+   },
+   {
+    "name": "Assassin's Creed Shadows",
+    "icon": "🗡️",
+    "goal": "≈ 90–140 FPS fluides",
+    "fps": "≈ 70–90 FPS natif Élevé, 120 FPS+ avec DLSS + génération d'images (estimation)",
+    "items": [
+     [
+      "Préréglage",
+      "Élevé"
+     ],
+     [
+      "Upscaling",
+      "DLSS Qualité (ou DLAA si FPS suffisants)"
+     ],
+     [
+      "Génération d'images",
+      "DLSS Frame Generation activée (jeu solo)"
+     ],
+     [
+      "RTGI / ray tracing",
+      "Sélectif (repaire seulement) ; plein RT seulement avec frame gen"
+     ],
+     [
+      "NVIDIA Reflex",
+      "Activé (compense la latence de la frame gen)"
+     ],
+     [
+      "Textures",
+      "Élevé (12 Go de VRAM suffisent en 1080p)"
+     ]
+    ]
+   },
+   {
+    "name": "The Last of Us Part I",
+    "icon": "🍄",
+    "goal": "≈ 100–144 FPS",
+    "fps": "≈ 90–120 FPS en Élevé, plus avec DLSS (estimation)",
+    "items": [
+     [
+      "Préréglage",
+      "Élevé (Ultra possible en 1080p)"
+     ],
+     [
+      "Upscaling",
+      "DLSS Qualité ou DLAA"
+     ],
+     [
+      "Textures",
+      "Élevé (vérifier la jauge de VRAM < 12 Go)"
+     ],
+     [
+      "Effets",
+      "Flou de mouvement désactivé"
+     ],
+     [
+      "Astuce",
+      "Laisser la compilation des shaders se terminer au 1er lancement"
+     ]
+    ]
+   },
+   {
+    "name": "Autres jeux Steam",
+    "icon": "🎮",
+    "goal": "Max en 1080p",
+    "fps": "Très au-dessus de 100 FPS (estimation)",
+    "items": [
+     [
+      "Life is Strange 2 / True Colors, Tell Me Why, Detroit, Heavy Rain, Beyond, Fahrenheit",
+      "Tout au maximum ; activer V-Sync/G-Sync, ces jeux narratifs ne profitent pas de FPS extrêmes"
+     ],
+     [
+      "The Walking Dead (Telltale)",
+      "Tout au max"
+     ],
+     [
+      "GUNDAM BREAKER 4, Solo Leveling ARISE OVERDRIVE",
+      "Préréglage le plus élevé, DLSS si proposé"
+     ],
+     [
+      "Among Us, Aniimo",
+      "Tout au max, limite d'IPS à 144–300 pour réduire la chauffe"
+     ],
+     [
+      "Call of Duty (PC)",
+      "Préréglage Compétitif/Élevé, DLSS Qualité, Reflex + Boost, génération d'images désactivée en multijoueur"
+     ]
+    ]
+   }
+  ]
+ },
+ "value_date": "2026-10-13"
+}

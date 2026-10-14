@@ -165,3 +165,6 @@ select option{background:var(--bg2)}
 header h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
 @media(min-width:900px){header h1{max-width:calc(50vw - 330px);flex:0 1 auto}}
 #upd{flex:none}
+
+nav.tabs a{font-size:.66rem;min-width:0}
+@media(max-width:360px){nav.tabs a svg{width:21px;height:21px}}
