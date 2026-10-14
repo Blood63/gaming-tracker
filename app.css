@@ -161,3 +161,7 @@ select option{background:var(--bg2)}
 .tile .n{flex:1}.tile .n b{display:block}.tile .n small{font-size:.8rem}
 .chev{color:var(--mut);font-size:1.3rem}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav) + 1rem + var(--safe));transform:translateX(-50%);z-index:70;background:var(--bg2);border:1px solid var(--cy);padding:.6rem 1rem;border-radius:12px;box-shadow:0 0 24px -6px var(--cy);animation:vin .3s}
+
+header h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
+@media(min-width:900px){header h1{max-width:calc(50vw - 330px);flex:0 1 auto}}
+#upd{flex:none}
