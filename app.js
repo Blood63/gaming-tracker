@@ -131,7 +131,8 @@ const repoIds=()=>new Set((D.goals||[]).map(g=>g.id));
 const localGoals=()=>{const ids=repoIds(),L=LS.get(GK,[]).map(g=>({...g,id:+g.id})).filter(g=>g.id&&g.type);
   // reprise de l'ancienne file « en attente » (version précédente de l'app)
   const old=LS.get(PK,{});if(old&&old.adds&&old.adds.length){old.adds.forEach(g=>{if(!L.some(x=>x.id==g.id))L.push(gClean(g))});old.adds=[];LS.set(PK,old)}
-  const r=L.filter(g=>!ids.has(g.id));LS.set(GK,r);return r};
+  const same=(a,b)=>a.type==b.type&&a.target==b.target&&(a.playlist||'')==(b.playlist||'')&&(a.mode||'')==(b.mode||'')&&(a.appid||0)==(b.appid||0)&&(a.div||1)==(b.div||1);
+  const r=L.filter(g=>!ids.has(g.id)&&!(D.goals||[]).some(x=>same(x,g)));LS.set(GK,r);return r};
 const pendDels=()=>{const ids=repoIds(),old=LS.get(PK,{}),d=[...new Set([...(LS.get('gt-dels',[])),...((old.dels||[]).map(x=>x.id))])].filter(id=>ids.has(id));LS.set('gt-dels',d);if(old.dels){old.dels=[];LS.set(PK,old)}return d};
 const goals=()=>{const del=new Set(pendDels());return[...(D.goals||[]).map(g=>del.has(g.id)?{...g,pending:3}:g),...localGoals().map(g=>({...g,pending:2}))]};
 const unsynced=()=>({adds:localGoals(),dels:pendDels()});
