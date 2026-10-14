@@ -28,14 +28,14 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" re
 /* ========== données ========== */
 const D={};
 async function load(){
-  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json')]);
+  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
-  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];
+  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];D.rlm=rlm&&rlm.playlists?rlm:null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -177,7 +177,10 @@ function rankGoal(x){
       info+=' <i>(estimation)</i>'}
     return{label:lab,cur:Math.max(0,cur-start),t:Math.max(1,tgt-start),u:'RR',p:Math.max(0,Math.min(100,p)),info,dl,done:cur>=tgt,icon:vIcon(x.target,22)}}
   if(x.type=='rl_rank'){const lab=`Rocket League ${RL_PL[x.playlist]||x.playlist} : ${RL_T[x.target]||'?'}${x.div&&x.target<RL_T.length-1?' div. '+['I','II','III','IV'][x.div-1]:''}`;
-    return{label:lab,wait:'En attente de données Rocket League (intégration ballchasing.com prévue)',cur:0,t:1,p:0,dl}}
+    const pl=D.rlm?.playlists?.find(p=>p.id==x.playlist);
+    if(!pl)return{label:lab,wait:'En attente de données Rocket League (intégration ballchasing.com prévue)',cur:0,t:1,p:0,dl};
+    const cur=rlVal(pl.tier,pl.div),tgt=rlVal(x.target,x.div||1),start=x.start??cur,rem=tgt-cur,p=tgt<=start?(cur>=tgt?100:0):100*(cur-start)/(tgt-start);
+    return{label:lab,cur:0,t:1,u:'RR',p:Math.max(0,Math.min(100,p)),done:cur>=tgt,dl,info:rem>0?`Actuel : ${esc(pl.tier_name)} div. ${RL_DIV[pl.div-1]} (${fnum(pl.mmr)} MMR, record ${fnum(pl.best_mmr)}) · encore ${rem} division${rem>1?'s':''}. <i>Données manuelles (captures tracker.gg).</i>`:''}}
   if(x.type=='cod_rank'){const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
     if(!c)return{label:lab,wait:'Enregistre ton rang actuel (bouton « changement de rang » sur la page COD)',cur:0,t:1,p:0,dl};
     const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
@@ -252,6 +255,29 @@ function valMatch(id){
   app.innerHTML=h+`<a class="btn ghost" style="margin-top:1rem" href="#/valorant">‹ Retour Valorant</a>`;
 }
 
+
+/* ========== Rocket League (données manuelles) ========== */
+const RL_DIV=['I','II','III','IV'],rlVal=(t,d)=>t*4+((d||1)-1),rlLbl=(t,d)=>RL_T[t]+(d&&t<RL_T.length-1?' div. '+RL_DIV[d-1]:'');
+const rlIcon=t=>['🟤','⚪','🟡','🔷','💎','🟣','🔴','🌟'][Math.min(7,Math.floor(t/3))]||'🚗';
+const rlNext=pl=>Math.min(RL_T.length-1,pl.tier+1);
+function rlManual(){
+  const R=D.rlm,P=R.playlists,H=R.mmr_history,pf=R.performance||{};
+  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#3b82f666,transparent 65%)"><div class="ttl"><h3>Rocket League</h3><span class="pill">${esc(R.player)} · ${esc(R.platform)}</span><span class="pill">${esc(R.season)}</span>${R.reward_level?`<span class="pill">Récompenses : ${esc(R.reward_level)}</span>`:''}</div></div>
+  <p class="mut" style="font-size:.8rem;margin-top:.5rem">📸 Source : captures tracker.gg, mise à jour manuelle (${fdate(R.updated)}). Relevé automatique dès que ballchasing.com sera connecté.</p>
+  <h2>Rangs classés</h2><div class="list">${P.map(p=>`<div class="glass row" style="align-items:center"><span class="ic" style="font-size:1.8rem;width:44px;text-align:center">${rlIcon(p.tier)}</span><span class="n"><b>${esc(p.name)}</b><br><span style="font-size:1.05rem;font-weight:700">${esc(p.tier_name)} · div. ${RL_DIV[p.div-1]}</span><br><small class="mut">Meilleur : ${fnum(p.best_mmr)} MMR (${esc(p.best_season)})${p.matches?' · '+fnum(p.matches)+' parties':''}${p.percentile?' · '+esc(p.percentile):''}${p.streak?` · <span class="${p.streak.type=='loss'?'down':'up'}">série de ${p.streak.count} ${p.streak.type=='loss'?'défaites':'victoires'}</span>`:''}</small></span><span class="p" style="text-align:right"><b style="font-size:1.2rem">${fnum(p.mmr)}</b><br><small class="mut">MMR</small><br><small class="${p.mmr<p.best_mmr?'down':'up'}">${p.mmr-p.best_mmr} vs record</small></span></div>`).join('')}</div>
+  <div class="stats" style="margin-top:.6rem">${(R.other||[]).map(o=>stat(o.name,o.mmr!=null?fnum(o.mmr):'≈ '+o.mmr_range.join('–'),o.note||'MMR')).join('')}</div>
+  ${goalsBlock(['rl_rank'])}
+  <div class="seg" style="margin-top:.5rem">${P.map(p=>`<button data-rg="${p.id}">🎯 ${esc(p.id)} → ${esc(RL_T[rlNext(p)])}</button>`).join('')}</div>
+  <h2>Évolution du MMR (3v3)</h2><div class="glass chart"><canvas id="r1"></canvas></div>
+  <h2>Sessions récentes</h2><div class="glass tbl"><table><tr><th>Date</th><th>Parties</th><th>Vict.</th><th>%</th><th>Buts / tirs</th><th>Passes</th><th>Arrêts</th><th>MMR</th></tr>${R.sessions.map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.matches??(x.note?esc(x.note):'—')}</td><td>${x.wins??'—'}</td><td>${x.matches&&x.wins!=null?fnum(100*x.wins/x.matches,1)+' %':'—'}</td><td>${x.goals!=null?x.goals+' / '+x.shots:'—'}</td><td>${x.assists??'—'}</td><td>${x.saves??'—'}</td><td>${x.mmr?Object.entries(x.mmr).map(([k,v])=>`${k} ${v[0]}→${v[1]} <span class="${v[1]<v[0]?'down':'up'}">(${v[1]-v[0]>0?'+':''}${v[1]-v[0]})</span>`).join(' '):'—'}</td></tr>`).join('')}</table></div>
+  <h2>Répartition des actions</h2><div class="two"><div class="glass chart"><canvas id="r2"></canvas></div><div class="glass pad"><div class="kv"><span>⚽ Buts</span><span>${fnum(pf.goals_pct,1)} %</span><span>🛡️ Arrêts</span><span>${fnum(pf.saves_pct,1)} %</span><span>🤝 Passes décisives</span><span>${fnum(pf.assists_pct,1)} %</span></div><p class="mut" style="font-size:.8rem;margin-top:.5rem">Part de chaque action dans tes contributions (tracker.gg). Profil plutôt offensif : tu marques plus que tu ne défends.</p></div></div>
+  <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>`;
+  app.innerHTML=h;bindGoalDel(rlManual);animBars();
+  $$('[data-rg]').forEach(b=>b.onclick=()=>{const p=P.find(x=>x.id==b.dataset.rg);addGoal({type:'rl_rank',playlist:p.id,target:rlNext(p),div:1,start:rlVal(p.tier,p.div)});rlManual()});
+  chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),'#3b82f6'),lineDS('Record S38 (654)',H.map(()=>654),'#22c55e',{fill:false,borderDash:[6,4],pointRadius:0})]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
+  chart($('#r2'),{type:'doughnut',data:{labels:['Buts','Arrêts','Passes'],datasets:[{data:[pf.goals_pct,pf.saves_pct,pf.assists_pct],backgroundColor:['#3b82f6','#22c55e','#a855f7'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom'}}}});
+}
+
 /* ========== composants ========== */
 function gameCard(g,sub){
   const badge=!g.hours&&!g.last?'<span class="badge" style="color:var(--warn)">Jamais lancé</span>':g.ach_total&&g.pct==100?'<span class="badge" style="color:var(--gr)">100 %</span>':'';
@@ -265,7 +291,7 @@ function compCards(){
   const rlBest=r&&segs(r).filter(s=>s.type=='playlist').map(s=>num(S(s,'rating')?.value)).filter(x=>x!=null).sort((a,b)=>b-a)[0];
   return `<a class="glass gcard" style="--c:var(--steam)" href="#/steam"><div class="t"><i></i>Steam</div><div class="big">${fnum(D.totalH,0)} h</div><div class="s">${D.games.length} jeux · niv. ${D.steam?.level??'—'}</div></a>
    <a class="glass gcard" style="--c:var(--val)" href="#/valorant"><div class="t"><i></i>Valorant</div><div class="big">${D.vh?vIcon(D.vh.mmr.tier_id,26)+' '+esc(vTier(D.vh.mmr.tier)):v?esc(vRank||'—'):'⏳'}</div><div class="s">${D.vh?fnum(D.vh.mmr.rr)+' RR · Blood#7629':v?'Blood#7629':trnStatus(D.val)}</div></a>
-   <a class="glass gcard" style="--c:var(--rl)" href="#/rl"><div class="t"><i></i>Rocket League</div><div class="big">${r?fnum(rlBest)+' MMR':'⏳'}</div><div class="s">${r?'443Blood · Epic':trnStatus(D.rl)}</div></a>
+   <a class="glass gcard" style="--c:var(--rl)" href="#/rl"><div class="t"><i></i>Rocket League</div><div class="big">${r?fnum(rlBest)+' MMR':D.rlm?esc(D.rlm.playlists.find(p=>p.id=='3v3')?.tier_name||'—'):'⏳'}</div><div class="s">${r?'443Blood · Epic':D.rlm?'3v3 · '+fnum(D.rlm.playlists.find(p=>p.id=='3v3')?.mmr)+' MMR (manuel)':trnStatus(D.rl)}</div></a>
    <a class="glass gcard" style="--c:var(--cod)" href="#/cod"><div class="t"><i></i>COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):D.cp?'É/M '+fnum(D.cp.multiplayer?.kd,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties suivies':D.cp?fnum((D.cp.multiplayer?.matches||0)+(D.cp.battle_royale?.matches||0))+' parties en carrière':'Envoie ta 1ʳᵉ capture'}</div></a>`;
 }
 
@@ -336,8 +362,8 @@ function steamGame(id){
 }
 function compet(){
   app.innerHTML=`<h2>Jeux compétitifs</h2><div class="list">
-   ${[['valorant','🎯','Valorant',D.vh?'Blood#7629 · HenrikDev':'Blood#7629 · tracker.gg',D.vh||D.vOk.length?'Connecté':trnStatus(D.val),'var(--val)'],['rl','🚗','Rocket League','443Blood · Epic · tracker.gg',D.rOk.length?'Connecté':trnStatus(D.rl),'var(--rl)'],['cod','🔫','Call of Duty Mobile','Capture d\'écran après chaque partie',D.cod.length?D.cod.length+' parties':'Aucune partie','var(--cod)']]
-    .map(([r,i,n,d,s,c])=>`<a class="glass tile" style="--c:${c}" href="#/${r}"><span class="ic">${i}</span><span class="n"><b>${n}</b><small class="mut">${d}</small></span><span class="pill ${/Connecté|parties/.test(s)?'ok':'warn'}">${esc(s)}</span><span class="chev">›</span></a>`).join('')}</div>
+   ${[['valorant','🎯','Valorant',D.vh?'Blood#7629 · HenrikDev':'Blood#7629 · tracker.gg',D.vh||D.vOk.length?'Connecté':trnStatus(D.val),'var(--val)'],['rl','🚗','Rocket League',D.rlm&&!D.rOk.length?'443Blood · Epic · captures tracker.gg':'443Blood · Epic · tracker.gg',D.rOk.length?'Connecté':D.rlm?'Saisie manuelle':trnStatus(D.rl),'var(--rl)'],['cod','🔫','Call of Duty Mobile','Capture d\'écran après chaque partie',D.cod.length?D.cod.length+' parties':'Aucune partie','var(--cod)']]
+    .map(([r,i,n,d,s,c])=>`<a class="glass tile" style="--c:${c}" href="#/${r}"><span class="ic">${i}</span><span class="n"><b>${n}</b><small class="mut">${d}</small></span><span class="pill ${/Connecté|parties|manuelle/.test(s)?'ok':'warn'}">${esc(s)}</span><span class="chev">›</span></a>`).join('')}</div>
    <div style="margin-top:1rem">${codBtn('full')}</div>
    <h2>Comment ça marche</h2><div class="glass desc"><b>Valorant</b> : relevé automatique 2 fois par jour via l'API HenrikDev (non officielle) : rang, RR, parties et détails.<br><br><b>Rocket League</b> : relevé chaque dimanche à 20 h via l'API Tracker Network (dès que la clé est acceptée).<br><br><b>COD Mobile</b> : appuie sur « Ajouter une partie », glisse la capture du tableau des scores, valide. Les stats sont lues automatiquement et un commentaire te confirme les valeurs (tu peux les corriger en modifiant la demande).</div>`;
 }
@@ -558,15 +584,15 @@ function objectifs(){
   const sugg={game_hours:g=>Math.ceil(((D.games.find(x=>x.appid==g)?.hours)||0)/10)*10+10,game_ach:()=>100,total_hours:()=>Math.ceil(D.totalH/50)*50+50,achievements:()=>Math.ceil(D.ach/50)*50+50,level:()=>D.xp.L+2,cod_kd:()=>1.5,cod_matches:()=>Math.ceil(D.cod.length/10)*10+10};
   const isR=t=>t.endsWith('_rank'),sh=(id,v)=>$(id).style.display=v?'':'none';
   const rankOpts=t=>{if(t=='val_rank'){const c=D.vh?.mmr?.tier_id||3;return VAL_T.map(x=>`<option value="${x.id}"${x.id==Math.min(27,c+1)?' selected':''}>${esc(vTier(x.n))}</option>`).join('')}
-    if(t=='rl_rank')return RL_T.map((n,i)=>`<option value="${i}"${i==9?' selected':''}>${n}</option>`).join('');
+    if(t=='rl_rank'){const pl=D.rlm?.playlists?.find(p=>p.id==$('#gpls').value),nx=pl?rlNext(pl):9;return RL_T.map((n,i)=>`<option value="${i}"${i==nx?' selected':''}>${n}</option>`).join('')}
     const c=(D.ranks[$('#gcms').value]||[]).at(-1)?.value||1;let o='';for(let v=1;v<=36;v++)o+=`<option value="${v}"${v==Math.min(36,c+1)?' selected':''}>${codLbl(v)}</option>`;return o};
   const upd=()=>{const t=$('#gt').value;sh('#gl',t.startsWith('game'));sh('#gvl',!isR(t));sh('#grk',isR(t));sh('#gpl',t=='rl_rank');sh('#gdv',t=='rl_rank');sh('#gcm',t=='cod_rank');
     $('#gv').required=!isR(t);if(isR(t))$('#grks').innerHTML=rankOpts(t);else $('#gv').value=sugg[t](+$('#gg').value)};
-  $('#gt').onchange=upd;$('#gg').onchange=upd;$('#gcms').onchange=upd;upd();
+  $('#gt').onchange=upd;$('#gg').onchange=upd;$('#gcms').onchange=upd;$('#gpls').onchange=upd;upd();
   $('#gf').onsubmit=e=>{e.preventDefault();const t=$('#gt').value,dl=$('#gdl').value||undefined;
     if(isR(t)){const v=+$('#grks').value,o={type:t,target:v,deadline:dl};
       if(t=='val_rank'&&D.vh)o.start=(D.vh.mmr.tier_id-3)*100+(D.vh.mmr.rr||0);
-      if(t=='rl_rank'){o.playlist=$('#gpls').value;o.div=+$('#gdvs').value||undefined}
+      if(t=='rl_rank'){o.playlist=$('#gpls').value;o.div=+$('#gdvs').value||undefined;const pl=D.rlm?.playlists?.find(p=>p.id==o.playlist);if(pl)o.start=rlVal(pl.tier,pl.div)}
       if(t=='cod_rank'){o.mode=$('#gcms').value;const c=(D.ranks[o.mode]||[]).at(-1);if(c)o.start=c.value}
       addGoal(o);return objectifs()}
     const v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,deadline:dl,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
@@ -593,7 +619,7 @@ function render(){
   document.body.classList.toggle('sub',!top);
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
   $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
+  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }

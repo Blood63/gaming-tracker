@@ -1,0 +1,29 @@
+{
+ "source": "captures tracker.gg, mise à jour manuelle",
+ "updated": "2026-10-14",
+ "player": "443Blood",
+ "platform": "Epic",
+ "season": "Saison 24 (S38 tracker.gg)",
+ "reward_level": "Or",
+ "playlists": [
+  {"id": "1v1", "name": "Duel 1v1", "tier": 4, "tier_name": "Argent II", "div": 3, "mmr": 359, "best_mmr": 409, "best_season": "S36"},
+  {"id": "2v2", "name": "Double 2v2", "tier": 6, "tier_name": "Or I", "div": 3, "mmr": 515, "percentile": "Bottom 5 %", "matches": 130, "best_mmr": 566, "best_season": "S38", "streak": {"type": "loss", "count": 7}},
+  {"id": "3v3", "name": "Standard 3v3", "tier": 7, "tier_name": "Or II", "div": 4, "mmr": 578, "percentile": "Bottom 14 %", "matches": 220, "best_mmr": 654, "best_season": "S38"}
+ ],
+ "other": [
+  {"name": "Occasionnel (Casual)", "mmr": 549},
+  {"name": "Heatseeker", "mmr_range": [114, 174], "note": "≈ valeurs approximatives"}
+ ],
+ "mmr_history": [
+  {"date": "2026-10-12", "playlist": "3v3", "mmr": 643, "note": "début de session"},
+  {"date": "2026-10-12", "playlist": "3v3", "mmr": 597, "note": "fin de session"},
+  {"date": "2026-10-13", "playlist": "3v3", "mmr": 588, "note": "début de session"},
+  {"date": "2026-10-13", "playlist": "3v3", "mmr": 578, "note": "fin de session"}
+ ],
+ "sessions": [
+  {"date": "2026-10-13", "matches": 7, "wins": 3, "goals": 5, "shots": 11, "assists": 4, "saves": 3, "mmr": {"3v3": [588, 578]}},
+  {"date": "2026-10-12", "note": "plusieurs parties 3v3", "mmr": {"3v3": [643, 597]}},
+  {"date": "2026-10-11", "matches": 8, "wins": 4}
+ ],
+ "performance": {"goals_pct": 54.8, "saves_pct": 23.1, "assists_pct": 22.1}
+}
