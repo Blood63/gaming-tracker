@@ -50,7 +50,10 @@
       "date": "2025-12-29",
       "spec": "6 cœurs / 12 threads · 3,5 / 4,4 GHz · AM4",
       "value_score": 8,
-      "value_note": "Payé ≈ 110 €, encore ≈ 115–130 € neuf mi-oct. 2026 : bon prix pour 6 cœurs Zen 3. Mais c'est la pièce qui limite le plus un écran 300 Hz."
+      "value_note": "Payé ≈ 110 €, encore ≈ 115–130 € neuf mi-oct. 2026 : bon prix pour 6 cœurs Zen 3. Mais c'est la pièce qui limite le plus un écran 300 Hz.",
+      "quality_score": 8,
+      "quality_note": "6 cœurs Zen 3 toujours très bon en 1080p ; limite les jeux e-sport à très haut FPS (300 Hz).",
+      "tip": "Active PBO + Curve Optimizer (-15/-20) dans le BIOS : gratuit, quelques % de FPS en plus. Évolution logique : Ryzen 7 5700X3D (≈390–460 € neuf, moins en occasion)."
     },
     {
       "id": "mb",
@@ -60,7 +63,10 @@
       "date": "2025-12-29",
       "spec": "AM4 · PCIe 3.0 · 1 slot M.2",
       "value_score": 5,
-      "value_note": "Une B550 d'entrée de gamme se trouve ≈ 75 € (PCIe 4.0, souvent 2 slots M.2) ; la A520 à 100 € n'a qu'1 M.2 et du PCIe 3.0. Fonctionnelle mais payée cher pour ce qu'elle offre."
+      "value_note": "Une B550 d'entrée de gamme se trouve ≈ 75 € (PCIe 4.0, souvent 2 slots M.2) ; la A520 à 100 € n'a qu'1 M.2 et du PCIe 3.0. Fonctionnelle mais payée cher pour ce qu'elle offre.",
+      "quality_score": 5,
+      "quality_note": "A520 d'entrée de gamme : correcte mais PCIe 3.0, un seul M.2, overclocking RAM/CPU limité.",
+      "tip": "Mets à jour le BIOS (F22a) et active XMP + Re-Size BAR. Pas besoin de la changer tant que tu restes sur AM4."
     },
     {
       "id": "ram",
@@ -72,7 +78,10 @@
       "spec": "DDR4-3200",
       "to_confirm": true,
       "value_score": 8,
-      "value_note": "Si c'est bien 2 × 16 Go : le kit DDR4-3200 32 Go le moins cher est à ≈ 210 € mi-oct. 2026 (crise de la mémoire), donc très bon achat. Note à revoir si la capacité est de 16 Go."
+      "value_note": "Si c'est bien 2 × 16 Go : le kit DDR4-3200 32 Go le moins cher est à ≈ 210 € mi-oct. 2026 (crise de la mémoire), donc très bon achat. Note à revoir si la capacité est de 16 Go.",
+      "quality_score": 7,
+      "quality_note": "DDR4-3200 Corsair fiable ; latence CL16 standard, rien d'exceptionnel.",
+      "tip": "Vérifie que l'XMP est activé (sinon elle tourne à 2133 MHz). Si tu n'as que 16 Go : passe à 32 Go (≈210 €, prix RAM élevés en 2026)."
     },
     {
       "id": "ssd",
@@ -82,7 +91,10 @@
       "date": "2025-12-29",
       "spec": "NVMe PCIe 4.0 (tourne en 3.0 sur cette carte mère)",
       "value_score": 6,
-      "value_note": "SSD d'entrée de gamme (sans DRAM, souvent QLC) payé ≈ 180 € ; il est à ≈ 155 € aujourd'hui (moyenne des NVMe 1 To ≈ 205 €). Correct pour jouer mais pas une affaire."
+      "value_note": "SSD d'entrée de gamme (sans DRAM, souvent QLC) payé ≈ 180 € ; il est à ≈ 155 € aujourd'hui (moyenne des NVMe 1 To ≈ 205 €). Correct pour jouer mais pas une affaire.",
+      "quality_score": 6,
+      "quality_note": "Kingston NV3 : SSD d'entrée de gamme sans DRAM, rapide pour charger les jeux mais chute en écriture longue ; bridé en PCIe 3.0 ici.",
+      "tip": "Garde 15–20 % d'espace libre pour les perfs. Ajout conseillé : un 2ᵉ SSD SATA 2 To pour la bibliothèque (≈150–200 €, estimation) car la carte mère n'a qu'un slot M.2."
     },
     {
       "id": "gpu",
@@ -93,7 +105,10 @@
       "notes": "Remise de 139,60 € incluse",
       "spec": "12 Go GDDR7",
       "value_score": 10,
-      "value_note": "Excellente affaire : 490 € après remise alors que les RTX 5070 se vendent ≈ 855–940 € neuves mi-oct. 2026. Le cœur du PC, très bien choisi."
+      "value_note": "Excellente affaire : 490 € après remise alors que les RTX 5070 se vendent ≈ 855–940 € neuves mi-oct. 2026. Le cœur du PC, très bien choisi.",
+      "quality_score": 9,
+      "quality_note": "RTX 5070 : excellente carte 1080p/1440p, DLSS 4 et génération d'images ; 12 Go de VRAM un peu justes à long terme.",
+      "tip": "Active DLSS Qualité/Équilibré et Reflex ; un léger undervolt (MSI Afterburner) réduit bruit et chaleur sans perte de FPS."
     },
     {
       "id": "cooler",
@@ -103,7 +118,10 @@
       "date": "2025-12-29",
       "spec": "Ventirad",
       "value_score": 7,
-      "value_note": "Ventirad tour avec affichage de température à ≈ 40 € : largement suffisant pour un Ryzen 5 5600 (et même un 5700X3D)."
+      "value_note": "Ventirad tour avec affichage de température à ≈ 40 € : largement suffisant pour un Ryzen 5 5600 (et même un 5700X3D).",
+      "quality_score": 6,
+      "quality_note": "Ventirad 4 caloducs : largement suffisant pour un Ryzen 5 5600 (65 W), affichage de température pratique ; ventilateur moyen en bruit.",
+      "tip": "Règle une courbe de ventilation douce dans le BIOS (Smart Fan) pour réduire le bruit au repos."
     },
     {
       "id": "psu",
@@ -113,7 +131,10 @@
       "date": "2025-12-29",
       "spec": "750 W",
       "value_score": 7,
-      "value_note": "750 W de marque reconnue, suffisant avec marge pour la RTX 5070 ; une 80+ Gold aurait été un peu plus efficace pour ≈ 10–20 € de plus (estimation)."
+      "value_note": "750 W de marque reconnue, suffisant avec marge pour la RTX 5070 ; une 80+ Gold aurait été un peu plus efficace pour ≈ 10–20 € de plus (estimation).",
+      "quality_score": 6,
+      "quality_note": "CX750 : alimentation Bronze correcte et fiable pour ce PC, ventilateur un peu audible, pas modulaire.",
+      "tip": "750 W suffisent même pour un upgrade CPU/GPU ; rien à changer. Évite les adaptateurs douteux pour le GPU."
     },
     {
       "id": "case",
@@ -123,7 +144,10 @@
       "date": "2025-12-29",
       "spec": "Boîtier",
       "value_score": 7,
-      "value_note": "Boîtier correct avec bonne ventilation pour ≈ 80 €, prix dans la moyenne."
+      "value_note": "Boîtier correct avec bonne ventilation pour ≈ 80 €, prix dans la moyenne.",
+      "quality_score": 7,
+      "quality_note": "FARA 512Z : très bon flux d'air (façade mesh, 3 ventilateurs ARGB), testé 7/10 à 81 % ; ventilateurs inclus un peu bruyants, pas d'extraction arrière.",
+      "tip": "Ajoute un ventilateur 120 mm en extraction à l'arrière (≈10–15 €) pour mieux évacuer la chaleur du GPU."
     },
     {
       "id": "wifi",
@@ -133,7 +157,10 @@
       "date": "2025-12-29",
       "spec": "Carte Wi-Fi 6 PCIe",
       "value_score": 7,
-      "value_note": "Wi-Fi 6 + Bluetooth à ≈ 35 € : bon prix (la carte mère n'a pas de Wi-Fi). Le câble Ethernet reste préférable en jeu compétitif."
+      "value_note": "Wi-Fi 6 + Bluetooth à ≈ 35 € : bon prix (la carte mère n'a pas de Wi-Fi). Le câble Ethernet reste préférable en jeu compétitif.",
+      "quality_score": 7,
+      "quality_note": "Carte Wi-Fi 6 ASUS avec antennes externes : stable et rapide.",
+      "tip": "Place les antennes en hauteur, hors du bureau métallique ; pour jouer en compétitif, un câble Ethernet reste plus stable (ping)."
     },
     {
       "id": "build",
@@ -143,7 +170,10 @@
       "date": "2025-12-29",
       "spec": "Service",
       "value_score": 6,
-      "value_note": "Service de montage pratique (≈ 100 €) et PC garanti 5 ans ; on économise en montant soi-même, mais tranquillité appréciable."
+      "value_note": "Service de montage pratique (≈ 100 €) et PC garanti 5 ans ; on économise en montant soi-même, mais tranquillité appréciable.",
+      "quality_score": null,
+      "quality_note": "Service : non noté en qualité absolue.",
+      "tip": "Garde la facture pour la garantie de 5 ans de l'assembleur."
     },
     {
       "id": "kb",
@@ -151,7 +181,10 @@
       "name": "Corsair K70 CORE TKL RGB (FR)",
       "price": 79.99,
       "value_score": 8,
-      "value_note": "TKL mécanique Corsair complet à ≈ 80 € : bon rapport qualité-prix face aux concurrents (Logitech, Razer) souvent plus chers."
+      "value_note": "TKL mécanique Corsair complet à ≈ 80 € : bon rapport qualité-prix face aux concurrents (Logitech, Razer) souvent plus chers.",
+      "quality_score": 8,
+      "quality_note": "K70 CORE TKL : switchs linéaires pré-lubrifiés, bonne insonorisation, molette pratique ; notes de tests 7,4 à 8,9/10. Pas hot-swap.",
+      "tip": "Dans iCUE, règle le polling à 1000 Hz minimum et désactive les effets RGB lourds ; un repose-poignet (≈20 €) aide sur les longues sessions."
     },
     {
       "id": "mouse",
@@ -161,7 +194,10 @@
       "notes": "Prix vu en promo",
       "to_confirm": true,
       "value_score": 8,
-      "value_note": "Souris FPS de référence, excellent capteur ; ≈ 60 € en promo est un bon prix (à confirmer)."
+      "value_note": "Souris FPS de référence, excellent capteur ; ≈ 60 € en promo est un bon prix (à confirmer).",
+      "quality_score": 9,
+      "quality_note": "G502 X : capteur HERO 25K, switchs hybrides LIGHTFORCE, excellentes critiques ; assez lourde (89 g) pour du FPS rapide.",
+      "tip": "Dans G HUB : 800–1600 DPI, polling 1000 Hz, accélération Windows désactivée. Un grand tapis XL (≈25–40 €) améliore la visée en basse sensibilité."
     },
     {
       "id": "pad",
@@ -169,7 +205,10 @@
       "name": "Manette Envision Pro Wireless Gentle Mates",
       "price": 209.99,
       "value_score": 6,
-      "value_note": "Manette PC haut de gamme (sticks Hall, palettes, gâchettes instantanées) très bien notée, mais 210 € c'est cher : elle est régulièrement à ≈ 169 € sur le site SCUF."
+      "value_note": "Manette PC haut de gamme (sticks Hall, palettes, gâchettes instantanées) très bien notée, mais 210 € c'est cher : elle est régulièrement à ≈ 169 € sur le site SCUF.",
+      "quality_score": 8,
+      "quality_note": "Envision Pro : manette PC haut de gamme (boutons mécaniques, palettes, sans fil SlipStream) ; tests 74/100 à 4,5/5 ; pas de sticks à effet Hall.",
+      "tip": "Dans iCUE, assigne les palettes arrière (saut/accroupi) pour garder le pouce sur le stick ; vérifie les zones mortes des sticks."
     },
     {
       "id": "padpack",
@@ -177,7 +216,10 @@
       "name": "Envision Player Pack Black",
       "price": 44.99,
       "value_score": null,
-      "value_note": "Accessoires : difficile à comparer, non noté."
+      "value_note": "Accessoires : difficile à comparer, non noté.",
+      "quality_score": null,
+      "quality_note": "Accessoires : non notés.",
+      "tip": "Utilise les sticks hauts pour plus de précision en visée, les courts pour la vitesse."
     },
     {
       "id": "phone",
@@ -189,7 +231,10 @@
       "price": 451.99,
       "date": "2025-02-03",
       "spec": "12 Go RAM · 256 Go · Dimensity 8300-Ultra · écran 144 Hz",
-      "warranty_until": "2027-02-03"
+      "warranty_until": "2027-02-03",
+      "quality_score": 8,
+      "quality_note": "Xiaomi 14T : Dimensity 8300-Ultra puissant, écran 144 Hz, photo Leica ; chauffe un peu en jeu long.",
+      "tip": "En jeu : mode Game Turbo, luminosité auto désactivée, retire la coque pour limiter la chauffe ; un ventilateur clip-on (≈20–30 €) aide pour les longues sessions COD."
     },
     {
       "id": "monitor",
@@ -199,7 +244,10 @@
       "spec": "1920×1080 · 300 Hz (via DisplayPort) · Fast IPS 1 ms · HDR 600 · G-Sync Compatible",
       "notes": "Vendu 249 € sur la boutique Gentle Mates",
       "value_score": 9,
-      "value_note": "Écran 300 Hz QD-Mini LED HDR 600 à ≈ 230 € (249 € sur la boutique Gentle Mates) : très bon rapport qualité-prix pour du jeu compétitif."
+      "value_note": "Écran 300 Hz QD-Mini LED HDR 600 à ≈ 230 € (249 € sur la boutique Gentle Mates) : très bon rapport qualité-prix pour du jeu compétitif.",
+      "quality_score": 9,
+      "quality_note": "TCL 24G645 : QD-Mini LED 300 Hz, très bons retours (9,6/10 sur 56 avis marchands), noirs profonds, HDR 600 ; un peu de « blooming » en HDR.",
+      "tip": "Branche-le en DisplayPort pour 300 Hz, désactive le HDR dans les jeux e-sport (souvent mal implémenté), active le mode overdrive « Normal »."
     },
     {
       "id": "headset",
@@ -208,7 +256,10 @@
       "price": 69.99,
       "notes": "Pack Fnac/Darty",
       "value_score": 7,
-      "value_note": "Casque très apprécié pour le son positionnel (≈ 35–40 $ seul aux États-Unis) ; le pack avec support alu à 70 € reste raisonnable."
+      "value_note": "Casque très apprécié pour le son positionnel (≈ 35–40 $ seul aux États-Unis) ; le pack avec support alu à 70 € reste raisonnable.",
+      "quality_score": 7,
+      "quality_note": "BlackShark V2 X : très bon son pour FPS à petit prix, léger et confortable ; micro moyen, filaire seulement.",
+      "tip": "Active l'égaliseur FPS ou THX Spatial (Synapse) pour les pas ; bonnette de micro en mousse (≈5 €) si on t'entend mal."
     },
     {
       "id": "chair",
@@ -216,7 +267,10 @@
       "name": "Chaise gaming SKILLKORP C20",
       "price": 279.99,
       "value_score": 7,
-      "value_note": "Chaise bien notée (≈ 4,3/5, accoudoirs 4D, 150 kg), vue entre ≈ 229 et 287 € : prix normal pour ce niveau."
+      "value_note": "Chaise bien notée (≈ 4,3/5, accoudoirs 4D, 150 kg), vue entre ≈ 229 et 287 € : prix normal pour ce niveau.",
+      "quality_score": 7,
+      "quality_note": "SKILLKORP C20 : bien notée par les acheteurs (≈4,3/5), confortable ; marque moins connue, durabilité à long terme à confirmer.",
+      "tip": "Règle la hauteur pour avoir les coudes à 90° au niveau du bureau et utilise le coussin lombaire."
     }
   ],
   "advice_date": "2026-10-14",
@@ -559,5 +613,6 @@
       }
     ]
   },
-  "value_date": "2026-10-14"
+  "value_date": "2026-10-14",
+  "quality_date": "2026-10-14"
 }
