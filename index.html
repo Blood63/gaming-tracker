@@ -5,7 +5,11 @@
 <section><h2>Steam</h2><p id="steamInfo"></p><canvas id="steamChart" height="110"></canvas><table id="steamTbl"></table></section>
 <section><h2>Valorant</h2><div id="valorant"></div></section>
 <section><h2>Rocket League</h2><div id="rocket_league"></div></section>
-<section><h2>Call of Duty Mobile</h2><div id="cod"></div><canvas id="codChart" height="90"></canvas></section>
+<section><h2>Call of Duty Mobile</h2>
+<p><a href="https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml" target="_blank" style="background:#ff4655;color:#fff;padding:.6rem 1rem;border-radius:6px;text-decoration:none;font-weight:bold">📸 Ajouter une partie (capture)</a></p>
+<div id="cod"></div>
+<div id="codCharts" style="display:none"><canvas id="codKd" height="90"></canvas><canvas id="codTrend" height="90"></canvas><canvas id="codWin" height="90"></canvas>
+<h3>Moyennes par mode</h3><table id="codModes"></table><h3>7 derniers jours vs 7 jours précédents</h3><table id="codWeek"></table></div></section>
 <script>
 const jl=async f=>(await (await fetch(f+'?'+Date.now())).text()).trim().split('\n').filter(Boolean).map(JSON.parse);
 const d=s=>new Date(s).toLocaleString('fr-FR',{timeZone:'Europe/Paris'});
@@ -20,9 +24,27 @@ const d=s=>new Date(s).toLocaleString('fr-FR',{timeZone:'Europe/Paris'});
  for(const g of['valorant','rocket_league']){const h=(await jl(`history/${g}.jsonl`)).filter(x=>x.status=='ok');const el=document.getElementById(g);
   if(!h.length){el.innerHTML='<p class=wait>En attente de données (clé API Tracker Network non validée)</p>';continue}
   const segs=(h.at(-1).raw?.data?.segments||[]);el.innerHTML='<table>'+segs.map(s=>`<tr><th colspan=2>${s.metadata?.name||s.type}</th></tr>`+Object.values(s.stats||{}).slice(0,10).map(v=>`<tr><td>${v.displayName}</td><td>${v.displayValue}${v.metadata?.tierName?' – '+v.metadata.tierName:''}</td></tr>`).join('')).join('')+'</table>';}
- const cod=await (await fetch('cod_mobile.json?'+Date.now())).json();const m=cod.matches||[];const ce=document.getElementById('cod');
- if(!m.length)ce.innerHTML='<p class=wait>En attente – envoie une capture après chaque partie</p>';
- else{ce.innerHTML=`<p>${m.length} parties · K/D moyen ${(m.reduce((a,x)=>a+x.kills,0)/Math.max(1,m.reduce((a,x)=>a+x.deaths,0))).toFixed(2)}</p>`;
-  new Chart(codChart,{type:'line',data:{labels:m.map(x=>x.date.slice(0,10)),datasets:[{label:'K/D',data:m.map(x=>x.deaths?x.kills/x.deaths:x.kills)}]}})}
+ const cod=await (await fetch('cod_mobile.json?'+Date.now())).json();
+ const m=(cod.matches||[]).filter(x=>x.date).sort((a,b)=>new Date(a.date)-new Date(b.date));const ce=document.getElementById('cod');
+ if(!m.length){ce.innerHTML='<p class=wait>En attente – envoie une capture après chaque partie</p>';return}
+ document.getElementById('codCharts').style.display='';
+ const num=v=>typeof v=='number'?v:null, sum=(a,k)=>a.reduce((s,x)=>s+(num(x[k])||0),0);
+ const kdOf=a=>{const k=a.filter(x=>num(x.kills)!=null&&num(x.deaths)!=null);return k.length?(sum(k,'kills')/Math.max(1,sum(k,'deaths'))):null};
+ const wr=a=>{const r=a.filter(x=>x.result);return r.length?100*r.filter(x=>x.result=='win').length/r.length:null};
+ const avg=(a,k)=>{const v=a.map(x=>num(x[k])).filter(v=>v!=null);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
+ const f=(v,d=2)=>v==null?'—':v.toFixed(d);
+ const lab=m.map(x=>new Date(x.date).toLocaleDateString('fr-FR',{timeZone:'Europe/Paris'}));
+ const kd=m.map(x=>num(x.kd)??(num(x.kills)!=null&&num(x.deaths)!=null?(x.deaths?x.kills/x.deaths:x.kills):null));
+ const roll=m.map((_,i)=>kdOf(m.slice(Math.max(0,i-9),i+1)));
+ ce.innerHTML=`<p>${m.length} parties · K/D global ${f(kdOf(m))} · Victoires ${f(wr(m),0)} %</p>`;
+ new Chart(codKd,{type:'line',data:{labels:lab,datasets:[{label:'K/D par partie',data:kd,showLine:false,pointRadius:4},{label:'Moyenne glissante (10 dernières)',data:roll,tension:.3}]},options:{spanGaps:true,plugins:{title:{display:true,text:'K/D',color:'#ddd'}}}});
+ new Chart(codTrend,{type:'line',data:{labels:lab,datasets:[{label:'Éliminations',data:m.map(x=>num(x.kills))},{label:'Morts',data:m.map(x=>num(x.deaths))},{label:'Score',data:m.map(x=>num(x.score)),yAxisID:'y2'}]},options:{spanGaps:true,scales:{y2:{position:'right'}},plugins:{title:{display:true,text:'Tendances',color:'#ddd'}}}});
+ const wrc=m.map((_,i)=>wr(m.slice(0,i+1)));
+ new Chart(codWin,{type:'line',data:{labels:lab,datasets:[{label:'Taux de victoire cumulé (%)',data:wrc},{label:'Taux de victoire (10 dernières) (%)',data:m.map((_,i)=>wr(m.slice(Math.max(0,i-9),i+1)))}]},options:{spanGaps:true,scales:{y:{min:0,max:100}},plugins:{title:{display:true,text:'Victoires',color:'#ddd'}}}});
+ const modes={};m.forEach(x=>(modes[x.mode||'Inconnu']??=[]).push(x));
+ codModes.innerHTML='<tr><th>Mode</th><th>Parties</th><th>K/D</th><th>Élim. moy.</th><th>Morts moy.</th><th>Score moy.</th><th>Victoires</th></tr>'+Object.entries(modes).map(([k,a])=>`<tr><td>${k}</td><td>${a.length}</td><td>${f(kdOf(a))}</td><td>${f(avg(a,'kills'),1)}</td><td>${f(avg(a,'deaths'),1)}</td><td>${f(avg(a,'score'),0)}</td><td>${f(wr(a),0)} %</td></tr>`).join('');
+ const now=Date.now(),D=864e5,w1=m.filter(x=>now-new Date(x.date)<7*D),w0=m.filter(x=>{const t=now-new Date(x.date);return t>=7*D&&t<14*D});
+ const row=(n,fn,d)=>{const a=fn(w1),b=fn(w0);const dl=a!=null&&b!=null?a-b:null;return `<tr><td>${n}</td><td>${f(a,d)}</td><td>${f(b,d)}</td><td style="color:${dl>0?'#4caf50':dl<0?'#ff4655':'#ddd'}">${dl==null?'—':(dl>0?'+':'')+dl.toFixed(d)}</td></tr>`};
+ codWeek.innerHTML='<tr><th></th><th>7 derniers jours</th><th>7 jours d\'avant</th><th>Écart</th></tr>'+row('Parties',a=>a.length,0)+row('K/D',kdOf,2)+row('Élim. moy.',a=>avg(a,'kills'),1)+row('Morts moy.',a=>avg(a,'deaths'),1)+row('Score moy.',a=>avg(a,'score'),0)+row('Victoires (%)',wr,0);
 })();
 </script></body></html>
