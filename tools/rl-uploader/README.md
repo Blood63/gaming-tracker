@@ -21,7 +21,7 @@ Rien à installer : il utilise PowerShell et `curl.exe`, déjà présents dans W
 Rocket League n'a **pas d'option « sauvegarde automatique des replays »**. Il faut donc enregistrer chaque match :
 
 - À la fin du match, sur l'écran des scores, choisis **« Sauvegarder le replay »** (Save Replay).
-- Le fichier arrive dans `Documents\My Games\Rocket League\TAGame\Demos` (version Epic comme Steam). L'uploader l'envoie dans les secondes qui suivent.
+- Le fichier arrive dans `Documents\My Games\Rocket League\TAGame\DemosEpic` (version Epic) ou `…\TAGame\Demos` (version Steam). L'uploader surveille les deux et envoie le replay dans les secondes qui suivent.
 
 Il surveille aussi la variante OneDrive (`OneDrive\Documents\My Games\…`) si tes Documents sont synchronisés.
 

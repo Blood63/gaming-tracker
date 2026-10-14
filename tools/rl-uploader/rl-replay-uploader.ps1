@@ -94,8 +94,10 @@ function Get-DemoDirs {
   $dirs = @()
   foreach ($d in $docs) {
     if (-not $d) { continue }
-    $p = Join-Path $d 'My Games\Rocket League\TAGame\Demos'
-    if ((Test-Path $p) -and ($dirs -notcontains $p)) { $dirs += $p }
+    foreach ($sub in 'Demos','DemosEpic') {   # Epic : DemosEpic ; Steam : Demos
+      $p = Join-Path $d ('My Games\Rocket League\TAGame\' + $sub)
+      if ((Test-Path $p) -and ($dirs -notcontains $p)) { $dirs += $p }
+    }
   }
   return $dirs
 }
@@ -186,7 +188,7 @@ $mtx = New-Object System.Threading.Mutex($false, 'Local\rl-replay-uploader')
 if (-not $mtx.WaitOne(0)) { Write-Line 'Deja en cours d''execution.' 'Yellow'; return }
 try {
   $dirs = Get-DemoDirs
-  if (-not $dirs) { Write-Line 'Dossier des replays introuvable pour l''instant (Documents\My Games\Rocket League\TAGame\Demos). Il sera cree a ton 1er replay sauvegarde ; surveillance active.' 'Yellow' }
+  if (-not $dirs) { Write-Line 'Dossier des replays introuvable pour l''instant (Documents\My Games\Rocket League\TAGame\DemosEpic pour Epic, ou \Demos pour Steam). Il sera cree a ton 1er replay sauvegarde ; surveillance active.' 'Yellow' }
   else { Write-Line ('Surveillance : ' + ($dirs -join ' ; ')) 'Cyan' }
   $n = Invoke-Pass $key
   Write-Line ("Rattrapage termine : {0} replay(s) envoye(s)." -f $n) 'Cyan'

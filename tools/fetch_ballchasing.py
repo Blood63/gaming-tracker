@@ -3,8 +3,9 @@
 Écrit ballchasing_latest.json (replays cumulés + stats par playlist) et ajoute un résumé à history/ballchasing.jsonl.
 Ne touche JAMAIS rocket_league.json (données manuelles)."""
 import json, os, sys, time, datetime, urllib.request, urllib.error, urllib.parse
+# Compte Epic de 443Blood (ancien pseudo M8_Blood) : reconnu par son id Epic ou son nom.
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); F=f"{D}/ballchasing_latest.json"
-K=os.environ.get("BALLCHASING_API_KEY"); NAMES={"443blood"}; B="https://ballchasing.com/api"
+K=os.environ.get("BALLCHASING_API_KEY"); NAMES={"443blood","m8_blood"}; IDS={("epic","8d1cf32b760442a297d5e317093fe9b0")}; B="https://ballchasing.com/api"
 PL={"ranked-duels":"1v1","ranked-doubles":"2v2","ranked-standard":"3v3","unranked-duels":"Occasionnel 1v1","unranked-doubles":"Occasionnel 2v2","unranked-standard":"Occasionnel 3v3"}
 def get(p):
     for i in range(4):
@@ -20,7 +21,7 @@ def main():
     old=json.load(open(F)) if os.path.exists(F) else {}
     R={r["id"]:r for r in old.get("replays",[])}
     found={}
-    for q in ["uploader=me","player-name=443Blood"]:
+    for q in ["uploader=me","player-id=epic:8d1cf32b760442a297d5e317093fe9b0","player-name=443Blood"]:
         url=f"/replays?{q}&count=200&sort-by=replay-date&sort-dir=desc"
         for _ in range(3):
             r=get(url); [found.setdefault(x["id"],x) for x in r.get("list",[])]
@@ -32,8 +33,10 @@ def main():
         d=get(f"/replays/{rid}"); me=None; my=None
         for t in ("blue","orange"):
             for p in d.get(t,{}).get("players",[]) or []:
-                if (p.get("name") or "").lower() in NAMES: me,my=p,t
-        if not me: continue
+                pid=p.get("id") or {}
+                if (pid.get("platform"),pid.get("id")) in IDS or (p.get("name") or "").lower() in NAMES: me,my=p,t
+        if not me: print("joueur introuvable dans",rid); continue
+        if d.get("status") not in (None,"ok"): continue
         oth="orange" if my=="blue" else "blue"
         gs=lambda t:((d.get(t,{}).get("stats") or {}).get("core") or {}).get("goals",0)
         c=(me.get("stats") or {}).get("core") or {}; bo=(me.get("stats") or {}).get("boost") or {}
@@ -41,7 +44,9 @@ def main():
           "duration":d.get("duration"),"overtime":d.get("overtime"),"team_goals":gs(my),"opp_goals":gs(oth),"result":"win" if gs(my)>gs(oth) else "loss",
           "goals":c.get("goals"),"assists":c.get("assists"),"saves":c.get("saves"),"shots":c.get("shots"),"score":c.get("score"),"mvp":c.get("mvp"),
           "boost_avg":bo.get("avg_amount"),"bpm":bo.get("bpm"),"rank":(me.get("rank") or {}).get("name"),"rank_tier":(me.get("rank") or {}).get("tier"),"rank_div":(me.get("rank") or {}).get("division"),
-          "mmr":me.get("mmr")}
+          "mmr":me.get("mmr"),"name":me.get("name"),"bots":any((p.get("id") or {})=={} for t in ("blue","orange") for p in d.get(t,{}).get("players",[]) or [])}
+    for r in R.values():
+        if r.get("bots") and not str(r.get("playlist","")).startswith("Contre"): r["playlist"]="Contre des bots ("+str(r["playlist"])+")"
     reps=sorted(R.values(),key=lambda r:r["date"] or "")
     per={}
     for r in reps: per.setdefault(r["playlist"],[]).append(r)
