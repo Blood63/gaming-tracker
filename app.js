@@ -1,170 +1,352 @@
 "use strict";
-const $=s=>document.querySelector(s), app=$('#app');
+/* ========== utilitaires ========== */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],app=$('#app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fdate=s=>s?new Date(s).toLocaleDateString('fr-FR',{timeZone:'Europe/Paris',day:'2-digit',month:'short',year:'numeric'}):'—';
+const TZ={timeZone:'Europe/Paris'};
+const fdate=s=>s?new Date(s).toLocaleDateString('fr-FR',{...TZ,day:'numeric',month:'short',year:'numeric'}):'—';
+const fshort=s=>s?new Date(s).toLocaleDateString('fr-FR',{...TZ,day:'numeric',month:'short'}):'—';
 const fnum=(v,d=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('fr-FR',{maximumFractionDigits:d,minimumFractionDigits:d});
-const num=v=>typeof v=='number'&&!isNaN(v)?v:null;
+const num=v=>typeof v=='number'&&isFinite(v)?v:null;
+const ago=t=>{const d=Math.floor((Date.now()-t)/864e5);return d<=0?"aujourd'hui":d==1?'hier':d<30?`il y a ${d} j`:d<365?`il y a ${Math.round(d/30)} mois`:`il y a ${Math.round(d/365)} an(s)`};
 const get=async(f,j=true)=>{try{const r=await fetch(f+'?v='+Date.now());if(!r.ok)return null;return j?await r.json():await r.text()}catch(e){return null}};
 const jl=async f=>((await get(f,false))||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
-Chart.defaults.color='#8b93a7';Chart.defaults.borderColor='rgba(255,255,255,.07)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.maintainAspectRatio=false;
-let charts=[];const chart=(el,cfg)=>{charts.push(new Chart(el,cfg))};
+const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c'};
+const PAL=[COL.cy,COL.vi,COL.gr,COL.pk,COL.warn,COL.bl,COL.or,COL.bad];
+if(window.Chart){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom'}
+let charts=[];
+const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{charts.push(new Chart(el,cfg))}catch(e){console.error(e)}};
+const lineDS=(label,data,color,extra={})=>({label,data,borderColor:color,backgroundColor:color+'2a',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,spanGaps:true,...extra});
+const bar=(p,cls='')=>p==null?'':`<div class="bar ${cls}"><i data-w="${Math.max(0,Math.min(100,p))}"></i></div>`;
+const animBars=()=>setTimeout(()=>$$('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),80);
+const stat=(k,v,d='',cls='')=>`<div class="glass stat ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${d?`<div class="d">${d}</div>`:''}</div>`;
+const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
+const ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml';
+const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" rel="noopener">📸 Ajouter une partie COD</a>`;
+
+/* ========== données ========== */
 const D={};
 async function load(){
   const [steamH,store,val,rl,cod]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json')]);
-  D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};
+  D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const last=[D.steam,val.at(-1),rl.at(-1)].filter(Boolean).map(x=>x.fetched_at).sort().at(-1);
-  if(last)$('#upd').textContent='MAJ '+fdate(last);
+  D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
+    img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
+  D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
+  D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
+  D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
+  const last=[D.steam?.fetched_at,D.val.at(-1)?.fetched_at,D.rl.at(-1)?.fetched_at].filter(Boolean).sort().at(-1);
+  if(last)$('#upd').innerHTML=`MAJ<br>${fshort(last)}`;
+  computeXP();
 }
-const pct=g=>g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null;
-const animBars=()=>requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),60));
-const bar=p=>p==null?'':`<div class="bar"><i data-w="${p}"></i></div>`;
-const stat=(k,v,d='',cls='')=>`<div class="glass stat ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${d?`<div class="d">${d}</div>`:''}</div>`;
-const lineDS=(label,data,color,extra={})=>({label,data,borderColor:color,backgroundColor:color+'33',fill:true,tension:.35,pointRadius:3,spanGaps:true,...extra});
-
-/* ---------- COD calculs ---------- */
+/* COD */
 const sum=(a,k)=>a.reduce((s,x)=>s+(num(x[k])||0),0);
 const kdOf=a=>{const k=a.filter(x=>num(x.kills)!=null&&num(x.deaths)!=null);return k.length?sum(k,'kills')/Math.max(1,sum(k,'deaths')):null};
 const wr=a=>{const r=a.filter(x=>x.result);return r.length?100*r.filter(x=>x.result=='win').length/r.length:null};
 const avg=(a,k)=>{const v=a.map(x=>num(x[k])).filter(v=>v!=null);return v.length?v.reduce((s,x)=>s+x,0)/v.length:null};
-
-/* ---------- tracker.gg ---------- */
+/* tracker.gg */
 const trnOk=h=>h.filter(x=>x.status=='ok'&&x.raw&&x.raw.data);
-const segs=x=>(x.raw.data.segments||[]);
+const segs=x=>(x?.raw?.data?.segments||[]);
 const overview=x=>segs(x).find(s=>s.type=='overview')||segs(x)[0];
 const S=(seg,k)=>seg&&seg.stats&&seg.stats[k];
+const sv=(x,k)=>num(S(overview(x),k)?.value);
 
-/* ---------- HOME ---------- */
-function home(){
-  const g=D.steam?D.steam.games:[];const tot=g.reduce((a,x)=>a+x.hours,0);
-  const vOk=trnOk(D.val).at(-1),rOk=trnOk(D.rl).at(-1);
-  const vRank=vOk&&(S(overview(vOk),'rank')||{}).metadata?.tierName;
-  const rlBest=rOk&&segs(rOk).filter(s=>s.type=='playlist').map(s=>S(s,'rating')?.value).filter(v=>v!=null).sort((a,b)=>b-a)[0];
-  const ck=kdOf(D.cod);
-  let h=`<div class="hero">
-   <div class="glass gcard" style="--c:var(--steam)" onclick="go('#/steam')"><div class="t">Steam</div><div class="big">${fnum(tot,0)} h</div><div class="s">${g.length} jeux · niveau ${D.steam?.level??'—'}</div></div>
-   <div class="glass gcard" style="--c:var(--val)" onclick="go('#/valorant')"><div class="t">Valorant</div><div class="big">${vOk?esc(vRank||'OK'):'⏳'}</div><div class="s">${vOk?'Blood#7629':'En attente de clé Tracker Network'}</div></div>
-   <div class="glass gcard" style="--c:var(--rl)" onclick="go('#/rl')"><div class="t">Rocket League</div><div class="big">${rOk?fnum(rlBest)+' MMR':'⏳'}</div><div class="s">${rOk?'443Blood · Epic':'En attente de clé Tracker Network'}</div></div>
-   <div class="glass gcard" style="--c:var(--cod)" onclick="go('#/cod')"><div class="t">COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties':'Envoie ta 1ʳᵉ capture'}</div></div>
-  </div>
-  <p style="margin:1rem 0"><a class="btn" href="https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml" target="_blank" rel="noopener">📸 Ajouter une partie COD</a></p>`;
-  const recent=(D.steam?.recent?.games)||[];
-  if(recent.length)h+=`<h2>Joué récemment</h2><div class="grid">${recent.map(r=>gameCard(g.find(x=>x.appid==r.appid)||{...r,hours:r.playtime_forever/60},`${fnum(r.playtime_2weeks/60,1)} h / 2 sem.`)).join('')}</div>`;
-  h+=`<h2>Bibliothèque Steam</h2><div class="grid">${g.map(x=>gameCard(x)).join('')}</div>`;
-  app.innerHTML=h;animBars();
+/* ========== niveau / XP ========== */
+const TIERS=[{n:'Recrue',e:'🥚',l:1},{n:'Apprenti',e:'🎮',l:5},{n:'Soldat',e:'🪖',l:10},{n:'Vétéran',e:'🛡️',l:15},{n:'Élite',e:'⚔️',l:22},{n:'Champion',e:'🏆',l:30},{n:'Maître',e:'💠',l:40},{n:'Grand Maître',e:'👑',l:50},{n:'Légende',e:'🔥',l:65}];
+const needXP=L=>75*L*(L-1); // XP cumulée pour atteindre le niveau L
+function computeXP(){
+  const perfect=D.games.filter(g=>g.ach_total&&g.ach_unlocked==g.ach_total).length;
+  const vl=D.vOk.at(-1),rl=D.rOk.at(-1);
+  const src=[
+    ['⏱️ Temps de jeu Steam',`${fnum(D.totalH,1)} h × 10`,Math.round(D.totalH*10)],
+    ['🏆 Succès Steam',`${D.ach} × 25`,D.ach*25],
+    ['💯 Jeux complétés à 100 %',`${perfect} × 500`,perfect*500],
+    ['⭐ Niveau Steam',`${D.steam?.level??0} × 100`,(D.steam?.level||0)*100],
+    ['🔫 Parties COD Mobile',`${D.cod.length} × 20 + victoires × 30 + kills × 2`,D.cod.length*20+D.cod.filter(m=>m.result=='win').length*30+sum(D.cod,'kills')*2]];
+  if(vl)src.push(['🎯 Valorant',`parties × 20 + victoires × 30`,Math.round((sv(vl,'matchesPlayed')||0)*20+(sv(vl,'matchesWon')||0)*30)]);
+  if(rl)src.push(['⚽ Rocket League',`victoires × 30`,Math.round((sv(rl,'wins')||0)*30)]);
+  const xp=src.reduce((a,x)=>a+x[2],0);let L=1;while(needXP(L+1)<=xp)L++;
+  const tier=[...TIERS].reverse().find(t=>L>=t.l),next=TIERS[TIERS.indexOf(tier)+1];
+  D.xp={xp,src,L,tier,next,cur:xp-needXP(L),span:needXP(L+1)-needXP(L)};
 }
+const ring=(p,size=96)=>{const r=42,c=2*Math.PI*r;return `<svg viewBox="0 0 96 96"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="${COL.cy}"/><stop offset="1" stop-color="${COL.vi}"/></linearGradient></defs><circle cx="48" cy="48" r="${r}" stroke="rgba(255,255,255,.08)" stroke-width="8" fill="none"/><circle class="rg" cx="48" cy="48" r="${r}" stroke="url(#g)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-off="${c*(1-p/100)}" style="transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 6px ${COL.cy})"/></svg>`};
+const animRings=()=>setTimeout(()=>$$('circle.rg').forEach(c=>c.style.strokeDashoffset=c.dataset.off),80);
+const levelCard=(link=true)=>{const x=D.xp,p=100*x.cur/x.span;return `<${link?'a href="#/profil"':'div'} class="glass prof" style="color:var(--txt)"><div class="lvl">${ring(p)}<div class="c"><small>NIV.</small><b>${x.L}</b></div></div>
+ <div style="flex:1;min-width:0"><div class="tiername">${x.tier.e} ${x.tier.n}</div><div class="mut" style="font-size:.85rem">${fnum(x.xp)} XP · ${fnum(x.span-x.cur)} XP avant le niv. ${x.L+1}</div>${bar(p,'big')}
+ ${x.next?`<div class="mut" style="font-size:.78rem;margin-top:.3rem">Prochain rang : ${x.next.e} ${x.next.n} (niv. ${x.next.l})</div>`:''}</div>${link?'<span class="chev">›</span>':''}</${link?'a':'div'}>`};
+
+/* ========== genres / styles ========== */
+const SKIP_GENRES=['Free-to-Play','Free To Play','Indépendant','Accès anticipé','Gratuit'];
+const STYLES=['Action','Aventure / Narratif','RPG','Tir / FPS','Stratégie','Sport / Course','Social / Multi'];
+const isShooter=g=>/call of duty|counter-strike|valorant|battlefield|apex|overwatch/i.test(g.name||'');
+function tastes(){
+  const genres={},styles=Object.fromEntries(STYLES.map(s=>[s,0]));const notes=[];
+  const add=(k,h)=>genres[k]=(genres[k]||0)+h;
+  for(const g of D.games){if(!(g.hours>0))continue;
+    const gs=g.genres.filter(x=>!SKIP_GENRES.includes(x));const list=gs.length?gs:['Autre'];
+    list.forEach(x=>add(x,g.hours/list.length));
+    const st=new Set();gs.forEach(x=>{if(/action/i.test(x))st.add('Action');if(/aventure/i.test(x))st.add('Aventure / Narratif');if(/rpg/i.test(x))st.add('RPG');if(/strat|simul/i.test(x))st.add('Stratégie');if(/sport|course/i.test(x))st.add('Sport / Course');if(/massivement|occasionnel/i.test(x))st.add('Social / Multi')});
+    if(isShooter(g))st.add('Tir / FPS');if((g.st.categories||[]).some(c=>/JcJ|multijoueur en ligne/i.test(c)))st.add('Social / Multi');
+    if(!st.size)st.add('Action');st.forEach(s=>styles[s]+=g.hours/st.size);}
+  const ext=[];
+  const v=D.vOk.at(-1),r=D.rOk.at(-1);
+  if(v){const h=(sv(v,'timePlayed')||0)/3600||(sv(v,'matchesPlayed')||0)*0.6;if(h){add('FPS tactique',h);styles['Tir / FPS']+=h;ext.push('Valorant')}}
+  if(r){const m=segs(r).filter(s=>s.type=='playlist').reduce((a,s)=>a+(num(S(s,'matchesPlayed')?.value)||0),0)||(sv(r,'wins')||0)*2;const h=m*0.1;if(h){add('Sport / Voiture',h);styles['Sport / Course']+=h;ext.push('Rocket League')}}
+  if(D.cod.length){const h=D.cod.length*0.15;add('FPS',h);styles['Tir / FPS']+=h;styles['Social / Multi']+=h/2;notes.push('COD Mobile : ≈9 min par partie (estimation)')}
+  if(ext.length)notes.push(ext.join(', ')+' : temps estimé à partir des parties');
+  return{genres:Object.entries(genres).sort((a,b)=>b[1]-a[1]),styles,notes};
+}
+
+/* ========== badges ========== */
+function badges(){
+  const g=D.games,maxH=Math.max(0,...g.map(x=>x.hours||0)),played=g.filter(x=>x.hours>0||x.last),gen=new Set(g.filter(x=>x.hours>0).flatMap(x=>x.genres.filter(y=>!SKIP_GENRES.includes(y))));
+  const perfect=g.filter(x=>x.ach_total&&x.ach_unlocked==x.ach_total).length,last10=D.cod.slice(-10),goalsDone=goals().filter(x=>goalProg(x).p>=100).length;
+  const B=[['🎮','Première manette','Jouer 1 h',D.totalH,1],['💯','Centurion','100 h de jeu au total',D.totalH,100],['🌋','Millénaire','1 000 h de jeu',D.totalH,1000],
+   ['📚','Collectionneur','Posséder 15 jeux',g.length,15],['🏃','Marathonien','50 h sur un même jeu',maxH,50],['🏆','Chasseur de trophées','100 succès débloqués',D.ach,100],
+   ['🎖️','Perfectionniste','Un jeu à 100 % des succès',perfect,1],['🧭','Explorateur','Jouer à 6 genres différents',gen.size,6],
+   ['🔥','En forme','Jouer dans les 2 dernières semaines',(D.steam?.recent?.games||[]).length,1],['🧹','Zéro backlog','Lancer tous ses jeux',played.length,g.length||1],
+   ['🔫','Premier sang','1ʳᵉ partie COD Mobile enregistrée',D.cod.length,1],['📈','Régulier','10 parties COD Mobile',D.cod.length,10],
+   ['💀','Machine à tuer','K/D ≥ 1,5 sur les 10 dernières parties COD',last10.length>=10?kdOf(last10)||0:0,1.5],
+   ['🎯','Agent','Valorant connecté',D.vOk.length,1],['🚗','Pilote','Rocket League connecté',D.rOk.length,1],['🎯','Déterminé','Atteindre un objectif',goalsDone,1]];
+  return B.map(([e,n,d,c,t])=>({e,n,d,c,t,ok:c>=t,p:Math.min(100,100*c/t)}));
+}
+
+/* ========== objectifs (stockés sur l'appareil) ========== */
+const GK='gt-goals';
+const goals=()=>{try{return JSON.parse(localStorage.getItem(GK))||[]}catch(e){return[]}};
+const saveGoals=a=>localStorage.setItem(GK,JSON.stringify(a));
+function goalProg(x){
+  const g=D.games.find(y=>y.appid==x.appid);
+  switch(x.type){
+    case 'game_hours':return{label:`${g?.name||'Jeu'} : ${x.target} h`,cur:g?.hours||0,t:x.target,u:'h',p:100*(g?.hours||0)/x.target};
+    case 'game_ach':return{label:`${g?.name||'Jeu'} : ${x.target} % des succès`,cur:g?.pct||0,t:x.target,u:'%',p:100*(g?.pct||0)/x.target};
+    case 'total_hours':return{label:`${x.target} h de jeu au total (Steam)`,cur:D.totalH,t:x.target,u:'h',p:100*D.totalH/x.target};
+    case 'achievements':return{label:`${x.target} succès Steam`,cur:D.ach,t:x.target,u:'',p:100*D.ach/x.target};
+    case 'cod_kd':{const k=kdOf(D.cod.slice(-10));return{label:`K/D COD ≥ ${x.target} (10 dernières)`,cur:k??0,t:x.target,u:'',p:k==null?0:100*k/x.target,dec:2}}
+    case 'cod_matches':return{label:`${x.target} parties COD Mobile`,cur:D.cod.length,t:x.target,u:'',p:100*D.cod.length/x.target};
+    case 'level':return{label:`Atteindre le niveau ${x.target}`,cur:D.xp.L,t:x.target,u:'',p:100*D.xp.L/x.target};
+  }return{label:'?',cur:0,t:1,p:0}
+}
+function addGoal(o){const a=goals();a.push({id:Date.now(),created:new Date().toISOString(),...o});saveGoals(a);toast('🎯 Objectif ajouté')}
+
+/* ========== timeline ========== */
+function timeline(){
+  const ev=[];
+  D.games.forEach(g=>{if(g.last)ev.push({t:g.last,c:COL.cy,i:'🕹️',h:`Session sur <b>${esc(g.name)}</b>`,link:`#/steam/${g.appid}`})});
+  const byDay=[];D.steamH.forEach(s=>{const d=s.fetched_at.slice(0,10);if(byDay.length&&byDay.at(-1).fetched_at.slice(0,10)==d)byDay[byDay.length-1]=s;else byDay.push(s)});
+  for(let i=1;i<byDay.length;i++){const a=byDay[i-1],b=byDay[i];
+    b.games.forEach(g=>{const o=a.games.find(x=>x.appid==g.appid);
+      if(!o){ev.push({t:new Date(b.fetched_at).getTime(),c:COL.gr,i:'🆕',h:`Nouveau jeu : <b>${esc(g.name)}</b>`,link:`#/steam/${g.appid}`});return}
+      const dh=(g.hours||0)-(o.hours||0),da=(g.ach_unlocked||0)-(o.ach_unlocked||0);
+      if(dh>=0.1)ev.push({t:new Date(b.fetched_at).getTime(),c:COL.vi,i:'⏱️',h:`+${fnum(dh,1)} h sur <b>${esc(g.name)}</b> cette semaine`,link:`#/steam/${g.appid}`});
+      if(da>0)ev.push({t:new Date(b.fetched_at).getTime(),c:COL.warn,i:'🏆',h:`+${da} succès sur <b>${esc(g.name)}</b>`,link:`#/steam/${g.appid}`});});}
+  D.cod.forEach(m=>ev.push({t:new Date(m.date).getTime(),c:COL.or,i:{win:'✅',loss:'❌',draw:'➖'}[m.result]||'🔫',h:`COD Mobile${m.mode?' · '+esc(m.mode):''}${m.map?' · '+esc(m.map):''} — ${m.kills??'?'}/${m.deaths??'?'}${m.kd!=null?' (K/D '+fnum(m.kd,2)+')':''}`,link:'#/cod'}));
+  [[D.vOk,'Valorant','#/valorant',x=>S(overview(x),'rank')?.metadata?.tierName],[D.rOk,'Rocket League','#/rl',x=>segs(x).filter(s=>s.type=='playlist').map(s=>S(s,'tier')?.metadata?.tierName).filter(Boolean)[0]]].forEach(([h,n,l,f])=>{
+    for(let i=1;i<h.length;i++){const a=f(h[i-1]),b=f(h[i]);if(b&&a!=b)ev.push({t:new Date(h[i].fetched_at).getTime(),c:COL.pk,i:'📊',h:`${n} : rang <b>${esc(b)}</b>${a?' (avant '+esc(a)+')':''}`,link:l})}});
+  return ev.filter(e=>e.t&&!isNaN(e.t)).sort((a,b)=>b.t-a.t);
+}
+const tlHTML=ev=>ev.length?`<div class="tl">${ev.map(e=>`<a class="glass ev" style="--c:${e.c};display:block;color:var(--txt)" href="${e.link}"><div class="d">${fdate(e.t)} · ${ago(e.t)}</div>${e.i} ${e.h}</a>`).join('')}</div>`:'<div class="glass empty">Aucune activité pour le moment.</div>';
+
+/* ========== composants ========== */
 function gameCard(g,sub){
-  const st=D.store[g.appid]||{};const img=st.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`;const p=pct(g);
-  return `<div class="glass game" onclick="go('#/steam/${g.appid}')"><img loading="lazy" src="${esc(img)}" alt=""><div class="b"><div class="n">${esc(g.name)}</div>
-  <div class="m"><span>${sub||fnum(g.hours,1)+' h'}</span><span>${g.ach_total?`🏆 ${g.ach_unlocked||0}/${g.ach_total}`:''}</span></div>${bar(p)}</div></div>`;
+  const badge=!g.hours&&!g.last?'<span class="badge" style="color:var(--warn)">Jamais lancé</span>':g.ach_total&&g.pct==100?'<span class="badge" style="color:var(--gr)">100 %</span>':'';
+  return `<a class="glass game" href="#/steam/${g.appid}"><div class="im"><img loading="lazy" src="${esc(g.img)}" alt="" onerror="this.style.opacity=0">${badge}</div><div class="b"><div class="n">${esc(g.name)}</div>
+  <div class="m"><span>${sub||fnum(g.hours,1)+' h'}</span><span>${g.ach_total?`🏆 ${g.ach_unlocked||0}/${g.ach_total}`:''}</span></div>${bar(g.pct)}</div></a>`;
+}
+const trnStatus=h=>{const l=h.at(-1);return l?.status=='ok'?'Connecté':l?.http==401?'Clé refusée (401)':l?.http?'Erreur HTTP '+l.http:'En attente de clé'};
+function compCards(){
+  const v=D.vOk.at(-1),r=D.rOk.at(-1),ck=kdOf(D.cod);
+  const vRank=v&&S(overview(v),'rank')?.metadata?.tierName;
+  const rlBest=r&&segs(r).filter(s=>s.type=='playlist').map(s=>num(S(s,'rating')?.value)).filter(x=>x!=null).sort((a,b)=>b-a)[0];
+  return `<a class="glass gcard" style="--c:var(--steam)" href="#/steam"><div class="t"><i></i>Steam</div><div class="big">${fnum(D.totalH,0)} h</div><div class="s">${D.games.length} jeux · niv. ${D.steam?.level??'—'}</div></a>
+   <a class="glass gcard" style="--c:var(--val)" href="#/valorant"><div class="t"><i></i>Valorant</div><div class="big">${v?esc(vRank||'—'):'⏳'}</div><div class="s">${v?'Blood#7629':trnStatus(D.val)}</div></a>
+   <a class="glass gcard" style="--c:var(--rl)" href="#/rl"><div class="t"><i></i>Rocket League</div><div class="big">${r?fnum(rlBest)+' MMR':'⏳'}</div><div class="s">${r?'443Blood · Epic':trnStatus(D.rl)}</div></a>
+   <a class="glass gcard" style="--c:var(--cod)" href="#/cod"><div class="t"><i></i>COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties':'Envoie ta 1ʳᵉ capture'}</div></a>`;
 }
 
-/* ---------- STEAM liste ---------- */
-function steamList(){
-  const g=D.steam?.games||[];const tot=g.reduce((a,x)=>a+x.hours,0);
-  const ach=g.reduce((a,x)=>a+(x.ach_unlocked||0),0),achT=g.reduce((a,x)=>a+(x.ach_total||0),0);
-  app.innerHTML=`<h2>Steam</h2><div class="stats">${stat('Temps total',fnum(tot,1)+' h')}${stat('Jeux',g.length)}${stat('Niveau',D.steam?.level??'—')}${stat('Succès',`${ach}/${achT}`,achT?fnum(100*ach/achT,0)+' %':'')}</div>
-  <div class="glass chart"><canvas id="c1"></canvas></div><h2>Jeux</h2><div class="grid">${g.map(x=>gameCard(x)).join('')}</div>`;
-  const top=g.filter(x=>x.hours>0).slice(0,6),cols=['#00f0ff','#ff2bd6','#39ff88','#ffc857','#a78bfa','#ff6b6b'];
-  chart($('#c1'),{type:'line',data:{labels:D.steamH.map(x=>fdate(x.fetched_at)),datasets:top.map((t,i)=>lineDS(t.name,D.steamH.map(s=>(s.games.find(y=>y.appid==t.appid)||{}).hours??null),cols[i],{fill:false}))},options:{plugins:{title:{display:true,text:'Évolution du temps de jeu (h)'},legend:{position:'bottom',labels:{boxWidth:10}}}}});
-  animBars();
+/* ========== pages ========== */
+function home(){
+  const recent=(D.steam?.recent?.games||[]).map(r=>({g:D.games.find(x=>x.appid==r.appid),r})).filter(x=>x.g);
+  const backlog=D.games.filter(g=>!g.hours&&!g.last);
+  const near=D.games.filter(g=>g.ach_total&&g.pct>=40&&g.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,3);
+  const gl=goals().map(x=>({x,...goalProg(x)})).filter(x=>x.p<100).slice(0,2);
+  app.innerHTML=`${levelCard()}
+  <h2>Mes jeux</h2><div class="hero">${compCards()}</div>
+  <div style="margin-top:.8rem">${codBtn('full')}</div>
+  ${recent.length?`<h2>Joué récemment <a class="more" href="#/steam">Tout voir ›</a></h2><div class="grid">${recent.map(({g,r})=>gameCard(g,`${fnum(r.playtime_2weeks/60,1)} h / 2 sem.`)).join('')}</div>`:''}
+  <h2>En bref</h2><div class="stats">${stat('Succès',`${D.ach}/${D.achT}`,D.achT?fnum(100*D.ach/D.achT,0)+' % débloqués':'')}${stat('Jeu favori',esc(D.games[0]?.name||'—'),D.games[0]?fnum(D.games[0].hours,1)+' h':'')}${stat('Jamais lancés',backlog.length,`sur ${D.games.length} jeux`)}${stat('Badges',`${badges().filter(b=>b.ok).length}/${badges().length}`,'<a href="#/profil">voir ›</a>')}</div>
+  ${near.length?`<h2>Presque complétés</h2><div class="list">${near.map(g=>`<a class="glass row" href="#/steam/${g.appid}"><img src="${esc(g.img)}" alt="" loading="lazy"><span class="n"><b>${esc(g.name)}</b><br><small>${g.ach_unlocked}/${g.ach_total} succès</small>${bar(g.pct)}</span><span class="p">${g.pct} %</span></a>`).join('')}</div>`:''}
+  <h2>Objectifs <a class="more" href="#/objectifs">Gérer ›</a></h2>${gl.length?`<div class="list">${gl.map(goalHTML).join('')}</div>`:`<a class="glass tile" style="--c:var(--vi)" href="#/objectifs"><span class="ic">🎯</span><span class="n"><b>Fixe-toi un objectif</b><small class="mut">heures, succès, K/D, niveau…</small></span><span class="chev">›</span></a>`}
+  <h2>Activité récente <a class="more" href="#/activite">Tout voir ›</a></h2>${tlHTML(timeline().slice(0,5))}`;
+  animBars();animRings();
 }
-
-/* ---------- STEAM détail ---------- */
+function library(){
+  const st=JSON.parse(sessionStorage.getItem('lib')||'{}');const q=st.q||'',f=st.f||'all',s=st.s||'hours';
+  const genres=[...new Set(D.games.flatMap(g=>g.genres))].sort();
+  app.innerHTML=`<div class="stats">${stat('Temps total',fnum(D.totalH,1)+' h')}${stat('Jeux',D.games.length,`${D.games.filter(g=>!g.hours&&!g.last).length} jamais lancés`)}${stat('Succès',`${D.ach}/${D.achT}`,D.achT?fnum(100*D.ach/D.achT,1)+' %':'')}${stat('Niveau Steam',D.steam?.level??'—')}</div>
+  <h2>Bibliothèque</h2>
+  <div class="tool"><label class="glass search">🔎<input id="q" type="search" placeholder="Rechercher un jeu…" value="${esc(q)}" autocomplete="off"></label>
+  <select id="f" aria-label="Filtre"><option value="all">Tous</option><option value="playing">Joués</option><option value="never">Jamais lancés</option><option value="done">100 % succès</option><option value="dlc">Avec DLC</option>${genres.map(x=>`<option value="g:${esc(x)}">${esc(x)}</option>`).join('')}</select>
+  <select id="s" aria-label="Tri"><option value="hours">Temps de jeu</option><option value="last">Dernière session</option><option value="pct">Succès %</option><option value="name">Nom</option><option value="meta">Metacritic</option></select></div>
+  <div id="res" class="grid"></div>
+  <h2>Complétion des succès</h2><div class="glass chart" style="height:${Math.max(220,D.games.filter(g=>g.ach_total).length*26)}px"><canvas id="c2"></canvas></div>
+  <h2>Temps de jeu</h2><div class="glass chart"><canvas id="c1"></canvas></div>`;
+  $('#f').value=f;$('#s').value=s;
+  const draw=()=>{const q=$('#q').value.trim().toLowerCase(),f=$('#f').value,s=$('#s').value;sessionStorage.setItem('lib',JSON.stringify({q,f,s}));
+    let g=D.games.filter(x=>!q||x.name.toLowerCase().includes(q));
+    if(f=='playing')g=g.filter(x=>x.hours>0);if(f=='never')g=g.filter(x=>!x.hours&&!x.last);if(f=='done')g=g.filter(x=>x.ach_total&&x.pct==100);if(f=='dlc')g=g.filter(x=>x.st.dlc_count>0);if(f.startsWith('g:'))g=g.filter(x=>x.genres.includes(f.slice(2)));
+    const k={hours:x=>-(x.hours||0),last:x=>-(x.last||0),pct:x=>-(x.pct??-1),name:x=>x.name.toLowerCase(),meta:x=>-(x.st.metacritic?.score||0)}[s];
+    g.sort((a,b)=>{const A=k(a),B=k(b);return A<B?-1:A>B?1:0});
+    $('#res').innerHTML=g.length?g.map(x=>gameCard(x,s=='last'?(x.last?ago(x.last):'jamais'):s=='meta'?(x.st.metacritic?'MC '+x.st.metacritic.score:'MC —'):undefined)).join(''):'<div class="glass empty" style="grid-column:1/-1">Aucun jeu ne correspond.</div>';animBars()};
+  $('#q').oninput=draw;$('#f').onchange=draw;$('#s').onchange=draw;draw();
+  const top=D.games.filter(x=>x.hours>0).slice(0,6);
+  const H=D.steamH.filter((x,i,a)=>!i||x.fetched_at.slice(0,10)!=a[i-1].fetched_at.slice(0,10));
+  if(H.length>1)chart($('#c1'),{type:'line',data:{labels:H.map(x=>fshort(x.fetched_at)),datasets:top.map((t,i)=>lineDS(t.name,H.map(s=>(s.games.find(y=>y.appid==t.appid)||{}).hours??null),PAL[i],{fill:false}))}});
+  else chart($('#c1'),{type:'bar',data:{labels:top.map(x=>x.name.length>18?x.name.slice(0,17)+'…':x.name),datasets:[{label:'Heures',data:top.map(x=>x.hours),backgroundColor:top.map((_,i)=>PAL[i]+'aa'),borderRadius:8}]},options:{plugins:{legend:{display:false},title:{display:true,text:'Top jeux (h) — la courbe d\'évolution apparaîtra après le prochain relevé hebdo'}}}});
+  const A=D.games.filter(x=>x.ach_total).sort((a,b)=>b.pct-a.pct);
+  chart($('#c2'),{type:'bar',data:{labels:A.map(x=>x.name.length>22?x.name.slice(0,21)+'…':x.name),datasets:[{label:'Succès %',data:A.map(x=>x.pct),backgroundColor:A.map(x=>x.pct==100?COL.gr:x.pct>=50?COL.cy:COL.vi),borderRadius:6}]},options:{indexAxis:'y',scales:{x:{min:0,max:100}},plugins:{legend:{display:false}},onClick:(e,el)=>{if(el[0])go('#/steam/'+A[el[0].index].appid)}}});
+}
 function steamGame(id){
-  const g=(D.steam?.games||[]).find(x=>x.appid==id)||{appid:id,name:'Jeu'};const s=D.store[id]||{};const p=pct(g);
+  const g=D.games.find(x=>x.appid==id);
+  if(!g){app.innerHTML=`<div class="glass wait"><div class="ico">❓</div><h3>Jeu introuvable</h3><a class="btn" href="#/steam">Retour à la bibliothèque</a></div>`;return}
+  const s=g.st,mc=s.metacritic,price=s.price?(s.price.discount?`<s style="color:var(--mut);font-size:.9rem">${esc(s.price.initial)}</s> `:'')+esc(s.price.text):'—';
   const hist=D.steamH.map(x=>({t:x.fetched_at,g:x.games.find(y=>y.appid==id)})).filter(x=>x.g).filter((x,i,a)=>!i||x.t.slice(0,10)!=a[i-1].t.slice(0,10));
-  const mc=s.metacritic;const price=s.price?(s.price.discount?`<s>${esc(s.price.initial)}</s> `:'')+esc(s.price.text):'—';
-  app.innerHTML=`<div class="cover"><img src="${esc(s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`)}" alt=""><div class="ttl"><h3>${esc(s.name||g.name)}</h3>${(s.genres||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div></div>
-  <div class="stats">${stat('Temps de jeu',fnum(g.hours,1)+' h',g.rtime_last_played?'Dernière session : '+fdate(g.rtime_last_played*1000):'Jamais lancé')}
-  ${stat('Succès',g.ach_total?`${g.ach_unlocked||0}/${g.ach_total}`:'—',p!=null?p+' % '+bar(p):'Pas de succès')}
-  ${stat('Metacritic',mc?`<span style="color:${mc.score>=75?'var(--ok)':mc.score>=50?'#ffc857':'var(--val)'}">${mc.score}</span>`:'—',mc?.url?`<a href="${esc(mc.url)}" target="_blank" rel="noopener">voir</a>`:'')}
-  ${stat('Prix actuel',price,s.price?.discount?`-${s.price.discount} %`:'')}</div>
+  const hasGoal=goals().some(x=>x.appid==id);
+  app.innerHTML=`<div class="cover"><img src="${esc(g.img)}" alt=""><div class="ttl"><h3>${esc(s.name||g.name)}</h3>${(s.genres||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div></div>
+  <div class="stats">${stat('Temps de jeu',fnum(g.hours,1)+' h',g.last?'Dernière session : '+fdate(g.last):'Jamais lancé')}
+  ${stat('Succès',g.ach_total?`${g.ach_unlocked||0}/${g.ach_total}`:'—',g.pct!=null?g.pct+' % '+bar(g.pct):'Pas de succès')}
+  ${stat('Metacritic',mc?`<span style="color:${mc.score>=75?'var(--gr)':mc.score>=50?'var(--warn)':'var(--bad)'}">${mc.score}</span>`:'—',mc?.url?`<a href="${esc(mc.url)}" target="_blank" rel="noopener">voir la critique ›</a>`:'Pas de note')}
+  ${stat('Prix actuel',price,s.price?.discount?`<span class="up">-${s.price.discount} % en promo</span>`:'Boutique Steam FR')}</div>
+  <div class="tool" style="margin-top:.8rem"><a class="btn alt" href="${esc(s.url||`https://store.steampowered.com/app/${id}/`)}" target="_blank" rel="noopener">🛒 Page Steam</a>
+  ${g.ach_total&&g.pct<100?`<button class="btn ghost" id="gA" ${hasGoal?'disabled':''}>🎯 ${hasGoal?'Objectif en cours':'Objectif 100 % succès'}</button>`:''}</div>
   ${s.short_description?`<h2>Description</h2><div class="glass desc">${esc(s.short_description)}</div>`:''}
   <h2>Infos</h2><div class="glass kv"><span>Développeur</span><span>${esc((s.developers||[]).join(', ')||'—')}</span><span>Éditeur</span><span>${esc((s.publishers||[]).join(', ')||'—')}</span><span>Sortie</span><span>${esc(s.release_date||'—')}</span><span>Catégories</span><span>${(s.categories||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')||'—'}</span></div>
-  ${(s.screenshots||[]).length?`<h2>Captures</h2><div class="shots">${s.screenshots.map((u,i)=>`<img loading="lazy" src="${esc(u)}" data-full="${esc((s.screenshots_full||[])[i]||u)}" onclick="lb(this.dataset.full)" alt="">`).join('')}</div>`:''}
-  ${hist.length>1?`<h2>Progression</h2><div class="glass chart"><canvas id="c1"></canvas></div>`:''}
-  <h2>DLC (${s.dlc_count??0})</h2>${(s.dlc||[]).length?`<div class="list">${s.dlc.map(d=>`<a class="glass row" href="${esc(d.url)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(d.image||'')}" alt=""><span class="n">${esc(d.name||'DLC '+d.appid)}${d.release?`<br><small style="color:var(--mut)">${esc(d.release)}</small>`:''}</span><span class="p">${d.price?(d.price.discount?`<s>${esc(d.price.initial)}</s>`:'')+esc(d.price.text):'—'}</span></a>`).join('')}</div>${s.dlc_count>s.dlc.length?`<p class="pill">+${s.dlc_count-s.dlc.length} autres sur la boutique</p>`:''}`:`<div class="glass desc">Aucun DLC ${s.name?'':'(données boutique indisponibles)'}</div>`}
-  <p style="margin-top:1.4rem"><a class="btn alt" href="${esc(s.url||`https://store.steampowered.com/app/${id}/`)}" target="_blank" rel="noopener">🛒 Page Steam</a></p>`;
-  if(hist.length>1)chart($('#c1'),{data:{labels:hist.map(x=>fdate(x.t)),datasets:[{type:'line',...lineDS('Heures',hist.map(x=>x.g.hours),'#00f0ff')},{type:'line',...lineDS('Succès',hist.map(x=>x.g.ach_unlocked??null),'#ff2bd6',{fill:false,yAxisID:'y2'})}]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
+  ${(s.screenshots||[]).length?`<h2>Captures</h2><div class="shots">${s.screenshots.map((u,i)=>`<img loading="lazy" src="${esc(u)}" data-full="${esc((s.screenshots_full||[])[i]||u)}" alt="">`).join('')}</div>`:''}
+  <h2>Progression</h2>${hist.length>1?`<div class="glass chart"><canvas id="c1"></canvas></div>`:`<div class="glass empty">📈 La courbe de progression apparaîtra après le prochain relevé (chaque dimanche 20 h).</div>`}
+  <h2>DLC (${s.dlc_count??0})</h2>${(s.dlc||[]).length?`<div class="list">${s.dlc.map(d=>`<a class="glass row" href="${esc(d.url)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(d.image||g.img)}" alt=""><span class="n">${esc(d.name||'DLC '+d.appid)}${d.release?`<br><small>${esc(d.release)}</small>`:''}</span><span class="p">${d.price?(d.price.discount?`<s>${esc(d.price.initial)}</s>`:'')+esc(d.price.text):'<small class="mut">—</small>'}</span></a>`).join('')}</div>${s.dlc_count>s.dlc.length?`<p class="pill">+${s.dlc_count-s.dlc.length} autres sur la boutique</p>`:''}`:`<div class="glass empty">${s.name?'Aucun DLC pour ce jeu.':'Données boutique indisponibles.'}</div>`}`;
+  $$('.shots img').forEach(i=>i.onclick=()=>lb(i.dataset.full));
+  const b=$('#gA');if(b)b.onclick=()=>{addGoal({type:'game_ach',appid:id,target:100});b.disabled=true;b.textContent='🎯 Objectif en cours'};
+  if(hist.length>1)chart($('#c1'),{data:{labels:hist.map(x=>fshort(x.t)),datasets:[{type:'line',...lineDS('Heures',hist.map(x=>x.g.hours),COL.cy)},{type:'line',...lineDS('Succès',hist.map(x=>x.g.ach_unlocked??null),COL.vi,{fill:false,yAxisID:'y2'})}]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
   animBars();
 }
-
-/* ---------- Tracker (Valorant / RL) ---------- */
+function compet(){
+  app.innerHTML=`<h2>Jeux compétitifs</h2><div class="list">
+   ${[['valorant','🎯','Valorant','Blood#7629 · tracker.gg',D.vOk.length?'Connecté':trnStatus(D.val),'var(--val)'],['rl','🚗','Rocket League','443Blood · Epic · tracker.gg',D.rOk.length?'Connecté':trnStatus(D.rl),'var(--rl)'],['cod','🔫','Call of Duty Mobile','Capture d\'écran après chaque partie',D.cod.length?D.cod.length+' parties':'Aucune partie','var(--cod)']]
+    .map(([r,i,n,d,s,c])=>`<a class="glass tile" style="--c:${c}" href="#/${r}"><span class="ic">${i}</span><span class="n"><b>${n}</b><small class="mut">${d}</small></span><span class="pill ${/Connecté|parties/.test(s)?'ok':'warn'}">${esc(s)}</span><span class="chev">›</span></a>`).join('')}</div>
+   <div style="margin-top:1rem">${codBtn('full')}</div>
+   <h2>Comment ça marche</h2><div class="glass desc"><b>Valorant & Rocket League</b> : relevé automatique chaque dimanche à 20 h via l'API officielle Tracker Network (dès que la clé est acceptée).<br><br><b>COD Mobile</b> : appuie sur « Ajouter une partie », glisse la capture du tableau des scores, valide. Les stats sont lues automatiquement et un commentaire te confirme les valeurs (tu peux les corriger en modifiant la demande).</div>`;
+}
 const TRN={valorant:{name:'Valorant',color:'#ff4655',id:'Blood#7629',hist:()=>D.val,
   keys:['rank','peakRank','matchesPlayed','matchesWinPct','kDRatio','kDARatio','headshotsPercentage','damagePerRound','scorePerRound','kills','deaths','assists','aces','clutches','firstBloods','timePlayed'],
-  chartKeys:['kDRatio','headshotsPercentage','matchesWinPct','damagePerRound'],
-  ghost:['Rang','Rang max','Parties','Victoires %','K/D','HS %','ADR','Score/round']},
- rl:{name:'Rocket League',color:'#1e90ff',id:'443Blood · Epic',hist:()=>D.rl,
+  chartKeys:['kDRatio','headshotsPercentage','matchesWinPct','damagePerRound'],ghost:['Rang','Rang max','Parties','Victoires %','K/D','HS %','ADR','Score/round']},
+ rl:{name:'Rocket League',color:'#3b82f6',id:'443Blood · Epic',hist:()=>D.rl,
   keys:['rating','tier','division','matchesPlayed','winStreak','wins','goals','assists','saves','shots','goalShotRatio','mVPs','score'],
-  chartKeys:['rating'],
-  ghost:['1v1 MMR','2v2 MMR','3v3 MMR','Victoires','Buts','Arrêts','Tirs','MVP']}};
+  chartKeys:['wins','goals','saves','mVPs'],ghost:['1v1 MMR','2v2 MMR','3v3 MMR','Victoires','Buts','Arrêts','Tirs','MVP']}};
 function tracker(key){
   const c=TRN[key],H=c.hist(),ok=trnOk(H),last=ok.at(-1),lastTry=H.at(-1);
-  let h=`<div class="cover glass" style="background:linear-gradient(135deg,${c.color}55,transparent);min-height:120px"><div class="ttl"><h3>${c.name}</h3><span class="pill">${esc(c.id)}</span></div></div>`;
+  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,${c.color}66,transparent 65%)"><div class="ttl"><h3>${c.name}</h3><span class="pill">${esc(c.id)}</span><span class="pill">tracker.gg</span></div></div>`;
   if(!last){
-    h+=`<div class="glass wait"><div class="ico">🔑</div><h3>En attente de clé Tracker Network</h3><p style="color:var(--mut)">Les stats s'afficheront ici automatiquement dès que l'API tracker.gg acceptera la clé (mise à jour chaque dimanche à 20 h).</p>
-    ${lastTry?`<span class="pill warn">Dernier essai ${fdate(lastTry.fetched_at)} : ${esc(lastTry.http?'HTTP '+lastTry.http:lastTry.status)}</span>`:''}</div>
-    <h2>Aperçu</h2><div class="stats ghost">${c.ghost.map(k=>stat(k,'000')).join('')}</div><div class="glass chart ghost" style="display:flex;align-items:center;justify-content:center;color:var(--mut)">📈 Graphiques de progression</div>`;
-    app.innerHTML=h;return;
-  }
+    app.innerHTML=h+`<div class="glass wait"><div class="ico">🔑</div><h3>En attente de clé Tracker Network</h3><p class="mut">Les stats (rangs, MMR, K/D, % de victoire…) s'afficheront ici automatiquement dès que l'API tracker.gg acceptera la clé. Relevé chaque dimanche à 20 h.</p>
+    ${lastTry?`<span class="pill warn">Dernier essai ${fdate(lastTry.fetched_at)} : ${esc(lastTry.http?'HTTP '+lastTry.http+(lastTry.http==401?' — clé refusée':''):lastTry.status)}</span>`:''}</div>
+    <h2>Aperçu</h2><div class="stats ghost">${c.ghost.map(k=>stat(k,'000')).join('')}</div><div class="glass chart" style="display:flex;align-items:center;justify-content:center;color:var(--mut)">📈 Graphiques de progression</div>`;return}
   const ov=overview(last),fmt=s=>s?esc(s.displayValue??fnum(s.value,2)):'—';
   const tile=(k,s)=>s?`<div class="glass stat"><div class="k">${esc(s.displayName||k)}</div><div class="v">${s.metadata?.iconUrl?`<span class="tier"><img src="${esc(s.metadata.iconUrl)}" alt="">${esc(s.metadata.tierName||s.displayValue)}</span>`:fmt(s)}</div>${s.percentile!=null?`<div class="d">Top ${fnum(100-s.percentile,1)} %</div>`:''}</div>`:'';
-  const ks=Object.keys(ov.stats||{});const order=[...c.keys.filter(k=>ks.includes(k)),...ks.filter(k=>!c.keys.includes(k))];
-  h+=`<h2>${esc(ov.metadata?.name||'Vue d\'ensemble')}</h2><div class="stats">${order.map(k=>tile(k,ov.stats[k])).join('')}</div>`;
+  const ks=Object.keys(ov?.stats||{}),order=[...c.keys.filter(k=>ks.includes(k)),...ks.filter(k=>!c.keys.includes(k))];
   const others=segs(last).filter(s=>s!==ov&&s.stats);
-  if(others.length){
-    h+=`<h2>${key=='rl'?'Playlists':'Détails par mode'}</h2><div class="seg">${others.map((s,i)=>`<button class="${i?'':'on'}" data-i="${i}">${esc(s.metadata?.name||s.attributes?.key||s.type)}</button>`).join('')}</div><div id="segv"></div>`;
-  }
-  h+=`<h2>Progression</h2><div class="glass chart"><canvas id="c1"></canvas></div>
+  h+=`<h2>${esc(ov?.metadata?.name||'Vue d\'ensemble')}</h2><div class="stats">${order.map(k=>tile(k,ov.stats[k])).join('')||'<div class="glass empty">Aucune stat.</div>'}</div>
+  ${others.length?`<h2>${key=='rl'?'Playlists':'Par mode / saison'}</h2><div class="seg">${others.map((s,i)=>`<button class="${i?'':'on'}" data-i="${i}">${esc(s.metadata?.name||s.attributes?.key||s.type)}</button>`).join('')}</div><div id="segv"></div>`:''}
+  <h2>Progression</h2><div class="glass chart"><canvas id="c1"></canvas></div>
   <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th>${c.chartKeys.map(k=>`<th>${esc(S(ov,k)?.displayName||k)}</th>`).join('')}</tr>${ok.slice().reverse().map(x=>`<tr><td>${fdate(x.fetched_at)}</td>${c.chartKeys.map(k=>`<td>${fmt(S(overview(x),k))}</td>`).join('')}</tr>`).join('')}</table></div>`;
   app.innerHTML=h;
-  const showSeg=i=>{const s=others[i];$('#segv').innerHTML=`<div class="stats">${Object.entries(s.stats).map(([k,v])=>tile(k,v)).join('')}</div>`;document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.i==i))};
-  if(others.length){document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>showSeg(+b.dataset.i));showSeg(0)}
-  const cols=['#00f0ff','#ff2bd6','#39ff88','#ffc857','#a78bfa'];
-  const ds=key=='rl'?segs(last).filter(s=>s.type=='playlist'&&S(s,'rating')).map((s,i)=>lineDS(s.metadata?.name,ok.map(x=>segs(x).find(y=>y.metadata?.name==s.metadata?.name)?.stats?.rating?.value??null),cols[i%5],{fill:false}))
-     :c.chartKeys.map((k,i)=>lineDS(S(ov,k)?.displayName||k,ok.map(x=>S(overview(x),k)?.value??null),cols[i],{fill:false}));
-  chart($('#c1'),{type:'line',data:{labels:ok.map(x=>fdate(x.fetched_at)),datasets:ds},options:{plugins:{legend:{position:'bottom',labels:{boxWidth:10}}}}});
+  const showSeg=i=>{$('#segv').innerHTML=`<div class="stats">${Object.entries(others[i].stats).map(([k,v])=>tile(k,v)).join('')}</div>`;$$('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.i==i))};
+  if(others.length){$$('.seg button').forEach(b=>b.onclick=()=>showSeg(+b.dataset.i));showSeg(0)}
+  const ds=key=='rl'?segs(last).filter(s=>s.type=='playlist'&&S(s,'rating')).map((s,i)=>lineDS(s.metadata?.name,ok.map(x=>num(segs(x).find(y=>y.metadata?.name==s.metadata?.name)?.stats?.rating?.value)),PAL[i%8],{fill:false}))
+     :c.chartKeys.map((k,i)=>lineDS(S(ov,k)?.displayName||k,ok.map(x=>sv(x,k)),PAL[i],{fill:false}));
+  chart($('#c1'),{type:'line',data:{labels:ok.map(x=>fshort(x.fetched_at)),datasets:ds},options:{plugins:{title:{display:key=='rl',text:'MMR par playlist'}}}});
 }
-
-/* ---------- COD ---------- */
 function cod(){
   const m=D.cod;
-  let h=`<div class="cover glass" style="background:linear-gradient(135deg,#f5a62355,transparent);min-height:120px"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>
-  <p><a class="btn" href="https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml" target="_blank" rel="noopener">📸 Ajouter une partie (capture)</a></p>`;
-  if(!m.length){app.innerHTML=h+`<div class="glass wait"><div class="ico">📸</div><h3>Aucune partie pour l'instant</h3><p style="color:var(--mut)">Après chaque partie, envoie la capture du tableau des scores : les stats sont lues automatiquement et apparaissent ici (K/D, tendances, taux de victoire, moyennes par mode, comparaison hebdo).</p></div>
+  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#f59e0b66,transparent 65%)"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>${codBtn('full')}`;
+  if(!m.length){app.innerHTML=h+`<div class="glass wait" style="margin-top:.8rem"><div class="ico">📸</div><h3>Aucune partie pour l'instant</h3><p class="mut">Après chaque partie, envoie la capture du tableau des scores : les stats sont lues automatiquement et apparaissent ici (K/D, tendances, taux de victoire, moyennes par mode, comparaison hebdo).</p></div>
    <h2>Aperçu</h2><div class="stats ghost">${['Parties','K/D','Victoires %','Élim. moy.'].map(k=>stat(k,'000')).join('')}</div>`;return}
-  const lab=m.map(x=>fdate(x.date));
-  const kd=m.map(x=>num(x.kd)??(num(x.kills)!=null&&num(x.deaths)!=null?(x.deaths?x.kills/x.deaths:x.kills):null));
-  const roll=m.map((_,i)=>kdOf(m.slice(Math.max(0,i-9),i+1)));
+  const lab=m.map(x=>fshort(x.date)),kd=m.map(x=>num(x.kd)??(num(x.kills)!=null&&num(x.deaths)!=null?(x.deaths?x.kills/x.deaths:x.kills):null)),roll=m.map((_,i)=>kdOf(m.slice(Math.max(0,i-9),i+1)));
   const now=Date.now(),DAY=864e5,w1=m.filter(x=>now-new Date(x.date)<7*DAY),w0=m.filter(x=>{const t=now-new Date(x.date);return t>=7*DAY&&t<14*DAY});
   const modes={};m.forEach(x=>(modes[x.mode||'Inconnu']??=[]).push(x));
-  const row=(n,fn,d)=>{const a=fn(w1),b=fn(w0),dl=a!=null&&b!=null?a-b:null;return `<tr><td>${n}</td><td>${fnum(a,d)}</td><td>${fnum(b,d)}</td><td class="${dl>0?'up':dl<0?'down':''}">${dl==null?'—':(dl>0?'▲ +':'▼ ')+fnum(dl,d)}</td></tr>`};
-  h+=`<div class="stats">${stat('Parties',m.length)}${stat('K/D global',fnum(kdOf(m),2),'10 dern. : '+fnum(roll.at(-1),2))}${stat('Victoires',fnum(wr(m),0)+' %')}${stat('Élim. moy.',fnum(avg(m,'kills'),1),'Morts moy. '+fnum(avg(m,'deaths'),1))}</div>
-  <div class="glass chart"><canvas id="c1"></canvas></div><div class="glass chart"><canvas id="c2"></canvas></div><div class="glass chart"><canvas id="c3"></canvas></div>
+  const row=(n,fn,d)=>{const a=fn(w1),b=fn(w0),dl=a!=null&&b!=null?a-b:null;return `<tr><td>${n}</td><td>${fnum(a,d)}</td><td>${fnum(b,d)}</td><td class="${dl>0?'up':dl<0?'down':''}">${dl==null?'—':(dl>0?'▲ +':dl<0?'▼ ':'')+fnum(dl,d)}</td></tr>`};
+  h+=`<div class="stats" style="margin-top:.8rem">${stat('Parties',m.length)}${stat('K/D global',fnum(kdOf(m),2),'10 dern. : '+fnum(roll.at(-1),2))}${stat('Victoires',fnum(wr(m),0)+' %')}${stat('Élim. moy.',fnum(avg(m,'kills'),1),'Morts moy. '+fnum(avg(m,'deaths'),1))}</div>
+  <div class="glass chart"><canvas id="c1"></canvas></div><div class="two"><div class="glass chart"><canvas id="c2"></canvas></div><div class="glass chart"><canvas id="c3"></canvas></div></div>
   <h2>7 derniers jours vs 7 précédents</h2><div class="glass tbl"><table><tr><th></th><th>7 j</th><th>Avant</th><th>Écart</th></tr>${row('Parties',a=>a.length,0)+row('K/D',kdOf,2)+row('Élim. moy.',a=>avg(a,'kills'),1)+row('Morts moy.',a=>avg(a,'deaths'),1)+row('Score moy.',a=>avg(a,'score'),0)+row('Victoires %',wr,0)}</table></div>
   <h2>Par mode</h2><div class="glass tbl"><table><tr><th>Mode</th><th>Parties</th><th>K/D</th><th>Élim.</th><th>Morts</th><th>Score</th><th>Vict.</th></tr>${Object.entries(modes).map(([k,a])=>`<tr><td>${esc(k)}</td><td>${a.length}</td><td>${fnum(kdOf(a),2)}</td><td>${fnum(avg(a,'kills'),1)}</td><td>${fnum(avg(a,'deaths'),1)}</td><td>${fnum(avg(a,'score'),0)}</td><td>${fnum(wr(a),0)} %</td></tr>`).join('')}</table></div>
-  <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Rés.</th><th>K</th><th>D</th><th>A</th><th>K/D</th><th></th></tr>${m.slice().reverse().map(x=>`<tr><td>${fdate(x.date)}</td><td>${esc(x.mode||'—')}</td><td>${esc(x.map||'—')}</td><td>${{win:'✅',loss:'❌',draw:'➖'}[x.result]||'—'}</td><td>${x.kills??'—'}</td><td>${x.deaths??'—'}</td><td>${x.assists??'—'}</td><td>${fnum(num(x.kd),2)}</td><td>${x.screenshot?`<a href="#" onclick="lb('${esc(x.screenshot)}');return false">🖼️</a>`:''}</td></tr>`).join('')}</table></div>`;
-  app.innerHTML=h;
-  chart($('#c1'),{type:'line',data:{labels:lab,datasets:[lineDS('K/D par partie',kd,'#f5a623',{fill:false,showLine:false,pointRadius:5}),lineDS('Moyenne glissante (10)',roll,'#00f0ff')]},options:{plugins:{title:{display:true,text:'K/D'}}}});
-  chart($('#c2'),{type:'line',data:{labels:lab,datasets:[lineDS('Éliminations',m.map(x=>num(x.kills)),'#39ff88',{fill:false}),lineDS('Morts',m.map(x=>num(x.deaths)),'#ff4655',{fill:false}),lineDS('Score',m.map(x=>num(x.score)),'#a78bfa',{fill:false,yAxisID:'y2'})]},options:{scales:{y2:{position:'right',grid:{display:false}}},plugins:{title:{display:true,text:'Tendances'}}}});
-  chart($('#c3'),{type:'line',data:{labels:lab,datasets:[lineDS('Cumulé %',m.map((_,i)=>wr(m.slice(0,i+1))),'#ff2bd6'),lineDS('10 dernières %',m.map((_,i)=>wr(m.slice(Math.max(0,i-9),i+1))),'#00f0ff',{fill:false})]},options:{scales:{y:{min:0,max:100}},plugins:{title:{display:true,text:'Taux de victoire'}}}});
+  <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Rés.</th><th>K</th><th>D</th><th>A</th><th>K/D</th><th></th></tr>${m.slice().reverse().map(x=>`<tr><td>${fdate(x.date)}</td><td>${esc(x.mode||'—')}</td><td>${esc(x.map||'—')}</td><td>${{win:'✅',loss:'❌',draw:'➖'}[x.result]||'—'}</td><td>${x.kills??'—'}</td><td>${x.deaths??'—'}</td><td>${x.assists??'—'}</td><td>${fnum(num(x.kd),2)}</td><td>${x.screenshot?`<button class="btn ghost sm" data-s="${esc(x.screenshot)}">🖼️</button>`:''}${x.issue?` <a href="https://github.com/Blood63/gaming-tracker/issues/${x.issue}" target="_blank" rel="noopener">#${x.issue}</a>`:''}</td></tr>`).join('')}</table></div>`;
+  app.innerHTML=h;$$('[data-s]').forEach(b=>b.onclick=()=>lb(b.dataset.s));
+  chart($('#c1'),{type:'line',data:{labels:lab,datasets:[lineDS('K/D par partie',kd,COL.or,{fill:false,showLine:false,pointRadius:5}),lineDS('Moyenne glissante (10)',roll,COL.cy)]},options:{plugins:{title:{display:true,text:'K/D'}}}});
+  chart($('#c2'),{type:'line',data:{labels:lab,datasets:[lineDS('Éliminations',m.map(x=>num(x.kills)),COL.gr,{fill:false}),lineDS('Morts',m.map(x=>num(x.deaths)),COL.bad,{fill:false}),lineDS('Score',m.map(x=>num(x.score)),COL.vi,{fill:false,yAxisID:'y2'})]},options:{scales:{y2:{position:'right',grid:{display:false}}},plugins:{title:{display:true,text:'Tendances'}}}});
+  chart($('#c3'),{type:'line',data:{labels:lab,datasets:[lineDS('Cumulé %',m.map((_,i)=>wr(m.slice(0,i+1))),COL.pk),lineDS('10 dernières %',m.map((_,i)=>wr(m.slice(Math.max(0,i-9),i+1))),COL.cy,{fill:false})]},options:{scales:{y:{min:0,max:100}},plugins:{title:{display:true,text:'Taux de victoire'}}}});
+}
+function profil(){
+  const x=D.xp,T=tastes(),B=badges(),top=T.genres.slice(0,8),tot=top.reduce((a,g)=>a+g[1],0)||1;
+  const fav=Object.entries(T.styles).sort((a,b)=>b[1]-a[1])[0];
+  app.innerHTML=`${levelCard(false)}
+  <div class="tiers">${TIERS.map(t=>`<div class="${t===x.tier?'cur':x.L>=t.l?'done':''}"><span>${t.e}</span>${t.n}<br><small>niv. ${t.l}</small></div>`).join('')}</div>
+  <h2>D'où vient ton XP</h2><div class="glass xp">${x.src.map(s=>`<span>${s[0]}<br><small>${esc(s[1])}</small></span><b>${fnum(s[2])}</b>`).join('')}<span><b style="color:var(--txt);text-align:left">Total</b></span><b>${fnum(x.xp)} XP</b></div>
+  <h2>Tes styles de jeu</h2>${fav&&fav[1]>0?`<p class="mut" style="margin:.2rem 0 .6rem">Style dominant : <b style="color:var(--cy)">${esc(fav[0])}</b> · genre n°1 : <b style="color:var(--vi)">${esc(top[0]?.[0]||'—')}</b> (${fnum(100*(top[0]?.[1]||0)/tot,0)} % du temps)</p>`:''}
+  <div class="two"><div class="glass chart sq"><canvas id="c1"></canvas></div><div class="glass chart sq"><canvas id="c2"></canvas></div></div>
+  <p class="mut" style="font-size:.8rem">Pondéré par le temps de jeu, d'après les genres de la boutique Steam.${T.notes.length?' '+esc(T.notes.join(' · '))+'.':''}</p>
+  <h2>Badges (${B.filter(b=>b.ok).length}/${B.length})</h2><div class="badges">${B.map(b=>`<div class="glass bdg ${b.ok?'':'lock'}"><div class="e">${b.e}</div><b>${esc(b.n)}</b><small class="mut">${esc(b.d)}</small>${b.ok?'<small class="up">Débloqué ✓</small>':bar(b.p)}</div>`).join('')}</div>
+  <h2>Plus</h2><div class="list"><a class="glass tile" style="--c:var(--cy)" href="#/activite"><span class="ic">🕒</span><span class="n"><b>Activité</b><small class="mut">Chronologie de tes sessions et progrès</small></span><span class="chev">›</span></a>
+  <a class="glass tile" style="--c:var(--vi)" href="#/objectifs"><span class="ic">🎯</span><span class="n"><b>Objectifs</b><small class="mut">${goals().length} en cours</small></span><span class="chev">›</span></a>
+  <a class="glass tile" style="--c:var(--gr)" href="https://github.com/Blood63/gaming-tracker" target="_blank" rel="noopener"><span class="ic">⚙️</span><span class="n"><b>Données & automatisation</b><small class="mut">Dépôt GitHub, relevé chaque dimanche 20 h</small></span><span class="chev">›</span></a></div>`;
+  chart($('#c1'),{type:'doughnut',data:{labels:top.map(g=>g[0]),datasets:[{data:top.map(g=>+g[1].toFixed(1)),backgroundColor:PAL,borderColor:'#0a0920',borderWidth:3,hoverOffset:8}]},options:{cutout:'62%',plugins:{title:{display:true,text:'Genres (heures)'},tooltip:{callbacks:{label:c=>` ${c.label} : ${fnum(c.raw,1)} h (${fnum(100*c.raw/tot,0)} %)`}}}}});
+  const sv2=STYLES.map(s=>T.styles[s]),mx=Math.max(1,...sv2);
+  chart($('#c2'),{type:'radar',data:{labels:STYLES,datasets:[{label:'Affinité',data:sv2.map(v=>Math.round(100*v/mx)),borderColor:COL.cy,backgroundColor:COL.vi+'40',pointBackgroundColor:COL.gr,borderWidth:2}]},options:{scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'rgba(160,150,255,.15)'},angleLines:{color:'rgba(160,150,255,.15)'},pointLabels:{color:'#cfcaf5',font:{size:11}}}},plugins:{legend:{display:false},title:{display:true,text:'Profil de joueur'}}}});
+  animBars();animRings();
+}
+function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0);return `<div class="glass goal"><div class="h"><b>${esc(o.label)}</b>${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div><div class="mut" style="font-size:.85rem">${fnum(o.cur,dec)}${o.u?' '+o.u:''} / ${fnum(o.t,dec)}${o.u?' '+o.u:''} · ${p>=100?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,p>=100?'gr':'')}</div>`}
+function objectifs(){
+  const G=goals().map(x=>({x,...goalProg(x)}));
+  const opts=D.games.map(g=>`<option value="${g.appid}">${esc(g.name)}</option>`).join('');
+  app.innerHTML=`<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
+  <h2>Nouvel objectif</h2><form class="glass form" id="gf">
+   <label>Type<select id="gt"><option value="game_hours">Heures sur un jeu</option><option value="game_ach">% de succès sur un jeu</option><option value="total_hours">Heures de jeu au total</option><option value="achievements">Nombre de succès Steam</option><option value="level">Niveau de joueur</option><option value="cod_kd">K/D COD Mobile (10 dernières)</option><option value="cod_matches">Parties COD Mobile</option></select></label>
+   <label id="gl">Jeu<select id="gg">${opts}</select></label>
+   <label>Cible<input id="gv" type="number" inputmode="decimal" step="any" min="0" required></label>
+   <button class="btn" type="submit">Ajouter l'objectif</button></form>
+  <p class="mut" style="font-size:.8rem">Les objectifs sont enregistrés sur cet appareil. La progression se met à jour avec chaque relevé.</p>`;
+  const sugg={game_hours:g=>Math.ceil(((D.games.find(x=>x.appid==g)?.hours)||0)/10)*10+10,game_ach:()=>100,total_hours:()=>Math.ceil(D.totalH/50)*50+50,achievements:()=>Math.ceil(D.ach/50)*50+50,level:()=>D.xp.L+2,cod_kd:()=>1.5,cod_matches:()=>Math.ceil(D.cod.length/10)*10+10};
+  const upd=()=>{const t=$('#gt').value;$('#gl').style.display=t.startsWith('game')?'':'none';$('#gv').value=sugg[t](+$('#gg').value)};
+  $('#gt').onchange=upd;$('#gg').onchange=upd;upd();
+  $('#gf').onsubmit=e=>{e.preventDefault();const t=$('#gt').value,v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
+  $$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ?')){saveGoals(goals().filter(x=>x.id!=b.dataset.del));objectifs()}});
+  animBars();
+}
+function activite(){
+  const ev=timeline();
+  app.innerHTML=`<h2>Activité</h2><div class="seg"><button class="on" data-f="all">Tout</button><button data-f="🕹️">Sessions</button><button data-f="⏱️">Temps</button><button data-f="🏆">Succès</button><button data-f="cod">COD</button></div><div id="tlv"></div>`;
+  const draw=f=>{$('#tlv').innerHTML=tlHTML(f=='all'?ev:f=='cod'?ev.filter(e=>e.link=='#/cod'):ev.filter(e=>e.i==f));$$('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.f==f))};
+  $$('.seg button').forEach(b=>b.onclick=()=>draw(b.dataset.f));draw('all');
 }
 
-/* ---------- routeur ---------- */
+/* ========== routeur ========== */
+const TITLES={'':'GameTrack',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité'};
 function lb(u){$('#lb img').src=u;$('#lb').style.display='flex'}
 function go(h){location.hash=h}
+let navCount=0;
+function goBack(){if(navCount>0){navCount-=2;history.back()}else location.hash='#/'}
+function render(){
+  charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
+  const p=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean),r=p[0]||'';
+  const top=['','steam','compet','objectifs','profil'].includes(r)&&!p[1];
+  document.body.classList.toggle('sub',!top);
+  $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
+  $('#ttl').textContent=r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
+  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>tracker('valorant'),rl:()=>tracker('rl'),cod,profil,objectifs,activite}[r]||home)()}
+  catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
+  window.scrollTo({top:0});
+}
 function route(){
-  charts.forEach(c=>c.destroy());charts=[];
-  const p=location.hash.replace(/^#\/?/,'').split('/');
-  document.body.classList.toggle('sub',!!p[0]);
-  app.classList.remove('view');void app.offsetWidth;app.classList.add('view');
-  try{
-    if(p[0]=='steam'&&p[1])steamGame(+p[1]);else if(p[0]=='steam')steamList();
-    else if(p[0]=='valorant')tracker('valorant');else if(p[0]=='rl')tracker('rl');else if(p[0]=='cod')cod();else home();
-  }catch(e){console.error(e);app.innerHTML=`<div class="glass wait">Erreur d'affichage : ${esc(e.message)}</div>`}
-  window.scrollTo(0,0);
+  navCount++;
+  if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.startViewTransition(render);
+  else{app.classList.remove('view');void app.offsetWidth;app.classList.add('view');render()}
 }
 window.addEventListener('hashchange',route);
 app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';
-load().then(route);
+load().then(render).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});
