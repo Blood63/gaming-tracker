@@ -1,0 +1,15 @@
+name: Objectif
+description: Ajoute, modifie ou supprime un objectif (synchronisé sur tous tes appareils). Le plus simple est de passer par la page Objectifs de l'app, qui remplit ce formulaire pour toi.
+title: "Objectif"
+labels: ["objectif"]
+body:
+  - type: dropdown
+    id: action
+    attributes: { label: Action, description: "Ignoré si les données ci-dessous précisent déjà l'action", options: ["Ajouter", "Modifier", "Supprimer", "Synchroniser"] }
+  - type: input
+    id: resume
+    attributes: { label: Résumé, description: "Rempli par l'app (pour info)" }
+  - type: textarea
+    id: data
+    attributes: { label: Données, description: "Rempli automatiquement par l'app — ne pas modifier", render: json }
+    validations: { required: true }
