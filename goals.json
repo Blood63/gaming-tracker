@@ -1,1 +1,46 @@
-{"goals":[]}
+{
+ "goals": [
+  {
+   "id": 1792000000001,
+   "type": "val_rank",
+   "target": 12,
+   "start": 662,
+   "created": "2026-10-14T11:35:00+02:00"
+  },
+  {
+   "id": 1792000000002,
+   "type": "rl_rank",
+   "playlist": "3v3",
+   "target": 9,
+   "div": 1,
+   "start": 31,
+   "created": "2026-10-14T11:35:00+02:00"
+  },
+  {
+   "id": 1792000000003,
+   "type": "rl_rank",
+   "playlist": "2v2",
+   "target": 9,
+   "div": 1,
+   "start": 26,
+   "created": "2026-10-14T11:35:00+02:00"
+  },
+  {
+   "id": 1792000000004,
+   "type": "rl_rank",
+   "playlist": "1v1",
+   "target": 7,
+   "div": 1,
+   "start": 18,
+   "created": "2026-10-14T11:35:00+02:00"
+  },
+  {
+   "id": 1792000000005,
+   "type": "cod_rank",
+   "mode": "MP",
+   "target": 36,
+   "created": "2026-10-14T11:35:00+02:00"
+  }
+ ],
+ "updated": "2026-10-14T11:35:00+02:00"
+}
