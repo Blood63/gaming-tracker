@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13",
+ "updated": "2026-10-14",
  "categories": [
   {
    "id": "pc",
@@ -215,7 +215,7 @@
    "value_note": "Chaise bien notée (≈ 4,3/5, accoudoirs 4D, 150 kg), vue entre ≈ 229 et 287 € : prix normal pour ce niveau."
   }
  ],
- "advice_date": "2026-10-13",
+ "advice_date": "2026-10-14",
  "advice": [
   {
    "prio": 1,
@@ -288,7 +288,7 @@
    "text": "Confirme la capacité exacte de ta RAM (probablement 2 × 16 Go). Si c'était 2 × 8 Go, passer à 32 Go deviendrait une priorité, mais c'est cher en ce moment (≈ 210 € le kit DDR4-3200 32 Go mi-octobre 2026)."
   }
  ],
- "settings_date": "2026-10-13",
+ "settings_date": "2026-10-14",
  "settings": {
   "global": [
    [
@@ -555,5 +555,5 @@
    }
   ]
  },
- "value_date": "2026-10-13"
+ "value_date": "2026-10-14"
 }
