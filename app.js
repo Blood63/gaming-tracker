@@ -28,14 +28,14 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" re
 /* ========== données ========== */
 const D={};
 async function load(){
-  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json')]);
+  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm,bc]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json'),get('ballchasing_latest.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
-  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];D.rlm=rlm&&rlm.playlists?rlm:null;
+  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -281,10 +281,19 @@ function valMatch(id){
 const RL_DIV=['I','II','III','IV'],rlVal=(t,d)=>t*4+((d||1)-1),rlLbl=(t,d)=>RL_T[t]+(d&&t<RL_T.length-1?' div. '+RL_DIV[d-1]:'');
 const rlIcon=t=>['🟤','⚪','🟡','🔷','💎','🟣','🔴','🌟'][Math.min(7,Math.floor(t/3))]||'🚗';
 const rlNext=pl=>Math.min(RL_T.length-1,pl.tier+1);
+
+function bcHTML(){const B=D.bc;
+  if(!B)return '';
+  if(!B.replays_count)return `<h2>Replays ballchasing.com</h2><div class="glass wait"><div class="ico">🎬</div><h3>En attente de replays</h3><p class="mut">Ta clé ballchasing.com est connectée ✅ (vérifiée le ${fdate(B.fetched_at)}), mais aucun replay de 443Blood n'a encore été envoyé. Dès les premiers envois, tes stats détaillées par playlist (buts, tirs, arrêts, passes, boost, victoires) apparaîtront ici, relevées 2 fois par jour.</p>
+   <div style="text-align:left;font-size:.85rem;margin-top:.6rem"><b>Activer l'envoi automatique (PC, une seule fois) :</b><ol style="margin:.3rem 0 0 1.1rem;padding:0"><li>Installe BakkesMod (bakkesplugins.com) et lance-le avant Rocket League.</li><li>Dans le jeu, touche F2 › Plugins › Plugin Manager › active « AutoReplayUploader » (ou installe « Ballchasing.com auto upload »).</li><li>Dans ses réglages, coche Ballchasing.com et colle ta clé API (ballchasing.com › Upload › API key).</li><li>Choisis « Ranked + Casual », joue une partie : le replay est envoyé automatiquement.</li></ol></div></div>`;
+  const P=B.playlists,R=B.replays.slice().reverse().slice(0,15);
+  return `<h2>Replays ballchasing.com</h2><p class="mut" style="font-size:.8rem">${fnum(B.replays_count)} replays analysés · relevé le ${fdate(B.fetched_at)} · ratios calculés.</p>
+  <div class="glass tbl"><table><tr><th>Playlist</th><th>Parties</th><th>Vict.</th><th>Buts</th><th>Tirs</th><th>Préc.</th><th>Passes</th><th>Arrêts</th><th>Score moy.</th><th>Boost moy.</th><th>Rang</th></tr>${Object.entries(P).map(([k,a])=>`<tr><td>${esc(k)}</td><td>${a.matches}</td><td>${fnum(a.win_rate,0)} %</td><td>${a.goals}</td><td>${a.shots}</td><td>${a.shot_pct!=null?fnum(a.shot_pct,0)+' %':'—'}</td><td>${a.assists}</td><td>${a.saves}</td><td>${fnum(a.score_avg,0)}</td><td>${fnum(a.boost_avg,0)}</td><td>${esc(a.rank||'—')}</td></tr>`).join('')}</table></div>
+  <h2>Derniers replays</h2><div class="glass tbl"><table><tr><th>Date</th><th>Playlist</th><th>Carte</th><th>Rés.</th><th>B/P/A/T</th><th>Score</th><th></th></tr>${R.map(x=>`<tr><td>${fdate(x.date)}</td><td>${esc(x.playlist||'—')}</td><td>${esc(x.map||'—')}</td><td>${x.result=='win'?'✅':'❌'} ${x.team_goals}-${x.opp_goals}</td><td>${x.goals}/${x.assists}/${x.saves}/${x.shots}</td><td>${x.score}${x.mvp?' 🏅':''}</td><td><a href="https://ballchasing.com/replay/${esc(x.id)}" target="_blank" rel="noopener">›</a></td></tr>`).join('')}</table></div>`}
 function rlManual(){
   const R=D.rlm,P=R.playlists,H=R.mmr_history,pf=R.performance||{};
   let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#3b82f666,transparent 65%)"><div class="ttl"><h3>Rocket League</h3><span class="pill">${esc(R.player)} · ${esc(R.platform)}</span><span class="pill">${esc(R.season)}</span>${R.reward_level?`<span class="pill">Récompenses : ${esc(R.reward_level)}</span>`:''}</div></div>
-  <p class="mut" style="font-size:.8rem;margin-top:.5rem">📸 Source : captures tracker.gg, mise à jour manuelle (${fdate(R.updated)}). Relevé automatique dès que ballchasing.com sera connecté.</p>
+  <p class="mut" style="font-size:.8rem;margin-top:.5rem">📸 Source : captures tracker.gg, mise à jour manuelle (${fdate(R.updated)}). Base conservée ; les stats détaillées viennent des replays ballchasing.com (ci-dessous).</p>
   <h2>Rangs classés</h2><div class="list">${P.map(p=>`<div class="glass row" style="align-items:center"><span class="ic" style="font-size:1.8rem;width:44px;text-align:center">${rlIcon(p.tier)}</span><span class="n"><b>${esc(p.name)}</b><br><span style="font-size:1.05rem;font-weight:700">${esc(p.tier_name)} · div. ${RL_DIV[p.div-1]}</span><br><small class="mut">Meilleur : ${fnum(p.best_mmr)} MMR (${esc(p.best_season)})${p.matches?' · '+fnum(p.matches)+' parties':''}${p.percentile?' · '+esc(p.percentile):''}${p.streak?` · <span class="${p.streak.type=='loss'?'down':'up'}">série de ${p.streak.count} ${p.streak.type=='loss'?'défaites':'victoires'}</span>`:''}</small></span><span class="p" style="text-align:right"><b style="font-size:1.2rem">${fnum(p.mmr)}</b><br><small class="mut">MMR</small><br><small class="${p.mmr<p.best_mmr?'down':'up'}">${p.mmr-p.best_mmr} vs record</small></span></div>`).join('')}</div>
   <div class="stats" style="margin-top:.6rem">${(R.other||[]).map(o=>stat(o.name,o.mmr!=null?fnum(o.mmr):'≈ '+o.mmr_range.join('–'),o.note||'MMR')).join('')}</div>
   ${goalsBlock(['rl_rank'])}
@@ -292,7 +301,7 @@ function rlManual(){
   <h2>Évolution du MMR (3v3)</h2><div class="glass chart"><canvas id="r1"></canvas></div>
   <h2>Sessions récentes</h2><div class="glass tbl"><table><tr><th>Date</th><th>Parties</th><th>Vict.</th><th>%</th><th>Buts / tirs</th><th>Passes</th><th>Arrêts</th><th>MMR</th></tr>${R.sessions.map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.matches??(x.note?esc(x.note):'—')}</td><td>${x.wins??'—'}</td><td>${x.matches&&x.wins!=null?fnum(100*x.wins/x.matches,1)+' %':'—'}</td><td>${x.goals!=null?x.goals+' / '+x.shots:'—'}</td><td>${x.assists??'—'}</td><td>${x.saves??'—'}</td><td>${x.mmr?Object.entries(x.mmr).map(([k,v])=>`${k} ${v[0]}→${v[1]} <span class="${v[1]<v[0]?'down':'up'}">(${v[1]-v[0]>0?'+':''}${v[1]-v[0]})</span>`).join(' '):'—'}</td></tr>`).join('')}</table></div>
   <h2>Répartition des actions</h2><div class="two"><div class="glass chart"><canvas id="r2"></canvas></div><div class="glass pad"><div class="kv"><span>⚽ Buts</span><span>${fnum(pf.goals_pct,1)} %</span><span>🛡️ Arrêts</span><span>${fnum(pf.saves_pct,1)} %</span><span>🤝 Passes décisives</span><span>${fnum(pf.assists_pct,1)} %</span></div><p class="mut" style="font-size:.8rem;margin-top:.5rem">Part de chaque action dans tes contributions (tracker.gg). Profil plutôt offensif : tu marques plus que tu ne défends.</p></div></div>
-  <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>`;
+  <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>${bcHTML()}`;
   app.innerHTML=h;bindGoalDel(rlManual);animBars();
   $$('[data-rg]').forEach(b=>b.onclick=()=>{const p=P.find(x=>x.id==b.dataset.rg);if(addGoal({type:'rl_rank',playlist:p.id,target:rlNext(p),div:1,start:rlVal(p.tier,p.div)}))rlManual()});
   chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),'#3b82f6'),lineDS('Record S38 (654)',H.map(()=>654),'#22c55e',{fill:false,borderDash:[6,4],pointRadius:0})]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
