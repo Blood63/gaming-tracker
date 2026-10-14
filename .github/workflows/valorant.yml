@@ -1,4 +1,4 @@
-name: Valorant (HenrikDev)
+name: Valorant + Rocket League (HenrikDev, ballchasing)
 on:
   schedule:
     - cron: "15 6 * * *"    # ≈ 8 h Paris
@@ -16,9 +16,13 @@ jobs:
         env:
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
+      - run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed (données conservées)"
+        env:
+          BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
+          TZ: Europe/Paris
       - run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add valorant.json
+          git add valorant.json ballchasing_latest.json history/ballchasing.jsonl
           git diff --cached --quiet || git commit -m "Valorant $(date -I)"
           git pull --rebase -q && git push
