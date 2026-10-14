@@ -36,7 +36,10 @@ def main():
                 g=clean(g or {})
                 if any(x["id"]==g["id"] for x in L): continue
                 L.append(g); n+=1
-            msg=f"{n} objectif{'s' if n>1 else ''} ajouté{'s' if n>1 else ''}" + (f" ({len(items)-n} déjà présent{'s' if len(items)-n>1 else ''})" if len(items)-n else "")
+            dl=[x for x in (d.get("delete") or []) if isinstance(x,(int,float))]
+            if dl: b=len(L); G["goals"]=L=[x for x in L if x["id"] not in dl]; n_del=b-len(L)
+            else: n_del=0
+            msg=(f"{n_del} supprimé{'s' if n_del>1 else ''}, " if n_del else "")+f"{n} objectif{'s' if n>1 else ''} ajouté{'s' if n>1 else ''}" + (f" ({len(items)-n} déjà présent{'s' if len(items)-n>1 else ''})" if len(items)-n else "")
         elif a=="edit":
             g=clean(d["goal"]); i=next((i for i,x in enumerate(L) if x["id"]==g["id"]),None)
             if i is None: return out(False,"Objectif à modifier introuvable.")

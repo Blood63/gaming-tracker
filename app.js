@@ -123,20 +123,38 @@ function badges(){
 }
 
 /* ========== objectifs (stockés sur l'appareil) ========== */
-const GK='gt-goals',PK='gt-pending',GOAL_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=objectif.yml';
-// Les objectifs vivent dans goals.json (dépôt) → identiques sur tous les appareils. Le navigateur ne garde qu'une file « en attente » le temps que le formulaire soit validé (24 h max).
-const legacy=()=>{let L;try{L=JSON.parse(localStorage.getItem(GK))||[]}catch(e){L=[]}const ids=new Set((D.goals||[]).map(g=>g.id));const r=L.filter(g=>!ids.has(+g.id));if(L.length&&!r.length)localStorage.removeItem(GK);return r};
-const pend=()=>{let p;try{p=JSON.parse(localStorage.getItem(PK))||{}}catch(e){p={}}const ids=new Set((D.goals||[]).map(g=>g.id)),now=Date.now();
-  p.adds=(p.adds||[]).filter(g=>!ids.has(g.id)&&now-g._t<864e5);p.dels=(p.dels||[]).filter(d=>ids.has(d.id)&&now-d._t<864e5);localStorage.setItem(PK,JSON.stringify(p));return p};
-const savePend=p=>localStorage.setItem(PK,JSON.stringify(p));
-const goals=()=>{const p=pend(),del=new Set(p.dels.map(d=>d.id));const pa=new Set(p.adds.map(g=>g.id));return[...(D.goals||[]).filter(g=>!del.has(g.id)),...p.adds.map(g=>({...g,pending:1})),...legacy().filter(g=>!pa.has(+g.id)).map(g=>({...g,id:+g.id,pending:2}))]};
-const goalIssue=(data,resume)=>window.open(`${GOAL_ISSUE}&title=${encodeURIComponent('Objectif – '+resume)}&resume=${encodeURIComponent(resume)}&data=${encodeURIComponent(JSON.stringify(data))}`,'_blank','noopener');
-const gClean=g=>Object.fromEntries(Object.entries(g).filter(([k,v])=>v!==undefined&&v!==''&&!['pending','_t'].includes(k)));
-function delGoal(id){const g=goals().find(x=>x.id==id);if(!g)return;const p=pend();
-  if(g.pending){p.adds=p.adds.filter(x=>x.id!=id);savePend(p);if(g.pending==2)localStorage.setItem(GK,JSON.stringify(legacy().filter(x=>+x.id!=id)));toast('Objectif en attente retiré');return}
-  p.dels.push({id,_t:Date.now()});savePend(p);goalIssue({action:'delete',id},'supprimer « '+goalProg(g).label+' »');toast('📝 Valide le formulaire GitHub pour supprimer partout')}
-function syncLegacy(){const L=legacy().map(g=>gClean({...g,id:+g.id||Date.now()}));if(!L.length)return;goalIssue({action:'sync',goals:L},`synchroniser ${L.length} objectif${L.length>1?'s':''} de cet appareil`);
-  const p=pend();L.forEach(g=>p.adds.push({...g,_t:Date.now()}));savePend(p);toast('📝 Valide le formulaire GitHub pour synchroniser')}
+const GK='gt-goals',PK='gt-pending',SK='gt-sync-at',GOAL_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=objectif.yml';
+// Local d'abord : un objectif ajouté est enregistré tout de suite sur l'appareil (sans expiration) et s'affiche immédiatement.
+// La synchro (goals.json dans le dépôt, identique sur tous les appareils) passe par un formulaire GitHub pré-rempli ; les copies locales disparaissent quand goals.json les contient.
+const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const repoIds=()=>new Set((D.goals||[]).map(g=>g.id));
+const localGoals=()=>{const ids=repoIds(),L=LS.get(GK,[]).map(g=>({...g,id:+g.id})).filter(g=>g.id&&g.type);
+  // reprise de l'ancienne file « en attente » (version précédente de l'app)
+  const old=LS.get(PK,{});if(old&&old.adds&&old.adds.length){old.adds.forEach(g=>{if(!L.some(x=>x.id==g.id))L.push(gClean(g))});old.adds=[];LS.set(PK,old)}
+  const r=L.filter(g=>!ids.has(g.id));LS.set(GK,r);return r};
+const pendDels=()=>{const ids=repoIds(),old=LS.get(PK,{}),d=[...new Set([...(LS.get('gt-dels',[])),...((old.dels||[]).map(x=>x.id))])].filter(id=>ids.has(id));LS.set('gt-dels',d);if(old.dels){old.dels=[];LS.set(PK,old)}return d};
+const goals=()=>{const del=new Set(pendDels());return[...(D.goals||[]).map(g=>del.has(g.id)?{...g,pending:3}:g),...localGoals().map(g=>({...g,pending:2}))]};
+const unsynced=()=>({adds:localGoals(),dels:pendDels()});
+const gClean=g=>Object.fromEntries(Object.entries(g).filter(([k,v])=>v!==undefined&&v!==''&&v!==null&&!['pending','_t'].includes(k)));
+const syncURL=()=>{const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return null;
+  const data=u.dels.length&&!u.adds.length?{action:'delete',ids:u.dels}:{action:'sync',goals:u.adds.map(gClean),...(u.dels.length?{delete:u.dels}:{})};
+  const resume=[u.adds.length?`ajouter ${u.adds.length} objectif${u.adds.length>1?'s':''}`:'',u.dels.length?`supprimer ${u.dels.length} objectif${u.dels.length>1?'s':''}`:''].filter(Boolean).join(' et ');
+  return `${GOAL_ISSUE}&title=${encodeURIComponent('Objectifs – '+resume)}&resume=${encodeURIComponent(resume)}&data=${encodeURIComponent(JSON.stringify(data))}`};
+function addGoal(o){if(goals().some(x=>x.type==o.type&&x.target==o.target&&(x.playlist||'')==(o.playlist||'')&&(x.mode||'')==(o.mode||'')&&(x.appid||0)==(o.appid||0)&&(x.div||1)==(o.div||1)&&x.pending!=3)){toast('ℹ️ Cet objectif existe déjà');return false}const g=gClean({id:Date.now(),created:new Date().toISOString(),...o}),L=LS.get(GK,[]);L.push(g);
+  if(!LS.set(GK,L)){toast('⚠️ Impossible d\'enregistrer sur cet appareil (stockage bloqué / navigation privée ?)');return false}
+  toast('✅ Objectif ajouté sur cet appareil — touche « Synchroniser » pour l\'avoir partout');return true}
+function delGoal(id){const g=goals().find(x=>x.id==id);if(!g)return;
+  if(g.pending==2){LS.set(GK,LS.get(GK,[]).filter(x=>+x.id!=id));toast('Objectif supprimé');return}
+  const d=LS.get('gt-dels',[]);if(!d.includes(id))d.push(id);LS.set('gt-dels',d);toast('Objectif masqué ici — touche « Synchroniser » pour le supprimer partout')}
+function syncBox(){const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return '';
+  const at=LS.get(SK,0),late=at&&Date.now()-at>6e5;
+  return `<div class="glass pad" id="syncbox" style="border-color:var(--warn);margin:.6rem 0">
+   <b>📲 ${n} changement${n>1?'s':''} seulement sur cet appareil</b>
+   ${late?`<p class="down" style="font-size:.85rem;margin:.3rem 0">⚠️ La dernière synchronisation n'a pas abouti (formulaire GitHub non validé, pas connecté à GitHub, ou erreur du robot). Réessaie ; s'il y a une erreur, elle est expliquée en commentaire de la demande sur GitHub.</p><div id="syncerr"></div>`:''}
+   <p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Tes objectifs fonctionnent déjà ici. Pour les retrouver sur ton téléphone ET ton PC : touche « Synchroniser », connecte-toi à GitHub si besoin, puis valide avec <b>« Create »</b> (sans rien modifier). Mise à jour sous ~2 min.</p>
+   <a class="btn full" id="gsync" href="${esc(syncURL())}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)</a></div>`}
+function bindSync(){const a=$('#gsync');if(a)a.onclick=()=>{LS.set(SK,Date.now());toast('📝 Valide le formulaire GitHub (« Create ») pour terminer')};
+  if($('#syncerr'))fetch('https://api.github.com/repos/Blood63/gaming-tracker/issues?labels=objectif&state=open&per_page=5').then(r=>r.ok?r.json():[]).then(a=>{if(a.length)$('#syncerr').innerHTML=a.map(i=>`<a href="${esc(i.html_url)}" target="_blank" rel="noopener" style="font-size:.85rem">Voir la demande #${i.number} non traitée ›</a>`).join('<br>')}).catch(()=>{})}
 function goalProg(x){
   const g=D.games.find(y=>y.appid==x.appid);
   switch(x.type){
@@ -186,7 +204,7 @@ function rankGoal(x){
     const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
     return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
 }
-function addGoal(o){const g=gClean({id:Date.now(),created:new Date().toISOString(),...o}),p=pend();p.adds.push({...g,_t:Date.now()});savePend(p);goalIssue({action:'add',goal:g},goalProg(g).label);toast('📝 Valide le formulaire GitHub : l\'objectif sera sur tous tes appareils')}
+
 
 /* ========== timeline ========== */
 function timeline(){
@@ -237,8 +255,10 @@ function valPage(){
   h+=tb('Par agent','agent')+tb('Par carte','map');
   h+=`<h2>Parties récentes</h2><p class="mut" style="font-size:.8rem">Touche une partie pour le détail.</p><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Agent</th><th>Rés.</th><th>Score</th><th>K/D/A</th><th>RR</th></tr>${m.slice().reverse().slice(0,40).map(x=>`<tr data-v="${esc(x.id)}" style="cursor:pointer"><td>${fdate(x.date)}</td><td>${esc(vMode(x.mode))}</td><td>${esc(x.map||'—')}</td><td>${esc(x.agent||'—')}</td><td>${vRes(x)}</td><td>${x.rounds_won??'—'}-${x.rounds_lost??'—'}</td><td>${x.kills??'—'}/${x.deaths??'—'}/${x.assists??'—'}</td><td class="${x.rr_change>0?'up':x.rr_change<0?'down':''}">${x.rr_change!=null?(x.rr_change>0?'+':'')+x.rr_change:''}</td></tr>`).join('')}</table></div>
   <p class="mut" style="font-size:.78rem">Source : ${esc(V.source)} · relevé le ${fdate(V.fetched_at)} · mis à jour 2 fois par jour. ADR/ACS/HS % = calculés.</p>`;
-  h=h.replace('<h2>Statistiques</h2>',goalsBlock(['val_rank'])+'<h2>Statistiques</h2>');
+  const nx=[1,3].map(k=>VAL_T.find(t=>t.id==Math.min(27,M.tier_id+k))).filter(Boolean);
+  h=h.replace('<h2>Statistiques</h2>',goalsBlock(['val_rank'])+`<div class="seg" style="margin-top:.5rem">${nx.map(t=>`<button data-vg="${t.id}">🎯 ${esc(vTier(t.n))}</button>`).join('')}</div><h2>Statistiques</h2>`);
   app.innerHTML=h;bindGoalDel(valPage);animBars();
+  $$('[data-vg]').forEach(b=>b.onclick=()=>{if(addGoal({type:'val_rank',target:+b.dataset.vg,start:(M.tier_id-3)*100+(M.rr||0)}))valPage()});
   $$('#vq button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('valQ',b.dataset.q);valPage()});
   $$('tr[data-v]').forEach(r=>r.onclick=()=>go('#/valorant/'+r.dataset.v));
   chart($('#v1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)),datasets:[lineDS('Points de rang (elo)',H.map(x=>x.elo),'#ff4655')]},options:{plugins:{legend:{display:false},title:{display:true,text:'Elo (100 = 1 palier) — dernières parties classées'},tooltip:{callbacks:{label:c=>`${vTier(H[c.dataIndex].tier)} · ${H[c.dataIndex].rr} RR (${H[c.dataIndex].change>0?'+':''}${H[c.dataIndex].change})`}}}}});
@@ -273,7 +293,7 @@ function rlManual(){
   <h2>Répartition des actions</h2><div class="two"><div class="glass chart"><canvas id="r2"></canvas></div><div class="glass pad"><div class="kv"><span>⚽ Buts</span><span>${fnum(pf.goals_pct,1)} %</span><span>🛡️ Arrêts</span><span>${fnum(pf.saves_pct,1)} %</span><span>🤝 Passes décisives</span><span>${fnum(pf.assists_pct,1)} %</span></div><p class="mut" style="font-size:.8rem;margin-top:.5rem">Part de chaque action dans tes contributions (tracker.gg). Profil plutôt offensif : tu marques plus que tu ne défends.</p></div></div>
   <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>`;
   app.innerHTML=h;bindGoalDel(rlManual);animBars();
-  $$('[data-rg]').forEach(b=>b.onclick=()=>{const p=P.find(x=>x.id==b.dataset.rg);addGoal({type:'rl_rank',playlist:p.id,target:rlNext(p),div:1,start:rlVal(p.tier,p.div)});rlManual()});
+  $$('[data-rg]').forEach(b=>b.onclick=()=>{const p=P.find(x=>x.id==b.dataset.rg);if(addGoal({type:'rl_rank',playlist:p.id,target:rlNext(p),div:1,start:rlVal(p.tier,p.div)}))rlManual()});
   chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),'#3b82f6'),lineDS('Record S38 (654)',H.map(()=>654),'#22c55e',{fill:false,borderDash:[6,4],pointRadius:0})]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
   chart($('#r2'),{type:'doughnut',data:{labels:['Buts','Arrêts','Passes'],datasets:[{data:[pf.goals_pct,pf.saves_pct,pf.assists_pct],backgroundColor:['#3b82f6','#22c55e','#a855f7'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom'}}}});
 }
@@ -561,15 +581,14 @@ function profil(){
 }
 function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0),done=o.done??p>=100;
   const dl0=o.dl??(o.x?.deadline?Math.ceil((new Date(o.x.deadline+'T23:59')-Date.now())/864e5):null);o.dl=dl0;const dl=o.dl!=null&&!(done&&o.dl<0)?`<span class="pill ${o.dl<0&&!done?'warn':''}" style="margin-left:.3rem">${o.dl<0?'Échéance dépassée':o.dl==0?'Aujourd\'hui':'J−'+o.dl}</span>`:'';
-  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?.pending?`<span class="pill warn" style="margin-left:.3rem">${o.x.pending==2?'📲 cet appareil seulement':'⏳ synchro en attente'}</span>`:''}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
+  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?.pending?`<span class="pill warn" style="margin-left:.3rem">${o.x.pending==2?'📲 pas encore synchronisé':'🗑️ suppression à synchroniser'}</span>`:''}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
 const goalsFor=types=>goals().filter(x=>types.includes(x.type)).map(x=>({x,...goalProg(x)}));
-const goalsBlock=(types,title='Objectifs de rang')=>{const G=goalsFor(types);return `<h2>${title}</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:''}<a class="btn ghost full" href="#/objectifs" style="margin-top:.5rem">🎯 ${G.length?'Gérer mes objectifs':'Fixer un objectif de rang'}</a>`};
-const bindGoalDel=re=>$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ? (sur tous tes appareils)')){delGoal(+b.dataset.del);re()}});
+const goalsBlock=(types,title='Objectifs de rang')=>{const G=goalsFor(types);return `<h2>${title}</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:''}${syncBox()}<a class="btn ghost full" href="#/objectifs" style="margin-top:.5rem">🎯 ${G.length?'Gérer mes objectifs':'Fixer un objectif de rang'}</a>`};
+const bindGoalDel=re=>{bindSync();$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ? (sur tous tes appareils)')){delGoal(+b.dataset.del);re()}})};
 function objectifs(){
   const G=goals().map(x=>({x,...goalProg(x)}));
   const opts=D.games.map(g=>`<option value="${g.appid}">${esc(g.name)}</option>`).join('');
-  const pa=new Set(pend().adds.map(g=>g.id)),LG=legacy().filter(g=>!pa.has(+g.id));
-  app.innerHTML=`${LG.length?`<div class="glass pad" style="border-color:var(--warn);margin-bottom:.6rem"><b>📲 ${LG.length} objectif${LG.length>1?'s':''} enregistré${LG.length>1?'s':''} seulement sur cet appareil</b><p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Synchronise-les pour les retrouver sur ton téléphone et ton PC.</p><button class="btn full" id="gsync">🔄 Synchroniser</button></div>`:''}<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
+  app.innerHTML=`${syncBox()}<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
   <h2>Nouvel objectif</h2><form class="glass form" id="gf">
    <label>Type<select id="gt"><option value="game_hours">Heures sur un jeu</option><option value="game_ach">% de succès sur un jeu</option><option value="total_hours">Heures de jeu au total</option><option value="achievements">Nombre de succès Steam</option><option value="level">Niveau de joueur</option><option value="cod_kd">K/D COD Mobile (10 dernières)</option><option value="cod_matches">Parties COD Mobile</option><option value="val_rank">Rang Valorant</option><option value="rl_rank">Rang Rocket League</option><option value="cod_rank">Rang COD Mobile</option></select></label>
    <label id="gl">Jeu<select id="gg">${opts}</select></label>
@@ -580,7 +599,7 @@ function objectifs(){
    <label id="gvl">Cible<input id="gv" type="number" inputmode="decimal" step="any" min="0"></label>
    <label>Échéance (optionnel)<input id="gdl" type="date"></label>
    <button class="btn" type="submit">Ajouter l'objectif</button></form>
-  <p class="mut" style="font-size:.8rem">Les objectifs sont enregistrés dans ton dépôt GitHub : identiques sur tous tes appareils. Ajouter/supprimer ouvre un formulaire pré-rempli à valider (mise à jour sous quelques minutes). La progression se met à jour avec chaque relevé.</p>`;
+  <p class="mut" style="font-size:.8rem">Un objectif ajouté est enregistré tout de suite sur cet appareil. « Synchroniser » l'envoie dans ton dépôt GitHub (goals.json) pour l'avoir sur tous tes appareils. La progression se met à jour avec chaque relevé.</p>`;
   const sugg={game_hours:g=>Math.ceil(((D.games.find(x=>x.appid==g)?.hours)||0)/10)*10+10,game_ach:()=>100,total_hours:()=>Math.ceil(D.totalH/50)*50+50,achievements:()=>Math.ceil(D.ach/50)*50+50,level:()=>D.xp.L+2,cod_kd:()=>1.5,cod_matches:()=>Math.ceil(D.cod.length/10)*10+10};
   const isR=t=>t.endsWith('_rank'),sh=(id,v)=>$(id).style.display=v?'':'none';
   const rankOpts=t=>{if(t=='val_rank'){const c=D.vh?.mmr?.tier_id||3;return VAL_T.map(x=>`<option value="${x.id}"${x.id==Math.min(27,c+1)?' selected':''}>${esc(vTier(x.n))}</option>`).join('')}
@@ -596,7 +615,7 @@ function objectifs(){
       if(t=='cod_rank'){o.mode=$('#gcms').value;const c=(D.ranks[o.mode]||[]).at(-1);if(c)o.start=c.value}
       addGoal(o);return objectifs()}
     const v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,deadline:dl,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
-  bindGoalDel(objectifs);$('#gsync')&&($('#gsync').onclick=()=>{syncLegacy();objectifs()});
+  bindGoalDel(objectifs);
   animBars();
 }
 function activite(){
