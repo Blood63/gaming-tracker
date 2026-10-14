@@ -21,6 +21,7 @@ jobs:
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
           TRN_API_KEY: ${{ secrets.TRN_API_KEY }}
+          HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
       - if: steps.gate.outputs.run == 'true'
         run: python3 tools/fetch_store.py || echo "store fetch failed"
@@ -28,6 +29,6 @@ jobs:
         run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A history *_latest.json store.json
+          git add -A history *_latest.json store.json valorant.json
           git diff --cached --quiet || git commit -m "Snapshot $(date -I)"
           git pull --rebase -q && git push
