@@ -15,6 +15,7 @@ K=os.environ.get("TRN_API_KEY")
 import subprocess, sys
 # Valorant : HenrikDev en priorité (valorant.json) ; tracker.gg seulement en secours
 HENRIK_OK=bool(os.environ.get("HENRIK_API_KEY")) and subprocess.run([sys.executable,f"{D}/tools/fetch_valorant.py"]).returncode==0
+# NB : rocket_league.json = données manuelles (captures tracker.gg) ; ce script n'écrit QUE history/*.jsonl et *_latest.json, jamais rocket_league.json.
 for game,path in [("valorant","valorant/standard/profile/riot/Blood%237629"),("rocket_league","rocket-league/standard/profile/epic/443Blood")]:
     if game=="valorant" and HENRIK_OK: continue
     if not K: save(game,{"status":"skipped","reason":"no TRN_API_KEY; tracker.gg blocks unauthenticated requests"}); continue
