@@ -1,0 +1,35 @@
+name: Modifier mon setup
+description: Ajoute, modifie ou retire un élément de ton matériel gaming.
+title: "Setup – modification"
+labels: ["setup"]
+body:
+  - type: dropdown
+    id: action
+    attributes: { label: Action, options: ["Ajouter", "Modifier", "Retirer"] }
+    validations: { required: true }
+  - type: dropdown
+    id: cat
+    attributes: { label: Catégorie, options: ["PC (tour)", "Périphériques", "Écran & audio", "Mobile", "Consoles", "Autre"] }
+    validations: { required: true }
+  - type: input
+    id: name
+    attributes: { label: Nom, description: "Pour Modifier/Retirer : le nom exact affiché dans l'app", placeholder: "ex. Casque HyperX Cloud III" }
+    validations: { required: true }
+  - type: input
+    id: newname
+    attributes: { label: Nouveau nom (optionnel, pour Modifier) }
+  - type: input
+    id: price
+    attributes: { label: Prix en € (optionnel), placeholder: "ex. 89,99" }
+  - type: input
+    id: date
+    attributes: { label: "Date d'achat (optionnel, AAAA-MM-JJ)" }
+  - type: input
+    id: spec
+    attributes: { label: Caractéristiques (optionnel), placeholder: "ex. 27\" 1440p 180 Hz" }
+  - type: input
+    id: url
+    attributes: { label: Lien produit (optionnel) }
+  - type: textarea
+    id: notes
+    attributes: { label: Notes (optionnel), description: "N'écris pas d'infos personnelles : ce dépôt est public." }
