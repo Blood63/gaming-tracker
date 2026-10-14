@@ -1,0 +1,1968 @@
+{
+ "fetched_at": "2026-10-14T06:53:09.068928+02:00",
+ "apps": {
+  "3159330": {
+   "name": "Assassin’s Creed Shadows",
+   "type": "game",
+   "short_description": "Plongez dans une épopée d'action-aventure au cœur du Japon féodal ! Incarnez une Assassin shinobi meurtrière et un puissant samouraï légendaire tout en explorant un magnifique monde ouvert plongé dans le chaos.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/header.jpg?t=1789746114",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/fe6c8f40f405c8bb3a05788d1316ebd8e3c31b6a/capsule_231x87.jpg?t=1789746114",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/b783388ebdfb08515387d04f43ce9698e7eda526/page_bg_raw.jpg?t=1789746114",
+   "developers": [
+    "Ubisoft Quebec",
+    "Ubisoft Belgrade",
+    "Ubisoft Bordeaux",
+    "Ubisoft Bucharest & Craiova",
+    "Ubisoft Chengdu",
+    "Ubisoft Montpellier",
+    "Ubisoft Montreal",
+    "Ubisoft Osaka",
+    "Ubisoft Philippines",
+    "Ubisoft Shanghai",
+    "Ubisoft Singapore",
+    "Ubisoft Sofia",
+    "Ubisoft Ukraine"
+   ],
+   "publishers": [
+    "Ubisoft"
+   ],
+   "genres": [
+    "Action",
+    "Aventure",
+    "RPG"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Cartes à échanger Steam",
+    "Sous-titres disponibles",
+    "Achats en jeu",
+    "Taille de texte réglable",
+    "Caméra et confort de vue",
+    "Alternatives de couleurs"
+   ],
+   "release_date": "19 mars 2025",
+   "metacritic": null,
+   "price": {
+    "text": "69,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.600x338.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.600x338.jpg?t=1789746114"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.1920x1080.jpg?t=1789746114",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.1920x1080.jpg?t=1789746114"
+   ],
+   "achievements_total": 75,
+   "dlc_count": 2,
+   "dlc": [
+    {
+     "appid": 3362550,
+     "name": "Assassin's Creed Shadows - Traque sur Awaji ",
+     "price": {
+      "text": "24,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3362550/cfcb8cb1b78980966698d929d0496d865d012558/header_french.jpg?t=1764868996",
+     "release": "16 sept. 2025",
+     "url": "https://store.steampowered.com/app/3362550/"
+    },
+    {
+     "appid": 3362570,
+     "name": "Assassin's Creed Shadows - Premium Starter Pack",
+     "price": {
+      "text": "34,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3362570/f1906ce7d2fb7f9f70df8debb06ac53efbe43083/header.jpg?t=1764869126",
+     "release": "19 mars 2025",
+     "url": "https://store.steampowered.com/app/3362570/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/3159330/"
+  },
+  "1449690": {
+   "name": "The Walking Dead: The Telltale Definitive Series",
+   "type": "game",
+   "short_description": "The Walking Dead: The Telltale Definitive Series regroupe les 4 saisons, 400 Days et The Walking Dead: Michonne, ce qui représente 50 heures de jeu réparties en 23 épisodes uniques.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/header.jpg?t=1760651835",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/capsule_231x87.jpg?t=1760651835",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/page_bg_raw.jpg?t=1760651835",
+   "developers": [
+    "Skybound Games"
+   ],
+   "publishers": [
+    "Skybound Games"
+   ],
+   "genres": [
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Partage familial"
+   ],
+   "release_date": "29 oct. 2020",
+   "metacritic": null,
+   "price": {
+    "text": "48,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_235eb54ee3c3fa2075e7d1424547e780cf59d48f.600x338.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_eede7e5373bc1bce57cc0c4f7cfeaca3d7fb234f.600x338.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_cb65600711e471b56af95f11e0f771d512765239.600x338.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_6516a5046534828009a9a37b21fe4fc6913b1c9f.600x338.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_d2212f80e78b6d7af99bc17802a8e76dc575cbf3.600x338.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_4c9727d44c50dd749d3f72567ea3cb30e879ce2a.600x338.jpg?t=1760651835"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_235eb54ee3c3fa2075e7d1424547e780cf59d48f.1920x1080.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_eede7e5373bc1bce57cc0c4f7cfeaca3d7fb234f.1920x1080.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_cb65600711e471b56af95f11e0f771d512765239.1920x1080.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_6516a5046534828009a9a37b21fe4fc6913b1c9f.1920x1080.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_d2212f80e78b6d7af99bc17802a8e76dc575cbf3.1920x1080.jpg?t=1760651835",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_4c9727d44c50dd749d3f72567ea3cb30e879ce2a.1920x1080.jpg?t=1760651835"
+   ],
+   "achievements_total": 23,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/1449690/"
+  },
+  "532210": {
+   "name": "Life is Strange 2",
+   "type": "game",
+   "short_description": "Sean et Daniel Diaz fuient leur foyer à la suite d'une tragédie. Craignant la police et devant gérer la télékinésie de Daniel, les frères veulent se réfugier au Mexique. Ils rencontrent de nouveaux amis et de nouveaux défis à chaque étape.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/header_french.jpg?t=1771868183",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/capsule_231x87_french.jpg?t=1771868183",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/page_bg_raw.jpg?t=1771868183",
+   "developers": [
+    "DONTNOD Entertainment",
+    "Feral Interactive (Mac)",
+    "Feral Interactive (Linux)"
+   ],
+   "publishers": [
+    "Square Enix",
+    "Feral Interactive (Mac)",
+    "Feral Interactive (Linux)"
+   ],
+   "genres": [
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Cartes à échanger Steam",
+    "Taille de texte réglable",
+    "Contrôle du volume différencié",
+    "Son stéréo",
+    "Options de sous-titres"
+   ],
+   "release_date": "26 sept. 2018",
+   "metacritic": null,
+   "price": {
+    "free": true,
+    "text": "Gratuit"
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_3907bb1ea3aac991b272ce9a7bd5b492fc7a768d.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_1fd2aad8a9192812c737b9c14205ac1b8c233e2b.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_021293ca9dfe84afb3f003b9d811ef9c77ace1dc.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_04e93367ad9c23b5b88b9d65bae7dc9cdfa0caea.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_04836d822a0c3684103841e6c458e49e01e10651.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_033365bdbf57b175dd79a227c670991eddd44d17.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_dfe35b3dc7931a4e241dd6623c12de11e823ccd0.600x338.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_021ed6db7a94e986f5bbfc597dbca81fa321898a.600x338.jpg?t=1771868183"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_3907bb1ea3aac991b272ce9a7bd5b492fc7a768d.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_1fd2aad8a9192812c737b9c14205ac1b8c233e2b.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_021293ca9dfe84afb3f003b9d811ef9c77ace1dc.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_04e93367ad9c23b5b88b9d65bae7dc9cdfa0caea.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_04836d822a0c3684103841e6c458e49e01e10651.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_033365bdbf57b175dd79a227c670991eddd44d17.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_dfe35b3dc7931a4e241dd6623c12de11e823ccd0.1920x1080.jpg?t=1771868183",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/532210/ss_021ed6db7a94e986f5bbfc597dbca81fa321898a.1920x1080.jpg?t=1771868183"
+   ],
+   "achievements_total": 46,
+   "dlc_count": 6,
+   "dlc": [
+    {
+     "appid": 895490,
+     "name": "Life is Strange 2 - Episode 2",
+     "price": {
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895490/header.jpg?t=1728485584",
+     "release": "24 janv. 2019",
+     "url": "https://store.steampowered.com/app/895490/"
+    },
+    {
+     "appid": 895491,
+     "name": "Life is Strange 2 - Episode 3",
+     "price": {
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895491/header.jpg?t=1585231190",
+     "release": "9 mai 2019",
+     "url": "https://store.steampowered.com/app/895491/"
+    },
+    {
+     "appid": 895492,
+     "name": "Life is Strange 2 - Episode 4",
+     "price": {
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895492/header.jpg?t=1585231241",
+     "release": "22 aout 2019",
+     "url": "https://store.steampowered.com/app/895492/"
+    },
+    {
+     "appid": 895493,
+     "name": "Life is Strange 2 - Episode 5",
+     "price": {
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895493/header.jpg?t=1585231285",
+     "release": "3 déc. 2019",
+     "url": "https://store.steampowered.com/app/895493/"
+    },
+    {
+     "appid": 872080,
+     "name": "Life is Strange 2 - Mascot Bundle DLC",
+     "price": {
+      "text": "1,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/872080/header.jpg?t=1585231370",
+     "release": "27 sept. 2018",
+     "url": "https://store.steampowered.com/app/872080/"
+    },
+    {
+     "appid": 1181740,
+     "name": "Life is Strange 2 - Japanese Language Pack",
+     "price": {
+      "free": true,
+      "text": "Gratuit"
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1181740/header.jpg?t=1586362257",
+     "release": "25 mars 2020",
+     "url": "https://store.steampowered.com/app/1181740/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/532210/"
+  },
+  "960990": {
+   "name": "Beyond: Two Souls",
+   "type": "game",
+   "short_description": "Thriller psychologique unique et rempli d'action mettant en scène les acteurs Elliot PAGE et Willem DAFOE, Beyond: Two Souls™ vous embarque dans une aventure passionnante à travers le monde, en immersion dans l'incroyable vie de Jodie Holmes.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/header.jpg?t=1667468566",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/capsule_231x87.jpg?t=1667468566",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/page_bg_raw.jpg?t=1667468566",
+   "developers": [
+    "Quantic Dream"
+   ],
+   "publishers": [
+    "Quantic Dream"
+   ],
+   "genres": [
+    "Action",
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Multijoueur",
+    "Coopération",
+    "Coop locale et écran partagé",
+    "Écran partagé",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Steam Cloud"
+   ],
+   "release_date": "18 juin 2020",
+   "metacritic": {
+    "score": 76,
+    "url": "https://www.metacritic.com/game/pc/beyond-two-souls?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "text": "19,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_5da0bcf3be8205d656c271217ead8f0190bd5234.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_d278c24710d2ef6ae168a9c79fd7ba0b993131b1.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_0e78f46846210c76d6d0f85364dc61ab147bb87b.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_e5402579b2b9fbd560074f08ee18868cfb44ca25.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_bb9ee3002af4434f79ea3b3badf637f5dfd869f8.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_c81436069ba51babac024ac6ab2d075021388b09.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_e95a83156396da85dc7e20143c6db377efb9d38e.600x338.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_2469af3a713e217f19bbbb6c3cca216f5d97b382.600x338.jpg?t=1667468566"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_5da0bcf3be8205d656c271217ead8f0190bd5234.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_d278c24710d2ef6ae168a9c79fd7ba0b993131b1.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_0e78f46846210c76d6d0f85364dc61ab147bb87b.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_e5402579b2b9fbd560074f08ee18868cfb44ca25.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_bb9ee3002af4434f79ea3b3badf637f5dfd869f8.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_c81436069ba51babac024ac6ab2d075021388b09.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_e95a83156396da85dc7e20143c6db377efb9d38e.1920x1080.jpg?t=1667468566",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_2469af3a713e217f19bbbb6c3cca216f5d97b382.1920x1080.jpg?t=1667468566"
+   ],
+   "achievements_total": 45,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/960990/"
+  },
+  "730": {
+   "name": "Counter-Strike 2",
+   "type": "game",
+   "short_description": "Counter-Strike, c'est l'expérience compétitive par excellence qui réunit des millions de personnes depuis plus de vingt ans. L'heure est venue d'écrire le prochain chapitre de l'histoire de Counter-Strike. Faites place à Counter-Strike 2.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg?t=1791824795",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_231x87.jpg?t=1791824795",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/page_bg_raw.jpg?t=1791824795",
+   "developers": [
+    "Valve"
+   ],
+   "publishers": [
+    "Valve"
+   ],
+   "genres": [
+    "Action",
+    "Free-to-play"
+   ],
+   "categories": [
+    "Multijoueur",
+    "Multijoueur multiplateforme",
+    "Cartes à échanger Steam",
+    "Workshop Steam",
+    "Workshop Steam",
+    "Achats en jeu",
+    "Taille de texte réglable",
+    "Caméra et confort de vue"
+   ],
+   "release_date": "21 aout 2012",
+   "metacritic": null,
+   "price": {
+    "free": true,
+    "text": "Gratuit"
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/9c8b8fd6ebb2c84a1c38541369e6c05db7f1fbe0/ss_9c8b8fd6ebb2c84a1c38541369e6c05db7f1fbe0.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/4ef95eed5fcd98c576bf13e024bc6c845b622132/ss_4ef95eed5fcd98c576bf13e024bc6c845b622132.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_13bb35638c0267759276f511ee97064773b37a51.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_0f8cf82d019c614760fd20801f2bb4001da7ea77.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_ef82850f036dac5772cb07dbc2d1116ea13eb163.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_76f6730dbb911650ba1f41c8e5b4bac638b5beea.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_808cdd373d78c3cf3a78e7026ebb1a15895e0670.600x338.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_ef98db5d5a4d877531a5567df082b0fb62d75c80.600x338.jpg?t=1791824795"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/9c8b8fd6ebb2c84a1c38541369e6c05db7f1fbe0/ss_9c8b8fd6ebb2c84a1c38541369e6c05db7f1fbe0.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/4ef95eed5fcd98c576bf13e024bc6c845b622132/ss_4ef95eed5fcd98c576bf13e024bc6c845b622132.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_13bb35638c0267759276f511ee97064773b37a51.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_0f8cf82d019c614760fd20801f2bb4001da7ea77.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_ef82850f036dac5772cb07dbc2d1116ea13eb163.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_76f6730dbb911650ba1f41c8e5b4bac638b5beea.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_808cdd373d78c3cf3a78e7026ebb1a15895e0670.1920x1080.jpg?t=1791824795",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_ef98db5d5a4d877531a5567df082b0fb62d75c80.1920x1080.jpg?t=1791824795"
+   ],
+   "achievements_total": 1,
+   "dlc_count": 1,
+   "dlc": [
+    {
+     "appid": 2678630,
+     "name": "Counter-Strike 2 Soundtrack",
+     "price": {
+      "free": true,
+      "text": "Gratuit"
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2678630/header.jpg?t=1788971306",
+     "release": "",
+     "url": "https://store.steampowered.com/app/2678630/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/730/"
+  },
+  "1888930": {
+   "name": "The Last of Us™ Part I",
+   "type": "game",
+   "short_description": "Découvrez le jeu aux multiples récompenses qui a inspiré la série TV à succès. Menez Joel et Ellie à travers une Amérique post-apocalyptique, et rencontrez des alliés et ennemis inoubliables dans The Last of Us™.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/header.jpg?t=1750959031",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/capsule_231x87.jpg?t=1750959031",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/page_bg_raw.jpg?t=1750959031",
+   "developers": [
+    "Naughty Dog LLC",
+    "Iron Galaxy Studios"
+   ],
+   "publishers": [
+    "PlayStation Publishing LLC"
+   ],
+   "genres": [
+    "Action",
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Cartes à échanger Steam",
+    "Taille de texte réglable",
+    "Caméra et confort de vue",
+    "Alternatives de couleurs",
+    "Contrôle du volume différencié"
+   ],
+   "release_date": "28 mars 2023",
+   "metacritic": null,
+   "price": {
+    "text": "59,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_3f1805ecddafacee7f61f87cb8e4624435a83ee3.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_89fffc2857dcae29dee2a09f1be33d745610e19d.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_8cd55ab975b2e47f4d4d9a0da4ae6948040ef807.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_f4829000d3677a9b5b2f234482a7deff12b31ac9.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_3bed642215856b863799884f6f11671a1ef014d4.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_a80060b89b2c81121c2d7a3fc2a3b13ddc18a0a6.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_412d9b0e95b40f3111b5b7d830c4bf6354ed42a6.600x338.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_98b476104b239764ba2a3280b1a9e09a24701041.600x338.jpg?t=1750959031"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_3f1805ecddafacee7f61f87cb8e4624435a83ee3.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_89fffc2857dcae29dee2a09f1be33d745610e19d.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_8cd55ab975b2e47f4d4d9a0da4ae6948040ef807.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_f4829000d3677a9b5b2f234482a7deff12b31ac9.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_3bed642215856b863799884f6f11671a1ef014d4.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_a80060b89b2c81121c2d7a3fc2a3b13ddc18a0a6.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_412d9b0e95b40f3111b5b7d830c4bf6354ed42a6.1920x1080.jpg?t=1750959031",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_98b476104b239764ba2a3280b1a9e09a24701041.1920x1080.jpg?t=1750959031"
+   ],
+   "achievements_total": 29,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/1888930/"
+  },
+  "1672500": {
+   "name": "GUNDAM BREAKER 4",
+   "type": "game",
+   "short_description": "Créez votre Gundam ultime dans le nouveau Gundam Breaker ! Avec plus d'éléments personnalisables que jamais, vous pouvez enfin construire le Gunpla idéal Mettez-le à l'épreuve grâce au nouveau système de combat à deux armes, et détachez des pièces de vos ennemis pour les ajouter à votre collection.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/header.jpg?t=1788195356",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/capsule_231x87.jpg?t=1788195356",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/page_bg_raw.jpg?t=1788195356",
+   "developers": [
+    "CRAFTS & MEISTER Co., Ltd."
+   ],
+   "publishers": [
+    "Bandai Namco Entertainment Inc."
+   ],
+   "genres": [
+    "Action",
+    "RPG"
+   ],
+   "categories": [
+    "Solo",
+    "Multijoueur",
+    "Coopération",
+    "Coopération en ligne",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Prise en charge des manettes DUALSHOCK 4",
+    "Prise en charge des manettes DUALSHOCK 4"
+   ],
+   "release_date": "28 aout 2024",
+   "metacritic": {
+    "score": 80,
+    "url": "https://www.metacritic.com/game/pc/gundam-breaker-4?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "text": "23,99€",
+    "initial": "59,99€",
+    "discount": 60
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_43c49626d2334cf7c6d6d6c86a5203178d037a7c.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_5ef8da8a3ef4f06af25d4f711e21c350bbb7ce63.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_6636989bfd03c8bbb0bb46bd92ab0b96ab6beb48.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_696daf763ded5663dbc80c59772d5dc28c24166f.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_04d2f5507c74a54a22ec6197bc41b2c8cacff1bc.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_a22645eb1c164a19deda97ee209b4fe9c3b713f4.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_1cf6729db419020e676e8265b861f37c5ca43197.600x338.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_ead0e679c13b42b88f8a80bd8791c1cc8df87822.600x338.jpg?t=1788195356"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_43c49626d2334cf7c6d6d6c86a5203178d037a7c.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_5ef8da8a3ef4f06af25d4f711e21c350bbb7ce63.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_6636989bfd03c8bbb0bb46bd92ab0b96ab6beb48.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_696daf763ded5663dbc80c59772d5dc28c24166f.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_04d2f5507c74a54a22ec6197bc41b2c8cacff1bc.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_a22645eb1c164a19deda97ee209b4fe9c3b713f4.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_1cf6729db419020e676e8265b861f37c5ca43197.1920x1080.jpg?t=1788195356",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_ead0e679c13b42b88f8a80bd8791c1cc8df87822.1920x1080.jpg?t=1788195356"
+   ],
+   "achievements_total": 51,
+   "dlc_count": 16,
+   "dlc": [
+    {
+     "appid": 2884450,
+     "name": "GUNDAM BREAKER 4 Season Pass",
+     "price": {
+      "text": "20,99€",
+      "initial": "29,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884450/header.jpg?t=1788195365",
+     "release": "28 aout 2024",
+     "url": "https://store.steampowered.com/app/2884450/"
+    },
+    {
+     "appid": 3498540,
+     "name": "GUNDAM BREAKER 4 - Builder and Power-Up Set",
+     "price": {
+      "text": "9,74€",
+      "initial": "14,99€",
+      "discount": 35
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498540/b7f474d129382825dffa0821bddd112c5403f17f/header.jpg?t=1788195441",
+     "release": "26 mars 2025",
+     "url": "https://store.steampowered.com/app/3498540/"
+    },
+    {
+     "appid": 3498520,
+     "name": "GUNDAM BREAKER 4 - Builders' Vault Bundle",
+     "price": {
+      "text": "6,99€",
+      "initial": "9,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498520/ea7290d50fbba41cd7ca451413670a635f4de522/header.jpg?t=1788290714",
+     "release": "26 mars 2025",
+     "url": "https://store.steampowered.com/app/3498520/"
+    },
+    {
+     "appid": 3498530,
+     "name": "GUNDAM BREAKER 4 - Power-up Booster Bundle",
+     "price": {
+      "text": "4,19€",
+      "initial": "5,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498530/2873257601dc0b75cf66c8234cd16296e9a55d24/header.jpg?t=1788195447",
+     "release": "26 mars 2025",
+     "url": "https://store.steampowered.com/app/3498530/"
+    },
+    {
+     "appid": 2884460,
+     "name": "GUNDAM BREAKER 4 Diorama Pack Set",
+     "price": {
+      "text": "9,74€",
+      "initial": "14,99€",
+      "discount": 35
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884460/header.jpg?t=1788195411",
+     "release": "28 aout 2024",
+     "url": "https://store.steampowered.com/app/2884460/"
+    },
+    {
+     "appid": 2884330,
+     "name": "GUNDAM BREAKER 4 - Story Mission DLC 1 - GO! RESTART!!",
+     "price": {
+      "text": "4,89€",
+      "initial": "6,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884330/header.jpg?t=1788195371",
+     "release": "23 oct. 2024",
+     "url": "https://store.steampowered.com/app/2884330/"
+    },
+    {
+     "appid": 2884340,
+     "name": "GUNDAM BREAKER 4 - Story Mission DLC 2 - BRAVE DIVE",
+     "price": {
+      "text": "4,89€",
+      "initial": "6,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884340/header.jpg?t=1788195376",
+     "release": "30 oct. 2024",
+     "url": "https://store.steampowered.com/app/2884340/"
+    },
+    {
+     "appid": 2884350,
+     "name": "GUNDAM BREAKER 4 - Story Mission DLC 3 - BATTLE TOURNAMENT",
+     "price": {
+      "text": "4,89€",
+      "initial": "6,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884350/header.jpg?t=1788195390",
+     "release": "6 nov. 2024",
+     "url": "https://store.steampowered.com/app/2884350/"
+    },
+    {
+     "appid": 2884360,
+     "name": "GUNDAM BREAKER 4 - Story Mission DLC 4 - BATTLE FIERCELY",
+     "price": {
+      "text": "4,89€",
+      "initial": "6,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884360/header.jpg?t=1788195394",
+     "release": "13 nov. 2024",
+     "url": "https://store.steampowered.com/app/2884360/"
+    },
+    {
+     "appid": 2884370,
+     "name": "GUNDAM BREAKER 4 - Story Mission DLC 5 - BEYOND BORDERS",
+     "price": {
+      "text": "4,89€",
+      "initial": "6,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884370/header.jpg?t=1788195406",
+     "release": "13 nov. 2024",
+     "url": "https://store.steampowered.com/app/2884370/"
+    },
+    {
+     "appid": 2884390,
+     "name": "GUNDAM BREAKER 4 - Diorama Pack 1 - Colony Set",
+     "price": {
+      "text": "2,79€",
+      "initial": "3,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884390/header.jpg?t=1788195415",
+     "release": "23 oct. 2024",
+     "url": "https://store.steampowered.com/app/2884390/"
+    },
+    {
+     "appid": 2884400,
+     "name": "GUNDAM BREAKER 4 - Diorama Pack 2 - Mobile Weapon & Colony Laser Inner Wall",
+     "price": {
+      "text": "2,79€",
+      "initial": "3,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884400/header.jpg?t=1788195419",
+     "release": "30 oct. 2024",
+     "url": "https://store.steampowered.com/app/2884400/"
+    },
+    {
+     "appid": 2884410,
+     "name": "GUNDAM BREAKER 4 - Diorama Pack 3 - Class Room Set & Haro",
+     "price": {
+      "text": "2,79€",
+      "initial": "3,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884410/header.jpg?t=1788195421",
+     "release": "6 nov. 2024",
+     "url": "https://store.steampowered.com/app/2884410/"
+    },
+    {
+     "appid": 2884420,
+     "name": "GUNDAM BREAKER 4 - Diorama Pack 4 - Beach Set & Effect",
+     "price": {
+      "text": "2,79€",
+      "initial": "3,99€",
+      "discount": 30
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884420/header.jpg?t=1788195427",
+     "release": "13 nov. 2024",
+     "url": "https://store.steampowered.com/app/2884420/"
+    },
+    {
+     "appid": 3085970,
+     "name": "GUNDAM BREAKER 4 - Breaker Booster x 100",
+     "price": {
+      "text": "1,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3085970/header.jpg?t=1788195431",
+     "release": "28 aout 2024",
+     "url": "https://store.steampowered.com/app/3085970/"
+    },
+    {
+     "appid": 3085980,
+     "name": "GUNDAM BREAKER 4 - Breaker Booster x 500",
+     "price": {
+      "text": "4,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3085980/header.jpg?t=1788195434",
+     "release": "28 aout 2024",
+     "url": "https://store.steampowered.com/app/3085980/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/1672500/"
+  },
+  "845070": {
+   "name": "The Awesome Adventures of Captain Spirit",
+   "type": "game",
+   "short_description": "Vous avez déjà rêvé d'être un super-héros ? Voici Chris, un garçon de 9 ans plein d'imagination qui part dans des aventures fantastiques sous les traits de son alter-ego, l'extraordinaire Captain Spirit ! Démo gratuite se déroulant dans l'univers de Life is Strange et liée à Life is Strange 2.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/header_french.jpg?t=1728485234",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/capsule_231x87_french.jpg?t=1728485234",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/page_bg_raw.jpg?t=1728485234",
+   "developers": [
+    "DONTNOD Entertainment"
+   ],
+   "publishers": [
+    "Square Enix"
+   ],
+   "genres": [
+    "Aventure",
+    "Free-to-play"
+   ],
+   "categories": [
+    "Solo",
+    "Compat. contrôleurs complète",
+    "Steam Cloud",
+    "Remote Play sur télévision",
+    "Partage familial"
+   ],
+   "release_date": "25 juin 2018",
+   "metacritic": {
+    "score": 79,
+    "url": "https://www.metacritic.com/game/pc/the-awesome-adventures-of-captain-spirit?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "free": true,
+    "text": "Gratuit"
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_e6b7ea91322861d96352889370c4934c727dc425.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_27db6c62522dddc1932215fc80fe9ec68db0c63f.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_4f61a92a3e24f998b744839418c47bc81d1dd26b.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_d38258538c797c0c9cd7740ef27b0d439cf31e5e.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_2f6ea743adf20bb5ef7577a73567d8ee1ec97352.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_44ebc2e6f8293f5b2619596f78ea00c0a3867ac9.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_5cd64860d7839452843c799cec530126ef82d588.600x338.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_7b3e256cc46d78b7af3fd600457fc91fa94acdea.600x338.jpg?t=1728485234"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_e6b7ea91322861d96352889370c4934c727dc425.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_27db6c62522dddc1932215fc80fe9ec68db0c63f.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_4f61a92a3e24f998b744839418c47bc81d1dd26b.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_d38258538c797c0c9cd7740ef27b0d439cf31e5e.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_2f6ea743adf20bb5ef7577a73567d8ee1ec97352.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_44ebc2e6f8293f5b2619596f78ea00c0a3867ac9.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_5cd64860d7839452843c799cec530126ef82d588.1920x1080.jpg?t=1728485234",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/845070/ss_7b3e256cc46d78b7af3fd600457fc91fa94acdea.1920x1080.jpg?t=1728485234"
+   ],
+   "achievements_total": null,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/845070/"
+  },
+  "945360": {
+   "name": "Among Us",
+   "type": "game",
+   "short_description": "Travail d'équipe et trahison sont les maîtres mots dans ce party-game local et en ligne pour 4 à 15 joueurs... dans l'espace !",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/header.jpg?t=1787088490",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/capsule_231x87.jpg?t=1787088490",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/page_bg_raw.jpg?t=1787088490",
+   "developers": [
+    "Innersloth"
+   ],
+   "publishers": [
+    "Innersloth"
+   ],
+   "genres": [
+    "Occasionnel"
+   ],
+   "categories": [
+    "Multijoueur",
+    "PvP",
+    "JcJ en ligne",
+    "JcJ en LAN",
+    "Coopération",
+    "Coopération en ligne",
+    "Coop en LAN",
+    "Multijoueur multiplateforme"
+   ],
+   "release_date": "16 nov. 2018",
+   "metacritic": {
+    "score": 85,
+    "url": "https://www.metacritic.com/game/pc/among-us?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "text": "2,69€",
+    "initial": "4,49€",
+    "discount": 40
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_b7374128e5b786a302a716bca038d604b00ffe46.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_719484b5e0314cc2ae43793786448e032056a31d.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_ffd9c8926cbd7fce3ca5e5efb4399c47bb196bc8.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_1fbd9dc9fd6a2710d233a088ef426a6d78fcf884.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_9d11502fa973580a82b532b25f1901b8425c28f9.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_17be75e178e3520c986504504ada8535de19cc0d.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_a1872c1c594ad4e5885d248516919d85243d9c1f.600x338.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_7ccc894b8f95091f608fa012450549091cce2423.600x338.jpg?t=1787088490"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_b7374128e5b786a302a716bca038d604b00ffe46.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_719484b5e0314cc2ae43793786448e032056a31d.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_ffd9c8926cbd7fce3ca5e5efb4399c47bb196bc8.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_1fbd9dc9fd6a2710d233a088ef426a6d78fcf884.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_9d11502fa973580a82b532b25f1901b8425c28f9.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_17be75e178e3520c986504504ada8535de19cc0d.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_a1872c1c594ad4e5885d248516919d85243d9c1f.1920x1080.jpg?t=1787088490",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_7ccc894b8f95091f608fa012450549091cce2423.1920x1080.jpg?t=1787088490"
+   ],
+   "achievements_total": 33,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/945360/"
+  },
+  "4126040": {
+   "name": "Aniimo",
+   "type": "game",
+   "short_description": "Aniimo est un RPG en monde ouvert nouvelle génération de capture de créatures. Explorez un vaste continent, fusionnez avec des Aniimos uniques pour débloquer de nouvelles capacités, et rencontrez d'autres Nomades pour vivre des combats palpitants et percer les mystères de ce monde.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/bf9b76d25ac135baf8f313d9a095e754fd2e950b/header.jpg?t=1791771029",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/9cd26f736939c12a37f54cd3a49a9c08a318ec03/capsule_231x87.jpg?t=1791771029",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/437120a74f1cb3a7dd315852485f645e49787967/page_bg_raw.jpg?t=1791771029",
+   "developers": [
+    "Pawprint Studio"
+   ],
+   "publishers": [
+    "Pawprint Studio"
+   ],
+   "genres": [
+    "Action",
+    "Aventure",
+    "Massivement multijoueur",
+    "RPG",
+    "Simulation",
+    "Stratégie",
+    "Free-to-play"
+   ],
+   "categories": [
+    "Solo",
+    "Multijoueur",
+    "PvP",
+    "JcJ en ligne",
+    "Coopération",
+    "Coopération en ligne",
+    "Multijoueur multiplateforme",
+    "Succès Steam"
+   ],
+   "release_date": "15 sept. 2026",
+   "metacritic": null,
+   "price": {
+    "free": true,
+    "text": "Gratuit"
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.600x338.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.600x338.jpg?t=1791771029"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.1920x1080.jpg?t=1791771029",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.1920x1080.jpg?t=1791771029"
+   ],
+   "achievements_total": 64,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/4126040/"
+  },
+  "312840": {
+   "name": "Fahrenheit: Indigo Prophecy Remastered",
+   "type": "game",
+   "short_description": "Fahrenheit (known as Indigo Prophecy in North America) was a breakthrough in interactive narrative. This newly remastered edition features updated textures in HD, expanded controller support, and is based on the uncut and uncensored international version of the game.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/header.jpg?t=1715614331",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/capsule_231x87.jpg?t=1715614331",
+   "background": "https://store.akamai.steamstatic.com/images/storepagebackground/app/312840?t=1715614331",
+   "developers": [
+    "Quantic Dream",
+    "Aspyr Media (remastered version)"
+   ],
+   "publishers": [
+    "Quantic Dream"
+   ],
+   "genres": [
+    "Aventure",
+    "RPG"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Cartes à échanger Steam",
+    "Steam Cloud",
+    "Partage familial"
+   ],
+   "release_date": "28 janv. 2015",
+   "metacritic": null,
+   "price": {
+    "text": "9,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_797fa9da2bfbf114cdd19007c0a839b806390aef.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_857d61b4bfc38e16931c00547fc52e865fdb91d1.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_bad4f8ac7edab9cf31f7a8737637170efa3e16f6.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_9f7ada0d31e3b0955e9db1c7bf11cca9205a7be2.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_8e064921c944a17d45ebba6e5ccc46f795deb2a3.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_fd542f036bac206ed519b6e472ae15d791f1a234.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_9b56aa15396e9db9d2ff1d4c2d42fbe33335a798.600x338.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_d005a341944c6baec7cc04dcbf348b76be21c57c.600x338.jpg?t=1715614331"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_797fa9da2bfbf114cdd19007c0a839b806390aef.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_857d61b4bfc38e16931c00547fc52e865fdb91d1.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_bad4f8ac7edab9cf31f7a8737637170efa3e16f6.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_9f7ada0d31e3b0955e9db1c7bf11cca9205a7be2.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_8e064921c944a17d45ebba6e5ccc46f795deb2a3.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_fd542f036bac206ed519b6e472ae15d791f1a234.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_9b56aa15396e9db9d2ff1d4c2d42fbe33335a798.1920x1080.jpg?t=1715614331",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_d005a341944c6baec7cc04dcbf348b76be21c57c.1920x1080.jpg?t=1715614331"
+   ],
+   "achievements_total": 17,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/312840/"
+  },
+  "2373990": {
+   "name": "Solo Leveling: ARISE OVERDRIVE",
+   "type": "game",
+   "short_description": "Solo Leveling, le webtoon aux 14,3 milliards de vues, est désormais un jeu d'action-RPG ! Commencez au rang E et aidez votre héros à évoluer.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/018068a74847b3953278efacca07cfbe537a46c7/header.jpg?t=1781758887",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/0dcee177a49226128b2b90c0b98652079a303d4b/capsule_231x87.jpg?t=1781758887",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/129ec2a5ea9d1fe5d4542fe2969ff57d8aad8fce/page_bg_raw.jpg?t=1781758887",
+   "developers": [
+    "Netmarble Neo"
+   ],
+   "publishers": [
+    "Netmarble"
+   ],
+   "genres": [
+    "Action",
+    "RPG"
+   ],
+   "categories": [
+    "Solo",
+    "Multijoueur",
+    "Coopération",
+    "Coopération en ligne",
+    "Compat. contrôleurs complète",
+    "Prise en charge des manettes DUALSHOCK 4",
+    "Prise en charge des manettes DUALSHOCK 4",
+    "Prise en charge des manettes DualSense"
+   ],
+   "release_date": "24 nov. 2025",
+   "metacritic": null,
+   "price": {
+    "text": "39,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/6e2f1aa804ce7e85757117e976c22ca0e7f90036/ss_6e2f1aa804ce7e85757117e976c22ca0e7f90036.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/eeb045f2d753939f780fd0ac5f162bc6c93d36ea/ss_eeb045f2d753939f780fd0ac5f162bc6c93d36ea.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/9122156e9ce4eb2ddbfe9b5f23e4058885eb154c/ss_9122156e9ce4eb2ddbfe9b5f23e4058885eb154c.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/4d8fabc0435dda2245f7d2c4b653b35bd8514c65/ss_4d8fabc0435dda2245f7d2c4b653b35bd8514c65.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/32a7ab88d959fad2e26374f16e2e769135468588/ss_32a7ab88d959fad2e26374f16e2e769135468588.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/a830e6794df0358da283be9f07240bd2c38ff457/ss_a830e6794df0358da283be9f07240bd2c38ff457.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/ba7853c00aefb5d1590e75d2bdfab26dcd414407/ss_ba7853c00aefb5d1590e75d2bdfab26dcd414407.600x338.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/781f8dad22220165704b0a7741b3324527597e67/ss_781f8dad22220165704b0a7741b3324527597e67.600x338.jpg?t=1781758887"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/6e2f1aa804ce7e85757117e976c22ca0e7f90036/ss_6e2f1aa804ce7e85757117e976c22ca0e7f90036.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/eeb045f2d753939f780fd0ac5f162bc6c93d36ea/ss_eeb045f2d753939f780fd0ac5f162bc6c93d36ea.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/9122156e9ce4eb2ddbfe9b5f23e4058885eb154c/ss_9122156e9ce4eb2ddbfe9b5f23e4058885eb154c.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/4d8fabc0435dda2245f7d2c4b653b35bd8514c65/ss_4d8fabc0435dda2245f7d2c4b653b35bd8514c65.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/32a7ab88d959fad2e26374f16e2e769135468588/ss_32a7ab88d959fad2e26374f16e2e769135468588.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/a830e6794df0358da283be9f07240bd2c38ff457/ss_a830e6794df0358da283be9f07240bd2c38ff457.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/ba7853c00aefb5d1590e75d2bdfab26dcd414407/ss_ba7853c00aefb5d1590e75d2bdfab26dcd414407.1920x1080.jpg?t=1781758887",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/781f8dad22220165704b0a7741b3324527597e67/ss_781f8dad22220165704b0a7741b3324527597e67.1920x1080.jpg?t=1781758887"
+   ],
+   "achievements_total": 58,
+   "dlc_count": 3,
+   "dlc": [
+    {
+     "appid": 4710940,
+     "name": "Solo Leveling: ARISE OVERDRIVE - Pack spécial Raid de l'île de Jeju",
+     "price": {
+      "text": "4,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4710940/d3447a59653715fc361ec0fb70834e541aade215/header.jpg?t=1781749430",
+     "release": "17 juin 2026",
+     "url": "https://store.steampowered.com/app/4710940/"
+    },
+    {
+     "appid": 4240370,
+     "name": "Solo Leveling: ARISE OVERDRIVE - Pack cadeau de costume de Noël",
+     "price": {
+      "free": true,
+      "text": "Gratuit"
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4240370/6718a4cf0e7d1442468608221066d7b49fcb5fd9/header.jpg?t=1781749436",
+     "release": "17 déc. 2025",
+     "url": "https://store.steampowered.com/app/4240370/"
+    },
+    {
+     "appid": 3638570,
+     "name": "Solo Leveling: ARISE OVERDRIVE - Deluxe Upgrade",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3638570/5de5cfb99d1f04c58e405c9ce397f864cf3ead23/header.jpg?t=1781749443",
+     "release": "24 nov. 2025",
+     "url": "https://store.steampowered.com/app/3638570/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/2373990/"
+  },
+  "936790": {
+   "name": "Life is Strange: True Colors",
+   "type": "game",
+   "short_description": "Alex Chen est douée d'un pouvoir d'empathie qui lui permet d'absorber et de manipuler les émotions des autres. Lorsque son frère meurt lors d'un accident, Alex doit l'utiliser pour découvrir la vérité, et révéler des secrets enfouis depuis longtemps.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/header.jpg?t=1771867255",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/capsule_231x87.jpg?t=1771867255",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/page_bg_raw.jpg?t=1771867255",
+   "developers": [
+    "Deck Nine"
+   ],
+   "publishers": [
+    "Square Enix"
+   ],
+   "genres": [
+    "Action",
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Cartes à échanger Steam",
+    "Taille de texte réglable",
+    "Alternatives de couleurs",
+    "#category_contrast_controls",
+    "Contrôle du volume différencié"
+   ],
+   "release_date": "9 sept. 2021",
+   "metacritic": null,
+   "price": {
+    "text": "17,99€",
+    "initial": "59,99€",
+    "discount": 70
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_93afc98cccbc51c1364fedb56548896c69ef3704.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_92b4caae062d5aebe04ab738db4b78d1c623e3c5.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_e5627051a221b6630cb3d9dacc69065fd1a4f8da.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_57a8d1468ecbd7fe2f9629b024dd41ba33187148.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_9d3698ec2b942b399792e158a810c324bc265724.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_2d6ddcab998249ccfe50a485ddab78f6c8754f05.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_7bc096f1671436306b650fbacc82ce476749df1f.600x338.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_5ed82644652a80b5b26310c7f7f55b68186af4ab.600x338.jpg?t=1771867255"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_93afc98cccbc51c1364fedb56548896c69ef3704.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_92b4caae062d5aebe04ab738db4b78d1c623e3c5.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_e5627051a221b6630cb3d9dacc69065fd1a4f8da.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_57a8d1468ecbd7fe2f9629b024dd41ba33187148.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_9d3698ec2b942b399792e158a810c324bc265724.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_2d6ddcab998249ccfe50a485ddab78f6c8754f05.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_7bc096f1671436306b650fbacc82ce476749df1f.1920x1080.jpg?t=1771867255",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_5ed82644652a80b5b26310c7f7f55b68186af4ab.1920x1080.jpg?t=1771867255"
+   ],
+   "achievements_total": 40,
+   "dlc_count": 2,
+   "dlc": [
+    {
+     "appid": 1450571,
+     "name": "Life is Strange: True Colors - Alex Outfit Pack",
+     "price": {
+      "text": "3,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1450571/header.jpg?t=1645714891",
+     "release": "9 sept. 2021",
+     "url": "https://store.steampowered.com/app/1450571/"
+    },
+    {
+     "appid": 1571390,
+     "name": "Life is Strange: True Colors - Deluxe Upgrade",
+     "price": null,
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1571390/header.jpg?t=1645714874",
+     "release": "9 sept. 2021",
+     "url": "https://store.steampowered.com/app/1571390/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/936790/"
+  },
+  "960910": {
+   "name": "Heavy Rain",
+   "type": "game",
+   "short_description": "Découvrez un thriller psychologique aux nombreux rebondissements. Vous êtes à la poursuite du Tueur aux origamis. Alternez entre quatre personnages différents, chacun avec ses propres pistes, pour empêcher le tueur de faire une nouvelle victime.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/header.jpg?t=1675271942",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/capsule_231x87.jpg?t=1675271942",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/page_bg_raw.jpg?t=1675271942",
+   "developers": [
+    "Quantic Dream"
+   ],
+   "publishers": [
+    "Quantic Dream"
+   ],
+   "genres": [
+    "Action",
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Cartes à échanger Steam",
+    "Steam Cloud",
+    "Partage familial"
+   ],
+   "release_date": "18 juin 2020",
+   "metacritic": {
+    "score": 75,
+    "url": "https://www.metacritic.com/game/pc/heavy-rain?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "text": "19,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_d7ed4a5e3d155e23331902909f56f90c752c3643.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_f123d7bbd8c3e55ad42b3048be0d9685cab4bc6a.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_7cbb3063e3473239471d26fb54a5511e5a30ef3d.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_1d8c498b4e3efc5faf10e327dfc2397146a04c75.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_a6a15c998812ef671964cd8dfb0c4a57707b8026.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_b9d75522e0436b133cc8a5b4b140c464e61fc0c7.600x338.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_ae2b1381c68d8d909f02b9005ae97a2d818b4c93.600x338.jpg?t=1675271942"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_d7ed4a5e3d155e23331902909f56f90c752c3643.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_f123d7bbd8c3e55ad42b3048be0d9685cab4bc6a.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_7cbb3063e3473239471d26fb54a5511e5a30ef3d.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_1d8c498b4e3efc5faf10e327dfc2397146a04c75.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_a6a15c998812ef671964cd8dfb0c4a57707b8026.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_b9d75522e0436b133cc8a5b4b140c464e61fc0c7.1920x1080.jpg?t=1675271942",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_ae2b1381c68d8d909f02b9005ae97a2d818b4c93.1920x1080.jpg?t=1675271942"
+   ],
+   "achievements_total": 56,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/960910/"
+  },
+  "1180660": {
+   "name": "Tell Me Why",
+   "type": "game",
+   "short_description": "Tell Me Why est le jeu d'aventure épisodique aux multiples récompenses développé par Dontnod Entertainement, dans lequel des jumeaux se servent de leur lien surnaturel pour découvrir la vérité sur leur passé troublé.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/header.jpg?t=1780349055",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/capsule_231x87.jpg?t=1780349055",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/page_bg_raw.jpg?t=1780349055",
+   "developers": [
+    "DONTNOD Entertainment"
+   ],
+   "publishers": [
+    "Xbox Game Studios"
+   ],
+   "genres": [
+    "Aventure",
+    "Free-to-play"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Sous-titres disponibles",
+    "Steam Cloud",
+    "Partage familial"
+   ],
+   "release_date": "27 aout 2020",
+   "metacritic": null,
+   "price": {
+    "free": true,
+    "text": "Gratuit"
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_b2b4987fc9dbabac780086fb56664ad60cf2e0fd.600x338.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_acc16251124ec3cdf196a9aff9d75d04ee719266.600x338.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_0d822f07dd84e6e2fc0e559d113e0ea58f0e3bfa.600x338.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_08633ddfd27af776c7f507e1b75d94a33e13b4dc.600x338.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_31a6100d39cb25bf4ba9d3da1bec1b9f10be2fbf.600x338.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_2fcfca95f6e49b0222e39290b00ade572148f439.600x338.jpg?t=1780349055"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_b2b4987fc9dbabac780086fb56664ad60cf2e0fd.1920x1080.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_acc16251124ec3cdf196a9aff9d75d04ee719266.1920x1080.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_0d822f07dd84e6e2fc0e559d113e0ea58f0e3bfa.1920x1080.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_08633ddfd27af776c7f507e1b75d94a33e13b4dc.1920x1080.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_31a6100d39cb25bf4ba9d3da1bec1b9f10be2fbf.1920x1080.jpg?t=1780349055",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1180660/ss_2fcfca95f6e49b0222e39290b00ade572148f439.1920x1080.jpg?t=1780349055"
+   ],
+   "achievements_total": 30,
+   "dlc_count": 3,
+   "dlc": [
+    {
+     "appid": 1238430,
+     "name": "Tell Me Why: Chapter 2",
+     "price": {
+      "text": "16,79€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1238430/header.jpg?t=1599151637",
+     "release": "3 sept. 2020",
+     "url": "https://store.steampowered.com/app/1238430/"
+    },
+    {
+     "appid": 1266670,
+     "name": "Tell Me Why: Chapter 3",
+     "price": {
+      "text": "16,79€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1266670/header.jpg?t=1601676756",
+     "release": "10 sept. 2020",
+     "url": "https://store.steampowered.com/app/1266670/"
+    },
+    {
+     "appid": 1432030,
+     "name": "Tell Me Why Original Soundtrack",
+     "price": {
+      "text": "8,19€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1432030/header.jpg?t=1601060453",
+     "release": "25 sept. 2020",
+     "url": "https://store.steampowered.com/app/1432030/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/1180660/"
+  },
+  "1222140": {
+   "name": "Detroit: Become Human",
+   "type": "game",
+   "short_description": "Detroit: Become Human met le destin de l'humanité et des androïdes entre vos mains, dans un futur proche où les machines sont devenues plus intelligentes que les hommes. Tous vos choix ont une incidence sur la suite du jeu, dans l'une des narrations les plus élaborées jamais écrites.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/header.jpg?t=1667468479",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/capsule_231x87.jpg?t=1667468479",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/page_bg_raw.jpg?t=1667468479",
+   "developers": [
+    "Quantic Dream"
+   ],
+   "publishers": [
+    "Quantic Dream"
+   ],
+   "genres": [
+    "Action",
+    "Aventure"
+   ],
+   "categories": [
+    "Solo",
+    "Succès Steam",
+    "Compat. contrôleurs complète",
+    "Steam Cloud",
+    "Remote Play sur télévision",
+    "Partage familial"
+   ],
+   "release_date": "18 juin 2020",
+   "metacritic": {
+    "score": 80,
+    "url": "https://www.metacritic.com/game/pc/detroit-become-human?ftag=MCD-06-10aaa1f"
+   },
+   "price": {
+    "text": "39,99€",
+    "initial": null,
+    "discount": 0
+   },
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9c900def2b1d9a003b7d3e202ea2a7556a36e081.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_3011c05e404043e3bfed1f6de7fe12ffd58ddc9b.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9e6c271b6d11b1d0f35da336fb57b35fed0079d1.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_b1e2a185bea13cccfc662e1286912bcd6f4ee798.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_fbc13a0d5b5b784c053042eb4ea09a30de069b3a.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_b6dc18d77c4be0d851d1c26f1c352988ef5b07a2.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_71d12349ce93190af99dbf48faeae50416d9cbc7.600x338.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_4ba58d269bce7db923575cc033c888cb83cc1cba.600x338.jpg?t=1667468479"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9c900def2b1d9a003b7d3e202ea2a7556a36e081.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_3011c05e404043e3bfed1f6de7fe12ffd58ddc9b.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9e6c271b6d11b1d0f35da336fb57b35fed0079d1.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_b1e2a185bea13cccfc662e1286912bcd6f4ee798.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_fbc13a0d5b5b784c053042eb4ea09a30de069b3a.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_b6dc18d77c4be0d851d1c26f1c352988ef5b07a2.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_71d12349ce93190af99dbf48faeae50416d9cbc7.1920x1080.jpg?t=1667468479",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_4ba58d269bce7db923575cc033c888cb83cc1cba.1920x1080.jpg?t=1667468479"
+   ],
+   "achievements_total": 48,
+   "dlc_count": 0,
+   "dlc": [],
+   "url": "https://store.steampowered.com/app/1222140/"
+  },
+  "1938090": {
+   "name": "Call of Duty®",
+   "type": "game",
+   "short_description": "L'expérience Call of Duty® prend en charge Modern Warfare® 4, Black Ops 7 et Call of Duty®: Warzone™.",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1791569961",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/0ac3cc02398b9db61c8db4fef2e3e1b4b8b66e4b/capsule_231x87.jpg?t=1791569961",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/daf5d7dee8c89ae737aaac6b712288b934ee84dc/page_bg_raw.jpg?t=1791569961",
+   "developers": [
+    "Treyarch",
+    "Raven Software",
+    "Beenox",
+    "High Moon Studios",
+    "Sledgehammer Games",
+    "Infinity Ward",
+    "Activision Shanghai",
+    "Demonware"
+   ],
+   "publishers": [
+    "Activision"
+   ],
+   "genres": [
+    "Action"
+   ],
+   "categories": [
+    "Solo",
+    "Multijoueur",
+    "PvP",
+    "JcJ en ligne",
+    "Coopération",
+    "Coopération en ligne",
+    "Multijoueur multiplateforme",
+    "Succès Steam"
+   ],
+   "release_date": "27 oct. 2022",
+   "metacritic": null,
+   "price": null,
+   "screenshots": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.600x338.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.600x338.jpg?t=1791569961"
+   ],
+   "screenshots_full": [
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.1920x1080.jpg?t=1791569961",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.1920x1080.jpg?t=1791569961"
+   ],
+   "achievements_total": 157,
+   "dlc_count": 46,
+   "dlc": [
+    {
+     "appid": 4200780,
+     "name": "Call of Duty®: Black Ops 7 - Black Cell (Saison 6)",
+     "price": {
+      "text": "29,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4200780/ea83ad7f827b83d7ad53c860d1095ee9fc6d3801/header.jpg?t=1789661341",
+     "release": "17 sept. 2026",
+     "url": "https://store.steampowered.com/app/4200780/"
+    },
+    {
+     "appid": 4512480,
+     "name": "Call of Duty Endowment (C.O.D.E.) Navigateur : Pack Traqueur",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4512480/09b24ec68a57dc282c555de3f8a48c876b17487d/header.jpg?t=1777914034",
+     "release": "4 mai 2026",
+     "url": "https://store.steampowered.com/app/4512480/"
+    },
+    {
+     "appid": 4233760,
+     "name": "Call of Duty®: Black Ops 7 - Force de Commandement : Pack de Départ",
+     "price": {
+      "text": "4,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4233760/a5cf425f8d2ae8053f7f2f799adcf7105432084a/header_french.jpg?t=1773938829",
+     "release": "18 mars 2026",
+     "url": "https://store.steampowered.com/app/4233760/"
+    },
+    {
+     "appid": 4085000,
+     "name": "Call of Duty League™ - Pack d'équipe Boston Breach 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085000/818ac857b9a05a33256629604121a5616710e3b1/header.jpg?t=1765908038",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085000/"
+    },
+    {
+     "appid": 4085010,
+     "name": "Call of Duty League™ - Pack d'équipe Carolina Royal Ravens 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085010/314e69eb45a5818a66306aa99787d4b7c7f35331/header.jpg?t=1765908033",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085010/"
+    },
+    {
+     "appid": 4085020,
+     "name": "Call of Duty League™ - Pack d'équipe Los Angeles Thieves 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085020/5d3856ec105ee06d751716ed8bd811120cd44071/header.jpg?t=1765908034",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085020/"
+    },
+    {
+     "appid": 4085030,
+     "name": "Call of Duty League™ - Pack d'équipe FaZe Vegas 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085030/823d5ba1c7beabdaaed58497a5681dd40576e39e/header.jpg?t=1765908023",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085030/"
+    },
+    {
+     "appid": 4085040,
+     "name": "Call of Duty League™ - Pack d'équipe Miami Heretics 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085040/982d32bb422d6f77ab140964016607ead5ef18e9/header.jpg?t=1765908025",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085040/"
+    },
+    {
+     "appid": 4085060,
+     "name": "Call of Duty League™ - Pack d'équipe G2 Minnesota 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085060/8b0fef12f199e6abf2438097ca0b85560c003058/header.jpg?t=1765908031",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085060/"
+    },
+    {
+     "appid": 4085070,
+     "name": "Call of Duty League™ - Pack d'équipe Cloud9 New York 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085070/bda0b4feaa720b1277744f3f0215bb783aa112a6/header.jpg?t=1765908018",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085070/"
+    },
+    {
+     "appid": 4085080,
+     "name": "Call of Duty League™ - Pack d'équipe Paris Gentle Mates 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085080/4fe8e38f09188cbfccbe2089eb9f604b6dfc7c3a/header.jpg?t=1765908020",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085080/"
+    },
+    {
+     "appid": 4085090,
+     "name": "Call of Duty League™ - Pack d'équipe Riyadh Falcons 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085090/d79228d2eadc97bbfa4c75905bde1353043277f7/header.jpg?t=1765908012",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085090/"
+    },
+    {
+     "appid": 4085110,
+     "name": "Call of Duty League™ - Pack d'équipe Toronto KOI 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085110/17222460cfa04f6b4fe1a9211eec011c8a515105/header.jpg?t=1765908015",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085110/"
+    },
+    {
+     "appid": 4085120,
+     "name": "Call of Duty League™ - Pack d'équipe OpTic Texas 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085120/4707599f00ae9a8f014816fb03945a5d60dd43f1/header.jpg?t=1765908016",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085120/"
+    },
+    {
+     "appid": 4085130,
+     "name": "Call of Duty League™ - Pack d'équipe Vancouver Surge 2026",
+     "price": {
+      "text": "11,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4085130/e2596f2d5f1b53e2eea736590f776a41d9039265/header.jpg?t=1765908011",
+     "release": "16 déc. 2025",
+     "url": "https://store.steampowered.com/app/4085130/"
+    },
+    {
+     "appid": 4098660,
+     "name": "Call of Duty®: Black Ops 7 - Marque de l'arachnide : Pack de Départ",
+     "price": {
+      "text": "4,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4098660/6655a19eaf990d92b4df2d11534a3aa3405e937d/header.jpg?t=1765481005",
+     "release": "11 déc. 2025",
+     "url": "https://store.steampowered.com/app/4098660/"
+    },
+    {
+     "appid": 3997750,
+     "name": "Call of Duty Endowment (C.O.D.E.) Héritage : Pack Traqueur",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3997750/749d06c4ed0d500577867fab2a2479e07282d416/header.jpg?t=1778801747",
+     "release": "14 nov. 2025",
+     "url": "https://store.steampowered.com/app/3997750/"
+    },
+    {
+     "appid": 3696030,
+     "name": "Call of Duty®: Black Ops 6 - Pack Traqueur : Apparence Ultra RéANIMé",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3696030/ded4c5f7a8ae64c89f136d257dec3b7531536af4/header_french.jpg?t=1752519703",
+     "release": "12 juin 2025",
+     "url": "https://store.steampowered.com/app/3696030/"
+    },
+    {
+     "appid": 3498090,
+     "name": "Call of Duty Endowment (C.O.D.E.) Force Unie: Pack Traqueur",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498090/694018e65c915654a0da2c55a9b51fa475181016/header.jpg?t=1768327121",
+     "release": "15 mai 2025",
+     "url": "https://store.steampowered.com/app/3498090/"
+    },
+    {
+     "appid": 3159170,
+     "name": "Call of Duty®: Black Ops 6 - Super Cool : Pack de Départ",
+     "price": {
+      "text": "4,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159170/header_french.jpg?t=1734567285",
+     "release": "12 déc. 2024",
+     "url": "https://store.steampowered.com/app/3159170/"
+    },
+    {
+     "appid": 2790750,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Apparence Ultra Cauchemar Nuptial Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2790750/header_french.jpg?t=1727289447",
+     "release": "25 sept. 2024",
+     "url": "https://store.steampowered.com/app/2790750/"
+    },
+    {
+     "appid": 2790730,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Ghost Punk Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2790730/header_french.jpg?t=1724950822",
+     "release": "29 aout 2024",
+     "url": "https://store.steampowered.com/app/2790730/"
+    },
+    {
+     "appid": 2790710,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Sous-boss Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2790710/header.jpg?t=1722618025",
+     "release": "2 aout 2024",
+     "url": "https://store.steampowered.com/app/2790710/"
+    },
+    {
+     "appid": 2790670,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Zodiaque : Cancer Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2790670/header_french.jpg?t=1720026008",
+     "release": "3 juil. 2024",
+     "url": "https://store.steampowered.com/app/2790670/"
+    },
+    {
+     "appid": 2790660,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Apparence Ultra Modelé sur mesure Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2790660/header.jpg?t=1717779630",
+     "release": "7 juin 2024",
+     "url": "https://store.steampowered.com/app/2790660/"
+    },
+    {
+     "appid": 2783780,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Traqueur : Apparence Ultra Provocation 2.0 Pack Pro",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783780/header.jpg?t=1715187620",
+     "release": "8 mai 2024",
+     "url": "https://store.steampowered.com/app/2783780/"
+    },
+    {
+     "appid": 2795080,
+     "name": "Call of Duty Endowment (C.O.D.E) Reconnaissance Chevaleresque: Pack Traqueur",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2795080/header.jpg?t=1767986016",
+     "release": "6 mai 2024",
+     "url": "https://store.steampowered.com/app/2795080/"
+    },
+    {
+     "appid": 2783770,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Pro : Cyberjunkie",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2783770/header_french.jpg?t=1712941207",
+     "release": "12 avr. 2024",
+     "url": "https://store.steampowered.com/app/2783770/"
+    },
+    {
+     "appid": 2775840,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Pro Émeraude",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2775840/header_french.jpg?t=1710522008",
+     "release": "15 mars 2024",
+     "url": "https://store.steampowered.com/app/2775840/"
+    },
+    {
+     "appid": 2731850,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Pro Nova 6",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2731850/header_french.jpg?t=1707933621",
+     "release": "14 févr. 2024",
+     "url": "https://store.steampowered.com/app/2731850/"
+    },
+    {
+     "appid": 2686650,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Pro Tech et Luxe",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2686650/header_french.jpg?t=1706835273",
+     "release": "24 janv. 2024",
+     "url": "https://store.steampowered.com/app/2686650/"
+    },
+    {
+     "appid": 2625050,
+     "name": "Call of Duty®: Modern Warfare® III - Pack Pro Mordu de Motos",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2625050/header_french.jpg?t=1706834674",
+     "release": "12 déc. 2023",
+     "url": "https://store.steampowered.com/app/2625050/"
+    },
+    {
+     "appid": 2596430,
+     "name": "Pack Call of Duty Endowment (C.O.D.E) : Guerrier",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2596430/header.jpg?t=1767985869",
+     "release": "10 nov. 2023",
+     "url": "https://store.steampowered.com/app/2596430/"
+    },
+    {
+     "appid": 2534810,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro: Champ de Citrouilles",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2534810/header_french.jpg?t=1711124069",
+     "release": "20 oct. 2023",
+     "url": "https://store.steampowered.com/app/2534810/"
+    },
+    {
+     "appid": 2493660,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Voyageur Cosmique",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2493660/header_french.jpg?t=1711067121",
+     "release": "7 sept. 2023",
+     "url": "https://store.steampowered.com/app/2493660/"
+    },
+    {
+     "appid": 2459970,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Ghost Flingueur",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2459970/header_french.jpg?t=1711065220",
+     "release": "10 aout 2023",
+     "url": "https://store.steampowered.com/app/2459970/"
+    },
+    {
+     "appid": 2433000,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Graffiti Tactique",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2433000/header_french.jpg?t=1711061202",
+     "release": "19 juil. 2023",
+     "url": "https://store.steampowered.com/app/2433000/"
+    },
+    {
+     "appid": 2396490,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Griffin",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2396490/header_french.jpg?t=1779919442",
+     "release": "22 juin 2023",
+     "url": "https://store.steampowered.com/app/2396490/"
+    },
+    {
+     "appid": 2387940,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Cerf Démoniaque",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2387940/header_french.jpg?t=1711045516",
+     "release": "19 mai 2023",
+     "url": "https://store.steampowered.com/app/2387940/"
+    },
+    {
+     "appid": 2354080,
+     "name": "Call of Duty Endowment (C.O.D.E.) - Pack Valkyrie",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2354080/header.jpg?t=1767985701",
+     "release": "17 mai 2023",
+     "url": "https://store.steampowered.com/app/2354080/"
+    },
+    {
+     "appid": 2316850,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Manticore",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2316850/header_french.jpg?t=1711043535",
+     "release": "20 avr. 2023",
+     "url": "https://store.steampowered.com/app/2316850/"
+    },
+    {
+     "appid": 2278280,
+     "name": "Call of Duty®: Modern Warfare® II - Pack de Départ : Itadakimasu",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2278280/header_french.jpg?t=1711038244",
+     "release": "23 mars 2023",
+     "url": "https://store.steampowered.com/app/2278280/"
+    },
+    {
+     "appid": 2137910,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Vétéran urbain",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2137910/header_french.jpg?t=1726609187",
+     "release": "23 févr. 2023",
+     "url": "https://store.steampowered.com/app/2137910/"
+    },
+    {
+     "appid": 2127791,
+     "name": "Call of Duty®: Modern Warfare® II - Pack de départ : Traqueur des dunes",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2127791/header.jpg?t=1710968878",
+     "release": "21 déc. 2022",
+     "url": "https://store.steampowered.com/app/2127791/"
+    },
+    {
+     "appid": 2127790,
+     "name": "Call of Duty®: Modern Warfare® II - Pack Pro : Vagabond du Désert",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2127790/header_french.jpg?t=1710953043",
+     "release": "23 nov. 2022",
+     "url": "https://store.steampowered.com/app/2127790/"
+    },
+    {
+     "appid": 2053671,
+     "name": "Call of Duty Endowment (C.O.D.E.) - Pack Protecteur",
+     "price": {
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2053671/header.jpg?t=1767985543",
+     "release": "28 oct. 2022",
+     "url": "https://store.steampowered.com/app/2053671/"
+    }
+   ],
+   "url": "https://store.steampowered.com/app/1938090/"
+  }
+ }
+}
