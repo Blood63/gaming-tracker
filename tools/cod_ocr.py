@@ -2,7 +2,7 @@
 """OCR d'un écran de fin de partie COD Mobile -> stats. N'invente rien : champ non trouvé = None."""
 import re, subprocess, sys, json, os, tempfile, unicodedata
 from PIL import Image, ImageOps, ImageFilter
-PLAYER = os.environ.get("COD_PLAYER", "Blood")
+PLAYER = os.environ.get("COD_PLAYER", "NVCBlood")
 MODES = {"team deathmatch":"Team Deathmatch","match a mort par equipe":"Team Deathmatch","tdm":"Team Deathmatch","domination":"Domination",
  "hardpoint":"Hardpoint","point strategique":"Hardpoint","search and destroy":"Search & Destroy","recherche et destruction":"Search & Destroy",
  "free for all":"Free For All","melee generale":"Free For All","kill confirmed":"Kill Confirmed","elimination confirmee":"Kill Confirmed",

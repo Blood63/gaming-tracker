@@ -1,0 +1,25 @@
+name: COD Mobile rang
+on:
+  issues:
+    types: [opened, edited]
+permissions:
+  contents: write
+  issues: write
+concurrency: { group: cod-intake, cancel-in-progress: false }
+jobs:
+  rank:
+    if: github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' && contains(github.event.issue.labels.*.name, 'cod-rank')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/cod_rank_intake.py
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}", COMMENT_FILE: comment.md }
+      - run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A cod_ranks.json screenshots || true
+          git diff --cached --quiet || git commit -m "COD rang : issue #${{ github.event.issue.number }}"
+          git pull --rebase -q && git push
+      - env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          gh issue comment ${{ github.event.issue.number }} -R ${{ github.repository }} -F comment.md
+          grep -q "Non enregistré" comment.md || gh issue close ${{ github.event.issue.number }} -R ${{ github.repository }} --reason completed

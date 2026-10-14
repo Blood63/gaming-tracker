@@ -1,0 +1,28 @@
+name: Changement de rang COD
+description: Enregistre ton nouveau rang classé COD Mobile (Multijoueur ou Battle Royale).
+title: "COD Mobile – rang"
+labels: ["cod-rank"]
+body:
+  - type: dropdown
+    id: mode
+    attributes: { label: Mode, options: ["Multijoueur", "Battle Royale"] }
+    validations: { required: true }
+  - type: dropdown
+    id: tier
+    attributes: { label: Rang, options: ["Recrue", "Régulier", "Vaillant", "Élite", "Pro", "Maître", "Grand maître", "Légendaire"] }
+    validations: { required: true }
+  - type: dropdown
+    id: sub
+    attributes: { label: Niveau (I à V), description: "Laisse vide pour Légendaire", options: ["I", "II", "III", "IV", "V"] }
+  - type: input
+    id: points
+    attributes: { label: Points / étoiles (optionnel), placeholder: "ex. 4250" }
+  - type: input
+    id: date
+    attributes: { label: "Date (optionnel, AAAA-MM-JJ HH:MM)", placeholder: "vide = maintenant" }
+  - type: input
+    id: season
+    attributes: { label: Saison (optionnel), placeholder: "ex. Saison 9 2026" }
+  - type: textarea
+    id: capture
+    attributes: { label: Capture (optionnel), description: "Capture de l'écran de rang si tu veux la garder." }

@@ -18,10 +18,13 @@ over = {"mode": field("Mode (correction)"), "map": field("Carte (correction)"), 
 for k in ["kills","deaths","assists","score"]:
     v = field({"kills":"Éliminations (correction)","deaths":"Morts (correction)","assists":"Assistances (correction)","score":"Score (correction)"}[k])
     over[k] = int(v) if v and v.isdigit() else None
+for k,l in [("placement","Classement BR (correction)"),("damage","Dégâts (correction)")]:
+    v = field(l); v = re.sub(r"\D","",v) if v else ""; over[k] = int(v) if v else None
+over["survival_time"] = field("Temps de survie BR (correction)")
 added, report = [], []
 os.makedirs(f"{ROOT}/screenshots/cod", exist_ok=True)
 for i,u in enumerate(urls or [None]):
-    rec = {"issue": iss["number"], "date": date, "ranked": {"Oui":True,"Non":False}.get(field("Classée ?") or "")}
+    rec = {"issue": iss["number"], "date": date, "type": {"Multijoueur":"MP","Battle Royale":"BR"}.get(field("Type de partie") or "", None), "ranked": {"Oui":True,"Non":False}.get(field("Classée ?") or "")}
     notes = []
     if u:
         req = urllib.request.Request(u, headers={"Authorization": f"Bearer {TOKEN}", "User-Agent": "cod-intake"})
@@ -38,13 +41,15 @@ for i,u in enumerate(urls or [None]):
         rec["kd"] = round(rec["kills"]/rec["deaths"],2) if rec["deaths"] else float(rec["kills"])
     rec["ocr_notes"] = notes; db["matches"].append(rec); added.append(rec)
 db["matches"].sort(key=lambda m: m["date"]); json.dump(db, open(f"{ROOT}/cod_mobile.json","w"), ensure_ascii=False, indent=1)
-L = {"mode":"Mode","map":"Carte","result":"Résultat","score":"Score","kills":"Éliminations","deaths":"Morts","assists":"Assistances","kd":"K/D"}
+L = {"type":"Type","placement":"Classement BR","damage":"Dégâts","survival_time":"Survie","mode":"Mode","map":"Carte","result":"Résultat","score":"Score","kills":"Éliminations","deaths":"Morts","assists":"Assistances","kd":"K/D"}
 FR = {"win":"Victoire","loss":"Défaite","draw":"Égalité"}
 out = ["## 🎮 Partie enregistrée", ""]
 for n,r in enumerate(added,1):
     if len(added)>1: out.append(f"**Capture {n}**")
     out += ["| Stat | Valeur |","|---|---|"]
     for k,lab in L.items():
+        if k in ('placement','survival_time') and r.get('type')!='BR': continue
+        if k=='damage' and r.get('damage') is None and r.get('type')!='BR': continue
         v = r.get(k); v = FR.get(v,v) if k=="result" else v
         out.append(f"| {lab} | {'⚠️ non trouvé' if v is None else str(v) + (' ✏️' if k in r.get('overrides',[]) else '')} |")
     out += [f"- {x}" for x in r["ocr_notes"]]

@@ -1,1 +1,440 @@
-{"player":"M8 Blood","source":"manual entries from per-match screenshots","schema":{"date":"ISO datetime (Europe/Paris)","mode":"e.g. Team Deathmatch, Ranked MP, Battle Royale","map":"","ranked":"bool","result":"win|loss|draw","score_team":"","score_enemy":"","kills":"int","deaths":"int","assists":"int","kd":"float","score":"int","damage":"int|null","headshots":"int|null","mvp":"bool|null","rank_after":"string|null","screenshot":"path"},"matches":[]}
+{
+ "player": "NVCBlood",
+ "source": "manual entries from per-match screenshots",
+ "schema": {
+  "date": "ISO datetime (Europe/Paris)",
+  "mode": "e.g. Team Deathmatch, Ranked MP, Battle Royale",
+  "map": "",
+  "ranked": "bool",
+  "result": "win|loss|draw",
+  "score_team": "",
+  "score_enemy": "",
+  "kills": "int",
+  "deaths": "int",
+  "assists": "int",
+  "kd": "float",
+  "score": "int",
+  "damage": "int|null",
+  "headshots": "int|null",
+  "mvp": "bool|null",
+  "rank_after": "string|null",
+  "screenshot": "path",
+  "team_place": "int (rang dans l'équipe)",
+  "team_size": "int",
+  "impact": "int",
+  "xp_gained": "int",
+  "rank_xp": "int",
+  "accuracy_pct": "float",
+  "headshot_pct": "float",
+  "avg_damage_per_round": "float",
+  "first_kills": "int",
+  "lone_wolf_wins": "int",
+  "medals": "[{name,count}]",
+  "duels": "[{opponent,kills,deaths}] (mes éliminations - ses éliminations sur moi)",
+  "screenshots": "[paths]"
+ },
+ "matches": [
+  {
+   "id": "2026-08-25-br3",
+   "date": "2026-08-25T10:25:23+02:00",
+   "source": "manual",
+   "type": "BR",
+   "mode": "Battle Royale Duo",
+   "team_type": "duo",
+   "map": "Isolated",
+   "placement": 6,
+   "total_teams": 26,
+   "result": null,
+   "kills": 5,
+   "deaths": null,
+   "damage": 1189,
+   "survival_time": "15:14",
+   "revives": 0,
+   "distance": 6860,
+   "talent": 12,
+   "xp_gained": 5515,
+   "rank_xp": 17,
+   "accuracy_pct": 36.4,
+   "headshot_pct": 20.0,
+   "mvp": true,
+   "medals": [
+    {
+     "name": "Lourds dégâts",
+     "count": null
+    },
+    {
+     "name": "Œil de faucon",
+     "count": null
+    },
+    {
+     "name": "Marathon",
+     "count": null
+    },
+    {
+     "name": "Dame chance",
+     "count": null
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-08-25-br3-1.jpg",
+    "screenshots/cod/2026-08-25-br3-2.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-08-25-br3-1.jpg"
+  },
+  {
+   "id": "2026-08-26-br2",
+   "date": "2026-08-26T15:14:44+02:00",
+   "source": "manual",
+   "type": "BR",
+   "mode": "Battle Royale Escouade",
+   "team_type": "squad",
+   "map": "Isolated",
+   "placement": 4,
+   "total_teams": 26,
+   "result": null,
+   "kills": 2,
+   "deaths": null,
+   "damage": 849,
+   "survival_time": "16:46",
+   "revives": 1,
+   "distance": 5394,
+   "talent": 8,
+   "xp_gained": 5662,
+   "rank_xp": 3,
+   "accuracy_pct": 58.8,
+   "headshot_pct": 0.0,
+   "mvp": true,
+   "medals": [
+    {
+     "name": "Lourds dégâts",
+     "count": null
+    },
+    {
+     "name": "Marathon",
+     "count": null
+    },
+    {
+     "name": "Dame chance",
+     "count": null
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-08-26-br2-1.jpg",
+    "screenshots/cod/2026-08-26-br2-2.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-08-26-br2-1.jpg"
+  },
+  {
+   "id": "2026-08-28-br1",
+   "date": "2026-08-28T09:47:16+02:00",
+   "source": "manual",
+   "type": "BR",
+   "mode": "Battle Royale Escouade",
+   "team_type": "squad",
+   "map": "Isolated",
+   "placement": 5,
+   "total_teams": 25,
+   "result": null,
+   "kills": 3,
+   "deaths": null,
+   "damage": 1270,
+   "survival_time": "17:14",
+   "revives": 0,
+   "distance": 8918,
+   "talent": 13,
+   "xp_gained": 5883,
+   "rank_xp": 27,
+   "accuracy_pct": 37.7,
+   "headshot_pct": 0.0,
+   "mvp": false,
+   "medals": [
+    {
+     "name": "Lourds dégâts",
+     "count": null
+    },
+    {
+     "name": "Marathon",
+     "count": null
+    },
+    {
+     "name": "Dame chance",
+     "count": null
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-08-28-br1-1.jpg",
+    "screenshots/cod/2026-08-28-br1-2.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-08-28-br1-1.jpg"
+  },
+  {
+   "id": "2026-09-14-m3",
+   "date": "2026-09-14T09:52:55+02:00",
+   "source": "manual",
+   "type": "MP",
+   "ranked": null,
+   "mode": "Recherche et Destruction",
+   "map": "Stand de tir",
+   "result": "win",
+   "score_team": 5,
+   "score_enemy": 4,
+   "team_place": 1,
+   "team_size": 5,
+   "score": 2013,
+   "kills": 16,
+   "deaths": 5,
+   "assists": 2,
+   "kd": 3.2,
+   "impact": 195,
+   "xp_gained": 7286,
+   "rank_xp": 91,
+   "accuracy_pct": 29.3,
+   "headshot_pct": 0.0,
+   "avg_damage_per_round": 196,
+   "first_kills": 2,
+   "lone_wolf_wins": 0,
+   "mvp": true,
+   "medals": [
+    {
+     "name": "Berserker",
+     "count": 5
+    },
+    {
+     "name": "Double élimination",
+     "count": 4
+    },
+    {
+     "name": "Régicide",
+     "count": 5
+    },
+    {
+     "name": "Survivant",
+     "count": 2
+    },
+    {
+     "name": "Vengeur",
+     "count": 3
+    },
+    {
+     "name": "Sauveur",
+     "count": 1
+    },
+    {
+     "name": "Sabotage",
+     "count": 1
+    },
+    {
+     "name": "Première fraîcheur",
+     "count": 1
+    },
+    {
+     "name": "Revanche",
+     "count": 3
+    },
+    {
+     "name": "Tir de loin",
+     "count": 1
+    },
+    {
+     "name": "Assistance murale",
+     "count": 2
+    }
+   ],
+   "duels": [
+    {
+     "opponent": "Mallboro13",
+     "kills": 2,
+     "deaths": 2
+    },
+    {
+     "opponent": "لابوبو>67",
+     "kills": 5,
+     "deaths": 0
+    },
+    {
+     "opponent": "eeeealieeeee",
+     "kills": 3,
+     "deaths": 0
+    },
+    {
+     "opponent": "loty61",
+     "kills": 4,
+     "deaths": 2
+    },
+    {
+     "opponent": "Ja8il",
+     "kills": 2,
+     "deaths": 1
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-09-14-m3-1.jpg",
+    "screenshots/cod/2026-09-14-m3-2.jpg",
+    "screenshots/cod/2026-09-14-m3-3.jpg",
+    "screenshots/cod/2026-09-14-m3-4.jpg",
+    "screenshots/cod/2026-09-14-m3-5.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-09-14-m3-1.jpg"
+  },
+  {
+   "id": "2026-09-14-m2",
+   "date": "2026-09-14T10:01:11+02:00",
+   "source": "manual",
+   "type": "MP",
+   "ranked": null,
+   "mode": "Recherche et Destruction",
+   "map": "Hackney Yard",
+   "result": "win",
+   "score_team": 5,
+   "score_enemy": 1,
+   "team_place": 4,
+   "team_size": 5,
+   "score": 581,
+   "kills": 4,
+   "deaths": 4,
+   "assists": 2,
+   "kd": 1.0,
+   "impact": 123,
+   "xp_gained": 3262,
+   "rank_xp": 82,
+   "accuracy_pct": 15.0,
+   "headshot_pct": 25.0,
+   "avg_damage_per_round": 108,
+   "first_kills": 0,
+   "lone_wolf_wins": 0,
+   "mvp": false,
+   "medals": [
+    {
+     "name": "Régicide",
+     "count": 1
+    },
+    {
+     "name": "Survivant",
+     "count": 1
+    },
+    {
+     "name": "Tir à la tête",
+     "count": 1
+    },
+    {
+     "name": "Tir de loin",
+     "count": 1
+    }
+   ],
+   "duels": [
+    {
+     "opponent": "Hassaan069",
+     "kills": 1,
+     "deaths": 3
+    },
+    {
+     "opponent": "Doctorithurts",
+     "kills": 1,
+     "deaths": 0
+    },
+    {
+     "opponent": "CAPIT",
+     "kills": 1,
+     "deaths": 1
+    },
+    {
+     "opponent": "Leo-n27",
+     "kills": 1,
+     "deaths": 0
+    },
+    {
+     "opponent": "S*A*B*O",
+     "kills": 0,
+     "deaths": 0
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-09-14-m2-1.jpg",
+    "screenshots/cod/2026-09-14-m2-2.jpg",
+    "screenshots/cod/2026-09-14-m2-3.jpg",
+    "screenshots/cod/2026-09-14-m2-4.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-09-14-m2-1.jpg"
+  },
+  {
+   "id": "2026-09-14-m1",
+   "date": "2026-09-14T10:13:50+02:00",
+   "source": "manual",
+   "type": "MP",
+   "ranked": null,
+   "mode": "Recherche et Destruction",
+   "map": "Terminal",
+   "result": "loss",
+   "score_team": 3,
+   "score_enemy": 5,
+   "team_place": 5,
+   "team_size": 5,
+   "score": 211,
+   "kills": 2,
+   "deaths": 7,
+   "assists": 0,
+   "kd": 0.29,
+   "impact": 67,
+   "xp_gained": 4007,
+   "rank_xp": 0,
+   "accuracy_pct": 23.1,
+   "headshot_pct": 0.0,
+   "avg_damage_per_round": 38,
+   "first_kills": 2,
+   "lone_wolf_wins": 0,
+   "mvp": false,
+   "medals": [
+    {
+     "name": "Premier sang",
+     "count": 1
+    },
+    {
+     "name": "Jusqu'au bout",
+     "count": 1
+    },
+    {
+     "name": "Tir de loin",
+     "count": 2
+    },
+    {
+     "name": "Un tir, un mort",
+     "count": 1
+    }
+   ],
+   "duels": [
+    {
+     "opponent": "7-L-M",
+     "kills": 0,
+     "deaths": 3
+    },
+    {
+     "opponent": "ABUDHABI",
+     "kills": 0,
+     "deaths": 2
+    },
+    {
+     "opponent": "ZORO",
+     "kills": 1,
+     "deaths": 2
+    },
+    {
+     "opponent": "Leah",
+     "kills": 0,
+     "deaths": 0
+    },
+    {
+     "opponent": "Mecure94",
+     "kills": 1,
+     "deaths": 0
+    }
+   ],
+   "screenshots": [
+    "screenshots/cod/2026-09-14-m1-1.jpg",
+    "screenshots/cod/2026-09-14-m1-2.jpg",
+    "screenshots/cod/2026-09-14-m1-3.jpg",
+    "screenshots/cod/2026-09-14-m1-4.jpg"
+   ],
+   "screenshot": "screenshots/cod/2026-09-14-m1-1.jpg"
+  }
+ ]
+}
