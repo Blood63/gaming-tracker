@@ -13,6 +13,9 @@ body:
     id: date
     attributes: { label: "Date de la partie (optionnel, AAAA-MM-JJ HH:MM)", placeholder: "vide = date de l'issue" }
   - type: dropdown
+    id: type
+    attributes: { label: Type de partie, options: ["Multijoueur", "Battle Royale"] }
+  - type: dropdown
     id: ranked
     attributes: { label: "Classée ?", options: ["Oui", "Non"] }
   - type: input
@@ -36,3 +39,12 @@ body:
   - type: input
     id: score
     attributes: { label: Score (correction) }
+  - type: input
+    id: placement
+    attributes: { label: Classement BR (correction), placeholder: "ex. 3 (pour Top 3)" }
+  - type: input
+    id: damage
+    attributes: { label: Dégâts (correction) }
+  - type: input
+    id: survival
+    attributes: { label: Temps de survie BR (correction), placeholder: "ex. 18:42" }

@@ -1,0 +1,16 @@
+{
+ "player": "Blood",
+ "source": "Captures d'écran du profil en jeu (saisie manuelle)",
+ "history": [
+  {
+   "date": "2026-10-14",
+   "screenshots": ["screenshots/cod/profile/2026-10-14-1.jpg","screenshots/cod/profile/2026-10-14-2.jpg","screenshots/cod/profile/2026-10-14-3.jpg","screenshots/cod/profile/2026-10-14-4.jpg","screenshots/cod/profile/2026-10-14-5.jpg"],
+   "multiplayer": {"mvp": 1677, "matches": 11444, "top3": 4245, "kills": 123095, "kd": 1.31, "accuracy_pct": 18.20},
+   "battle_royale": {"mvp": 612, "wins": 548, "matches": 2053, "kills": 9444, "avg_damage": 1217.40, "accuracy_pct": 31.58},
+   "recap_2025": {"top_weapon": "Locus - Éclat toxique", "top_weapon_kills": 3532, "top_weapon_shots": 9441,
+     "favorite_map": "Stand de tir", "favorite_map_value": 250, "favorite_mode": "Multijoueur",
+     "mvp_2025": 1031, "kills_2025": 32238, "online_hours_2025": 755, "best_rank_ever": "Légendaire"},
+   "account": {"registered": "2019-10-08"}
+  }
+ ]
+}
