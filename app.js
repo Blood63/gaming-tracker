@@ -28,14 +28,14 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" re
 /* ========== données ========== */
 const D={};
 async function load(){
-  const [steamH,store,val,rl,cod,codp,codr,setup,vh]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json')]);
+  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
-  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;
+  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -123,9 +123,20 @@ function badges(){
 }
 
 /* ========== objectifs (stockés sur l'appareil) ========== */
-const GK='gt-goals';
-const goals=()=>{try{return JSON.parse(localStorage.getItem(GK))||[]}catch(e){return[]}};
-const saveGoals=a=>localStorage.setItem(GK,JSON.stringify(a));
+const GK='gt-goals',PK='gt-pending',GOAL_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=objectif.yml';
+// Les objectifs vivent dans goals.json (dépôt) → identiques sur tous les appareils. Le navigateur ne garde qu'une file « en attente » le temps que le formulaire soit validé (24 h max).
+const legacy=()=>{let L;try{L=JSON.parse(localStorage.getItem(GK))||[]}catch(e){L=[]}const ids=new Set((D.goals||[]).map(g=>g.id));const r=L.filter(g=>!ids.has(+g.id));if(L.length&&!r.length)localStorage.removeItem(GK);return r};
+const pend=()=>{let p;try{p=JSON.parse(localStorage.getItem(PK))||{}}catch(e){p={}}const ids=new Set((D.goals||[]).map(g=>g.id)),now=Date.now();
+  p.adds=(p.adds||[]).filter(g=>!ids.has(g.id)&&now-g._t<864e5);p.dels=(p.dels||[]).filter(d=>ids.has(d.id)&&now-d._t<864e5);localStorage.setItem(PK,JSON.stringify(p));return p};
+const savePend=p=>localStorage.setItem(PK,JSON.stringify(p));
+const goals=()=>{const p=pend(),del=new Set(p.dels.map(d=>d.id));const pa=new Set(p.adds.map(g=>g.id));return[...(D.goals||[]).filter(g=>!del.has(g.id)),...p.adds.map(g=>({...g,pending:1})),...legacy().filter(g=>!pa.has(+g.id)).map(g=>({...g,id:+g.id,pending:2}))]};
+const goalIssue=(data,resume)=>window.open(`${GOAL_ISSUE}&title=${encodeURIComponent('Objectif – '+resume)}&resume=${encodeURIComponent(resume)}&data=${encodeURIComponent(JSON.stringify(data))}`,'_blank','noopener');
+const gClean=g=>Object.fromEntries(Object.entries(g).filter(([k,v])=>v!==undefined&&v!==''&&!['pending','_t'].includes(k)));
+function delGoal(id){const g=goals().find(x=>x.id==id);if(!g)return;const p=pend();
+  if(g.pending){p.adds=p.adds.filter(x=>x.id!=id);savePend(p);if(g.pending==2)localStorage.setItem(GK,JSON.stringify(legacy().filter(x=>+x.id!=id)));toast('Objectif en attente retiré');return}
+  p.dels.push({id,_t:Date.now()});savePend(p);goalIssue({action:'delete',id},'supprimer « '+goalProg(g).label+' »');toast('📝 Valide le formulaire GitHub pour supprimer partout')}
+function syncLegacy(){const L=legacy().map(g=>gClean({...g,id:+g.id||Date.now()}));if(!L.length)return;goalIssue({action:'sync',goals:L},`synchroniser ${L.length} objectif${L.length>1?'s':''} de cet appareil`);
+  const p=pend();L.forEach(g=>p.adds.push({...g,_t:Date.now()}));savePend(p);toast('📝 Valide le formulaire GitHub pour synchroniser')}
 function goalProg(x){
   const g=D.games.find(y=>y.appid==x.appid);
   switch(x.type){
@@ -172,7 +183,7 @@ function rankGoal(x){
     const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
     return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
 }
-function addGoal(o){const a=goals();a.push({id:Date.now(),created:new Date().toISOString(),...o});saveGoals(a);toast('🎯 Objectif ajouté')}
+function addGoal(o){const g=gClean({id:Date.now(),created:new Date().toISOString(),...o}),p=pend();p.adds.push({...g,_t:Date.now()});savePend(p);goalIssue({action:'add',goal:g},goalProg(g).label);toast('📝 Valide le formulaire GitHub : l\'objectif sera sur tous tes appareils')}
 
 /* ========== timeline ========== */
 function timeline(){
@@ -524,14 +535,15 @@ function profil(){
 }
 function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0),done=o.done??p>=100;
   const dl0=o.dl??(o.x?.deadline?Math.ceil((new Date(o.x.deadline+'T23:59')-Date.now())/864e5):null);o.dl=dl0;const dl=o.dl!=null&&!(done&&o.dl<0)?`<span class="pill ${o.dl<0&&!done?'warn':''}" style="margin-left:.3rem">${o.dl<0?'Échéance dépassée':o.dl==0?'Aujourd\'hui':'J−'+o.dl}</span>`:'';
-  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
+  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?.pending?`<span class="pill warn" style="margin-left:.3rem">${o.x.pending==2?'📲 cet appareil seulement':'⏳ synchro en attente'}</span>`:''}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
 const goalsFor=types=>goals().filter(x=>types.includes(x.type)).map(x=>({x,...goalProg(x)}));
 const goalsBlock=(types,title='Objectifs de rang')=>{const G=goalsFor(types);return `<h2>${title}</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:''}<a class="btn ghost full" href="#/objectifs" style="margin-top:.5rem">🎯 ${G.length?'Gérer mes objectifs':'Fixer un objectif de rang'}</a>`};
-const bindGoalDel=re=>$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ?')){saveGoals(goals().filter(x=>x.id!=b.dataset.del));re()}});
+const bindGoalDel=re=>$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ? (sur tous tes appareils)')){delGoal(+b.dataset.del);re()}});
 function objectifs(){
   const G=goals().map(x=>({x,...goalProg(x)}));
   const opts=D.games.map(g=>`<option value="${g.appid}">${esc(g.name)}</option>`).join('');
-  app.innerHTML=`<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
+  const pa=new Set(pend().adds.map(g=>g.id)),LG=legacy().filter(g=>!pa.has(+g.id));
+  app.innerHTML=`${LG.length?`<div class="glass pad" style="border-color:var(--warn);margin-bottom:.6rem"><b>📲 ${LG.length} objectif${LG.length>1?'s':''} enregistré${LG.length>1?'s':''} seulement sur cet appareil</b><p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Synchronise-les pour les retrouver sur ton téléphone et ton PC.</p><button class="btn full" id="gsync">🔄 Synchroniser</button></div>`:''}<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
   <h2>Nouvel objectif</h2><form class="glass form" id="gf">
    <label>Type<select id="gt"><option value="game_hours">Heures sur un jeu</option><option value="game_ach">% de succès sur un jeu</option><option value="total_hours">Heures de jeu au total</option><option value="achievements">Nombre de succès Steam</option><option value="level">Niveau de joueur</option><option value="cod_kd">K/D COD Mobile (10 dernières)</option><option value="cod_matches">Parties COD Mobile</option><option value="val_rank">Rang Valorant</option><option value="rl_rank">Rang Rocket League</option><option value="cod_rank">Rang COD Mobile</option></select></label>
    <label id="gl">Jeu<select id="gg">${opts}</select></label>
@@ -542,7 +554,7 @@ function objectifs(){
    <label id="gvl">Cible<input id="gv" type="number" inputmode="decimal" step="any" min="0"></label>
    <label>Échéance (optionnel)<input id="gdl" type="date"></label>
    <button class="btn" type="submit">Ajouter l'objectif</button></form>
-  <p class="mut" style="font-size:.8rem">Les objectifs sont enregistrés sur cet appareil. La progression se met à jour avec chaque relevé.</p>`;
+  <p class="mut" style="font-size:.8rem">Les objectifs sont enregistrés dans ton dépôt GitHub : identiques sur tous tes appareils. Ajouter/supprimer ouvre un formulaire pré-rempli à valider (mise à jour sous quelques minutes). La progression se met à jour avec chaque relevé.</p>`;
   const sugg={game_hours:g=>Math.ceil(((D.games.find(x=>x.appid==g)?.hours)||0)/10)*10+10,game_ach:()=>100,total_hours:()=>Math.ceil(D.totalH/50)*50+50,achievements:()=>Math.ceil(D.ach/50)*50+50,level:()=>D.xp.L+2,cod_kd:()=>1.5,cod_matches:()=>Math.ceil(D.cod.length/10)*10+10};
   const isR=t=>t.endsWith('_rank'),sh=(id,v)=>$(id).style.display=v?'':'none';
   const rankOpts=t=>{if(t=='val_rank'){const c=D.vh?.mmr?.tier_id||3;return VAL_T.map(x=>`<option value="${x.id}"${x.id==Math.min(27,c+1)?' selected':''}>${esc(vTier(x.n))}</option>`).join('')}
@@ -558,7 +570,7 @@ function objectifs(){
       if(t=='cod_rank'){o.mode=$('#gcms').value;const c=(D.ranks[o.mode]||[]).at(-1);if(c)o.start=c.value}
       addGoal(o);return objectifs()}
     const v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,deadline:dl,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
-  bindGoalDel(objectifs);
+  bindGoalDel(objectifs);$('#gsync')&&($('#gsync').onclick=()=>{syncLegacy();objectifs()});
   animBars();
 }
 function activite(){
