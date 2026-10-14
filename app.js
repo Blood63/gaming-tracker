@@ -135,8 +135,42 @@ function goalProg(x){
     case 'achievements':return{label:`${x.target} succès Steam`,cur:D.ach,t:x.target,u:'',p:100*D.ach/x.target};
     case 'cod_kd':{const k=kdOf(D.cod.slice(-10));return{label:`K/D COD ≥ ${x.target} (10 dernières)`,cur:k??0,t:x.target,u:'',p:k==null?0:100*k/x.target,dec:2}}
     case 'cod_matches':return{label:`${x.target} parties COD Mobile`,cur:D.cod.length,t:x.target,u:'',p:100*D.cod.length/x.target};
+    case 'val_rank':case 'rl_rank':case 'cod_rank':return rankGoal(x);
     case 'level':return{label:`Atteindre le niveau ${x.target}`,cur:D.xp.L,t:x.target,u:'',p:100*D.xp.L/x.target};
   }return{label:'?',cur:0,t:1,p:0}
+}
+
+/* ========== objectifs de rang ========== */
+const VAL_T=(()=>{const a=[];['Iron','Bronze','Silver','Gold','Platinum','Diamond','Ascendant','Immortal'].forEach((t,i)=>[1,2,3].forEach(n=>a.push({id:3+i*3+n-1,n:`${t} ${n}`})));a.push({id:27,n:'Radiant'});return a})();
+const RL_T=(()=>{const a=[];['Bronze','Argent','Or','Platine','Diamant','Champion','Grand Champion'].forEach(t=>['I','II','III'].forEach(n=>a.push(`${t} ${n}`)));a.push('Supersonic Legend');return a})();
+const RL_PL={'1v1':'Duel 1v1','2v2':'Double 2v2','3v3':'Standard 3v3'};
+const COD_SUB=['I','II','III','IV','V'];
+const codLbl=v=>{const t=Math.floor((v-1)/5),sub=(v-1)%5;return RTIERS[t]?(t==7?RTIERS[t]:RTIERS[t]+' '+COD_SUB[sub]):'?'};
+function valEst(){ // gains/pertes moyens de RR (parties classées récentes)
+  const H=D.vh?.mmr_history||[],ms=Object.fromEntries((D.vh?.matches||[]).map(m=>[m.id,m]));
+  const w=H.filter(h=>h.change>0).map(h=>h.change),l=H.filter(h=>h.change<0).map(h=>-h.change),
+    rs=(D.vh?.matches||[]).filter(m=>m.mode=='Competitive'&&m.result),wr=rs.length?rs.filter(m=>m.result=='win').length/rs.length:null;
+  const ag=w.length?w.reduce((a,b)=>a+b,0)/w.length:null,al=l.length?l.reduce((a,b)=>a+b,0)/l.length:null;
+  return{ag,al,wr,n:H.length,net:ag!=null&&al!=null&&wr!=null?wr*ag-(1-wr)*al:null};
+}
+function rankGoal(x){
+  const dl=x.deadline?Math.ceil((new Date(x.deadline+'T23:59')-Date.now())/864e5):null;
+  if(x.type=='val_rank'){const T=VAL_T.find(t=>t.id==x.target)||{n:'?'},lab=`Valorant : atteindre ${vTier(T.n)}`;
+    if(!D.vh)return{label:lab,wait:'En attente des données Valorant',cur:0,t:1,p:0,dl};
+    const M=D.vh.mmr,cur=(M.tier_id-3)*100+(M.rr||0),tgt=(x.target-3)*100,start=x.start??cur,rem=Math.max(0,tgt-cur),E=valEst();
+    const p=tgt<=start?(cur>=tgt?100:0):100*(cur-start)/(tgt-start);
+    let info=rem<=0?'':`${fnum(rem)} RR restants (${vTier(M.tier)} · ${M.rr} RR → ${vTier(T.n)})`;
+    if(rem>0&&E.ag){const wins=Math.ceil(rem/E.ag);info+=`<br>≈ ${wins} victoire${wins>1?'s':''} sans défaite (gain moyen +${fnum(E.ag,0)} RR)`;
+      if(E.net>0){const g=Math.ceil(rem/E.net);info+=` · ≈ ${g} parties à ton rythme actuel (${fnum(100*E.wr,0)} % de victoires, perte moy. −${fnum(E.al,0)} RR)`}
+      else if(E.net!=null)info+=' · à ton rythme actuel, le solde de RR est négatif : il faut gagner plus souvent';
+      info+=' <i>(estimation)</i>'}
+    return{label:lab,cur:Math.max(0,cur-start),t:Math.max(1,tgt-start),u:'RR',p:Math.max(0,Math.min(100,p)),info,dl,done:cur>=tgt,icon:vIcon(x.target,22)}}
+  if(x.type=='rl_rank'){const lab=`Rocket League ${RL_PL[x.playlist]||x.playlist} : ${RL_T[x.target]||'?'}${x.div&&x.target<RL_T.length-1?' div. '+['I','II','III','IV'][x.div-1]:''}`;
+    return{label:lab,wait:'En attente de données Rocket League (intégration ballchasing.com prévue)',cur:0,t:1,p:0,dl}}
+  if(x.type=='cod_rank'){const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
+    if(!c)return{label:lab,wait:'Enregistre ton rang actuel (bouton « changement de rang » sur la page COD)',cur:0,t:1,p:0,dl};
+    const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
+    return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
 }
 function addGoal(o){const a=goals();a.push({id:Date.now(),created:new Date().toISOString(),...o});saveGoals(a);toast('🎯 Objectif ajouté')}
 
@@ -189,7 +223,8 @@ function valPage(){
   h+=tb('Par agent','agent')+tb('Par carte','map');
   h+=`<h2>Parties récentes</h2><p class="mut" style="font-size:.8rem">Touche une partie pour le détail.</p><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Agent</th><th>Rés.</th><th>Score</th><th>K/D/A</th><th>RR</th></tr>${m.slice().reverse().slice(0,40).map(x=>`<tr data-v="${esc(x.id)}" style="cursor:pointer"><td>${fdate(x.date)}</td><td>${esc(vMode(x.mode))}</td><td>${esc(x.map||'—')}</td><td>${esc(x.agent||'—')}</td><td>${vRes(x)}</td><td>${x.rounds_won??'—'}-${x.rounds_lost??'—'}</td><td>${x.kills??'—'}/${x.deaths??'—'}/${x.assists??'—'}</td><td class="${x.rr_change>0?'up':x.rr_change<0?'down':''}">${x.rr_change!=null?(x.rr_change>0?'+':'')+x.rr_change:''}</td></tr>`).join('')}</table></div>
   <p class="mut" style="font-size:.78rem">Source : ${esc(V.source)} · relevé le ${fdate(V.fetched_at)} · mis à jour 2 fois par jour. ADR/ACS/HS % = calculés.</p>`;
-  app.innerHTML=h;
+  h=h.replace('<h2>Statistiques</h2>',goalsBlock(['val_rank'])+'<h2>Statistiques</h2>');
+  app.innerHTML=h;bindGoalDel(valPage);animBars();
   $$('#vq button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('valQ',b.dataset.q);valPage()});
   $$('tr[data-v]').forEach(r=>r.onclick=()=>go('#/valorant/'+r.dataset.v));
   chart($('#v1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)),datasets:[lineDS('Points de rang (elo)',H.map(x=>x.elo),'#ff4655')]},options:{plugins:{legend:{display:false},title:{display:true,text:'Elo (100 = 1 palier) — dernières parties classées'},tooltip:{callbacks:{label:c=>`${vTier(H[c.dataIndex].tier)} · ${H[c.dataIndex].rr} RR (${H[c.dataIndex].change>0?'+':''}${H[c.dataIndex].change})`}}}}});
@@ -307,7 +342,7 @@ function tracker(key){
   if(!last){
     app.innerHTML=h+`<div class="glass wait"><div class="ico">🔑</div><h3>En attente de clé Tracker Network</h3><p class="mut">Les stats (rangs, MMR, K/D, % de victoire…) s'afficheront ici automatiquement dès que l'API tracker.gg acceptera la clé. Relevé chaque dimanche à 20 h.</p>
     ${lastTry?`<span class="pill warn">Dernier essai ${fdate(lastTry.fetched_at)} : ${esc(lastTry.http?'HTTP '+lastTry.http+(lastTry.http==401?' — clé refusée':''):lastTry.status)}</span>`:''}</div>
-    <h2>Aperçu</h2><div class="stats ghost">${c.ghost.map(k=>stat(k,'000')).join('')}</div><div class="glass chart" style="display:flex;align-items:center;justify-content:center;color:var(--mut)">📈 Graphiques de progression</div>`;return}
+    <h2>Aperçu</h2><div class="stats ghost">${c.ghost.map(k=>stat(k,'000')).join('')}</div><div class="glass chart" style="display:flex;align-items:center;justify-content:center;color:var(--mut)">📈 Graphiques de progression</div>${key=='rl'?goalsBlock(['rl_rank']):''}`;if(key=='rl'){bindGoalDel(()=>tracker('rl'));animBars()}return}
   const ov=overview(last),fmt=s=>s?esc(s.displayValue??fnum(s.value,2)):'—';
   const tile=(k,s)=>s?`<div class="glass stat"><div class="k">${esc(s.displayName||k)}</div><div class="v">${s.metadata?.iconUrl?`<span class="tier"><img src="${esc(s.metadata.iconUrl)}" alt="">${esc(s.metadata.tierName||s.displayValue)}</span>`:fmt(s)}</div>${s.percentile!=null?`<div class="d">Top ${fnum(100-s.percentile,1)} %</div>`:''}</div>`:'';
   const ks=Object.keys(ov?.stats||{}),order=[...c.keys.filter(k=>ks.includes(k)),...ks.filter(k=>!c.keys.includes(k))];
@@ -316,7 +351,8 @@ function tracker(key){
   ${others.length?`<h2>${key=='rl'?'Playlists':'Par mode / saison'}</h2><div class="seg">${others.map((s,i)=>`<button class="${i?'':'on'}" data-i="${i}">${esc(s.metadata?.name||s.attributes?.key||s.type)}</button>`).join('')}</div><div id="segv"></div>`:''}
   <h2>Progression</h2><div class="glass chart"><canvas id="c1"></canvas></div>
   <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th>${c.chartKeys.map(k=>`<th>${esc(S(ov,k)?.displayName||k)}</th>`).join('')}</tr>${ok.slice().reverse().map(x=>`<tr><td>${fdate(x.fetched_at)}</td>${c.chartKeys.map(k=>`<td>${fmt(S(overview(x),k))}</td>`).join('')}</tr>`).join('')}</table></div>`;
-  app.innerHTML=h;
+  if(key=='rl')h+=goalsBlock(['rl_rank']);
+  app.innerHTML=h;if(key=='rl'){bindGoalDel(()=>tracker('rl'));animBars()}
   const showSeg=i=>{$('#segv').innerHTML=`<div class="stats">${Object.entries(others[i].stats).map(([k,v])=>tile(k,v)).join('')}</div>`;$$('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.i==i))};
   if(others.length){$$('.seg button').forEach(b=>b.onclick=()=>showSeg(+b.dataset.i));showSeg(0)}
   const ds=key=='rl'?segs(last).filter(s=>s.type=='playlist'&&S(s,'rating')).map((s,i)=>lineDS(s.metadata?.name,ok.map(x=>num(segs(x).find(y=>y.metadata?.name==s.metadata?.name)?.stats?.rating?.value)),PAL[i%8],{fill:false}))
@@ -326,12 +362,12 @@ function tracker(key){
 function cod(){
   let m=D.cod;
   let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#f59e0b66,transparent 65%)"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>${codBtn('full')}`;
-  h+=ranksHTML()+career();
+  h+=ranksHTML()+goalsBlock(['cod_rank'],'Objectifs de rang')+career();
   const tf=sessionStorage.getItem('codType')||'all',all=m;
   h+=`<h2>Parties enregistrées</h2><div class="seg" id="tseg">${[['all','Tout'],['MP','Multijoueur'],['BR','Battle Royale']].map(([k,n])=>`<button class="${k==tf?'on':''}" data-t="${k}">${n} (${k=='all'?all.length:all.filter(x=>(x.type||'MP')==k).length})</button>`).join('')}</div>`;
   if(tf!='all')m=all.filter(x=>(x.type||'MP')==tf);
   if(!m.length){app.innerHTML=h+`<div class="glass wait"><div class="ico">📸</div><h3>Aucune partie pour l'instant</h3><p class="mut">Après chaque partie, envoie la capture du tableau des scores : les stats sont lues automatiquement et apparaissent ici (K/D, tendances, taux de victoire, moyennes par mode, comparaison hebdo).</p></div>
-   <h2>Aperçu</h2><div class="stats ghost">${['Parties','K/D','Victoires %','Élim. moy.'].map(k=>stat(k,'000')).join('')}</div>`;careerCharts();codBind();return}
+   <h2>Aperçu</h2><div class="stats ghost">${['Parties','K/D','Victoires %','Élim. moy.'].map(k=>stat(k,'000')).join('')}</div>`;careerCharts();codBind();bindGoalDel(cod);animBars();return}
   const lab=m.map(x=>fshort(x.date)),kd=m.map(x=>num(x.kd)??(num(x.kills)!=null&&num(x.deaths)!=null?(x.deaths?x.kills/x.deaths:x.kills):null)),roll=m.map((_,i)=>kdOf(m.slice(Math.max(0,i-9),i+1)));
   const now=Date.now(),DAY=864e5,w1=m.filter(x=>now-new Date(x.date)<7*DAY),w0=m.filter(x=>{const t=now-new Date(x.date);return t>=7*DAY&&t<14*DAY});
   const modes={};m.forEach(x=>(modes[x.mode||'Inconnu']??=[]).push(x));
@@ -344,7 +380,7 @@ function cod(){
   <h2>7 derniers jours vs 7 précédents</h2><div class="glass tbl"><table><tr><th></th><th>7 j</th><th>Avant</th><th>Écart</th></tr>${row('Parties',a=>a.length,0)+row('K/D',kdOf,2)+row('Élim. moy.',a=>avg(a,'kills'),1)+row('Morts moy.',a=>avg(a,'deaths'),1)+row('Score moy.',a=>avg(a,'score'),0)+row('Victoires %',wr,0)}</table></div>
   <h2>Par mode</h2><div class="glass tbl"><table><tr><th>Mode</th><th>Parties</th><th>K/D</th><th>Élim.</th><th>Morts</th><th>Score</th><th>Vict.</th></tr>${Object.entries(modes).map(([k,a])=>`<tr><td>${esc(k)}</td><td>${a.length}</td><td>${fnum(kdOf(a),2)}</td><td>${fnum(avg(a,'kills'),1)}</td><td>${fnum(avg(a,'deaths'),1)}</td><td>${fnum(avg(a,'score'),0)}</td><td>${fnum(wr(a),0)} %</td></tr>`).join('')}</table></div>
   <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th><th>Type</th><th>Mode</th><th>Carte</th><th>Rés.</th><th>K</th><th>D</th><th>A</th><th>K/D</th><th></th></tr>${m.slice().reverse().map(x=>`<tr data-m="${m.indexOf(x)}" style="cursor:pointer"><td>${fdate(x.date)}</td><td>${x.type=='BR'?'BR':'MJ'}</td><td>${esc(x.mode||'—')}${x.placement!=null?' · #'+x.placement:''}</td><td>${esc(x.map||'—')}</td><td>${x.type=='BR'?(x.placement!=null?(x.placement==1?'🏆':'')+'#'+x.placement:'—'):{win:'✅',loss:'❌',draw:'➖'}[x.result]||'—'}</td><td>${x.kills??'—'}</td><td>${x.deaths??'—'}</td><td>${x.assists??'—'}</td><td>${fnum(num(x.kd),2)}</td><td>${x.screenshot?`<button class="btn ghost sm" data-s="${esc(x.screenshot)}">🖼️</button>`:''}${x.issue?` <a href="https://github.com/Blood63/gaming-tracker/issues/${x.issue}" target="_blank" rel="noopener">#${x.issue}</a>`:''}</td></tr>`).join('')}</table></div>`;
-  app.innerHTML=h;careerCharts();codBind();$$('[data-s]').forEach(b=>b.onclick=e=>{e.stopPropagation();lb(b.dataset.s)});$$('tr[data-m]').forEach(r=>r.onclick=e=>{if(!e.target.closest('a'))go('#/cod/'+D.cod.indexOf(m[+r.dataset.m]))});
+  app.innerHTML=h;careerCharts();codBind();bindGoalDel(cod);animBars();$$('[data-s]').forEach(b=>b.onclick=e=>{e.stopPropagation();lb(b.dataset.s)});$$('tr[data-m]').forEach(r=>r.onclick=e=>{if(!e.target.closest('a'))go('#/cod/'+D.cod.indexOf(m[+r.dataset.m]))});
   chart($('#c1'),{type:'line',data:{labels:lab,datasets:[lineDS('K/D par partie',kd,COL.or,{fill:false,showLine:false,pointRadius:5}),lineDS('Moyenne glissante (10)',roll,COL.cy)]},options:{plugins:{title:{display:true,text:'K/D'}}}});
   chart($('#c2'),{type:'line',data:{labels:lab,datasets:[lineDS('Éliminations',m.map(x=>num(x.kills)),COL.gr,{fill:false}),lineDS('Morts',m.map(x=>num(x.deaths)),COL.bad,{fill:false})]},options:{scales:{y:{beginAtZero:true}},plugins:{title:{display:true,text:'Éliminations / morts'}}}});
   chart($('#c4'),{type:'line',data:{labels:lab,datasets:[lineDS('Score',m.map(x=>num(x.score)),COL.vi)]},options:{plugins:{legend:{display:false},title:{display:true,text:'Score par partie'}}}});
@@ -358,12 +394,12 @@ function setupPage(){
   const cats=S.categories.filter(c=>S.items.some(i=>i.cat==c.id)),tot=S.items.reduce((a,i)=>a+(i.price||0),0),unk=S.items.filter(i=>i.price==null).length;
   const g=S.groups?.pc,ct=c=>S.items.filter(i=>i.cat==c).reduce((a,i)=>a+(i.price||0),0);
   const link=i=>i.url||'https://www.idealo.fr/prechcat.html?q='+encodeURIComponent(i.name);
-  const card=i=>`<div class="glass row" style="align-items:flex-start"><span class="ic" style="font-size:1.6rem;width:44px;text-align:center;flex:none">${SICON[i.id]||S.categories.find(c=>c.id==i.cat)?.icon||'📦'}</span><span class="n"><b>${esc(i.name)}</b>${i.to_confirm?' <span class="pill warn">à confirmer</span>':''}${i.spec?`<br><small>${esc(i.spec)}</small>`:''}${i.notes?`<br><small class="mut">${esc(i.notes)}</small>`:''}${i.date?`<br><small class="mut">Acheté le ${fdate(i.date)}</small>`:''}${i.value_score!=null?`<br><span class="pill" style="color:${scCol(i.value_score)};border-color:${scCol(i.value_score)}66">Qualité-prix ${i.value_score}/10</span><small class="mut" style="display:block;line-height:1.3">${esc(i.value_note)}</small>`:i.value_note?`<br><small class="mut">${esc(i.value_note)}</small>`:''}<br><a href="${esc(link(i))}" target="_blank" rel="noopener" style="font-size:.82rem">${i.url?'Voir le produit ›':'Comparer les prix ›'}</a></span><span class="p">${i.price!=null?eur(i.price):'<small class="mut">prix ?</small>'}</span></div>`;
-  const sc=S.items.filter(i=>i.value_score!=null&&i.price),vs=sc.length?sc.reduce((a,i)=>a+i.value_score*i.price,0)/sc.reduce((a,i)=>a+i.price,0):null,best=sc.slice().sort((a,b)=>b.value_score-a.value_score)[0],worst=sc.slice().sort((a,b)=>a.value_score-b.value_score)[0];
+  const card=i=>`<div class="glass row" style="align-items:flex-start"><span class="ic" style="font-size:1.6rem;width:44px;text-align:center;flex:none">${SICON[i.id]||S.categories.find(c=>c.id==i.cat)?.icon||'📦'}</span><span class="n"><b>${esc(i.name)}</b>${i.to_confirm?' <span class="pill warn">à confirmer</span>':''}${i.spec?`<br><small>${esc(i.spec)}</small>`:''}${i.notes?`<br><small class="mut">${esc(i.notes)}</small>`:''}${i.date?`<br><small class="mut">Acheté le ${fdate(i.date)}</small>`:''}${i.value_score!=null||i.quality_score!=null?`<br><span style="display:inline-flex;gap:.35rem;flex-wrap:wrap;margin-top:.2rem">${i.quality_score!=null?`<span class="pill" style="color:${scCol(i.quality_score)};border-color:${scCol(i.quality_score)}66">⭐ Qualité ${i.quality_score}/10</span>`:''}${i.value_score!=null?`<span class="pill" style="color:${scCol(i.value_score)};border-color:${scCol(i.value_score)}66">💶 Qualité-prix ${i.value_score}/10</span>`:''}</span>`:''}${i.quality_note?`<small class="mut" style="display:block;line-height:1.3"><b>Qualité :</b> ${esc(i.quality_note)}</small>`:''}${i.value_note?`<small class="mut" style="display:block;line-height:1.3"><b>Prix :</b> ${esc(i.value_note)}</small>`:''}${i.tip?`<small style="display:block;line-height:1.3;margin-top:.25rem;color:var(--cy)">💡 ${esc(i.tip)}</small>`:''}<br><a href="${esc(link(i))}" target="_blank" rel="noopener" style="font-size:.82rem">${i.url?'Voir le produit ›':'Comparer les prix ›'}</a></span><span class="p">${i.price!=null?eur(i.price):'<small class="mut">prix ?</small>'}</span></div>`;
+  const qq=S.items.filter(i=>i.quality_score!=null&&i.price),qs=qq.length?qq.reduce((a,i)=>a+i.quality_score*i.price,0)/qq.reduce((a,i)=>a+i.price,0):null,sc=S.items.filter(i=>i.value_score!=null&&i.price),vs=sc.length?sc.reduce((a,i)=>a+i.value_score*i.price,0)/sc.reduce((a,i)=>a+i.price,0):null,best=sc.slice().sort((a,b)=>b.value_score-a.value_score)[0],worst=sc.slice().sort((a,b)=>a.value_score-b.value_score)[0];
   app.innerHTML=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,rgba(34,211,238,.35),transparent 60%),radial-gradient(100% 100% at 100% 0,rgba(168,85,247,.35),transparent 60%)"><div class="ttl"><h3>Mon setup</h3><span class="pill">${S.items.length} éléments</span><span class="pill">MAJ ${fdate(S.updated)}</span></div></div>
-  <div class="stats">${stat('Valeur totale',eur(tot),unk?`${unk} prix inconnu${unk>1?'s':''}`:'')}${vs!=null?stat('Qualité-prix global',`<span style="color:${scCol(vs)}">${fnum(vs,1)}/10</span>`,'moyenne pondérée par le prix (avis)'):''}${cats.slice(0,2).map(c=>stat(c.icon+' '+c.name,eur(ct(c.id)),S.items.filter(i=>i.cat==c.id).length+' éléments')).join('')}</div>
+  <div class="stats">${stat('Valeur totale',eur(tot),unk?`${unk} prix inconnu${unk>1?'s':''}`:'')}${qs!=null?stat('Qualité globale',`<span style="color:${scCol(qs)}">${fnum(qs,1)}/10</span>`,'moyenne pondérée par le prix (avis)'):''}${vs!=null?stat('Qualité-prix global',`<span style="color:${scCol(vs)}">${fnum(vs,1)}/10</span>`,'moyenne pondérée par le prix (avis)'):''}${cats.slice(0,2).map(c=>stat(c.icon+' '+c.name,eur(ct(c.id)),S.items.filter(i=>i.cat==c.id).length+' éléments')).join('')}</div>
   <div class="tool" style="margin-top:.8rem"><a class="btn" href="${SETUP_ISSUE}" target="_blank" rel="noopener">➕ Ajouter / modifier</a><a class="btn ghost" href="#/setup/conseils">💡 Conseils d'upgrade</a><a class="btn ghost" href="#/setup/reglages">⚙️ Réglages conseillés</a></div>
-  ${best?`<div class="glass pad" style="margin-top:.7rem"><b>💎 Meilleure affaire :</b> ${esc(best.name)} (${best.value_score}/10)<br><b>🤔 Moins rentable :</b> ${esc(worst.name)} (${worst.value_score}/10)<br><small class="mut">Notes « qualité-prix » = avis basé sur les prix du marché français constatés le ${fdate(S.value_date)} (estimations, susceptibles d'évoluer).</small></div>`:''}
+  ${best?`<div class="glass pad" style="margin-top:.7rem"><b>💎 Meilleure affaire :</b> ${esc(best.name)} (${best.value_score}/10)<br><b>🤔 Moins rentable :</b> ${esc(worst.name)} (${worst.value_score}/10)<br><small class="mut">Notes « qualité » (tests et avis d'utilisateurs) et « qualité-prix » = avis basés sur les prix du marché français constatés le ${fdate(S.value_date)} (estimations, susceptibles d'évoluer).</small></div>`:''}
   <div class="glass chart" style="height:250px"><canvas id="s1"></canvas></div>
   ${cats.map(c=>`<h2>${c.icon} ${esc(c.name)} <span class="more" style="color:var(--gr)">${eur(ct(c.id))}</span></h2>
    ${c.id=='pc'&&g?`<div class="glass kv" style="margin-bottom:.5rem"><span>Monté par</span><span>${esc(g.assembled_by)}</span><span>Acheté le</span><span>${fdate(g.purchase_date)}</span><span>Total facture</span><span>${eur(g.invoice_total)}</span><span>Garantie</span><span>${esc(g.warranty)} · jusqu'au ${fdate(g.warranty_until)} <small class="up">(${Math.max(0,Math.ceil((new Date(g.warranty_until)-Date.now())/864e5/30.4))} mois restants)</small></span></div>`:''}
@@ -486,22 +522,43 @@ function profil(){
   chart($('#c2'),{type:'radar',data:{labels:STYLES,datasets:[{label:'Affinité',data:sv2.map(v=>Math.round(100*v/mx)),borderColor:COL.cy,backgroundColor:COL.vi+'40',pointBackgroundColor:COL.gr,borderWidth:2}]},options:{scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'rgba(160,150,255,.15)'},angleLines:{color:'rgba(160,150,255,.15)'},pointLabels:{color:'#cfcaf5',font:{size:11}}}},plugins:{legend:{display:false},title:{display:true,text:'Profil de joueur'}}}});
   animBars();animRings();
 }
-function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0);return `<div class="glass goal"><div class="h"><b>${esc(o.label)}</b>${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div><div class="mut" style="font-size:.85rem">${fnum(o.cur,dec)}${o.u?' '+o.u:''} / ${fnum(o.t,dec)}${o.u?' '+o.u:''} · ${p>=100?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,p>=100?'gr':'')}</div>`}
+function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0),done=o.done??p>=100;
+  const dl0=o.dl??(o.x?.deadline?Math.ceil((new Date(o.x.deadline+'T23:59')-Date.now())/864e5):null);o.dl=dl0;const dl=o.dl!=null&&!(done&&o.dl<0)?`<span class="pill ${o.dl<0&&!done?'warn':''}" style="margin-left:.3rem">${o.dl<0?'Échéance dépassée':o.dl==0?'Aujourd\'hui':'J−'+o.dl}</span>`:'';
+  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
+const goalsFor=types=>goals().filter(x=>types.includes(x.type)).map(x=>({x,...goalProg(x)}));
+const goalsBlock=(types,title='Objectifs de rang')=>{const G=goalsFor(types);return `<h2>${title}</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:''}<a class="btn ghost full" href="#/objectifs" style="margin-top:.5rem">🎯 ${G.length?'Gérer mes objectifs':'Fixer un objectif de rang'}</a>`};
+const bindGoalDel=re=>$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ?')){saveGoals(goals().filter(x=>x.id!=b.dataset.del));re()}});
 function objectifs(){
   const G=goals().map(x=>({x,...goalProg(x)}));
   const opts=D.games.map(g=>`<option value="${g.appid}">${esc(g.name)}</option>`).join('');
   app.innerHTML=`<h2>Mes objectifs</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:'<div class="glass empty">🎯 Aucun objectif pour l\'instant. Ajoute-en un ci-dessous !</div>'}
   <h2>Nouvel objectif</h2><form class="glass form" id="gf">
-   <label>Type<select id="gt"><option value="game_hours">Heures sur un jeu</option><option value="game_ach">% de succès sur un jeu</option><option value="total_hours">Heures de jeu au total</option><option value="achievements">Nombre de succès Steam</option><option value="level">Niveau de joueur</option><option value="cod_kd">K/D COD Mobile (10 dernières)</option><option value="cod_matches">Parties COD Mobile</option></select></label>
+   <label>Type<select id="gt"><option value="game_hours">Heures sur un jeu</option><option value="game_ach">% de succès sur un jeu</option><option value="total_hours">Heures de jeu au total</option><option value="achievements">Nombre de succès Steam</option><option value="level">Niveau de joueur</option><option value="cod_kd">K/D COD Mobile (10 dernières)</option><option value="cod_matches">Parties COD Mobile</option><option value="val_rank">Rang Valorant</option><option value="rl_rank">Rang Rocket League</option><option value="cod_rank">Rang COD Mobile</option></select></label>
    <label id="gl">Jeu<select id="gg">${opts}</select></label>
-   <label>Cible<input id="gv" type="number" inputmode="decimal" step="any" min="0" required></label>
+   <label id="gpl" style="display:none">Playlist<select id="gpls">${Object.entries(RL_PL).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
+   <label id="gcm" style="display:none">Mode<select id="gcms"><option value="MP">Multijoueur</option><option value="BR">Battle Royale</option></select></label>
+   <label id="grk" style="display:none">Rang visé<select id="grks"></select></label>
+   <label id="gdv" style="display:none">Division<select id="gdvs"><option value="">—</option>${['I','II','III','IV'].map((d,i)=>`<option value="${i+1}">Div. ${d}</option>`).join('')}</select></label>
+   <label id="gvl">Cible<input id="gv" type="number" inputmode="decimal" step="any" min="0"></label>
+   <label>Échéance (optionnel)<input id="gdl" type="date"></label>
    <button class="btn" type="submit">Ajouter l'objectif</button></form>
   <p class="mut" style="font-size:.8rem">Les objectifs sont enregistrés sur cet appareil. La progression se met à jour avec chaque relevé.</p>`;
   const sugg={game_hours:g=>Math.ceil(((D.games.find(x=>x.appid==g)?.hours)||0)/10)*10+10,game_ach:()=>100,total_hours:()=>Math.ceil(D.totalH/50)*50+50,achievements:()=>Math.ceil(D.ach/50)*50+50,level:()=>D.xp.L+2,cod_kd:()=>1.5,cod_matches:()=>Math.ceil(D.cod.length/10)*10+10};
-  const upd=()=>{const t=$('#gt').value;$('#gl').style.display=t.startsWith('game')?'':'none';$('#gv').value=sugg[t](+$('#gg').value)};
-  $('#gt').onchange=upd;$('#gg').onchange=upd;upd();
-  $('#gf').onsubmit=e=>{e.preventDefault();const t=$('#gt').value,v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
-  $$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ?')){saveGoals(goals().filter(x=>x.id!=b.dataset.del));objectifs()}});
+  const isR=t=>t.endsWith('_rank'),sh=(id,v)=>$(id).style.display=v?'':'none';
+  const rankOpts=t=>{if(t=='val_rank'){const c=D.vh?.mmr?.tier_id||3;return VAL_T.map(x=>`<option value="${x.id}"${x.id==Math.min(27,c+1)?' selected':''}>${esc(vTier(x.n))}</option>`).join('')}
+    if(t=='rl_rank')return RL_T.map((n,i)=>`<option value="${i}"${i==9?' selected':''}>${n}</option>`).join('');
+    const c=(D.ranks[$('#gcms').value]||[]).at(-1)?.value||1;let o='';for(let v=1;v<=36;v++)o+=`<option value="${v}"${v==Math.min(36,c+1)?' selected':''}>${codLbl(v)}</option>`;return o};
+  const upd=()=>{const t=$('#gt').value;sh('#gl',t.startsWith('game'));sh('#gvl',!isR(t));sh('#grk',isR(t));sh('#gpl',t=='rl_rank');sh('#gdv',t=='rl_rank');sh('#gcm',t=='cod_rank');
+    $('#gv').required=!isR(t);if(isR(t))$('#grks').innerHTML=rankOpts(t);else $('#gv').value=sugg[t](+$('#gg').value)};
+  $('#gt').onchange=upd;$('#gg').onchange=upd;$('#gcms').onchange=upd;upd();
+  $('#gf').onsubmit=e=>{e.preventDefault();const t=$('#gt').value,dl=$('#gdl').value||undefined;
+    if(isR(t)){const v=+$('#grks').value,o={type:t,target:v,deadline:dl};
+      if(t=='val_rank'&&D.vh)o.start=(D.vh.mmr.tier_id-3)*100+(D.vh.mmr.rr||0);
+      if(t=='rl_rank'){o.playlist=$('#gpls').value;o.div=+$('#gdvs').value||undefined}
+      if(t=='cod_rank'){o.mode=$('#gcms').value;const c=(D.ranks[o.mode]||[]).at(-1);if(c)o.start=c.value}
+      addGoal(o);return objectifs()}
+    const v=parseFloat($('#gv').value);if(!(v>0))return toast('Entre une cible valide');addGoal({type:t,target:v,deadline:dl,...(t.startsWith('game')?{appid:+$('#gg').value}:{})});objectifs()};
+  bindGoalDel(objectifs);
   animBars();
 }
 function activite(){
