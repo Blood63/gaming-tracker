@@ -23,19 +23,19 @@ const toast=m=>{const t=document.createElement('div');t.className='toast';t.text
 const ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml',RANK_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-rank.yml';
 const SETUP_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=setup.yml';
 const RTIERS=['Recrue','Régulier','Vaillant','Élite','Pro','Maître','Grand maître','Légendaire'],RICON=['🔰','🥉','🥈','🥇','💎','💠','👑','🔥'];
-const codBtn=(cls='')=>`<a class="btn ${cls}" href="${ISSUE}" target="_blank" rel="noopener">📸 Ajouter une partie COD</a>`;
+const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter une partie COD</a>`;
 
 /* ========== données ========== */
 const D={};
 async function load(){
   const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm,bc]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json'),get('ballchasing_latest.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
-  D.val=val;D.rl=rl;D.cod=((cod&&cod.matches)||[]).filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  D.val=val;D.rl=rl;D.codRepo=((cod&&cod.matches)||[]);D.cod=[];
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
-  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
+  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -254,7 +254,7 @@ function valPage(){
   const grp=k=>{const o={};m.forEach(x=>(o[x[k]||'?']??=[]).push(x));return Object.entries(o).map(([n,a])=>[n,vAgg(a)]).sort((a,b)=>b[1].n-a[1].n)};
   const tb=(t,k)=>`<h2>${t}</h2><div class="glass tbl"><table><tr><th>${t=='Par agent'?'Agent':'Carte'}</th><th>Parties</th><th>Vict.</th><th>K/D</th><th>HS</th><th>ADR</th><th>ACS</th></tr>${grp(k).map(([n,a])=>`<tr><td>${esc(n)}</td><td>${a.n}</td><td>${a.wr!=null?fnum(a.wr,0)+' %':'—'}</td><td>${fnum(a.kd,2)}</td><td>${a.hs!=null?fnum(a.hs,0)+' %':'—'}</td><td>${fnum(a.adr,0)}</td><td>${fnum(a.acs,0)}</td></tr>`).join('')}</table></div>`;
   h+=tb('Par agent','agent')+tb('Par carte','map');
-  h+=`<h2>Parties récentes</h2><p class="mut" style="font-size:.8rem">Touche une partie pour le détail.</p><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Agent</th><th>Rés.</th><th>Score</th><th>K/D/A</th><th>RR</th></tr>${m.slice().reverse().slice(0,40).map(x=>`<tr data-v="${esc(x.id)}" style="cursor:pointer"><td>${fdate(x.date)}</td><td>${esc(vMode(x.mode))}</td><td>${esc(x.map||'—')}</td><td>${esc(x.agent||'—')}</td><td>${vRes(x)}</td><td>${x.rounds_won??'—'}-${x.rounds_lost??'—'}</td><td>${x.kills??'—'}/${x.deaths??'—'}/${x.assists??'—'}</td><td class="${x.rr_change>0?'up':x.rr_change<0?'down':''}">${x.rr_change!=null?(x.rr_change>0?'+':'')+x.rr_change:''}</td></tr>`).join('')}</table></div>
+  h+=`<h2>Parties récentes</h2><p class="mut" style="font-size:.8rem">Touche une partie pour le détail.</p><div class="glass tbl"><table><tr><th>Date</th><th>Mode</th><th>Carte</th><th>Agent</th><th>Rés.</th><th>Score</th><th>K/D/A</th><th>RR</th></tr>${m.slice().reverse().slice(0,40).map(x=>`<tr data-v="${esc(x.id)}" style="cursor:pointer"><td>${fdate(x.date)}${x.pending?' <span class="pill warn" title="Pas encore synchronisée">📲</span>':''}</td><td>${esc(vMode(x.mode))}</td><td>${esc(x.map||'—')}</td><td>${esc(x.agent||'—')}</td><td>${vRes(x)}</td><td>${x.rounds_won??'—'}-${x.rounds_lost??'—'}</td><td>${x.kills??'—'}/${x.deaths??'—'}/${x.assists??'—'}</td><td class="${x.rr_change>0?'up':x.rr_change<0?'down':''}">${x.rr_change!=null?(x.rr_change>0?'+':'')+x.rr_change:''}</td></tr>`).join('')}</table></div>
   <p class="mut" style="font-size:.78rem">Source : ${esc(V.source)} · relevé le ${fdate(V.fetched_at)} · mis à jour 2 fois par jour. ADR/ACS/HS % = calculés.</p>`;
   const nx=[1,3].map(k=>VAL_T.find(t=>t.id==Math.min(27,M.tier_id+k))).filter(Boolean);
   h=h.replace('<h2>Statistiques</h2>',goalsBlock(['val_rank'])+`<div class="seg" style="margin-top:.5rem">${nx.map(t=>`<button data-vg="${t.id}">🎯 ${esc(vTier(t.n))}</button>`).join('')}</div><h2>Statistiques</h2>`);
@@ -333,6 +333,75 @@ function rlManual(){
   chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),'#3b82f6'),lineDS('Record S38 (654)',H.map(()=>654),'#22c55e',{fill:false,borderDash:[6,4],pointRadius:0})]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
   chart($('#r2'),{type:'doughnut',data:{labels:['Buts','Arrêts','Passes'],datasets:[{data:[pf.goals_pct,pf.saves_pct,pf.assists_pct],backgroundColor:['#3b82f6','#22c55e','#a855f7'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom'}}}});
 }
+
+/* ========== COD : ajout de partie depuis l'app (OCR des 2 captures) ========== */
+const CPK='gt-cod-pending',COD_PARTIE_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-partie.yml';
+const codPend=()=>{const repo=D.codRepo||[],mn=t=>Math.floor(new Date(t).getTime()/6e4),keys=new Set(repo.map(m=>mn(m.date)));const a=LS.get(CPK,[]).filter(m=>m&&m.date&&!keys.has(mn(m.date))&&!repo.some(r=>r.id==m.id));LS.set(CPK,a);return a};
+function codRefresh(){const ok=m=>m.date&&(m.type||m.kills!=null);D.cod=[...(D.codRepo||[]).filter(ok),...codPend().map(m=>({...m,pending:1}))].sort((a,b)=>new Date(a.date)-new Date(b.date))}
+const parisISO=s=>{if(!s)return null;if(/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(s))s+=':00';const d=new Date(s);if(isNaN(d))return null;const o=-d.getTimezoneOffset(),p=n=>String(Math.floor(Math.abs(n))).padStart(2,'0');return s.slice(0,19)+(o>=0?'+':'-')+p(o/60)+':'+p(o%60)};
+const codSyncURL=()=>{const a=codPend();if(!a.length)return null;const data={action:'add',matches:a.map(m=>gClean(m))};const r=`${a.length} partie${a.length>1?'s':''} (${a.map(m=>fshort(m.date)).join(', ')})`;
+  return `${COD_PARTIE_ISSUE}&title=${encodeURIComponent('COD – '+r)}&resume=${encodeURIComponent(r)}&data=${encodeURIComponent(JSON.stringify(data))}`};
+function codSyncBox(){const a=codPend();if(!a.length)return '';const at=LS.get('gt-cod-sync-at',0),late=at&&Date.now()-at>6e5;
+  return `<div class="glass pad" id="codsync" style="border-color:var(--warn);margin:.6rem 0"><b>📲 ${a.length} partie${a.length>1?'s':''} seulement sur cet appareil</b>
+  ${late?`<p class="down" style="font-size:.85rem;margin:.3rem 0">⚠️ La dernière synchronisation n'a pas abouti (formulaire GitHub non validé ou erreur du robot, expliquée en commentaire de la demande). Réessaie.</p>`:''}
+  <p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Elle${a.length>1?'s':''} compte${a.length>1?'nt':''} déjà dans tes stats ici. Touche « Synchroniser », connecte-toi à GitHub si besoin, puis valide avec <b>« Create »</b> sans rien modifier.</p>
+  <a class="btn full" id="codsyncbtn" href="${esc(codSyncURL())}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)</a></div>`}
+function codSyncBind(){const a=$('#codsyncbtn');if(a)a.onclick=()=>{LS.set('gt-cod-sync-at',Date.now());toast('📝 Valide le formulaire GitHub (« Create ») pour terminer')}}
+const COD_FIELDS=[['date','Date et heure','datetime-local'],['mode','Mode','mode'],['map','Carte','text'],['result','Résultat','result'],['score_team','Score équipe','number'],['score_enemy','Score adverse','number'],
+ ['ranked','Classée','bool'],['mvp','MVP','bool'],['team_place','Place dans l\'équipe','number'],['score','Score','number'],['kills','Éliminations','number'],['deaths','Morts','number'],['assists','Assistances','number'],
+ ['impact','Impact','number'],['objective_time','Temps sur l\'objectif (mm:ss)','text'],['rank_xp','EXP de grade gagnée','number'],['xp_gained','EXP gagnée','number'],['kd','Ratio É/M','number'],
+ ['accuracy_pct','Précision (%)','number'],['headshot_pct','Tir à la tête (%)','number'],['damage','Total de dégâts','number'],['capture_kills','Élim. en capture','number'],['distance','Distance parcourue','number']];
+const CS={slots:{sb:null,det:null},busy:0};
+function codAdd(){CS.slots={sb:null,det:null};CS.busy=0;
+  app.innerHTML=`<h2>Ajouter une partie</h2><p class="mut" style="font-size:.88rem">Une partie = <b>2 captures</b> de l'écran de fin de partie. Les valeurs sont lues automatiquement (sur ton appareil, rien n'est envoyé), puis tu vérifies avant d'enregistrer.</p>
+  <div class="two" id="slots">${[['sb','1. Tableau des scores','« Détails de la partie » : score, É/M/A, temps, impact + EXP en haut'],['det','2. Détails · Impact','« Détails », onglet Impact : total de dégâts, élim. en capture, distance']].map(([k,t,d])=>`<label class="glass pad slot" data-s="${k}" style="display:block;cursor:pointer;border-style:dashed;text-align:center;min-height:150px">
+   <input type="file" accept="image/*" data-in="${k}" style="display:none"><b>${t}</b><br><small class="mut">${d}</small><div class="sv" style="margin-top:.5rem"><span style="font-size:2rem">📷</span><br><small class="mut">Toucher pour choisir</small></div></label>`).join('')}</div>
+  <label class="btn ghost full" style="margin-top:.6rem;cursor:pointer">🖼️ Choisir les 2 captures d'un coup<input type="file" accept="image/*" multiple id="both" style="display:none"></label>
+  <div id="ocrst" class="mut" style="margin:.6rem 0;font-size:.88rem"></div><div id="codform"></div>`;
+  $$('[data-in]').forEach(i=>i.onchange=()=>{if(i.files[0])codTake([...i.files],i.dataset.in);i.value=''});
+  $('#both').onchange=e=>{const f=[...e.target.files];if(f.length)codTake(f.slice(0,2),null);e.target.value=''};
+  codSlotsDraw();
+}
+function codSlotsDraw(){for(const k of ['sb','det']){const s=CS.slots[k],el=$(`.slot[data-s="${k}"] .sv`);if(!el)continue;
+  el.innerHTML=s?`<img src="${s.url}" alt="" style="width:100%;border-radius:10px;max-height:140px;object-fit:cover"><br><small class="${s.err?'down':'up'}">${s.err?'⚠️ '+esc(s.err):'✅ Lue · '+esc(s.r.header.date?fdate(parisISO(s.r.header.date)):'date ?')}</small>`:`<span style="font-size:2rem">📷</span><br><small class="mut">Toucher pour choisir</small>`;
+  $(`.slot[data-s="${k}"]`).style.borderColor=s?(s.err?'var(--bad)':'var(--gr)'):''}}
+async function codTake(files,want){CS.busy++;const st=$('#ocrst');
+  try{for(const f of files){st.innerHTML=`⏳ Lecture de « ${esc(f.name)} »… (1ʳᵉ fois : chargement du moteur de lecture, quelques secondes)`;
+    const r=await COD_OCR.analyse(f,'NVCBlood'),k=r.kind=='scoreboard'?'sb':r.kind=='details'?'det':null,url=URL.createObjectURL(f);
+    if(!k){const slot=want||(!CS.slots.sb?'sb':'det');CS.slots[slot]={url,r,err:'Capture non reconnue (ni tableau des scores, ni onglet Impact)'};continue}
+    if(want&&want!=k)toast('🔁 Capture placée automatiquement dans « '+(k=='sb'?'1. Tableau des scores':'2. Détails · Impact')+' »');
+    CS.slots[k]={url,r,err:r.error||null}}}
+  catch(e){toast('⚠️ '+e.message);st.innerHTML=`<span class="down">⚠️ ${esc(e.message)}</span>`}finally{CS.busy--}
+  codSlotsDraw();codCheck()}
+function codCheck(){const st=$('#ocrst'),{sb,det}=CS.slots;$('#codform').innerHTML='';
+  if(!sb||!det||sb.err||det.err){st.innerHTML=!sb&&!det?'':`Il manque ${!sb||sb.err?'la capture 1 (tableau des scores)':'la capture 2 (détails · impact)'}.`;return}
+  const a=sb.r.header,b=det.r.header,same=a.date&&b.date?a.date==b.date:(a.score_team==b.score_team&&a.score_enemy==b.score_enemy&&a.result==b.result&&a.mode==b.mode);
+  if(!same){st.innerHTML=`<span class="down">⚠️ Les 2 captures ne sont pas de la même partie (${esc(a.date||'?')} · ${a.score_team}:${a.score_enemy} vs ${esc(b.date||'?')} · ${b.score_team}:${b.score_enemy}). Remplace l'une d'elles.</span>`;return}
+  const F={...sb.r.fields,...det.r.fields};CS.full=a.date||b.date||'';
+  const v={date:(a.date||b.date||'').slice(0,16),mode:a.mode||b.mode,map:a.map||b.map,result:a.result||b.result,score_team:a.score_team??b.score_team,score_enemy:a.score_enemy??b.score_enemy,ranked:(F.rank_xp||0)>0,...F};
+  const notes=[...(sb.r.notes||[]),...(det.r.notes||[]),...(!a.date||!b.date?['date lue sur une seule capture : vérifie']:[])];
+  st.innerHTML=`✅ Les 2 captures correspondent. Vérifie les valeurs (les champs en orange n'ont pas pu être lus).${notes.length?`<br><small class="mut">${esc(notes.join(' · '))}</small>`:''}`;
+  const inp=([k,l,t])=>{const val=v[k],miss=val==null||val==='';const cs=`style="${miss?'border-color:var(--warn)':''}"`;
+    if(t=='bool')return `<label style="flex-direction:row;display:flex;align-items:center;gap:.5rem"><input type="checkbox" name="${k}" ${val?'checked':''} style="min-height:auto;width:22px;height:22px"> ${l}</label>`;
+    if(t=='result')return `<label>${l}<select name="${k}" ${cs}>${[['win','Victoire'],['loss','Défaite'],['draw','Égalité']].map(([a,b])=>`<option value="${a}"${val==a?' selected':''}>${b}</option>`).join('')}</select></label>`;
+    if(t=='mode')return `<label>${l}<input name="${k}" list="codmodes" value="${esc(val??'')}" ${cs}><datalist id="codmodes">${COD_OCR.MODES.map(m=>`<option value="${esc(m)}">`).join('')}</datalist></label>`;
+    return `<label>${l}<input name="${k}" type="${t=='number'?'text':t}" ${t=='number'?'inputmode="decimal"':''} value="${esc(val??'')}" ${cs}></label>`};
+  $('#codform').innerHTML=`<form class="glass form" id="cf" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem">${COD_FIELDS.map(inp).join('')}
+   <div style="grid-column:1/-1"><button class="btn full" type="submit">💾 Enregistrer la partie</button></div></form>`;
+  $('#cf').onsubmit=e=>{e.preventDefault();codSave(new FormData(e.target),e.target)}}
+function codSave(fd,form){const g=k=>{const x=fd.get(k);return x==null?null:String(x).trim()},n=k=>{const x=g(k);if(x==null||x==='')return null;const y=parseFloat(x.replace(',','.'));return isNaN(y)?null:y};
+  const gd=g('date'),date=parisISO(CS.full&&CS.full.slice(0,16)==gd?CS.full:gd);if(!date)return toast('⚠️ Date invalide');
+  const m={id:'app-'+date.slice(0,16).replace(/[-:T]/g,''),date,source:'app-ocr',type:'MP',ranked:!!form.ranked.checked,mode:g('mode')||null,map:g('map')||null,result:g('result'),
+    score_team:n('score_team'),score_enemy:n('score_enemy'),team_place:n('team_place'),team_size:5,score:n('score'),kills:n('kills'),deaths:n('deaths'),assists:n('assists'),kd:n('kd'),impact:n('impact'),
+    objective_time:g('objective_time')||null,rank_xp:n('rank_xp'),xp_gained:n('xp_gained'),accuracy_pct:n('accuracy_pct'),headshot_pct:n('headshot_pct'),mvp:!!form.mvp.checked,damage:n('damage'),capture_kills:n('capture_kills'),distance:n('distance')};
+  const ot=(m.objective_time||'').match(/^(\d{1,2}):(\d{2})$/);if(m.objective_time&&!ot)return toast('⚠️ Temps sur l\'objectif : format mm:ss');if(ot){m.objective_time=ot[1].padStart(2,'0')+':'+ot[2];m.objective_time_s=+ot[1]*60+ +ot[2]}
+  if(m.kills==null||m.deaths==null)return toast('⚠️ Éliminations et morts sont obligatoires');
+  if(m.kd==null)m.kd=Math.round(100*(m.deaths?m.kills/m.deaths:m.kills))/100;
+  for(const k of ['accuracy_pct','headshot_pct'])if(m[k]!=null&&(m[k]<0||m[k]>100))return toast('⚠️ Pourcentage invalide');
+  const mn=t=>Math.floor(new Date(t).getTime()/6e4),dup=D.cod.find(x=>mn(x.date)==mn(date));
+  if(dup)return toast('ℹ️ Cette partie est déjà enregistrée ('+fdate(dup.date)+')');
+  const a=LS.get(CPK,[]);a.push(gClean(m));if(!LS.set(CPK,a))return toast('⚠️ Impossible d\'enregistrer sur cet appareil (navigation privée ?)');
+  codRefresh();computeXP();toast('✅ Partie enregistrée — pense à « Synchroniser »');go('#/cod')}
 
 /* ========== composants ========== */
 function gameCard(g,sub){
@@ -454,13 +523,13 @@ function tracker(key){
 }
 function cod(){
   let m=D.cod;
-  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#f59e0b66,transparent 65%)"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>${codBtn('full')}`;
+  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#f59e0b66,transparent 65%)"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>${codBtn('full')}${codSyncBox()}`;
   h+=ranksHTML()+goalsBlock(['cod_rank'],'Objectifs de rang')+career();
   const tf=sessionStorage.getItem('codType')||'all',all=m;
   h+=`<h2>Parties enregistrées</h2><div class="seg" id="tseg">${[['all','Tout'],['MP','Multijoueur'],['BR','Battle Royale']].map(([k,n])=>`<button class="${k==tf?'on':''}" data-t="${k}">${n} (${k=='all'?all.length:all.filter(x=>(x.type||'MP')==k).length})</button>`).join('')}</div>`;
   if(tf!='all')m=all.filter(x=>(x.type||'MP')==tf);
   if(!m.length){app.innerHTML=h+`<div class="glass wait"><div class="ico">📸</div><h3>Aucune partie pour l'instant</h3><p class="mut">Après chaque partie, envoie la capture du tableau des scores : les stats sont lues automatiquement et apparaissent ici (K/D, tendances, taux de victoire, moyennes par mode, comparaison hebdo).</p></div>
-   <h2>Aperçu</h2><div class="stats ghost">${['Parties','K/D','Victoires %','Élim. moy.'].map(k=>stat(k,'000')).join('')}</div>`;careerCharts();codBind();bindGoalDel(cod);animBars();return}
+   <h2>Aperçu</h2><div class="stats ghost">${['Parties','K/D','Victoires %','Élim. moy.'].map(k=>stat(k,'000')).join('')}</div>`;careerCharts();codBind();codSyncBind();bindGoalDel(cod);animBars();return}
   const lab=m.map(x=>fshort(x.date)),kd=m.map(x=>num(x.kd)??(num(x.kills)!=null&&num(x.deaths)!=null?(x.deaths?x.kills/x.deaths:x.kills):null)),roll=m.map((_,i)=>kdOf(m.slice(Math.max(0,i-9),i+1)));
   const now=Date.now(),DAY=864e5,w1=m.filter(x=>now-new Date(x.date)<7*DAY),w0=m.filter(x=>{const t=now-new Date(x.date);return t>=7*DAY&&t<14*DAY});
   const modes={};m.forEach(x=>(modes[x.mode||'Inconnu']??=[]).push(x));
@@ -473,7 +542,7 @@ function cod(){
   <h2>7 derniers jours vs 7 précédents</h2><div class="glass tbl"><table><tr><th></th><th>7 j</th><th>Avant</th><th>Écart</th></tr>${row('Parties',a=>a.length,0)+row('K/D',kdOf,2)+row('Élim. moy.',a=>avg(a,'kills'),1)+row('Morts moy.',a=>avg(a,'deaths'),1)+row('Score moy.',a=>avg(a,'score'),0)+row('Victoires %',wr,0)}</table></div>
   <h2>Par mode</h2><div class="glass tbl"><table><tr><th>Mode</th><th>Parties</th><th>K/D</th><th>Élim.</th><th>Morts</th><th>Score</th><th>Vict.</th></tr>${Object.entries(modes).map(([k,a])=>`<tr><td>${esc(k)}</td><td>${a.length}</td><td>${fnum(kdOf(a),2)}</td><td>${fnum(avg(a,'kills'),1)}</td><td>${fnum(avg(a,'deaths'),1)}</td><td>${fnum(avg(a,'score'),0)}</td><td>${fnum(wr(a),0)} %</td></tr>`).join('')}</table></div>
   <h2>Historique</h2><div class="glass tbl"><table><tr><th>Date</th><th>Type</th><th>Mode</th><th>Carte</th><th>Rés.</th><th>K</th><th>D</th><th>A</th><th>K/D</th><th></th></tr>${m.slice().reverse().map(x=>`<tr data-m="${m.indexOf(x)}" style="cursor:pointer"><td>${fdate(x.date)}</td><td>${x.type=='BR'?'BR':'MJ'}</td><td>${esc(x.mode||'—')}${x.placement!=null?' · #'+x.placement:''}</td><td>${esc(x.map||'—')}</td><td>${x.type=='BR'?(x.placement!=null?(x.placement==1?'🏆':'')+'#'+x.placement:'—'):{win:'✅',loss:'❌',draw:'➖'}[x.result]||'—'}</td><td>${x.kills??'—'}</td><td>${x.deaths??'—'}</td><td>${x.assists??'—'}</td><td>${fnum(num(x.kd),2)}</td><td>${x.screenshot?`<button class="btn ghost sm" data-s="${esc(x.screenshot)}">🖼️</button>`:''}${x.issue?` <a href="https://github.com/Blood63/gaming-tracker/issues/${x.issue}" target="_blank" rel="noopener">#${x.issue}</a>`:''}</td></tr>`).join('')}</table></div>`;
-  app.innerHTML=h;careerCharts();codBind();bindGoalDel(cod);animBars();$$('[data-s]').forEach(b=>b.onclick=e=>{e.stopPropagation();lb(b.dataset.s)});$$('tr[data-m]').forEach(r=>r.onclick=e=>{if(!e.target.closest('a'))go('#/cod/'+D.cod.indexOf(m[+r.dataset.m]))});
+  app.innerHTML=h;careerCharts();codBind();codSyncBind();bindGoalDel(cod);animBars();$$('[data-s]').forEach(b=>b.onclick=e=>{e.stopPropagation();lb(b.dataset.s)});$$('tr[data-m]').forEach(r=>r.onclick=e=>{if(!e.target.closest('a'))go('#/cod/'+D.cod.indexOf(m[+r.dataset.m]))});
   chart($('#c1'),{type:'line',data:{labels:lab,datasets:[lineDS('K/D par partie',kd,COL.or,{fill:false,showLine:false,pointRadius:5}),lineDS('Moyenne glissante (10)',roll,COL.cy)]},options:{plugins:{title:{display:true,text:'K/D'}}}});
   chart($('#c2'),{type:'line',data:{labels:lab,datasets:[lineDS('Éliminations',m.map(x=>num(x.kills)),COL.gr,{fill:false}),lineDS('Morts',m.map(x=>num(x.deaths)),COL.bad,{fill:false})]},options:{scales:{y:{beginAtZero:true}},plugins:{title:{display:true,text:'Éliminations / morts'}}}});
   chart($('#c4'),{type:'line',data:{labels:lab,datasets:[lineDS('Score',m.map(x=>num(x.score)),COL.vi)]},options:{plugins:{legend:{display:false},title:{display:true,text:'Score par partie'}}}});
@@ -548,7 +617,7 @@ function codMatch(i){
   const d=new Date(x.date).toLocaleString('fr-FR',{...TZ,dateStyle:'full',timeStyle:'short'});
   app.innerHTML=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,${R[1]}55,transparent 65%)"><div class="ttl"><h3 style="color:${R[1]}">${R[0]}${x.score_team!=null?` ${x.score_team}:${x.score_enemy}`:''}</h3><span class="pill">${x.type=='BR'?'Battle Royale':'Multijoueur'}</span><span class="pill">${esc(x.mode||'Mode ?')}</span><span class="pill">${esc(x.map||'Carte ?')}</span>${x.mvp?'<span class="pill ok">MVP</span>':''}</div></div>
   <p class="mut" style="margin:.2rem 0 .8rem">${esc(d)}</p>
-  <div class="stats">${stat('É / M / A',`${x.kills??'—'} / ${x.deaths??'—'} / ${x.assists??'—'}`,'K/D '+fnum(num(x.kd),2))}${x.type=='BR'?'':stat('Score',fnum(x.score),x.team_place?`${x.team_place}ᵉ / ${x.team_size||'?'} de l'équipe`:'')}${x.impact!=null?stat('Impact',fnum(x.impact)):''}${stat('Précision',x.accuracy_pct!=null?fnum(x.accuracy_pct,1)+' %':'—',x.headshot_pct!=null?'Tête : '+fnum(x.headshot_pct,1)+' %':'')}
+  <div class="stats">${stat('É / M / A',`${x.kills??'—'} / ${x.deaths??'—'} / ${x.assists??'—'}`,'K/D '+fnum(num(x.kd),2))}${x.type=='BR'?'':stat('Score',fnum(x.score),x.team_place?`${x.team_place}ᵉ / ${x.team_size||'?'} de l'équipe`:'')}${x.impact!=null?stat('Impact',fnum(x.impact),x.mvp?'🏆 MVP':''):''}${x.type!='BR'&&x.objective_time?stat('Temps sur objectif',esc(x.objective_time)):''}${x.type!='BR'&&x.damage!=null?stat('Dégâts',fnum(x.damage)):''}${x.capture_kills!=null?stat('Élim. en capture',fnum(x.capture_kills)):''}${x.distance!=null?stat('Distance',fnum(x.distance)):''}${x.xp_gained!=null?stat('EXP',fnum(x.xp_gained),x.rank_xp!=null?'Grade : +'+fnum(x.rank_xp):''):''}${x.pending?stat('Statut','📲','pas encore synchronisée'):''}${stat('Précision',x.accuracy_pct!=null?fnum(x.accuracy_pct,1)+' %':'—',x.headshot_pct!=null?'Tête : '+fnum(x.headshot_pct,1)+' %':'')}
   ${x.type=='BR'||x.placement!=null?stat('Classement',x.placement!=null?'#'+x.placement+(x.total_teams?'<small class="mut">/'+x.total_teams+'</small>':''):'—',x.survival_time?'Survie : '+esc(x.survival_time):'')+stat('Dégâts',fnum(x.damage))+(x.revives!=null?stat('Réanimations',fnum(x.revives)):'')+(x.distance!=null?stat('Distance',fnum(x.distance)+' m'):'')+(x.talent!=null?stat('Talents utilisés',fnum(x.talent)):''):''}${x.avg_damage_per_round!=null?stat('Dégâts / manche',fnum(x.avg_damage_per_round)):''}${x.first_kills!=null?stat('Premières élim.',fnum(x.first_kills)):''}${x.lone_wolf_wins!=null?stat('Loup solitaire',fnum(x.lone_wolf_wins),'victoires'):''}${stat('EXP gagnée',fnum(x.xp_gained),x.rank_xp!=null?'EXP de grade : '+fnum(x.rank_xp):'')}</div>
   ${(x.duels||[]).length?`<h2>Duels</h2><div class="list">${x.duels.map(o=>{const t=o.kills+o.deaths,p=t?100*o.kills/t:50;return `<div class="glass goal"><div class="h"><b>vs ${esc(o.opponent)}</b><span class="${o.kills>o.deaths?'up':o.kills<o.deaths?'down':'mut'}">${o.kills} – ${o.deaths}</span></div><div class="bar ${o.kills>=o.deaths?'gr':''}"><i data-w="${t?p:0}"></i></div></div>`}).join('')}</div><p class="mut" style="font-size:.78rem">Mes éliminations – ses éliminations sur moi.</p>`:''}
   ${(x.medals||[]).length?`<h2>Médailles</h2><div class="badges">${x.medals.map(o=>`<div class="glass bdg"><div class="e">🏅</div><b>${esc(o.name)}</b>${o.count!=null?`<small class="mut">× ${o.count}</small>`:''}</div>`).join('')}</div>`:''}
@@ -673,8 +742,8 @@ function render(){
   const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
   document.body.classList.toggle('sub',!top);
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
-  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
+  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
+  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }
