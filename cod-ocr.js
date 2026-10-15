@@ -17,7 +17,17 @@ const COD_OCR={T:null,
   int:s=>{const m=String(s).replace(/[oO]/g,'0').replace(/[^\d]/g,'');return m?parseInt(m,10):null},
   lev(a,b){a=a.toLowerCase();b=b.toLowerCase();const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return d[a.length][b.length]},
   ROWS:[.386,.488,.59,.692,.794],RH:.042,
-  MODES:['Point stratégique','Recherche et Destruction','Match à mort par équipe','Domination','Contrôle','Élimination confirmée','Prise d\'otage','Fusillade','Tir à la cible','Attaque frontale','Mêlée générale','Chacun pour soi','Pendaison','Infecté','Gun Game'],
+  MODES:['Point stratégique','Recherche et Destruction','Match à mort par équipe','Domination','Contrôle','Élimination confirmée','Prise d\'otage','Fusillade','Tir à la cible','Attaque frontale','Mêlée générale','Chacun pour soi','Pendaison','Infecté','Gun Game','Duel','Battle Royale Escouade','Battle Royale Duo','Battle Royale Solo','Battle Royale'],
+  MAPS:['Vacant','Stand de tir','Nuketown','Nuketown Russie','Nuketown 84','Raid','Terminal','Hackney Yard','Standoff','Crash','Crossfire','Summit','Hijacked','Killhouse','Rust','Scrapyard','Takeoff','Tunisia','Slums','Meltdown','Hacienda','Crossroads Strike','Shipment','Highrise','Coastal','Cage','Dome','Express','Gulag','Hovec Sawmill','Icebreaker','Khandor Hideout','Miami','Miami Strike','Monastery','Oasis','Pine','Reclaim','Rebirth Island','Saloon','Suldal Harbor','Apocalypse','Armada Strike','Collateral Strike','Favela','Hardhat','Hydro','Jackal','Karst River Quarry','Kurohana Metropolis','Hollywood','Mission','Rebel Strike','Satellite','Shoot House','Slipstream','Combine','Cheshire Park','Isolated','Alcatraz','Blackout'],
+  MAP_ALIAS:{'firing range':'Stand de tir','shoothouse':'Shoot House','stand de tir':'Stand de tir','nuketown russia':'Nuketown Russie'},
+
+  fuzzy(raw,list,max){const n=this.norm(raw);if(!n)return null;if(this.MAP_ALIAS[n])return this.MAP_ALIAS[n];let best=null,bd=99;for(const x of list){const d=this.lev(this.norm(x),n);if(d<bd){bd=d;best=x}}return bd<=(max??Math.max(1,Math.round(n.length*.3)))?best:null},
+  splitModeMap(mm){const n=this.norm(mm);if(!n)return{};let best=null,bd=99,cut=0;
+    for(const x of this.MODES){const nx=this.norm(x);for(let L=Math.max(3,nx.length-3);L<=Math.min(n.length,nx.length+3);L++){const d=this.lev(nx,n.slice(0,L));if(d<bd||(d==bd&&L>cut)){bd=d;best=x;cut=L}}}
+    if(!best||bd>Math.max(2,Math.round(this.norm(best).length*.25)))return{map_raw:mm};
+    // map = reste après le mode (sur le texte normalisé)
+    const rest=n.slice(cut).trim(),map=this.fuzzy(rest,this.MAPS);
+    return{mode:best,map:map||(rest?rest.replace(/(^|\s)\S/g,c=>c.toUpperCase()):null),map_raw:rest,map_known:!!map}},
   norm:s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),
   async header(im){const o={};
     const tab=await this.read(this.crop(im,.035,.015,.25,.075),{});o.kind=/partie/i.test(tab)?'scoreboard':/d[ée]tails/i.test(tab)?'details':null;o.tab_text=tab;
@@ -27,8 +37,7 @@ const COD_OCR={T:null,
     const DRX=/(\d{2}):?(\d{2}):?(\d{2})\s*(\d{2})-(\d{2})-(\d{2})/;const ts=await this.tryScales(im,[.005,.165,.12,.195],{read:{wl:'0123456789:- '}},t=>DRX.test(t),[4,3,6,8,10]);o.ts_text=ts;
     const t=ts.match(DRX);if(t)o.date=`20${t[4]}-${t[5]}-${t[6]}T${t[1]}:${t[2]}:${t[3]}`;
     const mm=await this.read(this.crop(im,.005,.195,.3,.235,{scale:3}),{});o.mode_text=mm;
-    const n=this.norm(mm);const md=this.MODES.find(x=>n.startsWith(this.norm(x)))||this.MODES.map(x=>[x,this.lev(this.norm(x),n.slice(0,x.length))]).sort((a,b)=>a[1]-b[1]).filter(x=>x[1]<=3).map(x=>x[0])[0];
-    if(md){o.mode=md;const rest=mm.slice(md.length).trim();o.map=rest?rest.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()):null}
+    Object.assign(o,this.splitModeMap(mm));
     return o},
   async findRow(im,player){let best=null;
     for(const side of [0,1])for(let i=0;i<5;i++){const y=this.ROWS[i],x0=side?.588:.098,t=await this.read(this.crop(im,x0,y-this.RH,x0+.09,y-.004,{scale:3}),{});
