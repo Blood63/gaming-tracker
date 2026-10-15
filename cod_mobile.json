@@ -31,7 +31,14 @@
   "lone_wolf_wins": "int",
   "medals": "[{name,count}]",
   "duels": "[{opponent,kills,deaths}] (mes éliminations - ses éliminations sur moi)",
-  "screenshots": "[paths]"
+  "screenshots": "[paths]",
+  "objective_time": "mm:ss (temps sur l'objectif, mode Point stratégique / Domination…)",
+  "objective_time_s": "int secondes",
+  "capture_kills": "int (élim. en capture)",
+  "distance": "int m (distance parcourue)",
+  "team_top_impact": "bool (couronne : meilleur impact de l'équipe)",
+  "timestamp_ingame": "horodatage affiché en jeu (aa-mm-jj)",
+  "enemy_team_size": "int"
  },
  "matches": [
   {
@@ -444,6 +451,39 @@
    "ocr_notes": [
     "aucune image trouvée dans l'issue"
    ]
+  },
+  {
+   "id": "2026-10-15-m1",
+   "date": "2026-10-15T16:53:45+02:00",
+   "source": "manual",
+   "type": "MP",
+   "ranked": true,
+   "mode": "Point stratégique",
+   "map": "Vacant",
+   "result": "win",
+   "score_team": 150,
+   "score_enemy": 39,
+   "team_place": 1,
+   "team_size": 5,
+   "score": 4550,
+   "kills": 40,
+   "deaths": 6,
+   "assists": 16,
+   "kd": 6.67,
+   "impact": 199,
+   "objective_time": "01:31",
+   "objective_time_s": 91,
+   "damage": 4017,
+   "capture_kills": 15,
+   "distance": 836,
+   "xp_gained": 5881,
+   "rank_xp": 110,
+   "accuracy_pct": 34.4,
+   "headshot_pct": 0.0,
+   "mvp": true,
+   "team_top_impact": true,
+   "enemy_team_size": 5,
+   "timestamp_ingame": "16:53:45 26-10-15"
   }
  ]
 }

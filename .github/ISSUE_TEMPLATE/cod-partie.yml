@@ -1,0 +1,12 @@
+name: Partie COD (depuis l'app)
+description: Synchronise les parties COD Mobile ajoutées dans l'app (page « Ajouter une partie »). Rempli automatiquement par l'app.
+title: "COD – partie"
+labels: ["cod-partie"]
+body:
+  - type: input
+    id: resume
+    attributes: { label: Résumé, description: "Rempli par l'app (pour info)" }
+  - type: textarea
+    id: data
+    attributes: { label: Données, description: "Rempli automatiquement par l'app — ne pas modifier", render: json }
+    validations: { required: true }
