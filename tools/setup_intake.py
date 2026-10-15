@@ -2,7 +2,7 @@
 """Traite une issue 'Modifier mon setup' -> setup.json + commentaire."""
 import json, os, re, unicodedata, datetime
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ev=json.load(open(os.environ["GITHUB_EVENT_PATH"]));iss=ev["issue"];body=iss.get("body") or ""
+ev=json.load(open(os.environ.get("GT_EVENT") or os.environ["GITHUB_EVENT_PATH"]));iss=ev["issue"];body=iss.get("body") or ""
 def f(l):
     m=re.search(r"###\s*"+re.escape(l)+r"\s*\n+(.*?)(?=\n###|\Z)",body,re.S);v=m.group(1).strip() if m else ""
     return None if v in("","_No response_","None") else v
