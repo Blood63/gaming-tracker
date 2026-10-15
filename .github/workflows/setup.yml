@@ -1,26 +1,48 @@
 name: Setup
+# Déclenché par le formulaire (étiquette « setup ») OU par le titre (« Setup… ») : l'appli GitHub mobile ne garde que le titre.
+# workflow_dispatch permet de retraiter une issue existante (numéro en entrée).
 on:
   issues:
-    types: [opened, edited]
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      issue: { description: "Numéro de l'issue à traiter", required: true }
 permissions:
   contents: write
   issues: write
-concurrency: { group: cod-intake, cancel-in-progress: false }
 jobs:
-  setup:
-    if: github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' && contains(github.event.issue.labels.*.name, 'setup')
+  run:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == 'Blood63') ||
+      (github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' &&
+       (contains(github.event.issue.labels.*.name, 'setup') || startsWith(github.event.issue.title, 'Setup')))
     runs-on: ubuntu-latest
+    env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
     steps:
       - uses: actions/checkout@v4
-      - id: run
-        run: echo "res=$(python3 tools/setup_intake.py)" >> "$GITHUB_OUTPUT"
-        env: { GITHUB_EVENT_PATH: "${{ github.event_path }}", COMMENT_FILE: comment.md }
-      - run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          git add setup.json
-          git diff --cached --quiet || git commit -m "Setup : issue #${{ github.event.issue.number }}"
-          git pull --rebase -q && git push
-      - env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      - id: ev
         run: |
-          gh issue comment ${{ github.event.issue.number }} -R ${{ github.repository }} -F comment.md
-          if [ "${{ steps.run.outputs.res }}" = "OK" ]; then gh issue close ${{ github.event.issue.number }} -R ${{ github.repository }} --reason completed; fi
+          gh api repos/${{ github.repository }}/issues/$N > issue.json
+          python3 -c "import json;i=json.load(open('issue.json'));assert i['user']['login']=='Blood63','auteur non autorisé';json.dump({'issue':i},open('ev.json','w'))"
+          echo "state=$(python3 -c "import json;print(json.load(open('issue.json'))['state'])")" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: gh issue edit $N -R ${{ github.repository }} --add-label setup || true
+      # Pas de file d'attente partagée (elle annule les exécutions en attente) : on rejoue sur la dernière version et on réessaie si le push est refusé.
+      - id: run
+        if: steps.ev.outputs.state == 'open'
+        env: { GITHUB_EVENT_PATH: ev.json, COMMENT_FILE: comment.md }
+        run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            res=$(python3 tools/setup_intake.py)
+            git add setup.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "Setup : issue #$N" && git push -q origin HEAD:main && break
+            sleep $((RANDOM % 8 + 3))
+          done
+          echo "res=$res" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: |
+          gh issue comment $N -R ${{ github.repository }} -F comment.md
+          if [ "${{ steps.run.outputs.res }}" = "OK" ]; then gh issue close $N -R ${{ github.repository }} --reason completed; fi

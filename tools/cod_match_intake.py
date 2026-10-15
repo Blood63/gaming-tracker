@@ -2,11 +2,15 @@
 """Issue « Partie COD » (remplie par l'app après lecture des 2 captures) -> ajout idempotent dans cod_mobile.json.
 Données JSON : {"action":"add","matches":[{...}]}. Les parties existantes ne sont jamais modifiées.
 Aucun nom d'autre joueur n'est accepté (liste blanche de champs)."""
-import json, os, re, datetime
+import json, os, re, sys, datetime
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+from gt_payload import extract
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); F=f"{D}/cod_mobile.json"
 NUM=("score_team","score_enemy","team_place","team_size","score","kills","deaths","assists","kd","impact","rank_xp","xp_gained","accuracy_pct","headshot_pct","damage","capture_kills","distance","objective_time_s")
 STR={"mode":60,"map":60,"objective_time":5}
 BOOL={"ranked","mvp"}
+# ordre des valeurs du format compact (titre) — identique à CK dans app.js
+CK=["date","mode","map","result","score_team","score_enemy","ranked","mvp","team_place","score","kills","deaths","assists","kd","impact","objective_time","rank_xp","xp_gained","accuracy_pct","headshot_pct","damage","capture_kills","distance"]
 def out(ok,msg):
     open(os.environ.get("COMMENT_FILE","comment.md"),"w").write(("✅ " if ok else "❌ ")+msg+"\n\n_Les parties sont stockées dans `cod_mobile.json` (mise à jour de l'app sous quelques minutes)._")
     print("OK" if ok else "FAIL")
@@ -42,10 +46,10 @@ def clean(m):
     return r
 def main():
     ev=json.load(open(os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
-    m=re.search(r"### Données\s*\n+(?:```(?:json)?\s*\n)?(.*?)(?:\n```|\n### |\Z)",body,re.S)
-    if not m: return out(False,"Bloc « Données » introuvable.")
-    try: d=json.loads(m.group(1).strip())
-    except Exception as e: return out(False,f"Données JSON illisibles : {e}")
+    try: d,_=extract(ev["issue"])
+    except ValueError as e: return out(False,str(e).capitalize()+".")
+    if d is None: return out(False,"Aucune donnée trouvée (ni dans le corps, ni dans le titre) : l'issue a sans doute été créée depuis l'appli GitHub mobile, qui supprime le contenu pré-rempli. La partie est toujours en attente dans l'app : relance « Synchroniser » (version à jour).")
+    if "c" in d and not d.get("matches"): d["matches"]=[dict(zip(CK,row)) for row in d["c"]]
     if d.get("action","add")!="add": return out(False,"Action inconnue.")
     items=d.get("matches") or []
     if not isinstance(items,list) or not items or len(items)>50: return out(False,"Aucune partie dans les données.")
