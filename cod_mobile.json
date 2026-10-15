@@ -484,6 +484,33 @@
    "team_top_impact": true,
    "enemy_team_size": 5,
    "timestamp_ingame": "16:53:45 26-10-15"
+  },
+  {
+   "id": "app-202610151740",
+   "date": "2026-10-15T17:40:39+02:00",
+   "source": "app-ocr",
+   "type": "MP",
+   "score_team": 50,
+   "score_enemy": 12,
+   "team_place": 2,
+   "score": 83,
+   "kills": 20,
+   "deaths": 3,
+   "assists": 15,
+   "kd": 6.67,
+   "impact": 199,
+   "rank_xp": 90,
+   "xp_gained": 2970,
+   "accuracy_pct": 32.2,
+   "headshot_pct": 5,
+   "damage": 1588,
+   "capture_kills": 17,
+   "distance": 13,
+   "mode": "Match à mort par équipe",
+   "map": "Nuketown",
+   "ranked": true,
+   "mvp": false,
+   "result": "win"
   }
  ]
 }
