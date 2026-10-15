@@ -45,7 +45,7 @@ def clean(m):
     r["id"]="app-"+r["date"][:16].replace("-","").replace(":","").replace("T","")
     return r
 def main():
-    ev=json.load(open(os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
+    ev=json.load(open(os.environ.get("GT_EVENT") or os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
     try: d,_=extract(ev["issue"])
     except ValueError as e: return out(False,str(e).capitalize()+".")
     if d is None: return out(False,"Aucune donnée trouvée (ni dans le corps, ni dans le titre) : l'issue a sans doute été créée depuis l'appli GitHub mobile, qui supprime le contenu pré-rempli. La partie est toujours en attente dans l'app : relance « Synchroniser » (version à jour).")

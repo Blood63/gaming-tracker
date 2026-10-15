@@ -22,7 +22,7 @@ def clean(g):
     g.setdefault("id",int(datetime.datetime.now().timestamp()*1000)); g.setdefault("created",datetime.datetime.now().astimezone().isoformat(timespec="seconds"))
     return g
 def main():
-    ev=json.load(open(os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
+    ev=json.load(open(os.environ.get("GT_EVENT") or os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
     try: d,_=extract(ev["issue"])
     except ValueError as e: return out(False,str(e).capitalize()+".")
     if d is None: return out(False,"Aucune donnée trouvée (ni dans le corps, ni dans le titre). L'issue a sans doute été créée depuis l'appli GitHub mobile qui supprime le contenu pré-rempli : relance « Synchroniser » depuis l'app (version à jour).")

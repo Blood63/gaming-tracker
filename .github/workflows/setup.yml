@@ -30,7 +30,7 @@ jobs:
       # Pas de file d'attente partagée (elle annule les exécutions en attente) : on rejoue sur la dernière version et on réessaie si le push est refusé.
       - id: run
         if: steps.ev.outputs.state == 'open'
-        env: { GITHUB_EVENT_PATH: ev.json, COMMENT_FILE: comment.md }
+        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md }
         run: |
           git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
           for i in 1 2 3 4 5; do
