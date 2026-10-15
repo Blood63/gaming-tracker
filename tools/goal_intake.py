@@ -29,7 +29,7 @@ def main():
     a=d.get("action")
     if not a:
         am=re.search(r"### Action\s*\n+(\w+)",body); a={"Ajouter":"add","Modifier":"edit","Supprimer":"delete","Synchroniser":"sync"}.get(am.group(1) if am else "","add")
-    G=json.load(open(F)) if os.path.exists(F) else {"goals":[]}; L=G["goals"]
+    G=json.load(open(F)) if os.path.exists(F) else {"goals":[]}; L=G["goals"]; _before=json.dumps(L)
     try:
         if a in ("add","sync"):
             items=d.get("goals") or [d.get("goal")]; n=0
@@ -51,6 +51,8 @@ def main():
             msg="Objectif supprimé"
         else: return out(False,f"Action inconnue : {a}")
     except (ValueError,KeyError,TypeError) as e: return out(False,f"Objectif invalide : {e}")
-    G["updated"]=datetime.datetime.now().astimezone().isoformat(timespec="seconds")
-    json.dump(G,open(F,"w"),ensure_ascii=False,indent=1); out(True,msg+f". Total : {len(L)} objectif{'s' if len(L)>1 else ''}.")
+    if json.dumps(G["goals"])!=_before:
+        G["updated"]=datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+        json.dump(G,open(F,"w"),ensure_ascii=False,indent=1)
+    out(True,msg+f". Total : {len(L)} objectif{'s' if len(L)>1 else ''}.")
 main()
