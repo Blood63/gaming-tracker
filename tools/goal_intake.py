@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Issue « Objectif » -> goals.json. Données JSON : {"action":"add|edit|delete|sync","goal":{...}|"goals":[...]|"id":n}"""
-import json, os, re, datetime
+import json, os, re, sys, datetime
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+from gt_payload import extract
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); F=f"{D}/goals.json"
 TYPES={"game_hours","game_ach","total_hours","achievements","level","cod_kd","cod_matches","val_rank","rl_rank","cod_rank"}
 KEYS={"id","type","target","appid","deadline","start","playlist","div","mode","created"}
@@ -21,10 +23,9 @@ def clean(g):
     return g
 def main():
     ev=json.load(open(os.environ["GITHUB_EVENT_PATH"])); body=ev["issue"].get("body") or ""
-    m=re.search(r"### Données\s*\n+(?:```(?:json)?\s*\n)?(.*?)(?:\n```|\n### |\Z)",body,re.S)
-    if not m: return out(False,"Bloc « Données » introuvable.")
-    try: d=json.loads(m.group(1).strip())
-    except Exception as e: return out(False,f"Données JSON illisibles : {e}")
+    try: d,_=extract(ev["issue"])
+    except ValueError as e: return out(False,str(e).capitalize()+".")
+    if d is None: return out(False,"Aucune donnée trouvée (ni dans le corps, ni dans le titre). L'issue a sans doute été créée depuis l'appli GitHub mobile qui supprime le contenu pré-rempli : relance « Synchroniser » depuis l'app (version à jour).")
     a=d.get("action")
     if not a:
         am=re.search(r"### Action\s*\n+(\w+)",body); a={"Ajouter":"add","Modifier":"edit","Supprimer":"delete","Synchroniser":"sync"}.get(am.group(1) if am else "","add")

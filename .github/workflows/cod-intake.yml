@@ -5,10 +5,10 @@ on:
 permissions:
   contents: write
   issues: write
-concurrency: { group: cod-intake, cancel-in-progress: false }
 jobs:
   intake:
-    if: github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' && contains(github.event.issue.labels.*.name, 'cod-mobile')
+    if: github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' && (contains(github.event.issue.labels.*.name, 'cod-mobile') || startsWith(github.event.issue.title, 'COD Mobile – partie'))
+    concurrency: { group: repo-write, cancel-in-progress: false }
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

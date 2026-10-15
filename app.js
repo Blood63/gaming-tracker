@@ -123,7 +123,10 @@ function badges(){
 }
 
 /* ========== objectifs (stockés sur l'appareil) ========== */
-const GK='gt-goals',PK='gt-pending',SK='gt-sync-at',GOAL_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=objectif.yml';
+const GK='gt-goals',PK='gt-pending',SK='gt-sync-at',GH_NEW='https://github.com/Blood63/gaming-tracker/issues/new';
+/* Lien d'issue robuste : les données sont dans le corps ET en fin de titre (gt:{…}), car l'appli GitHub mobile ne garde que le titre (ni modèle, ni étiquette, ni corps). */
+const ghNew=(title,data,label)=>{const j=JSON.stringify(data);return `${GH_NEW}?labels=${label}&title=${encodeURIComponent(title+' gt:'+j)}&body=${encodeURIComponent('Créée par l\'app Gaming Tracker — ne rien modifier, valide simplement.\n\n```json\n'+j+'\n```\n')}`};
+const ghTitleOk=(title,data)=>(title+' gt:'+JSON.stringify(data)).length<=250;
 // Local d'abord : un objectif ajouté est enregistré tout de suite sur l'appareil (sans expiration) et s'affiche immédiatement.
 // La synchro (goals.json dans le dépôt, identique sur tous les appareils) passe par un formulaire GitHub pré-rempli ; les copies locales disparaissent quand goals.json les contient.
 const LS={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
@@ -137,24 +140,21 @@ const pendDels=()=>{const ids=repoIds(),old=LS.get(PK,{}),d=[...new Set([...(LS.
 const goals=()=>{const del=new Set(pendDels());return[...(D.goals||[]).map(g=>del.has(g.id)?{...g,pending:3}:g),...localGoals().map(g=>({...g,pending:2}))]};
 const unsynced=()=>({adds:localGoals(),dels:pendDels()});
 const gClean=g=>Object.fromEntries(Object.entries(g).filter(([k,v])=>v!==undefined&&v!==''&&v!==null&&!['pending','_t'].includes(k)));
-const syncURL=()=>{const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return null;
+const syncURLs=()=>{const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return [];
   const data=u.dels.length&&!u.adds.length?{action:'delete',ids:u.dels}:{action:'sync',goals:u.adds.map(gClean),...(u.dels.length?{delete:u.dels}:{})};
   const resume=[u.adds.length?`ajouter ${u.adds.length} objectif${u.adds.length>1?'s':''}`:'',u.dels.length?`supprimer ${u.dels.length} objectif${u.dels.length>1?'s':''}`:''].filter(Boolean).join(' et ');
-  return `${GOAL_ISSUE}&title=${encodeURIComponent('Objectifs – '+resume)}&resume=${encodeURIComponent(resume)}&data=${encodeURIComponent(JSON.stringify(data))}`};
-function addGoal(o){if(goals().some(x=>x.type==o.type&&x.target==o.target&&(x.playlist||'')==(o.playlist||'')&&(x.mode||'')==(o.mode||'')&&(x.appid||0)==(o.appid||0)&&(x.div||1)==(o.div||1)&&x.pending!=3)){toast('ℹ️ Cet objectif existe déjà');return false}const g=gClean({id:Date.now(),created:new Date().toISOString(),...o}),L=LS.get(GK,[]);L.push(g);
-  if(!LS.set(GK,L)){toast('⚠️ Impossible d\'enregistrer sur cet appareil (stockage bloqué / navigation privée ?)');return false}
-  toast('✅ Objectif ajouté sur cet appareil — touche « Synchroniser » pour l\'avoir partout');return true}
-function delGoal(id){const g=goals().find(x=>x.id==id);if(!g)return;
-  if(g.pending==2){LS.set(GK,LS.get(GK,[]).filter(x=>+x.id!=id));toast('Objectif supprimé');return}
-  const d=LS.get('gt-dels',[]);if(!d.includes(id))d.push(id);LS.set('gt-dels',d);toast('Objectif masqué ici — touche « Synchroniser » pour le supprimer partout')}
+  if(ghTitleOk('Objectifs – '+resume,data))return [ghNew('Objectifs – '+resume,data,'objectif')];
+  // trop long pour le titre : une demande par changement
+  return [...u.adds.map(g=>ghNew('Objectifs – ajouter 1 objectif',{action:'sync',goals:[gClean(g)]},'objectif')),...(u.dels.length?[ghNew(`Objectifs – supprimer ${u.dels.length}`,{action:'delete',ids:u.dels},'objectif')]:[])]};
+const syncURL=()=>syncURLs()[0]||null;
 function syncBox(){const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return '';
   const at=LS.get(SK,0),late=at&&Date.now()-at>6e5;
   return `<div class="glass pad" id="syncbox" style="border-color:var(--warn);margin:.6rem 0">
    <b>📲 ${n} changement${n>1?'s':''} seulement sur cet appareil</b>
    ${late?`<p class="down" style="font-size:.85rem;margin:.3rem 0">⚠️ La dernière synchronisation n'a pas abouti (formulaire GitHub non validé, pas connecté à GitHub, ou erreur du robot). Réessaie ; s'il y a une erreur, elle est expliquée en commentaire de la demande sur GitHub.</p><div id="syncerr"></div>`:''}
    <p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Tes objectifs fonctionnent déjà ici. Pour les retrouver sur ton téléphone ET ton PC : touche « Synchroniser », connecte-toi à GitHub si besoin, puis valide avec <b>« Create »</b> (sans rien modifier). Mise à jour sous ~2 min.</p>
-   <a class="btn full" id="gsync" href="${esc(syncURL())}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)</a></div>`}
-function bindSync(){const a=$('#gsync');if(a)a.onclick=()=>{LS.set(SK,Date.now());toast('📝 Valide le formulaire GitHub (« Create ») pour terminer')};
+   ${(L=>L.map((u,i)=>`<a class="btn full gsync" ${i?'':'id="gsync"'} style="margin-top:${i?'.4rem':'0'}" href="${esc(u)}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)${L.length>1?` ${i+1}/${L.length}`:''}</a>`).join(''))(syncURLs())}</div>`}
+function bindSync(){$$('.gsync').forEach(a=>a.onclick=()=>{LS.set(SK,Date.now());toast('📝 Valide la demande GitHub (« Create » / « Submit ») pour terminer')});
   if($('#syncerr'))fetch('https://api.github.com/repos/Blood63/gaming-tracker/issues?labels=objectif&state=open&per_page=5').then(r=>r.ok?r.json():[]).then(a=>{if(a.length)$('#syncerr').innerHTML=a.map(i=>`<a href="${esc(i.html_url)}" target="_blank" rel="noopener" style="font-size:.85rem">Voir la demande #${i.number} non traitée ›</a>`).join('<br>')}).catch(()=>{})}
 function goalProg(x){
   const g=D.games.find(y=>y.appid==x.appid);
@@ -335,18 +335,19 @@ function rlManual(){
 }
 
 /* ========== COD : ajout de partie depuis l'app (OCR des 2 captures) ========== */
-const CPK='gt-cod-pending',COD_PARTIE_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-partie.yml';
+const CPK='gt-cod-pending',CK=['date','mode','map','result','score_team','score_enemy','ranked','mvp','team_place','score','kills','deaths','assists','kd','impact','objective_time','rank_xp','xp_gained','accuracy_pct','headshot_pct','damage','capture_kills','distance'];
 const codPend=()=>{const repo=D.codRepo||[],mn=t=>Math.floor(new Date(t).getTime()/6e4),keys=new Set(repo.map(m=>mn(m.date)));const a=LS.get(CPK,[]).filter(m=>m&&m.date&&!keys.has(mn(m.date))&&!repo.some(r=>r.id==m.id));LS.set(CPK,a);return a};
 function codRefresh(){const ok=m=>m.date&&(m.type||m.kills!=null);D.cod=[...(D.codRepo||[]).filter(ok),...codPend().map(m=>({...m,pending:1}))].sort((a,b)=>new Date(a.date)-new Date(b.date))}
 const parisISO=s=>{if(!s)return null;if(/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(s))s+=':00';const d=new Date(s);if(isNaN(d))return null;const o=-d.getTimezoneOffset(),p=n=>String(Math.floor(Math.abs(n))).padStart(2,'0');return s.slice(0,19)+(o>=0?'+':'-')+p(o/60)+':'+p(o%60)};
-const codSyncURL=()=>{const a=codPend();if(!a.length)return null;const data={action:'add',matches:a.map(m=>gClean(m))};const r=`${a.length} partie${a.length>1?'s':''} (${a.map(m=>fshort(m.date)).join(', ')})`;
-  return `${COD_PARTIE_ISSUE}&title=${encodeURIComponent('COD – '+r)}&resume=${encodeURIComponent(r)}&data=${encodeURIComponent(JSON.stringify(data))}`};
+const codSyncURLs=()=>codPend().map(m=>{const row=CK.map(k=>typeof m[k]=='boolean'?+m[k]:m[k]??null);while(row.length&&row.at(-1)==null)row.pop();
+  const t=new Date(m.date).toLocaleString('fr-FR',{...TZ,day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});return [t,ghNew('COD – '+t,{action:'add',c:[row]},'cod-partie')]});
+const codSyncURL=()=>codSyncURLs()[0]?.[1]||null;
 function codSyncBox(){const a=codPend();if(!a.length)return '';const at=LS.get('gt-cod-sync-at',0),late=at&&Date.now()-at>6e5;
   return `<div class="glass pad" id="codsync" style="border-color:var(--warn);margin:.6rem 0"><b>📲 ${a.length} partie${a.length>1?'s':''} seulement sur cet appareil</b>
   ${late?`<p class="down" style="font-size:.85rem;margin:.3rem 0">⚠️ La dernière synchronisation n'a pas abouti (formulaire GitHub non validé ou erreur du robot, expliquée en commentaire de la demande). Réessaie.</p>`:''}
   <p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Elle${a.length>1?'s':''} compte${a.length>1?'nt':''} déjà dans tes stats ici. Touche « Synchroniser », connecte-toi à GitHub si besoin, puis valide avec <b>« Create »</b> sans rien modifier.</p>
-  <a class="btn full" id="codsyncbtn" href="${esc(codSyncURL())}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)</a></div>`}
-function codSyncBind(){const a=$('#codsyncbtn');if(a)a.onclick=()=>{LS.set('gt-cod-sync-at',Date.now());toast('📝 Valide le formulaire GitHub (« Create ») pour terminer')}}
+  ${codSyncURLs().map(([t,u],i)=>`<a class="btn full codsync" ${i?'':'id="codsyncbtn"'} style="margin-top:${i?'.4rem':'0'}" href="${esc(u)}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub)${a.length>1?' · '+esc(t):''}</a>`).join('')}</div>`}
+function codSyncBind(){$$('.codsync').forEach(a=>a.onclick=()=>{LS.set('gt-cod-sync-at',Date.now());toast('📝 Valide la demande GitHub (« Create » / « Submit ») pour terminer')})}
 const COD_FIELDS=[['date','Date et heure','datetime-local'],['mode','Mode','mode'],['map','Carte','map'],['result','Résultat','result'],['score_team','Score équipe','number'],['score_enemy','Score adverse','number'],
  ['ranked','Classée','bool'],['mvp','MVP','bool'],['team_place','Place dans l\'équipe','number'],['score','Score','number'],['kills','Éliminations','number'],['deaths','Morts','number'],['assists','Assistances','number'],
  ['impact','Impact','number'],['objective_time','Temps sur l\'objectif (mm:ss)','text'],['rank_xp','EXP de grade gagnée','number'],['xp_gained','EXP gagnée','number'],['kd','Ratio É/M','number'],
