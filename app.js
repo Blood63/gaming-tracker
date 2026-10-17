@@ -12,9 +12,9 @@ const get=async(f,j=true)=>{try{const r=await fetch(f+'?v='+Date.now());if(!r.ok
 const jl=async f=>((await get(f,false))||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c'};
 const PAL=[COL.cy,COL.vi,COL.gr,COL.pk,COL.warn,COL.bl,COL.or,COL.bad];
-if(window.Chart){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom'}
+if(window.Chart){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom';Chart.defaults.interaction={mode:'index',intersect:false,axis:'x'};Chart.defaults.plugins.tooltip={enabled:true,mode:'index',intersect:false,axis:'x',position:'nearest',caretSize:8,padding:10,titleFont:{size:13,weight:'bold'},bodyFont:{size:13},callbacks:{label:c=>` ${c.dataset.label?c.dataset.label+' : ':''}${c.parsed&&c.parsed.y!=null?fnum(c.parsed.y,Number.isInteger(c.parsed.y)?0:2):c.formattedValue}`}};Chart.defaults.elements.point.hitRadius=18;Chart.defaults.elements.point.hoverRadius=7}
 let charts=[];
-const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{charts.push(new Chart(el,cfg))}catch(e){console.error(e)}};
+const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{const L=cfg.data&&cfg.data.labels;if(L&&L.length){cfg.options=cfg.options||{};cfg.options.plugins=cfg.options.plugins||{};const t=cfg.options.plugins.tooltip=cfg.options.plugins.tooltip||{};if(!t.callbacks)t.callbacks={};const tl=t.callbacks.title;t.callbacks.title=i=>tl?tl(i):(i&&i[0]?String(L[i[0].dataIndex]??''):'')}charts.push(new Chart(el,cfg))}catch(e){console.error(e)}};
 const lineDS=(label,data,color,extra={})=>({label,data,borderColor:color,backgroundColor:color+'2a',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,spanGaps:true,...extra});
 const bar=(p,cls='')=>p==null?'':`<div class="bar ${cls}"><i data-w="${Math.max(0,Math.min(100,p))}"></i></div>`;
 const animBars=()=>setTimeout(()=>$$('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),80);
@@ -22,7 +22,13 @@ const stat=(k,v,d='',cls='')=>`<div class="glass stat ${cls}"><div class="k">${e
 const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
 const ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-mobile.yml',RANK_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=cod-rank.yml';
 const SETUP_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=setup.yml';
-const RTIERS=['Recrue','Régulier','Vaillant','Élite','Pro','Maître','Grand maître','Légendaire'],RICON=['🔰','🥉','🥈','🥇','💎','💠','👑','🔥'];
+const RTIERS=['Novice','Vétéran','Élite','Pro','Maître','Grand Maître','Légendaire'],RICON=['🔰','🥉','🥈','🥇','💎','👑','🔥'];
+/* Échelle COD Mobile (vérifiée oct. 2026) : divisions I–V de Novice à Pro, puis points seuls. Seuils = points de rang. */
+const COD_SUB=['I','II','III','IV','V'];
+const COD_LADDER=[['Novice',0,5],['Vétéran',1001,5],['Élite',2001,5],['Pro',3001,5],['Maître',4501,0],['Grand Maître',6001,0],['Légendaire',8001,0]];
+const COD_STEPS=[];COD_LADDER.forEach(([n,p,d],ti)=>{if(d)for(let i=0;i<d;i++)COD_STEPS.push({tier:n,sub:COD_SUB[i],pts:p+Math.round(i*(ti<3?200:300))});else COD_STEPS.push({tier:n,sub:null,pts:p})});
+const codStepVal=(tier,sub)=>{const i=COD_STEPS.findIndex(x=>x.tier==tier&&(x.sub||null)==(sub||null));return i<0?null:i+1};
+const codPtsOf=(tier,sub,points)=>points!=null?points:(COD_STEPS[codStepVal(tier,sub)-1]?.pts??null);
 const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter une partie COD</a>`;
 
 /* ========== données ========== */
@@ -34,7 +40,7 @@ async function load(){
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
-  D.ranks={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};
+  D.ranksRepo={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};D.ranks={MP:[],BR:[]};codRankRefresh();
   D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
@@ -174,8 +180,8 @@ function goalProg(x){
 const VAL_T=(()=>{const a=[];['Iron','Bronze','Silver','Gold','Platinum','Diamond','Ascendant','Immortal'].forEach((t,i)=>[1,2,3].forEach(n=>a.push({id:3+i*3+n-1,n:`${t} ${n}`})));a.push({id:27,n:'Radiant'});return a})();
 const RL_T=(()=>{const a=[];['Bronze','Argent','Or','Platine','Diamant','Champion','Grand Champion'].forEach(t=>['I','II','III'].forEach(n=>a.push(`${t} ${n}`)));a.push('Supersonic Legend');return a})();
 const RL_PL={'1v1':'Duel 1v1','2v2':'Double 2v2','3v3':'Standard 3v3'};
-const COD_SUB=['I','II','III','IV','V'];
-const codLbl=v=>{const t=Math.floor((v-1)/5),sub=(v-1)%5;return RTIERS[t]?(t==7?RTIERS[t]:RTIERS[t]+' '+COD_SUB[sub]):'?'};
+const codLbl=v=>{v=codNormStep(v);const x=COD_STEPS[v-1];return x?x.tier+(x.sub?' '+x.sub:''):'?'};
+const codNormStep=v=>{if(v<=23)return v;const t=Math.floor((v-1)/5);return t>=7?23:t==6?22:t==5?21:t==4?16+((v-1)%5):v};
 function valEst(){ // gains/pertes moyens de RR (parties classées récentes)
   const H=D.vh?.mmr_history||[],ms=Object.fromEntries((D.vh?.matches||[]).map(m=>[m.id,m]));
   const w=H.filter(h=>h.change>0).map(h=>h.change),l=H.filter(h=>h.change<0).map(h=>-h.change),
@@ -200,7 +206,7 @@ function rankGoal(x){
     if(!pl)return{label:lab,wait:'En attente de données Rocket League (intégration ballchasing.com prévue)',cur:0,t:1,p:0,dl};
     const cur=rlVal(pl.tier,pl.div),tgt=rlVal(x.target,x.div||1),start=x.start??cur,rem=tgt-cur,p=tgt<=start?(cur>=tgt?100:0):100*(cur-start)/(tgt-start);
     return{label:lab,cur:0,t:1,u:'RR',p:Math.max(0,Math.min(100,p)),done:cur>=tgt,dl,info:rem>0?`Actuel : ${esc(pl.tier_name)} div. ${RL_DIV[pl.div-1]} (${fnum(pl.mmr)} MMR, record ${fnum(pl.best_mmr)}) · encore ${rem} division${rem>1?'s':''}. <i>Données manuelles (captures tracker.gg).</i>`:''}}
-  if(x.type=='cod_rank'){const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
+  if(x.type=='cod_rank'){x.target=codNormStep(x.target);const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
     if(!c)return{label:lab,wait:'Enregistre ton rang actuel (bouton « changement de rang » sur la page COD)',cur:0,t:1,p:0,dl};
     const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
     return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
@@ -647,19 +653,52 @@ function codMatch(i){
   ${x.ocr_notes?.length?`<p class="pill warn">${esc(x.ocr_notes.join(' · '))}</p>`:''}`;
   $$('.shots img').forEach(i=>i.onclick=()=>lb(i.dataset.full));animBars();
 }
-function codBind(){rankChart();$$('#tseg button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('codType',b.dataset.t);const y=scrollY;render();scrollTo(0,y)})}
+function codBind(){rankChart();codRankBind();$$('#tseg button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('codType',b.dataset.t);const y=scrollY;render();scrollTo(0,y)})}
+/* ========== COD : rangs saisis dans l'app (local puis synchro GitHub) ========== */
+const CRK='gt-cod-ranks';
+const codRankPend=()=>{const key=r=>Math.floor(new Date(r.date).getTime()/6e4)+'|'+(r.tier||'')+'|'+(r.sub||'')+'|'+(r.points??'');
+  const out={MP:[],BR:[]};for(const m of['MP','BR']){const have=new Set((D.ranksRepo[m]||[]).map(key));out[m]=LS.get(CRK,[]).filter(r=>r&&r.mode==m&&r.date&&!have.has(key(r)))}
+  const keep=Object.values(out).flat();LS.set(CRK,keep.map(r=>({...r})));return out};
+function codRankRefresh(){const p=codRankPend();for(const m of['MP','BR'])D.ranks[m]=[...(D.ranksRepo[m]||[]),...p[m].map(r=>({...r,pending:1}))].sort((a,b)=>new Date(a.date)-new Date(b.date))}
+const codRankURLs=()=>{const p=codRankPend();return[...p.MP.map(r=>['MP',r]),...p.BR.map(r=>['BR',r])].map(([m,r])=>{
+  const t=new Date(r.date).toLocaleString('fr-FR',{...TZ,day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  return [m,r,ghNew(`COD – rang ${m} ${r.tier}${r.sub?' '+r.sub:''} (${t})`,{action:'rank',mode:m,tier:r.tier,sub:r.sub||null,points:r.points??null,season:r.season||null,date:r.date},'cod-rank')]})};
+function codRankSyncBox(){const u=codRankURLs();if(!u.length)return '';const at=LS.get('gt-codrank-sync-at',0),late=at&&Date.now()-at>6e5;
+  return `<div class="glass pad" style="border-color:var(--warn);margin:.6rem 0"><b>📲 ${u.length} changement${u.length>1?'s':''} de rang seulement sur cet appareil</b>${late?'<p class="down" style="font-size:.85rem;margin:.3rem 0">⚠️ La dernière synchronisation n\'a pas abouti. Réessaie.</p>':''}<p class="mut" style="font-size:.85rem;margin:.3rem 0 .6rem">Touche « Synchroniser », puis valide la demande GitHub (« Create » / « Submit ») sans rien modifier.</p>${u.map(([m,r,url],i)=>`<a class="btn full codranksync" href="${esc(url)}" target="_blank" rel="noopener">🔄 Synchroniser (GitHub) · ${m} ${esc(r.tier)}${r.sub?' '+esc(r.sub):''}</a>`).join('')}</div>`}
+function codRankBind(){$$('.codranksync').forEach(a=>a.onclick=()=>{LS.set('gt-codrank-sync-at',Date.now());toast('📝 Valide la demande GitHub pour terminer')})}
+function codRankForm(){
+  const now=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,16);
+  app.innerHTML=`<h2>Changement de rang COD</h2><p class="mut" style="font-size:.88rem">Enregistré tout de suite sur cet appareil, puis synchronisé vers GitHub (comme les parties et les objectifs). Échelle : Novice → Vétéran → Élite → Pro (divisions I à V), puis Maître, Grand Maître et Légendaire aux points.</p>
+  <form class="glass form" id="crf" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem">
+   <label>Mode<select name="mode"><option value="MP">Multijoueur</option><option value="BR">Battle Royale</option></select></label>
+   <label>Rang<select name="tier">${RTIERS.map(t=>`<option>${t}</option>`).join('')}</select></label>
+   <label id="subw">Division<select name="sub">${COD_SUB.map(x=>`<option>${x}</option>`).join('')}</select></label>
+   <label>Points de rang (optionnel)<input name="points" type="text" inputmode="numeric" placeholder="ex. 4250"></label>
+   <label>Date et heure<input name="date" type="datetime-local" value="${now}" required></label>
+   <label>Saison (optionnel)<input name="season" type="text" placeholder="ex. Saison 9 2026"></label>
+   <div style="grid-column:1/-1"><div id="crprev" class="mut" style="font-size:.85rem;margin-bottom:.5rem"></div><button class="btn full" type="submit">💾 Enregistrer le rang</button></div></form>
+  <p class="mut" style="font-size:.8rem">Seuils (points) : ${COD_LADDER.map(([n,p])=>`${n} dès ${fnum(p)}`).join(' · ')}.</p>`;
+  const upd=()=>{const t=$('#crf').tier.value,need=COD_LADDER.find(x=>x[0]==t)[2]>0;$('#subw').style.display=need?'':'none';
+    const pts=$('#crf').points.value;$('#crprev').textContent='Aperçu : '+t+(need?' '+$('#crf').sub.value:'')+(pts?' · '+pts+' pts':'')};
+  $('#crf').onchange=upd;upd();
+  $('#crf').onsubmit=e=>{e.preventDefault();const f=e.target,date=parisISO(f.date.value);if(!date)return toast('⚠️ Date invalide');
+    const tier=f.tier.value,sub=COD_LADDER.find(x=>x[0]==tier)[2]>0?f.sub.value:null,pts=f.points.value.trim()?parseInt(f.points.value.replace(/\D/g,''),10):null;
+    const r={mode:f.mode.value,tier,sub,points:Number.isFinite(pts)?pts:null,season:f.season.value.trim()||null,date,value:codStepVal(tier,sub),label:tier+(sub?' '+sub:'')};
+    const a=LS.get(CRK,[]);a.push(r);if(!LS.set(CRK,a))return toast('⚠️ Enregistrement local impossible (navigation privée ?)');
+    codRankRefresh();toast('✅ Rang enregistré — pense à « Synchroniser »');go('#/cod')}}
 function ranksHTML(){
   const card=(k,n)=>{const a=D.ranks[k],c=a.at(-1),pv=a.at(-2),best=a.reduce((b,x)=>!b||x.value>b.value?x:b,null);
     return `<div class="glass stat"><div class="k">${n}</div>${c?`<div class="v">${RICON[RTIERS.indexOf(c.tier)]||'🎖️'} ${esc(c.label)}</div><div class="d">${c.points!=null?fnum(c.points)+' pts · ':''}${fdate(c.date)}${pv?` · <span class="${c.value>pv.value?'up':c.value<pv.value?'down':''}">${c.value>pv.value?'▲':c.value<pv.value?'▼':'='} depuis ${esc(pv.label)}</span>`:''}</div>${best&&best!==c?`<div class="d">Meilleur suivi : ${esc(best.label)}</div>`:''}`:`<div class="v mut" style="font-size:1rem">Aucun rang enregistré</div>`}</div>`};
   const any=D.ranks.MP.length||D.ranks.BR.length;
   return `<h2>Rang classé</h2><div class="stats" style="grid-template-columns:repeat(2,1fr)">${card('MP','Multijoueur')}${card('BR','Battle Royale')}</div>
-  <div style="margin-top:.6rem"><a class="btn ghost full" href="${RANK_ISSUE}" target="_blank" rel="noopener">🎖️ Enregistrer un changement de rang</a></div>
-  ${any?`<div class="glass chart"><canvas id="crk"></canvas></div><div class="glass tbl" style="margin-top:.7rem"><table><tr><th>Date</th><th>Mode</th><th>Rang</th><th>Points</th><th>Saison</th></tr>${[...D.ranks.MP.map(x=>({...x,m:'MJ'})),...D.ranks.BR.map(x=>({...x,m:'BR'}))].sort((a,b)=>a.date<b.date?1:-1).map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.m}</td><td>${RICON[RTIERS.indexOf(x.tier)]||''} ${esc(x.label)}</td><td>${fnum(x.points)}</td><td>${esc(x.season||'—')}</td></tr>`).join('')}</table></div>`:''}`;
+  <div class="tool" style="margin-top:.6rem"><a class="btn full" href="#/cod/rang">🎖️ Enregistrer un changement de rang</a></div>${codRankSyncBox()}
+  ${['MP','BR'].map(k=>{const c=D.ranks[k].at(-1);if(!c)return '';const pts=codPtsOf(c.tier,c.sub,c.points),pct=Math.min(100,100*pts/8001);return `<div class="glass pad" style="margin-top:.5rem"><small class="mut">${k=='MP'?'Multijoueur':'Battle Royale'} · vers Légendaire (8 001 pts)</small>${bar(pct)}<small class="mut">${fnum(pts)} pts (calculé depuis le rang${c.points==null?' — seuil du palier':''}) · reste ${fnum(Math.max(0,8001-pts))} pts</small></div>`}).join('')}
+  ${any?`<div class="glass chart"><canvas id="crk"></canvas></div><div class="glass tbl" style="margin-top:.7rem"><table><tr><th>Date</th><th>Mode</th><th>Rang</th><th>Points</th><th>Saison</th></tr>${[...D.ranks.MP.map(x=>({...x,m:'MJ'})),...D.ranks.BR.map(x=>({...x,m:'BR'}))].sort((a,b)=>a.date<b.date?1:-1).map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.m}</td><td>${RICON[RTIERS.indexOf(x.tier)]||''} ${esc(x.label)}</td><td>${fnum(x.points)}${x.pending?' <span class="pill warn">📲</span>':''}</td><td>${esc(x.season||'—')}</td></tr>`).join('')}</table></div>`:''}`;
 }
 function rankChart(){
   if(!$('#crk'))return;const lbl=v=>{const t=Math.floor((v-1)/5),sub=(v-1)%5;return RTIERS[t]?(t==7?RTIERS[t]:RTIERS[t]+' '+['I','II','III','IV','V'][sub]):''};
-  chart($('#crk'),{type:'line',data:{datasets:[['MP','Multijoueur',COL.cy],['BR','Battle Royale',COL.gr]].filter(([k])=>D.ranks[k].length).map(([k,n,c])=>lineDS(n,D.ranks[k].map(x=>({x:new Date(x.date).getTime(),y:x.value,l:x.label})),c,{fill:false,stepped:true,pointRadius:5}))},
-   options:{parsing:true,scales:{x:{type:'linear',ticks:{callback:v=>fshort(v),maxTicksLimit:6}},y:{ticks:{callback:lbl,stepSize:5}}},plugins:{title:{display:true,text:'Évolution du rang'},tooltip:{callbacks:{title:i=>fdate(i[0].raw.x),label:i=>` ${i.dataset.label} : ${i.raw.l}`}}}}});
+  chart($('#crk'),{type:'line',data:{datasets:[['MP','Multijoueur',COL.cy],['BR','Battle Royale',COL.gr]].filter(([k])=>D.ranks[k].length).map(([k,n,c])=>lineDS(n,D.ranks[k].map(x=>({x:new Date(x.date).getTime(),y:codPtsOf(x.tier,x.sub,x.points),l:x.label})),c,{fill:false,stepped:true,pointRadius:5}))},
+   options:{parsing:true,scales:{x:{type:'linear',ticks:{callback:v=>fshort(v),maxTicksLimit:6}},y:{min:0,suggestedMax:8001,ticks:{callback:v=>{const st=[...COD_STEPS].reverse().find(x=>x.pts<=v);return st?st.tier+(st.sub?' '+st.sub:''):v},maxTicksLimit:9}}},plugins:{title:{display:true,text:'Évolution du rang (points)'},tooltip:{callbacks:{title:i=>fdate(i[0].raw.x),label:i=>` ${i.dataset.label} : ${i.raw.l} · ${fnum(i.raw.y)} pts`}}}}});
 }
 function career(){
   const c=D.cp;if(!c)return '';const mp=c.multiplayer||{},br=c.battle_royale||{},r=c.recap_2025||{},prev=D.codP.at(-2);
@@ -731,7 +770,7 @@ function objectifs(){
   const isR=t=>t.endsWith('_rank'),sh=(id,v)=>$(id).style.display=v?'':'none';
   const rankOpts=t=>{if(t=='val_rank'){const c=D.vh?.mmr?.tier_id||3;return VAL_T.map(x=>`<option value="${x.id}"${x.id==Math.min(27,c+1)?' selected':''}>${esc(vTier(x.n))}</option>`).join('')}
     if(t=='rl_rank'){const pl=D.rlm?.playlists?.find(p=>p.id==$('#gpls').value),nx=pl?rlNext(pl):9;return RL_T.map((n,i)=>`<option value="${i}"${i==nx?' selected':''}>${n}</option>`).join('')}
-    const c=(D.ranks[$('#gcms').value]||[]).at(-1)?.value||1;let o='';for(let v=1;v<=36;v++)o+=`<option value="${v}"${v==Math.min(36,c+1)?' selected':''}>${codLbl(v)}</option>`;return o};
+    const c=codNormStep((D.ranks[$('#gcms').value]||[]).at(-1)?.value||1);let o='';for(let v=1;v<=23;v++)o+=`<option value="${v}"${v==Math.min(23,c+1)?' selected':''}>${codLbl(v)}</option>`;return o};
   const upd=()=>{const t=$('#gt').value;sh('#gl',t.startsWith('game'));sh('#gvl',!isR(t));sh('#grk',isR(t));sh('#gpl',t=='rl_rank');sh('#gdv',t=='rl_rank');sh('#gcm',t=='cod_rank');
     $('#gv').required=!isR(t);if(isR(t))$('#grks').innerHTML=rankOpts(t);else $('#gv').value=sugg[t](+$('#gg').value)};
   $('#gt').onchange=upd;$('#gg').onchange=upd;$('#gcms').onchange=upd;$('#gpls').onchange=upd;upd();
@@ -764,8 +803,8 @@ function render(){
   const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
   document.body.classList.toggle('sub',!top);
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
-  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
+  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
+  try{({'':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }

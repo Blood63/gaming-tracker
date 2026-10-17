@@ -1,42 +1,44 @@
 #!/usr/bin/env python3
-"""Traite une issue 'Changement de rang COD' -> cod_ranks.json + commentaire."""
-import json, os, re, urllib.request, hashlib, datetime
-from zoneinfo import ZoneInfo
-ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TIERS=["Recrue","Régulier","Vaillant","Élite","Pro","Maître","Grand maître","Légendaire"]
+"""Issue « Changement de rang COD » (créée par l'app, données JSON dans le corps ou le titre) -> cod_ranks.json.
+Ajout idempotent ; aucune capture n'est téléchargée ni publiée."""
+import json, os, re, sys, datetime
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+from gt_payload import extract
+D=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); F=f"{D}/cod_ranks.json"
+LADDER=[("Novice",0,5),("Vétéran",1001,5),("Élite",2001,5),("Pro",3001,5),("Maître",4501,0),("Grand Maître",6001,0),("Légendaire",8001,0)]
 SUBS=["I","II","III","IV","V"]
-ev=json.load(open(os.environ["GITHUB_EVENT_PATH"]));iss=ev["issue"];body=iss.get("body") or ""
-def field(l):
-    m=re.search(r"###\s*"+re.escape(l)+r"\s*\n+(.*?)(?=\n###|\Z)",body,re.S);v=m.group(1).strip() if m else ""
-    return None if v in("","_No response_","None") else v
-mode={"Multijoueur":"MP","Battle Royale":"BR"}.get(field("Mode") or "")
-tier=field("Rang");sub=field("Niveau (I à V)");pts=field("Points / étoiles (optionnel)");date=field("Date (optionnel, AAAA-MM-JJ HH:MM)")
-errs=[]
-if not mode: errs.append("mode manquant")
-if tier not in TIERS: errs.append("rang invalide")
-if tier=="Légendaire": sub=None
-elif sub not in SUBS: errs.append("niveau I–V manquant")
-p=None
-if pts:
-    m=re.search(r"\d[\d\s.,]*",pts); p=int(re.sub(r"\D","",m.group(0))) if m else None
-    if p is None: errs.append("points illisibles (ignorés)")
-if date and re.match(r"\d{4}-\d{2}-\d{2}( \d{2}:\d{2})?$",date): d=datetime.datetime.fromisoformat(date if " " in date else date+" 12:00").replace(tzinfo=ZoneInfo("Europe/Paris")).isoformat()
-else: d=iss["created_at"]
-shots=[]
-for i,u in enumerate(re.findall(r"https://github\.com/user-attachments/assets/[\w-]+",body)):
-    try:
-        b=urllib.request.urlopen(urllib.request.Request(u,headers={"Authorization":"Bearer "+os.environ.get("GITHUB_TOKEN",""),"User-Agent":"x"}),timeout=60).read()
-        f=f"screenshots/cod/ranks/{iss['number']}-{i+1}-{hashlib.sha1(b).hexdigest()[:8]}.png";os.makedirs(f"{ROOT}/screenshots/cod/ranks",exist_ok=True);open(f"{ROOT}/{f}","wb").write(b);shots.append(f)
-    except Exception as e: errs.append(f"capture non téléchargée ({e})")
-fatal=[e for e in errs if "manquant" in e or "invalide" in e]
-out=["## 🎖️ Changement de rang"]
-if fatal:
-    out.append("⚠️ Non enregistré : "+", ".join(fatal)+". Modifie l'issue pour corriger.")
-else:
-    path=f"{ROOT}/cod_ranks.json";db=json.load(open(path)) if os.path.exists(path) else {"MP":[],"BR":[]}
-    for k in("MP","BR"): db[k]=[x for x in db.get(k,[]) if x.get("issue")!=iss["number"]]
-    rec={"date":d,"tier":tier,"sub":sub,"label":tier+(" "+sub if sub else ""),"value":TIERS.index(tier)*5+(SUBS.index(sub)+1 if sub else 1),"points":p,"season":field("Saison (optionnel)"),"issue":iss["number"],"screenshots":shots}
-    db[mode].append(rec);db[mode].sort(key=lambda x:x["date"]);json.dump(db,open(path,"w"),ensure_ascii=False,indent=1)
-    out+=["| | |","|---|---|",f"| Mode | {field('Mode')} |",f"| Rang | **{rec['label']}** |",f"| Points | {p if p is not None else '—'} |",f"| Date | {d} |",f"| Saison | {rec['season'] or '—'} |"]
-    out+=[f"- {e}" for e in errs if e not in fatal]+["","✅ Ajouté au tableau de bord."]
-open(os.environ.get("COMMENT_FILE","/tmp/c.md"),"w").write("\n".join(out))
+STEPS=[]
+for ti,(n,p,d) in enumerate(LADDER):
+    if d:
+        for i in range(d): STEPS.append((n,SUBS[i],p+round(i*(200 if ti<3 else 300))))
+    else: STEPS.append((n,None,p))
+def out(ok,msg):
+    open(os.environ.get("COMMENT_FILE","comment.md"),"w").write(("✅ " if ok else "❌ ")+msg+"\n\n_Le rang est stocké dans `cod_ranks.json` (mise à jour de l'app sous quelques minutes)._")
+    print("OK" if ok else "FAIL")
+def main():
+    ev=json.load(open(os.environ.get("GT_EVENT") or os.environ["GITHUB_EVENT_PATH"])); iss=ev["issue"]
+    try: d,_=extract(iss)
+    except ValueError as e: return out(False,str(e).capitalize()+".")
+    if not d: return out(False,"Aucune donnée trouvée (ni dans le corps, ni dans le titre) : relance la synchronisation depuis l'app (version à jour).")
+    if d.get("action","rank")!="rank": return out(False,"Action inconnue.")
+    mode=d.get("mode"); tier=d.get("tier"); sub=d.get("sub") or None; pts=d.get("points")
+    if mode not in ("MP","BR"): return out(False,"Mode invalide (MP ou BR).")
+    lad=dict((n,(p,dd)) for n,p,dd in LADDER)
+    if tier not in lad: return out(False,f"Rang invalide : {tier}.")
+    if lad[tier][1]==0: sub=None
+    elif sub not in SUBS: return out(False,"Division I–V manquante pour ce rang.")
+    if pts is not None and (isinstance(pts,bool) or not isinstance(pts,(int,float)) or pts<0 or pts>200000): return out(False,"Points invalides.")
+    try: dt=datetime.datetime.fromisoformat(str(d.get("date")))
+    except Exception: return out(False,"Date invalide.")
+    if dt.tzinfo is None: return out(False,"Date sans fuseau horaire.")
+    idx=[i for i,(n,s2,p) in enumerate(STEPS) if n==tier and s2==sub]
+    if not idx: return out(False,"Palier invalide.")
+    rec={"date":dt.isoformat(timespec="seconds"),"tier":tier,"sub":sub,"label":tier+(" "+sub if sub else ""),"value":idx[0]+1,"points":pts,"season":(str(d["season"])[:40] if d.get("season") else None),"source":"app"}
+    C=json.load(open(F)) if os.path.exists(F) else {"MP":[],"BR":[]}
+    for k in ("MP","BR"): C.setdefault(k,[])
+    key=lambda r:(str(r.get("date"))[:16],r.get("tier"),r.get("sub"),r.get("points"))
+    if any(key(x)==key(rec) for x in C[mode]): return out(True,f"Rang déjà enregistré ({mode} · {rec['label']}, {rec['date'][:16].replace('T',' ')}) : aucun changement.")
+    C[mode].append(rec); C[mode].sort(key=lambda x:x["date"])
+    json.dump(C,open(F,"w"),ensure_ascii=False,indent=1)
+    out(True,f"Rang enregistré : **{mode} · {rec['label']}**{f' · {pts} pts' if pts is not None else ''} ({rec['date'][:10]}). Historique {mode} : {len(C[mode])} entrée(s).")
+if __name__=="__main__": main()

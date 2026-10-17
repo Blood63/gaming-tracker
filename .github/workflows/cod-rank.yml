@@ -1,25 +1,46 @@
 name: COD Mobile rang
+# Déclenché par le formulaire (étiquette « cod-rank ») OU par le titre (« COD – rang… ») : l'appli GitHub mobile ne garde que le titre.
 on:
   issues:
-    types: [opened, edited]
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      issue: { description: "Numéro de l'issue à traiter", required: true }
 permissions:
   contents: write
   issues: write
 jobs:
-  rank:
-    if: github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' && (contains(github.event.issue.labels.*.name, 'cod-rank') || startsWith(github.event.issue.title, 'COD Mobile – rang'))
-    concurrency: { group: repo-write, cancel-in-progress: false }
+  run:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == 'Blood63') ||
+      (github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' &&
+       (contains(github.event.issue.labels.*.name, 'cod-rank') || startsWith(github.event.issue.title, 'COD – rang') || startsWith(github.event.issue.title, 'COD Mobile – rang')))
     runs-on: ubuntu-latest
+    env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
     steps:
       - uses: actions/checkout@v4
-      - run: python3 tools/cod_rank_intake.py
-        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}", COMMENT_FILE: comment.md }
-      - run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          git add -A cod_ranks.json screenshots || true
-          git diff --cached --quiet || git commit -m "COD rang : issue #${{ github.event.issue.number }}"
-          git pull --rebase -q && git push
-      - env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      - id: ev
         run: |
-          gh issue comment ${{ github.event.issue.number }} -R ${{ github.repository }} -F comment.md
-          grep -q "Non enregistré" comment.md || gh issue close ${{ github.event.issue.number }} -R ${{ github.repository }} --reason completed
+          gh api repos/${{ github.repository }}/issues/$N > issue.json
+          python3 -c "import json;i=json.load(open('issue.json'));assert i['user']['login']=='Blood63','auteur non autorisé';json.dump({'issue':i},open('ev.json','w'))"
+          echo "state=$(python3 -c "import json;print(json.load(open('issue.json'))['state'])")" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: gh issue edit $N -R ${{ github.repository }} --add-label cod-rank || true
+      - id: run
+        if: steps.ev.outputs.state == 'open'
+        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md }
+        run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            res=$(python3 tools/cod_rank_intake.py)
+            git add cod_ranks.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "COD rang : issue #$N" && git push -q origin HEAD:main && break
+            sleep $((RANDOM % 8 + 3))
+          done
+          echo "res=$res" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: |
+          gh issue comment $N -R ${{ github.repository }} -F comment.md
+          if [ "${{ steps.run.outputs.res }}" = "OK" ]; then gh issue close $N -R ${{ github.repository }} --reason completed; fi
