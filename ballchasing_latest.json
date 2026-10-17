@@ -1,23 +1,23 @@
 {
  "source": "ballchasing.com",
- "fetched_at": "2026-10-17T20:01:38+02:00",
+ "fetched_at": "2026-10-18T01:42:10+02:00",
  "status": "ok",
- "replays_found": 22,
- "replays_count": 21,
+ "replays_found": 26,
+ "replays_count": 25,
  "playlists": {
   "3v3": {
-   "matches": 16,
+   "matches": 19,
    "wins": 12,
-   "win_rate": 75.0,
-   "goals": 10,
+   "win_rate": 63.2,
+   "goals": 12,
    "assists": 7,
-   "saves": 8,
-   "shots": 20,
-   "score_avg": 212.0,
-   "goals_avg": 0.62,
-   "shot_pct": 50.0,
+   "saves": 9,
+   "shots": 26,
+   "score_avg": 208.4,
+   "goals_avg": 0.63,
+   "shot_pct": 46.2,
    "mvp": 2,
-   "boost_avg": 48.0,
+   "boost_avg": 47.4,
    "rank": null,
    "mmr": null
   },
@@ -36,26 +36,42 @@
    "boost_avg": 46.5,
    "rank": null,
    "mmr": null
+  },
+  "1v1": {
+   "matches": 1,
+   "wins": 0,
+   "win_rate": 0.0,
+   "goals": 2,
+   "assists": 0,
+   "saves": 2,
+   "shots": 6,
+   "score_avg": 627.0,
+   "goals_avg": 2.0,
+   "shot_pct": 33.3,
+   "mvp": 0,
+   "boost_avg": 47.1,
+   "rank": null,
+   "mmr": null
   }
  },
  "weekly": [
   {
    "week": "2026-S42",
    "start": "2026-10-14",
-   "matches": 21,
+   "matches": 25,
    "wins": 15,
    "avg": {
-    "shooting_pct": 50.0,
-    "avg_boost": 47.6,
-    "pct_zero_boost": 12.6,
-    "pct_supersonic": 14.8,
-    "pct_behind_ball": 73.0,
+    "shooting_pct": 48.3,
+    "avg_boost": 47.2,
+    "pct_zero_boost": 13.8,
+    "pct_supersonic": 15.5,
+    "pct_behind_ball": 71.8,
     "pct_def_third": 45.6,
-    "pct_most_forward": 38.1,
-    "bpm": 359.8
+    "pct_most_forward": 40.7,
+    "bpm": 372.3
    },
-   "saves": 0.67,
-   "goals": 0.76,
+   "saves": 0.68,
+   "goals": 0.8,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -2373,6 +2389,436 @@
       "label": "Boost ramassé / min",
       "value": 440,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "05a8e745-2597-44fc-b19b-06df92b70390",
+   "date": "2026-10-17T18:11:58Z",
+   "playlist": "3v3",
+   "map": "AquaDome (Salty Shallows)",
+   "duration": 472,
+   "overtime": true,
+   "team_goals": 5,
+   "opp_goals": 6,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 4,
+   "score": 230,
+   "mvp": false,
+   "boost_avg": 40.75,
+   "bpm": 443,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "m": {
+    "shooting_pct": 25,
+    "shots_against": 9,
+    "goals_against": 6,
+    "clears": 2,
+    "centers": 3,
+    "aerial_hits": 1,
+    "bpm": 443,
+    "avg_boost": 40.8,
+    "pct_zero_boost": 25.4,
+    "pct_full_boost": 5.7,
+    "stolen": 761,
+    "overfill_pct": 0.2,
+    "small_pads": 74,
+    "big_pads": 24,
+    "avg_speed": 1637,
+    "pct_supersonic": 20.4,
+    "pct_slow": 39.6,
+    "pct_ground": 63.0,
+    "pct_high_air": 3.4,
+    "powerslides": 20,
+    "pct_def_third": 52.0,
+    "pct_off_third": 23.5,
+    "pct_behind_ball": 66.4,
+    "pct_most_back": 37.5,
+    "pct_most_forward": 35.1,
+    "pct_closest_ball": 27.1,
+    "dist_mates": 3434,
+    "demos": 3,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 25.4,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 25,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 20.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 0.2,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 443,
+      "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5c94680b-737d-4a31-a89f-58ee45cd6ffc",
+   "date": "2026-10-17T18:23:53Z",
+   "playlist": "3v3",
+   "map": "Mannfield",
+   "duration": 369,
+   "overtime": true,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 1,
+   "shots": 1,
+   "score": 204,
+   "mvp": false,
+   "boost_avg": 48.28,
+   "bpm": 448,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "m": {
+    "shooting_pct": 100,
+    "shots_against": 6,
+    "goals_against": 3,
+    "clears": 0,
+    "centers": 2,
+    "aerial_hits": 1,
+    "bpm": 448,
+    "avg_boost": 48.3,
+    "pct_zero_boost": 15.8,
+    "pct_full_boost": 6.6,
+    "stolen": 624,
+    "overfill_pct": 0.7,
+    "small_pads": 54,
+    "big_pads": 20,
+    "avg_speed": 1629,
+    "pct_supersonic": 21.5,
+    "pct_slow": 37.5,
+    "pct_ground": 55.1,
+    "pct_high_air": 2.3,
+    "powerslides": 13,
+    "pct_def_third": 47.3,
+    "pct_off_third": 21.0,
+    "pct_behind_ball": 65.2,
+    "pct_most_back": 41.7,
+    "pct_most_forward": 36.3,
+    "pct_closest_ball": 23.2,
+    "dist_mates": 3614,
+    "demos": 1,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.8,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 48.3,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 21.5,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 0.7,
+      "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "2b162af3-7cf3-466a-8aa6-f8a927da704b",
+   "date": "2026-10-17T22:12:32Z",
+   "playlist": "3v3",
+   "map": "Salty Shores (Salty Fest)",
+   "duration": 257,
+   "overtime": false,
+   "team_goals": 0,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 0,
+   "shots": 1,
+   "score": 134,
+   "mvp": false,
+   "boost_avg": 42.96,
+   "bpm": 421,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "m": {
+    "shooting_pct": 0,
+    "shots_against": 6,
+    "goals_against": 4,
+    "clears": 3,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 421,
+    "avg_boost": 43.0,
+    "pct_zero_boost": 19.4,
+    "pct_full_boost": 4.8,
+    "stolen": 462,
+    "overfill_pct": 5.2,
+    "small_pads": 37,
+    "big_pads": 13,
+    "avg_speed": 1630,
+    "pct_supersonic": 20.0,
+    "pct_slow": 37.7,
+    "pct_ground": 57.4,
+    "pct_high_air": 4.0,
+    "powerslides": 16,
+    "pct_def_third": 47.2,
+    "pct_off_third": 23.2,
+    "pct_behind_ball": 58.5,
+    "pct_most_back": 24.6,
+    "pct_most_forward": 49.2,
+    "pct_closest_ball": 36.4,
+    "dist_mates": 3552,
+    "demos": 3,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 19.4,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 49.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 20.0,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 5.2,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 43.0,
+      "txt": "Bonne gestion du boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "3b698bde-4b50-48ed-b593-24e4021862b4",
+   "date": "2026-10-17T22:20:10Z",
+   "playlist": "1v1",
+   "map": "Urban Central (Night)",
+   "duration": 362,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 2,
+   "assists": 0,
+   "saves": 2,
+   "shots": 6,
+   "score": 627,
+   "mvp": false,
+   "boost_avg": 47.14,
+   "bpm": 439,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 6,
+    "goals_against": 4,
+    "clears": 2,
+    "centers": 12,
+    "aerial_hits": 1,
+    "bpm": 439,
+    "avg_boost": 47.1,
+    "pct_zero_boost": 18.0,
+    "pct_full_boost": 12.7,
+    "stolen": 825,
+    "overfill_pct": 9.1,
+    "small_pads": 52,
+    "big_pads": 23,
+    "avg_speed": 1563,
+    "pct_supersonic": 16.4,
+    "pct_slow": 41.4,
+    "pct_ground": 58.4,
+    "pct_high_air": 1.3,
+    "powerslides": 19,
+    "pct_def_third": 36.1,
+    "pct_off_third": 34.9,
+    "pct_behind_ball": 71.5,
+    "pct_most_back": 98.4,
+    "pct_most_forward": 98.4,
+    "pct_closest_ball": 98.4,
+    "dist_mates": null,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 98.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 98.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 98.4,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 16.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 439,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 9.1,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
