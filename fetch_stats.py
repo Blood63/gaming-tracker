@@ -3,14 +3,15 @@
 Valorant: HenrikDev API (tools/fetch_valorant.py, HENRIK_API_KEY), tracker.gg fallback.
 RL: needs official TRN API key (https://tracker.gg/developers) in env TRN_API_KEY;
 scraping tracker.gg is blocked by them, so do not scrape. Steam: public profile XML (+ STEAM_API_KEY optional for games/playtime)."""
-import urllib.error, json, os, datetime, urllib.request, re
+import urllib.error, json, os, datetime, urllib.request, re, time
 D=os.path.dirname(os.path.abspath(__file__)); NOW=datetime.datetime.now().astimezone().isoformat()
 def get(u,h={}):
     r=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0",**h})
     with urllib.request.urlopen(r,timeout=20) as f: return f.status,f.read().decode()
 def save(game,data):
-    with open(f"{D}/history/{game}.jsonl","a") as f: f.write(json.dumps({"fetched_at":NOW,**data},ensure_ascii=False)+"\n")
-    json.dump({"fetched_at":NOW,**data},open(f"{D}/{game}_latest.json","w"),ensure_ascii=False,indent=1)
+    now=datetime.datetime.now().astimezone().isoformat()
+    with open(f"{D}/history/{game}.jsonl","a") as f: f.write(json.dumps({"fetched_at":now,**data},ensure_ascii=False)+"\n")
+    json.dump({"fetched_at":now,**data},open(f"{D}/{game}_latest.json","w"),ensure_ascii=False,indent=1)
 K=os.environ.get("TRN_API_KEY")
 import subprocess, sys
 # Valorant : HenrikDev en priorité (valorant.json) ; tracker.gg seulement en secours
@@ -42,6 +43,7 @@ try:
         games=og.get("response",{}).get("games",[]) if "response" in og else []
         if not games: out["owned_error"]=og
         for g in games:
+            time.sleep(0.25)  # politesse API Steam (17 jeux, ~20 appels)
             g["hours"]=round(g.get("playtime_forever",0)/60,1)
             pa=api("ISteamUserStats/GetPlayerAchievements/v1",steamid=SID,appid=g["appid"])
             ps=pa.get("playerstats",{})

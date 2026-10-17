@@ -28,7 +28,7 @@ jobs:
         run: gh issue edit $N -R ${{ github.repository }} --add-label cod-rank || true
       - id: run
         if: steps.ev.outputs.state == 'open'
-        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md }
+        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md, TZ: Europe/Paris }
         run: |
           git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
           for i in 1 2 3 4 5; do
