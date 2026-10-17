@@ -40,7 +40,7 @@ async function load(){
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
-  D.ranksRepo={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};D.ranks={MP:[],BR:[]};codRankRefresh();
+  D.ranksRepo={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};D.ranks={MP:[],BR:[]};for(const m of['MP','BR'])D.ranksRepo[m]=D.ranksRepo[m].map(codRankNorm);codRankRefresh();
   D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
@@ -704,6 +704,7 @@ const CRK='gt-cod-ranks';
 const codRankPend=()=>{const key=r=>Math.floor(new Date(r.date).getTime()/6e4)+'|'+(r.tier||'')+'|'+(r.sub||'')+'|'+(r.points??'');
   const out={MP:[],BR:[]};for(const m of['MP','BR']){const have=new Set((D.ranksRepo[m]||[]).map(key));out[m]=LS.get(CRK,[]).filter(r=>r&&r.mode==m&&r.date&&!have.has(key(r)))}
   const keep=Object.values(out).flat();LS.set(CRK,keep.map(r=>({...r})));return out};
+function codRankNorm(r){if(!r||!r.tier)return r;const nd=COD_LADDER.find(x=>x[0]==r.tier)?.[2]>0;const sub=nd?r.sub:null;return{...r,sub,value:codStepVal(r.tier,sub)||r.value,label:r.tier+(sub?' '+sub:'')}}
 function codRankRefresh(){const p=codRankPend();for(const m of['MP','BR'])D.ranks[m]=[...(D.ranksRepo[m]||[]),...p[m].map(r=>({...r,pending:1}))].sort((a,b)=>new Date(a.date)-new Date(b.date))}
 const codRankURLs=()=>{const p=codRankPend();return[...p.MP.map(r=>['MP',r]),...p.BR.map(r=>['BR',r])].map(([m,r])=>{
   const t=new Date(r.date).toLocaleString('fr-FR',{...TZ,day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});

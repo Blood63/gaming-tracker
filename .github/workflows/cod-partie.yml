@@ -15,7 +15,7 @@ jobs:
     if: >-
       (github.event_name == 'workflow_dispatch' && github.actor == 'Blood63') ||
       (github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' &&
-       (contains(github.event.issue.labels.*.name, 'cod-partie') || startsWith(github.event.issue.title, 'COD – ') || startsWith(github.event.issue.title, 'COD - ')))
+       (contains(github.event.issue.labels.*.name, 'cod-partie') || ((startsWith(github.event.issue.title, 'COD – ') || startsWith(github.event.issue.title, 'COD - ')) && !startsWith(github.event.issue.title, 'COD – rang') && !startsWith(github.event.issue.title, 'COD - rang'))))
     runs-on: ubuntu-latest
     env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
     steps:
