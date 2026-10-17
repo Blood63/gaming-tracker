@@ -1,6 +1,16 @@
 {
  "MP": [
   {
+   "date": "2026-10-16T10:11:21+00:00",
+   "tier": "Maître",
+   "sub": null,
+   "label": "Maître",
+   "value": 21,
+   "points": null,
+   "season": null,
+   "source": "app"
+  },
+  {
    "date": "2026-10-16T10:11:21Z",
    "tier": "Maître",
    "sub": "II",
