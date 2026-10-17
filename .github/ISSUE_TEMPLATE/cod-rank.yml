@@ -1,28 +1,22 @@
 name: Changement de rang COD
-description: Enregistre ton nouveau rang classé COD Mobile (Multijoueur ou Battle Royale).
+description: "À utiliser depuis l'app (page COD › Enregistrer un changement de rang). Ce formulaire reste un secours."
 title: "COD Mobile – rang"
 labels: ["cod-rank"]
 body:
+  - type: markdown
+    attributes: { value: "Le plus simple : saisis ton rang directement dans l'app, puis « Synchroniser »." }
   - type: dropdown
     id: mode
     attributes: { label: Mode, options: ["Multijoueur", "Battle Royale"] }
-    validations: { required: true }
   - type: dropdown
     id: tier
-    attributes: { label: Rang, options: ["Recrue", "Régulier", "Vaillant", "Élite", "Pro", "Maître", "Grand maître", "Légendaire"] }
-    validations: { required: true }
+    attributes: { label: Rang, options: ["Novice", "Vétéran", "Élite", "Pro", "Maître", "Grand Maître", "Légendaire"] }
   - type: dropdown
     id: sub
-    attributes: { label: Niveau (I à V), description: "Laisse vide pour Légendaire", options: ["I", "II", "III", "IV", "V"] }
+    attributes: { label: "Division (Novice à Pro uniquement)", options: ["I", "II", "III", "IV", "V"] }
   - type: input
     id: points
-    attributes: { label: Points / étoiles (optionnel), placeholder: "ex. 4250" }
+    attributes: { label: Points (optionnel) }
   - type: input
     id: date
-    attributes: { label: "Date (optionnel, AAAA-MM-JJ HH:MM)", placeholder: "vide = maintenant" }
-  - type: input
-    id: season
-    attributes: { label: Saison (optionnel), placeholder: "ex. Saison 9 2026" }
-  - type: textarea
-    id: capture
-    attributes: { label: Capture (optionnel), description: "Capture de l'écran de rang si tu veux la garder." }
+    attributes: { label: "Date (optionnel, AAAA-MM-JJ HH:MM)" }

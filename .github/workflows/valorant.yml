@@ -1,8 +1,10 @@
 name: Valorant + Rocket League (HenrikDev, ballchasing)
 on:
   schedule:
-    - cron: "15 6 * * *"    # ≈ 8 h Paris
-    - cron: "15 21 * * *"   # ≈ 23 h Paris
+    - cron: "0 16 * * *"   # 18:00 Paris en été (CEST, +0200)
+    - cron: "0 23 * * *"   # 01:00 Paris en été
+    - cron: "0 17 * * *"   # 18:00 Paris en hiver (CET, +0100)
+    - cron: "0 0 * * *"    # 01:00 Paris en hiver
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,16 +13,24 @@ jobs:
   valorant:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: python3 tools/fetch_valorant.py
+      - id: gate
+        run: |
+          off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
+          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "0 16 * * *" ] || [ "$s" = "0 23 * * *" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "0 17 * * *" ] || [ "$s" = "0 0 * * *" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
+      - if: steps.gate.outputs.run == 'true'
+        uses: actions/checkout@v4
+      - if: steps.gate.outputs.run == 'true'
+        run: python3 tools/fetch_valorant.py
         env:
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
-      - run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed (données conservées)"
+      - if: steps.gate.outputs.run == 'true'
+        run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed (données conservées)"
         env:
           BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
           TZ: Europe/Paris
-      - run: |
+      - if: steps.gate.outputs.run == 'true'
+        run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           git add valorant.json ballchasing_latest.json history/ballchasing.jsonl

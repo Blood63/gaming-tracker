@@ -1,8 +1,10 @@
 name: Fetch stats
 on:
   schedule:
-    - cron: "0 18 * * 0"   # 20:00 Paris en été (CEST)
-    - cron: "0 19 * * 0"   # 20:00 Paris en hiver (CET)
+    - cron: "0 22 * * 2"   # mercredi 00:00 Paris en été (CEST)
+    - cron: "0 22 * * 6"   # dimanche 00:00 Paris en été
+    - cron: "0 23 * * 2"   # mercredi 00:00 Paris en hiver (CET)
+    - cron: "0 23 * * 6"   # dimanche 00:00 Paris en hiver
   workflow_dispatch:
 permissions:
   contents: write
@@ -13,7 +15,7 @@ jobs:
       - id: gate
         run: |
           off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
-          if [ -z "$s" ] || { [ "$s" = "0 18 * * 0" ] && [ "$off" = "+0200" ]; } || { [ "$s" = "0 19 * * 0" ] && [ "$off" = "+0100" ]; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
+          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "0 22 * * 2" ] || [ "$s" = "0 22 * * 6" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "0 23 * * 2" ] || [ "$s" = "0 23 * * 6" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@v4
       - if: steps.gate.outputs.run == 'true'
