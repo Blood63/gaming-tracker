@@ -168,3 +168,10 @@ header h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 
 nav.tabs a{font-size:.66rem;min-width:0}
 @media(max-width:360px){nav.tabs a svg{width:21px;height:21px}}
+
+details.glass{padding:.8rem 1rem}details summary{cursor:pointer;min-height:36px;display:flex;align-items:center}summary::-webkit-details-marker{color:var(--cy)}
+.stat,.gcard,.game,.tile,tr[data-m],tr[data-bc]{-webkit-tap-highlight-color:transparent}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}.chart{touch-action:pan-y}
+canvas{max-width:100%}
+.expb{transition:all .2s}
+@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}}
