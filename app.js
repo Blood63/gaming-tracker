@@ -226,6 +226,9 @@ function timeline(){
       if(da>0)ev.push({t:new Date(b.fetched_at).getTime(),c:COL.warn,i:'🏆',h:`+${da} succès sur <b>${esc(g.name)}</b>`,link:`#/steam/${g.appid}`});});}
   D.cod.forEach(m=>ev.push({t:new Date(m.date).getTime(),c:COL.or,i:{win:'✅',loss:'❌',draw:'➖'}[m.result]||'🔫',h:`COD Mobile${m.mode?' · '+esc(m.mode):''}${m.map?' · '+esc(m.map):''} — ${m.kills??'?'}/${m.deaths??'?'}${m.kd!=null?' (K/D '+fnum(m.kd,2)+')':''}`,link:'#/cod'}));
   if(D.vh){D.vh.matches.forEach(x=>ev.push({t:new Date(x.date).getTime(),c:'#ff4655',i:{win:'✅',loss:'❌',draw:'➖'}[x.result]||'🎯',h:`Valorant · ${esc(vMode(x.mode))} · ${esc(x.map||'')} — ${esc(x.agent||'')} ${x.kills}/${x.deaths}/${x.assists}${x.rr_change!=null?` (${x.rr_change>0?'+':''}${x.rr_change} RR)`:''}`,link:'#/valorant/'+x.id}));const Hh=D.vh.mmr_history;for(let i=1;i<Hh.length;i++)if(Hh[i].tier!=Hh[i-1].tier)ev.push({t:new Date(Hh[i].date).getTime(),c:COL.pk,i:'📊',h:`Valorant : rang <b>${esc(vTier(Hh[i].tier))}</b> (avant ${esc(vTier(Hh[i-1].tier))})`,link:'#/valorant'})}
+  (D.bc?.replays||[]).filter(r=>r.date&&r.m&&!r.bots).forEach(x=>ev.push({t:new Date(x.date).getTime(),c:'#3b82f6',i:'🚗',h:`Rocket League · ${esc(x.playlist||'')} · ${esc(x.map||'')} — ${x.team_goals}-${x.opp_goals} (${x.goals??0} but${(x.goals||0)>1?'s':''}, ${x.assists??0} passe${(x.assists||0)>1?'s':''}, ${x.saves??0} arrêt${(x.saves||0)>1?'s':''})`,link:'#/rl/'+x.id}));
+  ['MP','BR'].forEach(m=>{const a=D.ranks[m]||[];a.forEach((x,i)=>ev.push({t:new Date(x.date).getTime(),c:COL.or,i:'🎖️',h:`COD Mobile ${m=='BR'?'Battle Royale':'Multijoueur'} : rang <b>${esc(x.label)}</b>${i&&a[i-1].label!=x.label?` (avant ${esc(a[i-1].label)})`:''}${x.points!=null?' · '+fnum(x.points)+' pts':''}`,link:'#/cod'}))});
+  goals().forEach(x=>{if(x.created)ev.push({t:new Date(x.created).getTime(),c:COL.vi,i:'🎯',h:`Objectif fixé : <b>${esc(goalProg(x).label)}</b>`,link:'#/objectifs'})});
   [[D.vh?[]:D.vOk,'Valorant','#/valorant',x=>S(overview(x),'rank')?.metadata?.tierName],[D.rOk,'Rocket League','#/rl',x=>segs(x).filter(s=>s.type=='playlist').map(s=>S(s,'tier')?.metadata?.tierName).filter(Boolean)[0]]].forEach(([h,n,l,f])=>{
     for(let i=1;i<h.length;i++){const a=f(h[i-1]),b=f(h[i]);if(b&&a!=b)ev.push({t:new Date(h[i].fetched_at).getTime(),c:COL.pk,i:'📊',h:`${n} : rang <b>${esc(b)}</b>${a?' (avant '+esc(a)+')':''}`,link:l})}});
   return ev.filter(e=>e.t&&!isNaN(e.t)).sort((a,b)=>b.t-a.t);
@@ -416,6 +419,7 @@ const wkWin=(a,days=7)=>{const n=Date.now();return a.filter(x=>{const t=new Date
 const wkPrev=(a,days=7)=>{const n=Date.now();return a.filter(x=>{const t=new Date(x.date||x.fetched_at).getTime();return t>n-2*days*864e5&&t<=n-days*864e5})};
 const delta=(a,b,d=1,u='')=>{if(a==null||b==null)return '<span class="mut">—</span>';const x=a-b;return `<span class="${x>0?'up':x<0?'down':''}">${x>0?'▲ +':x<0?'▼ ':''}${fnum(x,d)}${u}</span> <small class="mut">(avant : ${fnum(b,d)}${u})</small>`};
 function bilan(){
+  setTimeout(bindPlayRows,0);
   const now=new Date(),c1=wkWin(D.cod),c0=wkPrev(D.cod);
   const vAll=(D.vh?.matches||[]).filter(x=>x.mode=='Competitive'),v1=wkWin(vAll),v0=wkPrev(vAll);
   const R=bcReps(),r1=wkWin(R),r0=wkPrev(R),W=D.bc?.weekly||[];
@@ -443,6 +447,7 @@ function bilan(){
   ${tbl('🔫 COD Mobile',[['Parties',c1.length,c0.length,0],['Victoires %',wr(c1),wr(c0),0,' %'],['K/D',kdOf(c1),kdOf(c0),2],['Élim. moy.',avg(c1,'kills'),avg(c0,'kills')],['Dégâts moy.',avg(c1,'damage'),avg(c0,'damage'),0],['Impact moy.',avg(c1,'impact'),avg(c0,'impact'),0],['Précision %',avg(c1,'accuracy_pct'),avg(c0,'accuracy_pct'),1,' %']])}
   ${tbl('🎯 Valorant (classé)',[['Parties',v1.length,v0.length,0],['Victoires %',vw(v1),vw(v0),0,' %'],['RR gagnés/perdus',rr(v1),rr(v0),0],['K/D',vAgg(v1).kd,vAgg(v0).kd,2],['HS %',vAgg(v1).hs,vAgg(v0).hs,0,' %'],['ADR',vAgg(v1).adr,vAgg(v0).adr,0]])}
   ${tbl('🚗 Rocket League (replays)',[['Replays',r1.length,r0.length,0],['Victoires %',r1.length?100*r1.filter(x=>x.result=='win').length/r1.length:null,r0.length?100*r0.filter(x=>x.result=='win').length/r0.length:null,0,' %'],['Précision tirs %',rm(r1,'shooting_pct'),rm(r0,'shooting_pct'),1,' %'],['Boost moyen',rm(r1,'avg_boost'),rm(r0,'avg_boost'),1],['Temps supersonique %',rm(r1,'pct_supersonic'),rm(r0,'pct_supersonic'),1,' %'],['Derrière la balle %',rm(r1,'pct_behind_ball'),rm(r0,'pct_behind_ball'),1,' %']])}
+  ${steamPlaytimeHTML()}
   <h2>🏋️ Coaching (avis, d'après tes faiblesses mesurées)</h2>${coach.length?`<div class="list">${coach.map(([g,t,x,d])=>`<div class="glass pad"><small class="mut">${g}</small><br><b>${esc(t)}</b><p style="margin:.35rem 0">${esc(x)}</p><p class="mut" style="margin:0">🏋️ ${esc(d)}</p></div>`).join('')}</div>`:'<div class="glass empty">Pas assez de données récentes pour un coaching ciblé : enregistre quelques parties COD, replays RL ou parties classées Valorant.</div>'}
   <p class="mut" style="font-size:.78rem">« Calculé » = dérivé de tes chiffres. « Avis » = interprétation et exercices proposés, à adapter à ton ressenti.</p>`;
 }
@@ -455,6 +460,19 @@ async function storageFill(){const el=$('#stor');if(!el)return;const fmt=b=>b==n
   try{const r=await fetch('https://api.github.com/repos/Blood63/gaming-tracker');if(r.ok){const j=await r.json();rows+=`<span>Taille du dépôt GitHub (API publique)</span><span>${fmt((j.size||0)*1024)}</span>`}}catch(e){}
   el.innerHTML=`<div class="kv">${rows||'<span>Aucune mesure disponible</span><span>—</span>'}</div>`}
 
+/* Temps de jeu Steam depuis history/steam.jsonl (deltas playtime_forever, calculé) */
+function bindPlayRows(){setTimeout(()=>$$('tr[data-g]').forEach(r=>r.onclick=()=>go('#/steam/'+r.dataset.g)),0)}
+function steamPlaytimeHTML(){
+  const H=D.steamH;if(H.length<2)return `<h2>Temps de jeu (relevés Steam)</h2><div class="glass empty">Pas encore assez de relevés Steam pour calculer une évolution (il en faut au moins 2). Les relevés ont lieu mercredi et dimanche à minuit.</div>`;
+  const pf=g=>g.playtime_forever!=null?g.playtime_forever:Math.round((g.hours||0)*60),last=H.at(-1),now=Date.now();
+  const base7=[...H].reverse().find(x=>new Date(x.fetched_at).getTime()<=now-7*864e5)||null,win=base7||H[0];
+  const rows=D.games.map(g=>{const a=(win.games||[]).find(x=>x.appid==g.appid),b=(last.games||[]).find(x=>x.appid==g.appid);if(!a||!b)return null;const d=pf(b)-pf(a);return{name:g.name,appid:g.appid,d,ach:(b.ach_unlocked||0)-(a.ach_unlocked||0)}}).filter(x=>x&&(x.d>0||x.ach>0)).sort((a,b)=>b.d-a.d);
+  const tot=rows.reduce((s,x)=>s+x.d,0);
+  return `<h2>Temps de jeu ${base7?'cette semaine':'depuis le premier relevé'} (calculé)</h2>
+  ${base7?'':`<p class="pill warn">Historique Steam encore court (premier relevé le ${fdate(H[0].fetched_at)}) : la comparaison « 7 jours » ne sera fiable qu'après le ${fdate(new Date(new Date(H[0].fetched_at).getTime()+7*864e5))}. En attendant, deltas depuis le premier relevé.</p>`}
+  ${rows.length?`<div class="stats">${stat('Total joué',fnum(tot/60,1)+' h',`${rows.length} jeu${rows.length>1?'x':''} · du ${fshort(win.fetched_at)} au ${fshort(last.fetched_at)}`)}${stat('Jeu n°1',esc(rows[0].name),fnum(rows[0].d/60,1)+' h')}</div>
+  <div class="glass tbl" style="margin-top:.6rem"><table><tr><th>Jeu</th><th>Temps</th><th>Succès</th></tr>${rows.map(x=>`<tr data-g="${x.appid}" style="cursor:pointer"><td><b>${esc(x.name)}</b></td><td>${x.d>=60?fnum(x.d/60,1)+' h':fnum(x.d,0)+' min'}</td><td>${x.ach>0?'+'+x.ach:'—'}</td></tr>`).join('')}</table></div>`:'<div class="glass empty">Aucun temps de jeu supplémentaire entre les relevés.</div>'}`;
+}
 /* ========== composants ========== */
 function gameCard(g,sub){
   const badge=!g.hours&&!g.last?'<span class="badge" style="color:var(--warn)">Jamais lancé</span>':g.ach_total&&g.pct==100?'<span class="badge" style="color:var(--gr)">100 %</span>':'';
@@ -499,8 +517,8 @@ function library(){
   <select id="s" aria-label="Tri"><option value="hours">Temps de jeu</option><option value="last">Dernière session</option><option value="pct">Succès %</option><option value="name">Nom</option><option value="meta">Metacritic</option></select></div>
   <div id="res" class="grid"></div>
   <h2>Complétion des succès</h2><div class="glass chart" style="height:${Math.max(220,D.games.filter(g=>g.ach_total).length*26)}px"><canvas id="c2"></canvas></div>
-  <h2>Temps de jeu</h2><div class="glass chart"><canvas id="c1"></canvas></div>`;
-  $('#f').value=f;$('#s').value=s;
+  <h2>Temps de jeu</h2><div class="glass chart"><canvas id="c1"></canvas></div>${steamPlaytimeHTML()}`;
+  bindPlayRows();$('#f').value=f;$('#s').value=s;
   const draw=()=>{const q=$('#q').value.trim().toLowerCase(),f=$('#f').value,s=$('#s').value;sessionStorage.setItem('lib',JSON.stringify({q,f,s}));
     let g=D.games.filter(x=>!q||x.name.toLowerCase().includes(q));
     if(f=='playing')g=g.filter(x=>x.hours>0);if(f=='never')g=g.filter(x=>!x.hours&&!x.last);if(f=='done')g=g.filter(x=>x.ach_total&&x.pct==100);if(f=='dlc')g=g.filter(x=>x.st.dlc_count>0);if(f.startsWith('g:'))g=g.filter(x=>x.genres.includes(f.slice(2)));
@@ -834,9 +852,9 @@ function objectifs(){
 }
 function activite(){
   const ev=timeline();
-  app.innerHTML=`<h2>Activité</h2><div class="seg"><button class="on" data-f="all">Tout</button><button data-f="🕹️">Sessions</button><button data-f="⏱️">Temps</button><button data-f="🏆">Succès</button><button data-f="cod">COD</button></div><div id="tlv"></div>`;
-  const draw=f=>{$('#tlv').innerHTML=tlHTML(f=='all'?ev:f=='cod'?ev.filter(e=>e.link=='#/cod'):ev.filter(e=>e.i==f));$$('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.f==f))};
-  $$('.seg button').forEach(b=>b.onclick=()=>draw(b.dataset.f));draw('all');
+  app.innerHTML=`<h2>Activité</h2><p class="mut" style="font-size:.85rem">Chronologie inter-jeux (calculée depuis tes données : parties, replays, rangs, objectifs, temps de jeu Steam).</p><div class="seg" id="aseg">${[['all','Tout'],['steam','🕹️ Steam'],['valorant','🎯 Valorant'],['rl','🚗 Rocket League'],['cod','🔫 COD'],['objectifs','🎯 Objectifs']].map(([k,n])=>`<button data-f="${k}" class="${k=='all'?'on':''}">${n} (${k=='all'?ev.length:ev.filter(e=>e.link.startsWith('#/'+k)).length})</button>`).join('')}</div><div id="tlv"></div>`;
+  const draw=f=>{$('#tlv').innerHTML=tlHTML(f=='all'?ev:ev.filter(e=>e.link.startsWith('#/'+f)));$$('#aseg button').forEach(b=>b.classList.toggle('on',b.dataset.f==f))};
+  $$('#aseg button').forEach(b=>b.onclick=()=>draw(b.dataset.f));draw('all');
 }
 
 /* ========== routeur ========== */
