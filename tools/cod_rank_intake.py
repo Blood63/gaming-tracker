@@ -36,7 +36,10 @@ def main():
     rec={"date":dt.isoformat(timespec="seconds"),"tier":tier,"sub":sub,"label":tier+(" "+sub if sub else ""),"value":idx[0]+1,"points":pts,"season":(str(d["season"])[:40] if d.get("season") else None),"source":"app"}
     C=json.load(open(F)) if os.path.exists(F) else {"MP":[],"BR":[]}
     for k in ("MP","BR"): C.setdefault(k,[])
-    key=lambda r:(str(r.get("date"))[:16],r.get("tier"),r.get("sub"),r.get("points"))
+    def key(r):
+        try: d=datetime.datetime.fromisoformat(str(r.get("date")).replace("Z","+00:00")); d=d.astimezone(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M")
+        except Exception: d=str(r.get("date"))[:16]
+        return (d,r.get("tier"),None if r.get("tier") in ("Maître","Grand Maître","Légendaire") else r.get("sub"))
     if any(key(x)==key(rec) for x in C[mode]): return out(True,f"Rang déjà enregistré ({mode} · {rec['label']}, {rec['date'][:16].replace('T',' ')}) : aucun changement.")
     C[mode].append(rec); C[mode].sort(key=lambda x:x["date"])
     json.dump(C,open(F,"w"),ensure_ascii=False,indent=1)
