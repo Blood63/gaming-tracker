@@ -175,3 +175,7 @@ details.glass{padding:.8rem 1rem}details summary{cursor:pointer;min-height:36px;
 canvas{max-width:100%}
 .expb{transition:all .2s}
 @media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.pill{white-space:normal;overflow-wrap:anywhere}
+.pad,.desc,.kv span,.goal,.bdg{overflow-wrap:anywhere}
+a{overflow-wrap:anywhere}
