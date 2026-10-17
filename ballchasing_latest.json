@@ -1,23 +1,23 @@
 {
  "source": "ballchasing.com",
- "fetched_at": "2026-10-17T13:33:40+02:00",
+ "fetched_at": "2026-10-17T20:01:38+02:00",
  "status": "ok",
- "replays_found": 21,
- "replays_count": 20,
+ "replays_found": 22,
+ "replays_count": 21,
  "playlists": {
   "3v3": {
-   "matches": 15,
-   "wins": 11,
-   "win_rate": 73.3,
-   "goals": 9,
-   "assists": 5,
+   "matches": 16,
+   "wins": 12,
+   "win_rate": 75.0,
+   "goals": 10,
+   "assists": 7,
    "saves": 8,
-   "shots": 17,
-   "score_avg": 207.7,
-   "goals_avg": 0.6,
-   "shot_pct": 52.9,
+   "shots": 20,
+   "score_avg": 212.0,
+   "goals_avg": 0.62,
+   "shot_pct": 50.0,
    "mvp": 2,
-   "boost_avg": 47.8,
+   "boost_avg": 48.0,
    "rank": null,
    "mmr": null
   },
@@ -42,20 +42,20 @@
   {
    "week": "2026-S42",
    "start": "2026-10-14",
-   "matches": 20,
-   "wins": 14,
+   "matches": 21,
+   "wins": 15,
    "avg": {
-    "shooting_pct": 50.8,
-    "avg_boost": 47.5,
-    "pct_zero_boost": 12.7,
-    "pct_supersonic": 14.5,
-    "pct_behind_ball": 72.8,
-    "pct_def_third": 45.4,
-    "pct_most_forward": 38.8,
-    "bpm": 355.8
+    "shooting_pct": 50.0,
+    "avg_boost": 47.6,
+    "pct_zero_boost": 12.6,
+    "pct_supersonic": 14.8,
+    "pct_behind_ball": 73.0,
+    "pct_def_third": 45.6,
+    "pct_most_forward": 38.1,
+    "bpm": 359.8
    },
-   "saves": 0.7,
-   "goals": 0.75,
+   "saves": 0.67,
+   "goals": 0.76,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -2282,6 +2282,97 @@
       "label": "Temps supersonique",
       "value": 13.7,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "72125694-2f9c-44b4-9c30-7e23108df9ae",
+   "date": "2026-10-17T18:01:10Z",
+   "playlist": "3v3",
+   "map": "Sovereign Heights (Dusk)",
+   "duration": 206,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 1,
+   "assists": 2,
+   "saves": 0,
+   "shots": 3,
+   "score": 276,
+   "mvp": false,
+   "boost_avg": 51.11,
+   "bpm": 440,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 2,
+    "goals_against": 1,
+    "clears": 1,
+    "centers": 1,
+    "aerial_hits": 0,
+    "bpm": 440,
+    "avg_boost": 51.1,
+    "pct_zero_boost": 11.6,
+    "pct_full_boost": 12.2,
+    "stolen": 225,
+    "overfill_pct": 1.6,
+    "small_pads": 31,
+    "big_pads": 11,
+    "avg_speed": 1576,
+    "pct_supersonic": 20.4,
+    "pct_slow": 41.5,
+    "pct_ground": 59.4,
+    "pct_high_air": 1.1,
+    "powerslides": 15,
+    "pct_def_third": 48.2,
+    "pct_off_third": 22.4,
+    "pct_behind_ball": 77.2,
+    "pct_most_back": 35.8,
+    "pct_most_forward": 24.1,
+    "pct_closest_ball": 33.2,
+    "dist_mates": 3139,
+    "demos": 2,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 51.1,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 20.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 1.6,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 440,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
