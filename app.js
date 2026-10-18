@@ -17,7 +17,7 @@ let charts=[];
 const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{
   cfg.options=cfg.options||{};const type=cfg.type||cfg.data?.datasets?.[0]?.type||'line',arc=['doughnut','pie','polarArea'].includes(type);
   cfg.options.interaction=arc?{mode:'nearest',intersect:true,axis:'xy'}:{mode:'index',intersect:false,axis:'x'};
-  cfg.options.plugins=cfg.options.plugins||{};cfg.options.plugins.tooltip={enabled:false};
+  cfg.options.plugins=cfg.options.plugins||{};cfg.options.plugins.tooltip={...(cfg.options.plugins.tooltip||{}),enabled:false};
   const read=document.createElement('div');read.className='chart-read';read.innerHTML='<span class="mut">👆 Glisse sur le graphique (ou touche un point / une part) pour voir ses valeurs.</span>';el.parentNode.insertBefore(read,el);
   const ch=new Chart(el,cfg);ch.$read=read;charts.push(ch);bindCursor(ch,arc);
   // valeur par défaut : dernier point, pour que le cadre ne soit jamais vide
