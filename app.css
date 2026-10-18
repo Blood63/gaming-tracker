@@ -179,3 +179,7 @@ canvas{max-width:100%}
 .pill{white-space:normal;overflow-wrap:anywhere}
 .pad,.desc,.kv span,.goal,.bdg{overflow-wrap:anywhere}
 a{overflow-wrap:anywhere}
+
+.chart-read{min-height:34px;display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:center;background:rgba(20,18,48,.85);border:1px solid var(--line);border-radius:10px;padding:.35rem .6rem;margin-bottom:.4rem;font-size:.9rem;line-height:1.3}
+.chart-read .cri{display:inline-flex;gap:.3rem;align-items:center}.chart-read .cri i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+canvas{touch-action:pan-y}

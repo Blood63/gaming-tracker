@@ -12,9 +12,32 @@ const get=async(f,j=true)=>{try{const r=await fetch(f+'?v='+Date.now());if(!r.ok
 const jl=async f=>((await get(f,false))||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c'};
 const PAL=[COL.cy,COL.vi,COL.gr,COL.pk,COL.warn,COL.bl,COL.or,COL.bad];
-if(window.Chart){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom';Chart.defaults.interaction={mode:'index',intersect:false,axis:'x'};Chart.defaults.plugins.tooltip={enabled:true,mode:'index',intersect:false,axis:'x',position:'nearest',caretSize:8,padding:10,titleFont:{size:13,weight:'bold'},bodyFont:{size:13},callbacks:{label:c=>` ${c.dataset.label?c.dataset.label+' : ':''}${c.parsed&&c.parsed.y!=null?fnum(c.parsed.y,Number.isInteger(c.parsed.y)?0:2):c.formattedValue}`}};Chart.defaults.elements.point.hitRadius=18;Chart.defaults.elements.point.hoverRadius=7}
+if(window.Chart){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom';Chart.defaults.interaction={mode:'index',intersect:false,axis:'x'};Chart.defaults.plugins.tooltip={enabled:true,mode:'index',intersect:false,axis:'x',position:'nearest',caretSize:8,padding:10,titleFont:{size:13,weight:'bold'},bodyFont:{size:13},callbacks:{label:c=>` ${c.dataset.label?c.dataset.label+' : ':''}${c.parsed&&c.parsed.y!=null?fnum(c.parsed.y,Number.isInteger(c.parsed.y)?0:2):c.formattedValue}`}};Chart.defaults.elements.point.hitRadius=18;Chart.defaults.elements.point.hoverRadius=7;Chart.register({id:'gtCross',afterDatasetsDraw(ch){if(['doughnut','pie','polarArea','radar'].includes(ch.config.type))return;const a=ch.getActiveElements&&ch.getActiveElements()[0];if(!a||!a.element)return;const{ctx,chartArea:{top,bottom}}=ch,x=a.element.x;ctx.save();ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.lineWidth=1;ctx.strokeStyle='rgba(235,230,255,.6)';ctx.setLineDash([4,4]);ctx.stroke();ctx.restore()}})}
 let charts=[];
-const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{const L=cfg.data&&cfg.data.labels;if(L&&L.length){cfg.options=cfg.options||{};cfg.options.plugins=cfg.options.plugins||{};const t=cfg.options.plugins.tooltip=cfg.options.plugins.tooltip||{};if(!t.callbacks)t.callbacks={};const tl=t.callbacks.title;t.callbacks.title=i=>tl?tl(i):(i&&i[0]?String(L[i[0].dataIndex]??''):'')}charts.push(new Chart(el,cfg))}catch(e){console.error(e)}};
+const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{
+  cfg.options=cfg.options||{};const type=cfg.type||cfg.data?.datasets?.[0]?.type||'line',arc=['doughnut','pie','polarArea'].includes(type);
+  cfg.options.interaction=arc?{mode:'nearest',intersect:true,axis:'xy'}:{mode:'index',intersect:false,axis:'x'};
+  cfg.options.plugins=cfg.options.plugins||{};cfg.options.plugins.tooltip={enabled:false};
+  const read=document.createElement('div');read.className='chart-read';read.innerHTML='<span class="mut">👆 Glisse sur le graphique (ou touche un point / une part) pour voir ses valeurs.</span>';el.parentNode.insertBefore(read,el);
+  const ch=new Chart(el,cfg);ch.$read=read;charts.push(ch);bindCursor(ch,arc);
+  // valeur par défaut : dernier point, pour que le cadre ne soit jamais vide
+  const n=Math.max(0,...cfg.data.datasets.map(d=>(d.data||[]).length));for(let i=n-1;i>=0;i--){const els=cfg.data.datasets.map((d,di)=>({datasetIndex:di,index:i})).filter(e=>cfg.data.datasets[e.datasetIndex].data[i]!=null);if(els.length){ch.setActiveElements(els);showRead(ch,els);ch.draw();break}}
+ }catch(e){console.error(e)}};
+const mkDP=(ch,di,idx)=>{const ds=ch.data.datasets[di],raw=ds.data[idx];return{dataset:ds,datasetIndex:di,dataIndex:idx,label:ch.data.labels?ch.data.labels[idx]:'',raw,parsed:{y:raw&&typeof raw=='object'?raw.y:raw,x:raw&&typeof raw=='object'?raw.x:idx},formattedValue:raw==null?'—':(typeof raw=='object'?String(raw.y??''):String(raw))}};
+function showRead(ch,els){if(!ch.$read||!els.length)return;const cb=ch.config.options?.plugins?.tooltip?.callbacks||{};
+  const dps=els.map(e=>mkDP(ch,e.datasetIndex,e.index));let title='';
+  if(cb.title){try{title=cb.title(dps)}catch(e){}} if(!title)title=dps[0].raw&&dps[0].raw.x?fdate(dps[0].raw.x):String(dps[0].label||'');
+  const lines=dps.map(dp=>{let lab='';if(cb.label){try{lab=cb.label(dp)}catch(e){}}
+    if(!lab){const v=dp.parsed.y;lab=`${dp.dataset.label?dp.dataset.label+' : ':''}${v==null?'—':fnum(v,Number.isInteger(v)?0:2)}`}
+    let col=dp.dataset.borderColor||dp.dataset.backgroundColor;if(Array.isArray(col))col=col[dp.dataIndex];
+    return `<span class="cri"><i style="background:${col||'#aab'}"></i>${esc(String(lab).trim())}</span>`}).join('');
+  ch.$read.innerHTML=`${title?`<b>${esc(String(title))}</b> `:''}${lines}`}
+function bindCursor(ch,arc){const c=ch.canvas;let down=false;
+  const pick=e=>{const els=ch.getElementsAtEventForMode(e,arc?'nearest':'index',{intersect:arc,axis:arc?'xy':'x'},true);if(els.length){ch.setActiveElements(els);showRead(ch,els);ch.draw()}};
+  c.addEventListener('pointerdown',e=>{down=true;pick(e)});
+  c.addEventListener('pointermove',e=>{if(e.pointerType=='mouse'||down)pick(e)});
+  const end=()=>{down=false};c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);c.addEventListener('pointerleave',()=>{ch.setActiveElements([]);ch.draw()});
+}
 const lineDS=(label,data,color,extra={})=>({label,data,borderColor:color,backgroundColor:color+'2a',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2,spanGaps:true,...extra});
 const bar=(p,cls='')=>p==null?'':`<div class="bar ${cls}"><i data-w="${Math.max(0,Math.min(100,p))}"></i></div>`;
 const animBars=()=>setTimeout(()=>$$('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),80);
@@ -760,9 +783,9 @@ function ranksHTML(){
   ${any?`<div class="glass chart"><canvas id="crk"></canvas></div><div class="glass tbl" style="margin-top:.7rem"><table><tr><th>Date</th><th>Mode</th><th>Rang</th><th>Points</th><th>Saison</th></tr>${[...D.ranks.MP.map(x=>({...x,m:'MJ'})),...D.ranks.BR.map(x=>({...x,m:'BR'}))].sort((a,b)=>a.date<b.date?1:-1).map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.m}</td><td>${RICON[RTIERS.indexOf(x.tier)]||''} ${esc(x.label)}</td><td>${fnum(x.points)}${x.pending?' <span class="pill warn">📲</span>':''}</td><td>${esc(x.season||'—')}</td></tr>`).join('')}</table></div>`:''}`;
 }
 function rankChart(){
-  if(!$('#crk'))return;const lbl=v=>{const t=Math.floor((v-1)/5),sub=(v-1)%5;return RTIERS[t]?(t==7?RTIERS[t]:RTIERS[t]+' '+['I','II','III','IV','V'][sub]):''};
+  if(!$('#crk'))return;const TS=[...(D.ranks.MP||[]),...(D.ranks.BR||[])].map(x=>new Date(x.date).getTime()).filter(Boolean);const lo=TS.length?Math.min(...TS):0,hi=TS.length?Math.max(...TS):1,pad=Math.max(3*864e5,(hi-lo)*.2);const lbl=v=>{const t=Math.floor((v-1)/5),sub=(v-1)%5;return RTIERS[t]?(t==7?RTIERS[t]:RTIERS[t]+' '+['I','II','III','IV','V'][sub]):''};
   chart($('#crk'),{type:'line',data:{datasets:[['MP','Multijoueur',COL.cy],['BR','Battle Royale',COL.gr]].filter(([k])=>D.ranks[k].length).map(([k,n,c])=>lineDS(n,D.ranks[k].map(x=>({x:new Date(x.date).getTime(),y:codPtsOf(x.tier,x.sub,x.points),l:x.label})),c,{fill:false,stepped:true,pointRadius:5}))},
-   options:{parsing:true,scales:{x:{type:'linear',ticks:{callback:v=>fshort(v),maxTicksLimit:6}},y:{min:0,suggestedMax:8001,ticks:{callback:v=>{const st=[...COD_STEPS].reverse().find(x=>x.pts<=v);return st?st.tier+(st.sub?' '+st.sub:''):v},maxTicksLimit:9}}},plugins:{title:{display:true,text:'Évolution du rang (points)'},tooltip:{callbacks:{title:i=>fdate(i[0].raw.x),label:i=>` ${i.dataset.label} : ${i.raw.l} · ${fnum(i.raw.y)} pts`}}}}});
+   options:{parsing:true,scales:{x:{type:'linear',min:lo-pad,max:hi+pad,ticks:{callback:v=>fshort(v),maxTicksLimit:5}},y:{min:0,suggestedMax:8001,ticks:{callback:v=>{const st=[...COD_STEPS].reverse().find(x=>x.pts<=v);return st?st.tier+(st.sub?' '+st.sub:''):v},maxTicksLimit:9}}},plugins:{title:{display:true,text:'Évolution du rang (points)'},tooltip:{callbacks:{title:i=>fdate(i[0].raw.x),label:i=>` ${i.dataset.label} : ${i.raw.l} · ${fnum(i.raw.y)} pts`}}}}});
 }
 function career(){
   const c=D.cp;if(!c)return '';const mp=c.multiplayer||{},br=c.battle_royale||{},r=c.recap_2025||{},prev=D.codP.at(-2);
