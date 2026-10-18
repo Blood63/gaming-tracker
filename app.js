@@ -31,6 +31,7 @@ function showRead(ch,els){if(!ch.$read||!els.length)return;const cb=ch.config.op
     if(!lab){const v=dp.parsed.y;lab=`${dp.dataset.label?dp.dataset.label+' : ':''}${v==null?'—':fnum(v,Number.isInteger(v)?0:2)}`}
     let col=dp.dataset.borderColor||dp.dataset.backgroundColor;if(Array.isArray(col))col=col[dp.dataIndex];
     return `<span class="cri"><i style="background:${col||'#aab'}"></i>${esc(String(lab).trim())}</span>`}).join('');
+  if(title&&lines.replace(/<[^>]+>/g,'').trim().startsWith(String(title).trim()))title='';
   ch.$read.innerHTML=`${title?`<b>${esc(String(title))}</b> `:''}${lines}`}
 function bindCursor(ch,arc){const c=ch.canvas;let down=false;
   const pick=e=>{const els=ch.getElementsAtEventForMode(e,arc?'nearest':'index',{intersect:arc,axis:arc?'xy':'x'},true);if(els.length){ch.setActiveElements(els);showRead(ch,els);ch.draw()}};
