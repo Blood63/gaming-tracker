@@ -18,7 +18,10 @@ const chart=(el,cfg)=>{if(!el||!window.Chart)return;try{
   cfg.options=cfg.options||{};const type=cfg.type||cfg.data?.datasets?.[0]?.type||'line',arc=['doughnut','pie','polarArea'].includes(type);
   cfg.options.interaction=arc?{mode:'nearest',intersect:true,axis:'xy'}:{mode:'index',intersect:false,axis:'x'};
   cfg.options.plugins=cfg.options.plugins||{};cfg.options.plugins.tooltip={...(cfg.options.plugins.tooltip||{}),enabled:false};
-  const read=document.createElement('div');read.className='chart-read';read.innerHTML='<span class="mut">👆 Glisse sur le graphique (ou touche un point / une part) pour voir ses valeurs.</span>';el.parentNode.insertBefore(read,el);
+  const read=document.createElement('div');read.className='chart-read';read.innerHTML='<span class="mut">👆 Glisse sur le graphique (ou touche un point / une part) pour voir ses valeurs.</span>';const host=el.closest('.chart')||el.parentNode;host.parentNode.insertBefore(read,host);if(arc&&host.offsetHeight<300)host.style.height='300px';
+  cfg.options.layout={padding:{top:2,bottom:2},...(cfg.options.layout||{})};
+  cfg.options.plugins.legend={...(cfg.options.plugins.legend||{}),labels:{usePointStyle:true,pointStyle:'circle',boxWidth:7,boxHeight:7,padding:10,font:{size:11},...((cfg.options.plugins.legend||{}).labels||{})}};
+  if(cfg.options.scales)for(const[k,v]of Object.entries(cfg.options.scales)){v.ticks={font:{size:11},maxTicksLimit:k=='x'?6:8,...(v.ticks||{})}}
   const ch=new Chart(el,cfg);ch.$read=read;charts.push(ch);bindCursor(ch,arc);
   // valeur par défaut : dernier point, pour que le cadre ne soit jamais vide
   const n=Math.max(0,...cfg.data.datasets.map(d=>(d.data||[]).length));for(let i=n-1;i>=0;i--){const els=cfg.data.datasets.map((d,di)=>({datasetIndex:di,index:i})).filter(e=>cfg.data.datasets[e.datasetIndex].data[i]!=null);if(els.length){ch.setActiveElements(els);showRead(ch,els);ch.draw();break}}
