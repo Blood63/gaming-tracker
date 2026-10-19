@@ -34,7 +34,7 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             res=$(python3 tools/cod_rank_intake.py)
-            git add cod_ranks.json
+            git add cod_ranks.json cod_profile.json
             if git diff --cached --quiet; then break; fi
             git commit -qm "COD rang : issue #$N" && git push -q origin HEAD:main && break
             sleep $((RANDOM % 8 + 3))

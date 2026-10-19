@@ -66,7 +66,7 @@ async function load(){
   D.val=val;D.rl=rl;D.codRepo=((cod&&cod.matches)||[]);D.cod=[];
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
-  D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
+  D.codCard=(codp&&codp.player_card)||null;{const p=LS.get('gt-cod-card',null);if(p&&D.codCard&&p.level==D.codCard.level&&p.clan==D.codCard.clan&&p.likes==D.codCard.likes)localStorage.removeItem('gt-cod-card')}D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranksRepo={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};D.ranks={MP:[],BR:[]};for(const m of['MP','BR'])D.ranksRepo[m]=D.ranksRepo[m].map(codRankNorm);codRankRefresh();
   D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
@@ -514,7 +514,7 @@ function compCards(){
   return `<a class="glass gcard" style="--c:var(--steam)" href="#/steam"><div class="t"><i></i>Steam</div><div class="big">${fnum(D.totalH,0)} h</div><div class="s">${D.games.length} jeux · niv. ${D.steam?.level??'—'}</div></a>
    <a class="glass gcard" style="--c:var(--val)" href="#/valorant"><div class="t"><i></i>Valorant</div><div class="big">${D.vh?vIcon(D.vh.mmr.tier_id,26)+' '+esc(vTier(D.vh.mmr.tier)):v?esc(vRank||'—'):'⏳'}</div><div class="s">${D.vh?fnum(D.vh.mmr.rr)+' RR · Blood#7629':v?'Blood#7629':trnStatus(D.val)}</div></a>
    <a class="glass gcard" style="--c:var(--rl)" href="#/rl"><div class="t"><i></i>Rocket League</div><div class="big">${r?fnum(rlBest)+' MMR':D.rlm?esc(D.rlm.playlists.find(p=>p.id=='3v3')?.tier_name||'—'):'⏳'}</div><div class="s">${r?'443Blood · Epic':D.rlm?'3v3 · '+fnum(D.rlm.playlists.find(p=>p.id=='3v3')?.mmr)+' MMR (manuel)':trnStatus(D.rl)}</div></a>
-   <a class="glass gcard" style="--c:var(--cod)" href="#/cod"><div class="t"><i></i>COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):D.cp?'É/M '+fnum(D.cp.multiplayer?.kd,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties suivies':D.cp?fnum((D.cp.multiplayer?.matches||0)+(D.cp.battle_royale?.matches||0))+' parties en carrière':'Envoie ta 1ʳᵉ capture'}</div></a>`;
+   <a class="glass gcard cod-gcard" style="--c:var(--cod)" href="#/cod"><div class="t"><i></i>COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):D.cp?'É/M '+fnum(D.cp.multiplayer?.kd,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties suivies':D.cp?fnum((D.cp.multiplayer?.matches||0)+(D.cp.battle_royale?.matches||0))+' parties en carrière':'Envoie ta 1ʳᵉ capture'}</div></a>`;
 }
 
 /* ========== pages ========== */
@@ -635,10 +635,39 @@ function codBestWorst(m){const mp=m.filter(x=>(x.type||'MP')=='MP'&&x.map);const
   const sc=s=>(s.wr??50)/100+Math.min(s.kd,5)/5;E.sort((a,b)=>sc(b[1])-sc(a[1]));const [b,w]=[E[0],E.at(-1)],few=E.some(([,s])=>s.n<3);
   const card=([k,s],ic,lab,c)=>`<div class="glass pad" style="border-left:3px solid ${c}"><small class="mut">${ic} ${lab}</small><br><b style="font-size:1.1rem">${esc(k)}</b><br><small>${s.n} partie${s.n>1?'s':''} · ${fnum(s.wr,0)} % vict. · K/D ${fnum(s.kd,2)}</small></div>`;
   return `<div class="two" style="margin-top:.6rem">${card(b,'🏆','Meilleure carte','var(--gr)')}${card(w,'⚠️','Carte la plus difficile','var(--bad)')}</div><p class="mut" style="font-size:.78rem">Classement calculé (taux de victoire + K/D, multijoueur uniquement, tous modes confondus)${few?' · peu de parties : indicatif':''}.</p>`}
+/* ========== COD : carte de joueur (snapshot profil, saisie app + synchro) ========== */
+function codCardHTML(){const c=D.codCard;const pend=LS.get('gt-cod-card',null);
+  const v=pend||c;if(!v)return `<h2>Carte de joueur</h2><div class="glass empty">Aucun snapshot de profil. <a href="#/cod/profil">Ajouter ma carte de joueur ›</a></div>`;
+  const rk=['MP','BR'].map(m=>{const r=D.ranks[m]?.at(-1);return r?`${m=='MP'?'MJ':'BR'} : ${esc(r.label)}`:null}).filter(Boolean).join(' · ');
+  return `<h2>Carte de joueur ${pend?'<span class="pill warn">📲 modifiée sur cet appareil</span>':''}</h2><div class="glass pad cod-card">
+   <div class="cod-id"><img src="assets/cod-hero-mobile.webp" alt=""><div><b style="font-size:1.25rem">${esc(v.player||'NVCBlood')}</b><br><small class="mut">${v.clan?'Clan '+esc(v.clan)+' · ':''}Niveau ${fnum(v.level)}${v.ranked_season?' · Classé '+esc(v.ranked_season):''}</small></div>
+   <div class="cod-likes">❤️<b>${fnum(v.likes)}</b><small>J'aime</small></div></div>
+   ${v.legendary_count?`<p style="margin:.5rem 0 0">🏆 <b>${fnum(v.legendary_count.MP)}× Légendaire</b> en multijoueur · <b>${fnum(v.legendary_count.BR)}×</b> en Battle Royale <small class="mut">(fois atteint, +1 automatique à chaque nouveau passage)</small></p>`:''}
+   ${rk?`<p style="margin:.5rem 0 0">🎖️ Rangs actuels (saisis le ${fdate(D.ranks.MP?.at(-1)?.date||D.ranks.BR?.at(-1)?.date)}) : <b>${rk}</b></p>`:''}
+   ${v.season_snapshot?`<details style="margin-top:.5rem"><summary>Détails de saison (lecture approximative)</summary><p class="mut" style="font-size:.85rem">${esc(v.season_snapshot.label||'')} : ${(v.season_snapshot.badges||[]).map(b=>esc(b.label)+' : '+esc(b.value)).join(' · ')}${v.season_snapshot.best_player_rate_pct!=null?` · Taux meilleur joueur ${fnum(v.season_snapshot.best_player_rate_pct,2)} % (valeur ${fnum(v.season_snapshot.best_player_value)})`:''}</p></details>`:''}
+   <p class="mut" style="font-size:.78rem;margin:.5rem 0 0">Snapshot du ${fdate(v.date)} · ${esc(v.source||'')}. L'identifiant de compte n'est jamais stocké ni affiché.</p>
+   ${pend?`<a class="btn full" style="margin-top:.5rem" href="${esc(ghNew('COD – profil ('+new Date(v.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+')',{action:'profile',level:v.level,clan:v.clan,likes:v.likes,season:v.ranked_season||null,date:v.date,legendary_count:v.legendary_count||null},'cod-profil'))}" target="_blank" rel="noopener">🔄 Synchroniser la carte (GitHub)</a>`:''}
+   <a class="btn ghost full" style="margin-top:.5rem" href="#/cod/profil">✏️ Mettre à jour ma carte</a></div>`}
+function codCardForm(){const c=LS.get('gt-cod-card',null)||D.codCard||{};
+  app.innerHTML=`<h2>Ma carte de joueur</h2><p class="mut" style="font-size:.88rem">Mise à jour manuelle (niveau, clan, J'aime vus sur ton profil en jeu). Enregistrée sur cet appareil, puis synchronisable vers GitHub. Ne saisis jamais ton identifiant de compte.</p>
+  <form class="glass form" id="cpf" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem">
+   <label>Niveau<input name="level" type="text" inputmode="numeric" required value="${c.level??''}"></label>
+   <label>Clan<input name="clan" type="text" value="${esc(c.clan||'')}" placeholder="ex. Nova_Core_EsPort"></label>
+   <label>J'aime<input name="likes" type="text" inputmode="numeric" value="${c.likes??''}"></label>
+   <label>Saison classée<input name="season" type="text" value="${esc(c.ranked_season||'')}" placeholder="ex. S3"></label>
+   <label>Fois Légendaire — Multijoueur<input name="legMP" type="text" inputmode="numeric" value="${c.legendary_count?.MP??''}"></label>
+   <label>Fois Légendaire — Battle Royale<input name="legBR" type="text" inputmode="numeric" value="${c.legendary_count?.BR??''}"></label>
+   <label>Date du snapshot<input name="date" type="date" required value="${(c.date||new Date().toISOString().slice(0,10)).slice(0,10)}"></label>
+   <div style="grid-column:1/-1"><button class="btn full" type="submit">💾 Enregistrer</button></div></form>`;
+  $('#cpf').onsubmit=e=>{e.preventDefault();const f=e.target,level=parseInt(f.level.value,10),likes=f.likes.value.trim()?parseInt(f.likes.value.replace(/\D/g,''),10):null;
+   if(!(level>0))return toast('⚠️ Niveau invalide');
+   if(!LS.set('gt-cod-card',{player:'NVCBlood',legendary_count:{MP:parseInt(f.legMP.value,10)||0,BR:parseInt(f.legBR.value,10)||0},level,clan:f.clan.value.trim(),likes,ranked_season:f.season.value.trim()||null,date:f.date.value,source:'saisie dans l\'app',season_snapshot:D.codCard?.season_snapshot||null}))return toast('⚠️ Enregistrement local impossible');
+   toast('✅ Carte mise à jour — pense à Synchroniser');go('#/cod')}}
+/* ========== page COD ========== */
 function codFBind(){const a=$('#fmode'),b=$('#fmap'),r=$('#freset');if(a)a.onchange=()=>{sessionStorage.setItem('codMode',a.value);sessionStorage.removeItem('codMap');cod()};if(b)b.onchange=()=>{sessionStorage.setItem('codMap',b.value);cod()};if(r)r.onclick=()=>{sessionStorage.removeItem('codMode');sessionStorage.removeItem('codMap');cod()}}
 function cod(){
   let m=D.cod;
-  let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,#f59e0b66,transparent 65%)"><div class="ttl"><h3>Call of Duty Mobile</h3><span class="pill">Saisie par capture d'écran</span></div></div>${codBtn('full')}${codSyncBox()}`;
+  let h=`<div class="cod-hero glass"><picture><source media="(max-width:700px)" srcset="assets/cod-hero-mobile.webp"><img src="assets/cod-hero.webp" alt="Opérateur COD Mobile de NVCBlood et son chien, hangar U.A.C" fetchpriority="high"></picture><div class="cod-hero-ov"><h3>Call of Duty Mobile</h3><span class="pill">NVCBlood${D.codCard?.clan?' · '+esc(D.codCard.clan):''}</span>${D.codCard?`<span class="pill">Niveau ${fnum(D.codCard.level)}</span>`:''}</div></div>${codCardHTML()}${codBtn('full')}${codSyncBox()}`;
   h+=ranksHTML()+goalsBlock(['cod_rank'],'Objectifs de rang')+career();
   const tf=sessionStorage.getItem('codType')||'all',all=m;
   h+=`<h2>Parties enregistrées</h2><div class="seg" id="tseg">${[['all','Tout'],['MP','Multijoueur'],['BR','Battle Royale']].map(([k,n])=>`<button class="${k==tf?'on':''}" data-t="${k}">${n} (${k=='all'?all.length:all.filter(x=>(x.type||'MP')==k).length})</button>`).join('')}</div>`;
@@ -894,10 +923,10 @@ function render(){
   charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
   const p=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean),r=p[0]||'';
   const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
-  document.body.classList.toggle('sub',!top);
+  document.body.classList.toggle('sub',!top);document.body.classList.toggle('cod-amb',r=='cod');
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
-  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
+  $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]=='profil'?'Carte de joueur':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
+  try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }

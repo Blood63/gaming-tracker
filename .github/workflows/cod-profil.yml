@@ -1,0 +1,46 @@
+name: Profil COD
+# Déclenché par l'étiquette « cod-profil » OU par le titre (« COD – profil… ») : l'appli GitHub mobile ne garde que le titre.
+on:
+  issues:
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      issue: { description: "Numéro de l'issue à traiter", required: true }
+permissions:
+  contents: write
+  issues: write
+jobs:
+  run:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == 'Blood63') ||
+      (github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' &&
+       (contains(github.event.issue.labels.*.name, 'cod-profil') || startsWith(github.event.issue.title, 'COD – profil')))
+    runs-on: ubuntu-latest
+    env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - id: ev
+        run: |
+          gh api repos/${{ github.repository }}/issues/$N > issue.json
+          python3 -c "import json;i=json.load(open('issue.json'));assert i['user']['login']=='Blood63','auteur non autorisé';json.dump({'issue':i},open('ev.json','w'))"
+          echo "state=$(python3 -c "import json;print(json.load(open('issue.json'))['state'])")" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: gh issue edit $N -R ${{ github.repository }} --add-label cod-rank || true
+      - id: run
+        if: steps.ev.outputs.state == 'open'
+        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md, TZ: Europe/Paris }
+        run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            res=$(python3 tools/cod_profile_intake.py)
+            git add cod_profile.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "COD profil : issue #$N" && git push -q origin HEAD:main && break
+            sleep $((RANDOM % 8 + 3))
+          done
+          echo "res=$res" >> "$GITHUB_OUTPUT"
+      - if: steps.ev.outputs.state == 'open'
+        run: |
+          gh issue comment $N -R ${{ github.repository }} -F comment.md
+          if [ "${{ steps.run.outputs.res }}" = "OK" ]; then gh issue close $N -R ${{ github.repository }} --reason completed; fi

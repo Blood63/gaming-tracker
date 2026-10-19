@@ -43,5 +43,17 @@ def main():
     if any(key(x)==key(rec) for x in C[mode]): return out(True,f"Rang déjà enregistré ({mode} · {rec['label']}, {rec['date'][:16].replace('T',' ')}) : aucun changement.")
     C[mode].append(rec); C[mode].sort(key=lambda x:x["date"])
     json.dump(C,open(F,"w"),ensure_ascii=False,indent=1)
-    out(True,f"Rang enregistré : **{mode} · {rec['label']}**{f' · {pts} pts' if pts is not None else ''} ({rec['date'][:10]}). Historique {mode} : {len(C[mode])} entrée(s).")
+    inc=""
+    if tier=="Légendaire":
+        i=C[mode].index(rec); prev=C[mode][i-1] if i else None
+        # transition : le rang précédent (chronologique) n'était pas Légendaire, et cette entrée n'a jamais été comptée
+        if not rec.get("counted") and (prev is None or prev.get("tier")!="Légendaire"):
+            rec["counted"]=True; json.dump(C,open(F,"w"),ensure_ascii=False,indent=1)
+            PF=f"{D}/cod_profile.json"
+            try:
+                P=json.load(open(PF)); pc=P.setdefault("player_card",{}); lc=pc.setdefault("legendary_count",{"MP":0,"BR":0})
+                lc[mode]=int(lc.get(mode) or 0)+1; json.dump(P,open(PF,"w"),ensure_ascii=False,indent=1)
+                inc=f" Compteur « fois Légendaire » {mode} : {lc[mode]}."
+            except Exception as e: inc=f" (compteur Légendaire non mis à jour : {e})"
+    out(True,f"Rang enregistré : **{mode} · {rec['label']}**{inc} ({rec['date'][:10]}). Historique {mode} : {len(C[mode])} entrée(s).")
 if __name__=="__main__": main()
