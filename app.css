@@ -1,3 +1,6 @@
+@font-face{font-family:'Rajdhani';font-style:normal;font-weight:500;font-display:block;src:url('assets/fonts/rajdhani-500.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Rajdhani';font-style:normal;font-weight:600;font-display:block;src:url('assets/fonts/rajdhani-600.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Rajdhani';font-style:normal;font-weight:700;font-display:block;src:url('assets/fonts/rajdhani-700.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 :root{--bg:#0a0920;--bg2:#120f33;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.08);--line:rgba(160,150,255,.14);--txt:#eceaff;--mut:#9692c2;
 --cy:#22d3ee;--vi:#a855f7;--gr:#4ade80;--pk:#e879f9;--warn:#fbbf24;--bad:#fb7185;--val:#ff4655;--rl:#3b82f6;--cod:#f59e0b;--steam:#66c0f4;
 --grad:linear-gradient(90deg,var(--cy),var(--vi));--r:18px;--nav:68px;--safe:env(safe-area-inset-bottom,0px)}
@@ -287,3 +290,60 @@ body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18
 .vhero .ov{gap:.7rem;flex-wrap:nowrap;background:linear-gradient(transparent,rgba(var(--glow,10,7,22),.0) 0%,rgba(8,6,18,.92) 60%)}
 .vhero .ov>div{min-width:0}
 .vhero .vcard{width:52px;height:52px;border-radius:12px;flex:none;box-shadow:0 0 0 2px rgba(var(--glow,255,255,255),.5)}
+/* ========== Steam : boutique « polaroïd » + boutons pixel (style inspiré d'une vitrine pixel-art, couleurs de l'appli) ========== */
+/* Bouton pixel : bord 4 px à coins en escalier, liseré clair en haut (relief), bande foncée en bas. Implémentation propre (dégradés). */
+.px{--p:4px;--o:8px;--pc:#0b0a1f;--fill:#9cc3e6;--top:#cfe3f4;--bot:#6f9fca;--fg:#0b1a2b;
+ position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;min-height:44px;padding:calc(var(--p) + .35rem) calc(var(--p) + .8rem) calc(var(--p)*2 + .35rem);
+ font:inherit;font-weight:700;font-size:.9rem;letter-spacing:.02em;color:var(--fg);border:0;border-radius:0;cursor:pointer;background-color:transparent;outline:none;-webkit-user-select:none;user-select:none;
+ background-image:
+  linear-gradient(90deg,transparent var(--o),var(--pc) var(--o) calc(100% - var(--o)),transparent calc(100% - var(--o))),
+  linear-gradient(180deg,transparent var(--o),var(--pc) var(--o) calc(100% - var(--o)),transparent calc(100% - var(--o))),
+  linear-gradient(90deg,transparent var(--o),var(--pc) var(--o) calc(100% - var(--o)),transparent calc(100% - var(--o))),
+  linear-gradient(180deg,transparent var(--o),var(--pc) var(--o) calc(100% - var(--o)),transparent calc(100% - var(--o))),
+  linear-gradient(90deg,transparent var(--p),var(--pc) var(--p) var(--o),transparent var(--o) calc(100% - var(--o)),var(--pc) calc(100% - var(--o)) calc(100% - var(--p)),transparent calc(100% - var(--p))),
+  linear-gradient(90deg,transparent var(--p),var(--pc) var(--p) var(--o),transparent var(--o) calc(100% - var(--o)),var(--pc) calc(100% - var(--o)) calc(100% - var(--p)),transparent calc(100% - var(--p))),
+  linear-gradient(90deg,transparent var(--p),var(--top) var(--p) calc(100% - var(--p)),transparent calc(100% - var(--p))),
+  linear-gradient(90deg,transparent var(--p),var(--bot) var(--p) calc(100% - var(--p)),transparent calc(100% - var(--p))),
+  linear-gradient(90deg,transparent var(--p),var(--fill) var(--p) calc(100% - var(--p)),transparent calc(100% - var(--p)));
+ background-position:top 0 left 0,top 0 right 0,bottom 0 left 0,top 0 left 0,top var(--p) left 0,bottom var(--p) left 0,top var(--p) left 0,bottom var(--p) left 0,top var(--p) left 0;
+ background-size:100% var(--p),var(--p) 100%,100% var(--p),var(--p) 100%,100% var(--p),100% var(--p),100% var(--p),100% var(--p),100% calc(100% - var(--o));
+ background-repeat:no-repeat;transition:none}
+/* effet identique à la référence : survol/focus = descend de 1 px ; appui = descend de 4 px (taille d'un pixel), instantané */
+.px:hover,.px:focus-visible{transform:translateY(1px);--top:var(--fill)}
+.px:active,.px.press{transform:translateY(var(--p))}
+.px:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 3px var(--cy))}
+.px-bl{--fill:#9cc3e6;--top:#d3e6f6;--bot:#6c9cc8;--pc:#0d1b2e;--fg:#0b1a2b}
+.px-bl.on{--fill:#f6d860;--top:#fbeaa4;--bot:#d4b33a;--pc:#2b2205;--fg:#2b2205}
+.px-vi{--fill:#c4b0f5;--top:#e4daff;--bot:#9a82dc;--pc:#1d1240;--fg:#24164f}
+.px-gh{--fill:#24214d;--top:#35316b;--bot:#17153a;--pc:#05040f;--fg:#e6e3ff;font-size:.82rem;min-height:40px}
+.px-gh.on{--fill:#c4b0f5;--top:#e4daff;--bot:#9a82dc;--pc:#1d1240;--fg:#24164f}
+.pxsel{max-width:12rem;appearance:none;-webkit-appearance:none;padding-right:calc(var(--p) + 1.6rem);font-size:.9rem}
+.pxsel option{color:var(--txt);background:var(--bg2)}
+.pxsel+.x{display:none}
+.shopbar{display:grid;gap:.7rem;margin-bottom:.4rem}
+.pxrow{display:flex;flex-wrap:wrap;gap:.55rem .5rem;align-items:center}
+.pxrow.sort .mut{font-size:.8rem;margin-right:.1rem}
+/* grille « polaroïd » */
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2.6rem 1rem;padding:.9rem .2rem 2.4rem}
+@media(min-width:700px){.pgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:3rem 1.6rem}}
+@media(min-width:1000px){.pgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.pcard{position:relative;display:flex;flex-direction:column;gap:.45rem;padding:.7rem .7rem 1.6rem;background:#1a1740;border:4px solid #3a356f;border-radius:0;box-shadow:4px 4px 0 0 rgba(0,0,0,.55);color:var(--txt);
+ transition:scale .3s cubic-bezier(.4,0,.2,1),rotate .3s cubic-bezier(.4,0,.2,1);-webkit-tap-highlight-color:transparent}
+.pcard:hover,.pcard:active,.pcard:focus-visible{scale:1.05;rotate:var(--tilt,3deg);z-index:2}
+.pcard:focus-visible{outline:3px solid var(--cy);outline-offset:3px}
+.pcard .frame{display:block;border:4px solid #4a4585;background:#0f0d29;aspect-ratio:460/215;overflow:hidden}
+.pcard .frame img{width:100%;height:100%;object-fit:cover;display:block}
+.pcard .pn{font-weight:700;font-size:.98rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.pcard .pm{display:flex;flex-wrap:wrap;gap:.15rem .7rem;font-size:.8rem;color:var(--mut)}
+.pcard .pm b{color:var(--txt)}
+.pcard .tag.warn{color:var(--warn)}
+.pcard .pbadge{position:absolute;right:-.6rem;bottom:-1.5rem;min-height:40px;font-size:.92rem;pointer-events:none}
+@media(max-width:699px){.pcard .pbadge{right:50%;transform:translateX(50%)}}
+/* ruban adhésif décoratif (CSS uniquement) */
+.pcard .tape{position:absolute;top:-13px;left:50%;width:58px;height:20px;transform:translateX(-50%) rotate(-3deg);z-index:3;pointer-events:none;
+ background:repeating-linear-gradient(90deg,var(--tc) 0 6px,var(--tc2) 6px 12px);box-shadow:0 2px 0 rgba(0,0,0,.35);
+ clip-path:polygon(0 0,100% 0,96% 25%,100% 50%,96% 75%,100% 100%,0 100%,4% 75%,0 50%,4% 25%)}
+.tp-a{--tc:#66c0f4;--tc2:#8fd3fa}.tp-b{--tc:#c4b0f5;--tc2:#d9cbff}.tp-c{--tc:#f6d860;--tc2:#f9e38f}
+.pcard:nth-child(even) .tape{transform:translateX(-50%) rotate(4deg)}
+@media (prefers-reduced-motion:reduce){.pcard:hover,.pcard:active,.pcard:focus-visible{scale:none;rotate:none}}
+@media(max-width:699px){.pxrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin:0 -1rem;padding:2px 1rem 8px}.pxrow::-webkit-scrollbar{display:none}.pxrow>*{flex:none}.pxrow .pxsel{max-width:10rem}}
