@@ -152,9 +152,9 @@ select option{background:var(--bg2)}
 .goal{padding:.9rem;display:flex;flex-direction:column;gap:.35rem}
 .goal .h{display:flex;justify-content:space-between;gap:.5rem;align-items:start}
 .goal .x{background:none;border:0;color:var(--mut);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem}
-.form{display:grid;gap:.6rem;padding:1rem}
-.form label{font-size:.78rem;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;display:grid;gap:.25rem}
-.form input,.form select{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font:inherit;font-size:1rem;min-height:44px}
+.form{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;padding:1rem}
+.form label{font-size:.78rem;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;display:grid;gap:.25rem;min-width:0}
+.form input,.form select{background:rgba(255,255,255,.05);color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font:inherit;font-size:1rem;min-height:44px;min-width:0;width:100%}
 .empty{padding:1.4rem;text-align:center;color:var(--mut)}
 .tile{display:flex;align-items:center;gap:.8rem;padding:.9rem;color:var(--txt);transition:transform .2s,border-color .2s,box-shadow .25s;cursor:pointer}
 .tile .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:linear-gradient(135deg,var(--c),transparent);flex:none}
@@ -215,7 +215,7 @@ img,svg,canvas{max-width:100%}
 .cod-hero-ov h3{margin:0;width:100%;font-size:1.6rem;text-shadow:0 2px 14px #000}
 .cod-id{display:flex;gap:.8rem;align-items:center}
 .cod-id img{width:64px;height:64px;object-fit:cover;object-position:center 15%;border-radius:14px;flex:none}
-.cod-likes{margin-left:auto;text-align:center;display:grid;gap:0}
+.cod-likes{margin-left:auto;text-align:center;display:grid;gap:0;flex:none;white-space:nowrap;padding-left:.4rem}
 .cod-likes b{font-size:1.2rem}
 .cod-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 45%,rgba(10,9,32,.35)),url('assets/cod-hero.webp');background-size:cover;background-position:center 25%}
 body.cod-amb{--cod:#38bdf8}
