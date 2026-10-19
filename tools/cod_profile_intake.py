@@ -22,7 +22,8 @@ def main():
     for k in ("MP","BR"):
         if k in lc and (isinstance(lc[k],bool) or not isinstance(lc[k],int) or lc[k]<0 or lc[k]>999): return out(False,"Compteur Légendaire invalide.")
     new={"legendary_count":{"MP":lc.get("MP",old.get("legendary_count",{}).get("MP",0)),"BR":lc.get("BR",old.get("legendary_count",{}).get("BR",0))},"player":"NVCBlood","level":lvl,"clan":clan.strip(),"likes":likes,"date":dt.isoformat(),"source":"saisie dans l'app","ranked_season":(str(d["season"])[:20] if d.get("season") else old.get("ranked_season")),"season_snapshot":old.get("season_snapshot"),"note":old.get("note")}
-    if {k:new.get(k) for k in ("level","clan","likes","date")}=={k:old.get(k) for k in ("level","clan","likes","date")}: return out(True,"Carte de joueur déjà à jour : aucun changement.")
+    keys=("level","clan","likes","date","legendary_count","ranked_season")
+    if {k:new.get(k) for k in keys}=={k:old.get(k) for k in keys}: return out(True,"Carte de joueur déjà à jour : aucun changement.")
     C["player_card"]=new; json.dump(C,open(F,"w"),ensure_ascii=False,indent=1)
     out(True,f"Carte de joueur mise à jour : niveau {lvl} · clan {new['clan'] or '—'} · {likes if likes is not None else '—'} J'aime ({dt.isoformat()}).")
 if __name__=="__main__": main()

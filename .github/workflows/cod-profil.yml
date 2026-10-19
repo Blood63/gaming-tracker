@@ -25,7 +25,7 @@ jobs:
           python3 -c "import json;i=json.load(open('issue.json'));assert i['user']['login']=='Blood63','auteur non autorisé';json.dump({'issue':i},open('ev.json','w'))"
           echo "state=$(python3 -c "import json;print(json.load(open('issue.json'))['state'])")" >> "$GITHUB_OUTPUT"
       - if: steps.ev.outputs.state == 'open'
-        run: gh issue edit $N -R ${{ github.repository }} --add-label cod-rank || true
+        run: gh issue edit $N -R ${{ github.repository }} --add-label cod-profil || true
       - id: run
         if: steps.ev.outputs.state == 'open'
         env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md, TZ: Europe/Paris }
