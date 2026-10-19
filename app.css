@@ -220,3 +220,41 @@ img,svg,canvas{max-width:100%}
 .cod-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 45%,rgba(10,9,32,.35)),url('assets/cod-hero.webp');background-size:cover;background-position:center 25%}
 body.cod-amb{--cod:#38bdf8}
 body.cod-amb header{border-bottom-color:rgba(56,189,248,.35)}
+/* ========== Thème Rocket League (body[data-theme=rl]) — couleurs tirées des voitures du garage ========== */
+@property --cy{syntax:'<color>';inherits:true;initial-value:#22d3ee}
+@property --vi{syntax:'<color>';inherits:true;initial-value:#a855f7}
+@property --rl{syntax:'<color>';inherits:true;initial-value:#3b82f6}
+@property --bg{syntax:'<color>';inherits:true;initial-value:#0a0920}
+@property --mut{syntax:'<color>';inherits:true;initial-value:#9692c2}
+@property --line{syntax:'<color>';inherits:true;initial-value:rgba(160,150,255,.14)}
+@property --hdr{syntax:'<color>';inherits:true;initial-value:rgba(10,9,32,.72)}
+@property --navbg{syntax:'<color>';inherits:true;initial-value:rgba(12,10,36,.86)}
+:root{--hdr:rgba(10,9,32,.72);--navbg:rgba(12,10,36,.86)}
+body{transition:--cy .5s ease,--vi .5s ease,--rl .5s ease,--bg .5s ease,--mut .5s ease,--line .5s ease,--hdr .5s ease,--navbg .5s ease,background-color .5s ease}
+header{background:var(--hdr)}nav.tabs{background:var(--navbg)}
+@media(min-width:900px){nav.tabs{background:none}}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .6s ease;
+ background:radial-gradient(60% 30% at 50% -6%,rgba(255,140,40,.20),transparent 70%),radial-gradient(40% 30% at 100% 12%,rgba(56,130,255,.16),transparent 70%),radial-gradient(45% 35% at 0% 30%,rgba(255,79,184,.16),transparent 70%),linear-gradient(180deg,transparent 55%,rgba(40,120,60,.13) 100%),repeating-linear-gradient(90deg,rgba(80,170,90,.035) 0 60px,transparent 60px 120px)}
+body[data-theme=rl]{--cy:#ff5cbf;--vi:#b26bff;--rl:#ff5cbf;--bg:#0c0712;--mut:#c7aecb;--line:rgba(255,92,191,.22);--hdr:rgba(14,6,18,.78);--navbg:rgba(16,7,20,.9);--grad:linear-gradient(90deg,#ff5cbf,#b26bff)}
+body[data-theme=rl]:after{opacity:1}
+body[data-theme=rl]:before{opacity:.35}
+body:before{transition:opacity .6s ease}
+body[data-theme=rl] .glass{box-shadow:0 0 0 1px rgba(255,92,191,.05),0 10px 30px -18px rgba(255,92,191,.45)}
+body[data-theme=rl] h2{color:#f1c9e6}
+body[data-theme=rl] h2:after{background:linear-gradient(90deg,rgba(255,92,191,.5),rgba(255,140,40,.25),transparent)}
+body[data-theme=rl] .btn:not(.ghost):not(.alt){color:#14060f}
+body[data-theme=rl] header{border-bottom-color:rgba(255,92,191,.35)}
+body[data-theme=rl] .pill{border-color:rgba(255,92,191,.3)}
+/* garage */
+.garage{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:1029/430;background:#140a18;margin-bottom:1rem;border:1px solid var(--line);cursor:pointer;contain:layout paint}
+.garage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:0;transition:opacity .45s ease,transform .6s ease;transform:scale(1.03)}
+.garage img.on{opacity:1;transform:none}
+.garage .ov{position:absolute;left:0;right:0;bottom:0;padding:2rem 1rem .8rem;background:linear-gradient(transparent,rgba(12,6,16,.9) 60%);display:flex;align-items:flex-end;gap:.5rem;flex-wrap:wrap}
+.garage .ov h3{margin:0;width:100%;font-size:1.6rem;text-shadow:0 2px 14px #000}
+.garage .sw{position:absolute;top:.6rem;right:.6rem;display:flex;gap:.35rem}
+.garage .sw button{min-height:36px;padding:.3rem .7rem;border-radius:99px;border:1px solid rgba(255,255,255,.25);background:rgba(12,6,16,.6);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
+.garage .sw button[aria-pressed=true]{background:var(--grad);color:#14060f;border-color:transparent}
+@media(max-width:700px){.garage{aspect-ratio:760/465}.garage img{object-position:center 70%}}
+.rl-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 45%,rgba(10,9,32,.3)),url('assets/rl-car1-m.webp');background-size:cover;background-position:70% 60%}
+body[data-theme=rl] .tbl th:first-child,body[data-theme=rl] .tbl td:first-child{background:#1b0c1e}
+@media(min-width:701px){.garage{max-height:320px;width:100%}.garage img{object-position:center 55%}}
