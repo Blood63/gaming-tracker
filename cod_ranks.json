@@ -10,6 +10,16 @@
    "season": null,
    "issue": 8,
    "screenshots": []
+  },
+  {
+   "date": "2026-10-19T13:30:00+02:00",
+   "tier": "Maître",
+   "sub": null,
+   "label": "Maître",
+   "value": 21,
+   "points": 5280,
+   "season": "Saison 3 2026",
+   "source": "app"
   }
  ],
  "BR": []
