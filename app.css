@@ -205,3 +205,18 @@ main{padding-bottom:calc(var(--nav) + var(--safe) + 3.2rem)}
 html{overflow-x:hidden}
 img,svg,canvas{max-width:100%}
 .kv span,.row .n,.goal .h{min-width:0;overflow-wrap:anywhere}
+
+/* ===== COD : héros + carte de joueur (19/10) ===== */
+.cod-hero{position:relative;overflow:hidden;border-radius:var(--r);min-height:210px;margin-bottom:.2rem}
+.cod-hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%;position:absolute;inset:0}
+.cod-hero{height:230px}
+@media(max-width:700px){.cod-hero{height:300px}.cod-hero img{object-position:center 20%}}
+.cod-hero-ov{position:absolute;left:0;right:0;bottom:0;padding:2.2rem 1rem .9rem;background:linear-gradient(transparent,rgba(5,8,20,.88) 55%);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.cod-hero-ov h3{margin:0;width:100%;font-size:1.6rem;text-shadow:0 2px 14px #000}
+.cod-id{display:flex;gap:.8rem;align-items:center}
+.cod-id img{width:64px;height:64px;object-fit:cover;object-position:center 15%;border-radius:14px;flex:none}
+.cod-likes{margin-left:auto;text-align:center;display:grid;gap:0}
+.cod-likes b{font-size:1.2rem}
+.cod-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 45%,rgba(10,9,32,.35)),url('assets/cod-hero.webp');background-size:cover;background-position:center 25%}
+body.cod-amb{--cod:#38bdf8}
+body.cod-amb header{border-bottom-color:rgba(56,189,248,.35)}

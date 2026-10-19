@@ -4,13 +4,83 @@
  "history": [
   {
    "date": "2026-10-14",
-   "screenshots": ["screenshots/cod/profile/2026-10-14-1.jpg","screenshots/cod/profile/2026-10-14-2.jpg","screenshots/cod/profile/2026-10-14-3.jpg","screenshots/cod/profile/2026-10-14-4.jpg","screenshots/cod/profile/2026-10-14-5.jpg"],
-   "multiplayer": {"mvp": 1677, "matches": 11444, "top3": 4245, "kills": 123095, "kd": 1.31, "accuracy_pct": 18.20},
-   "battle_royale": {"mvp": 612, "wins": 548, "matches": 2053, "kills": 9444, "avg_damage": 1217.40, "accuracy_pct": 31.58},
-   "recap_2025": {"top_weapon": "Locus - Éclat toxique", "top_weapon_kills": 3532, "top_weapon_shots": 9441,
-     "favorite_map": "Stand de tir", "favorite_map_value": 250, "favorite_mode": "Multijoueur",
-     "mvp_2025": 1031, "kills_2025": 32238, "online_hours_2025": 755, "best_rank_ever": "Légendaire"},
-   "account": {"registered": "2019-10-08"}
+   "screenshots": [
+    "screenshots/cod/profile/2026-10-14-1.jpg",
+    "screenshots/cod/profile/2026-10-14-2.jpg",
+    "screenshots/cod/profile/2026-10-14-3.jpg",
+    "screenshots/cod/profile/2026-10-14-4.jpg",
+    "screenshots/cod/profile/2026-10-14-5.jpg"
+   ],
+   "multiplayer": {
+    "mvp": 1677,
+    "matches": 11444,
+    "top3": 4245,
+    "kills": 123095,
+    "kd": 1.31,
+    "accuracy_pct": 18.2
+   },
+   "battle_royale": {
+    "mvp": 612,
+    "wins": 548,
+    "matches": 2053,
+    "kills": 9444,
+    "avg_damage": 1217.4,
+    "accuracy_pct": 31.58
+   },
+   "recap_2025": {
+    "top_weapon": "Locus - Éclat toxique",
+    "top_weapon_kills": 3532,
+    "top_weapon_shots": 9441,
+    "favorite_map": "Stand de tir",
+    "favorite_map_value": 250,
+    "favorite_mode": "Multijoueur",
+    "mvp_2025": 1031,
+    "kills_2025": 32238,
+    "online_hours_2025": 755,
+    "best_rank_ever": "Légendaire"
+   },
+   "account": {
+    "registered": "2019-10-08"
+   }
   }
- ]
+ ],
+ "player_card": {
+  "player": "NVCBlood",
+  "level": 401,
+  "clan": "Nova_Core_EsPort",
+  "likes": 6760,
+  "date": "2026-10-19",
+  "source": "capture du profil en jeu (19 oct. 2026)",
+  "ranked_season": "S3",
+  "season_snapshot": {
+   "label": "Badges de saison lus sur la capture profil (interprétation incertaine)",
+   "approx": true,
+   "badges": [
+    {
+     "label": "Badge de saison classée (icône violette)",
+     "value": "III"
+    },
+    {
+     "label": "Médaillon doré",
+     "value": "17"
+    },
+    {
+     "label": "Médaillon diamant",
+     "value": "1"
+    },
+    {
+     "label": "Médaillon rouge",
+     "value": "6"
+    }
+   ],
+   "best_player_rate_pct": 23.94,
+   "best_player_value": 16
+  },
+  "note": "Niveau, clan et J'aime lus sur la capture. Les badges de saison sont une lecture approximative. Les rangs affichés dans l'app viennent de cod_ranks.json (saisis séparément), pas de cette capture.",
+  "legendary_count": {
+   "MP": 17,
+   "BR": 6
+  },
+  "legendary_note": "Compteurs lus sur la capture profil (17 MJ, 6 BR), modifiables dans l'app ; +1 automatique à chaque nouveau passage en Légendaire (entrée marquée counted)."
+ }
 }
