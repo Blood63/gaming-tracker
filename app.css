@@ -247,15 +247,43 @@ body[data-theme=rl] header{border-bottom-color:rgba(255,92,191,.35)}
 body[data-theme=rl] .pill{border-color:rgba(255,92,191,.3)}
 /* garage */
 .garage{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:1029/430;background:#140a18;margin-bottom:1rem;border:1px solid var(--line);cursor:pointer;contain:layout paint}
-.garage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:0;transition:opacity .45s ease,transform .6s ease;transform:scale(1.03)}
-.garage img.on{opacity:1;transform:none}
+.garage picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:0;transition:opacity .45s ease,transform .6s ease;transform:scale(1.03)}
+.garage picture img.on{opacity:1;transform:none}
 .garage .ov{position:absolute;left:0;right:0;bottom:0;padding:2rem 1rem .8rem;background:linear-gradient(transparent,rgba(12,6,16,.9) 60%);display:flex;align-items:flex-end;gap:.5rem;flex-wrap:wrap}
 .garage .ov h3{margin:0;width:100%;font-size:1.6rem;text-shadow:0 2px 14px #000}
 .garage .sw{position:absolute;top:.6rem;right:.6rem;display:flex;gap:.35rem}
 .garage .sw button{min-height:36px;padding:.3rem .7rem;border-radius:99px;border:1px solid rgba(255,255,255,.25);background:rgba(12,6,16,.6);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px)}
 .garage .sw button[aria-pressed=true]{background:var(--grad);color:#14060f;border-color:transparent}
-@media(max-width:700px){.garage{aspect-ratio:760/465}.garage img{object-position:center 70%}}
+@media(max-width:700px){.garage{aspect-ratio:760/465}.garage picture img{object-position:center 70%}}
 .rl-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 45%,rgba(10,9,32,.3)),url('assets/rl-car1-m.webp');background-size:cover;background-position:70% 60%}
 body[data-theme=rl] .tbl th:first-child,body[data-theme=rl] .tbl td:first-child{background:#1b0c1e}
-@media(min-width:701px){.garage{max-height:320px;width:100%}.garage img{object-position:center 55%}}
+@media(min-width:701px){.garage{max-height:320px;width:100%}.garage picture img{object-position:center 55%}}
 header{min-height:calc(38px + 1.4rem + env(safe-area-inset-top,0px))}
+/* ========== Thèmes COD (opérateur glace/squelette) et Valorant (Omen / Sage) ========== */
+body[data-theme=cod]{--cy:#4fd3ff;--vi:#ff8a3d;--cod:#4fd3ff;--bg:#070b10;--mut:#a9bfd0;--line:rgba(79,211,255,.22);--hdr:rgba(7,11,16,.8);--navbg:rgba(8,12,18,.92);--grad:linear-gradient(90deg,#4fd3ff,#ff8a3d);--glow:79,211,255}
+body[data-theme=omen]{--cy:#a594ff;--vi:#7c5cff;--val:#a594ff;--bg:#0a0716;--mut:#b8b0dc;--line:rgba(165,148,255,.24);--hdr:rgba(10,7,22,.8);--navbg:rgba(11,8,24,.92);--grad:linear-gradient(90deg,#b0a2ff,#8f7dff);--glow:140,110,255}
+body[data-theme=sage]{--cy:#3ee6b8;--vi:#2cc4d9;--val:#3ee6b8;--bg:#04100e;--mut:#a8cfc5;--line:rgba(62,230,184,.24);--hdr:rgba(4,16,14,.8);--navbg:rgba(5,17,15,.92);--grad:linear-gradient(90deg,#3ee6b8,#2cc4d9);--glow:62,230,184}
+body[data-theme=cod]:after{opacity:1;background:radial-gradient(55% 30% at 50% -6%,rgba(79,211,255,.18),transparent 70%),radial-gradient(40% 30% at 100% 20%,rgba(255,138,61,.14),transparent 70%),radial-gradient(50% 40% at 0% 80%,rgba(120,150,175,.12),transparent 70%),repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 2px,transparent 2px 9px)}
+body[data-theme=omen]:after{opacity:1;background:radial-gradient(60% 35% at 80% -5%,rgba(124,92,255,.28),transparent 70%),radial-gradient(45% 40% at 0% 40%,rgba(80,40,160,.22),transparent 70%),radial-gradient(60% 40% at 50% 110%,rgba(30,10,60,.6),transparent 70%)}
+body[data-theme=sage]:after{opacity:1;background:radial-gradient(55% 32% at 20% -5%,rgba(62,230,184,.22),transparent 70%),radial-gradient(45% 35% at 100% 30%,rgba(44,196,217,.18),transparent 70%),conic-gradient(from 200deg at 85% 85%,transparent,rgba(62,230,184,.06),transparent 30%)}
+body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:before{opacity:.3}
+body:is([data-theme=cod],[data-theme=omen],[data-theme=sage]) .glass{box-shadow:0 0 0 1px rgba(var(--glow),.05),0 10px 30px -18px rgba(var(--glow),.5)}
+body:is([data-theme=cod],[data-theme=omen],[data-theme=sage]) h2:after{background:linear-gradient(90deg,rgba(var(--glow),.55),transparent)}
+body:is([data-theme=cod],[data-theme=omen],[data-theme=sage]) header{border-bottom-color:rgba(var(--glow),.35)}
+body:is([data-theme=cod],[data-theme=omen],[data-theme=sage]) .pill{border-color:rgba(var(--glow),.3)}
+body:is([data-theme=cod],[data-theme=omen],[data-theme=sage]) .btn:not(.ghost):not(.alt){color:#071014}
+body[data-theme=cod] h2{color:#cfe9f7}body[data-theme=omen] h2{color:#d6ccff}body[data-theme=sage] h2{color:#c4f2e4}
+body[data-theme=cod] .tbl th:first-child,body[data-theme=cod] .tbl td:first-child{background:#0c141c}
+body[data-theme=omen] .tbl th:first-child,body[data-theme=omen] .tbl td:first-child{background:#140e2a}
+body[data-theme=sage] .tbl th:first-child,body[data-theme=sage] .tbl td:first-child{background:#08201b}
+body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18px 50px -25px rgba(79,211,255,.6)}
+.cod-hero img{transition:transform 1.2s ease}body[data-theme=cod] .cod-hero:hover img{transform:scale(1.02)}
+/* héros Valorant */
+.vhero{aspect-ratio:1100/460}
+@media(max-width:700px){.vhero{aspect-ratio:760/465}}
+.vhero img[data-ag]{object-position:center 35%}
+.vhero .sw button{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .7rem .2rem .25rem}
+.vhero .sw button img{width:24px;height:30px;object-fit:cover;border-radius:99px}
+.vhero .ov{gap:.7rem;flex-wrap:nowrap;background:linear-gradient(transparent,rgba(var(--glow,10,7,22),.0) 0%,rgba(8,6,18,.92) 60%)}
+.vhero .ov>div{min-width:0}
+.vhero .vcard{width:52px;height:52px;border-radius:12px;flex:none;box-shadow:0 0 0 2px rgba(var(--glow,255,255,255),.5)}
