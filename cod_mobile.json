@@ -538,6 +538,33 @@
    "mvp": false,
    "ranked": true,
    "result": "win"
+  },
+  {
+   "id": "app-202610191321",
+   "date": "2026-10-19T13:21:48+02:00",
+   "source": "app-ocr",
+   "type": "MP",
+   "score_team": 60,
+   "score_enemy": 44,
+   "team_place": 1,
+   "score": 6,
+   "kills": 22,
+   "deaths": 9,
+   "assists": 3,
+   "kd": 2.44,
+   "impact": 193,
+   "rank_xp": 138,
+   "xp_gained": 4146,
+   "accuracy_pct": 23.9,
+   "headshot_pct": 18.2,
+   "damage": 2383,
+   "capture_kills": 13,
+   "distance": 8,
+   "mode": "Ligne de front",
+   "map": "Crash",
+   "mvp": true,
+   "ranked": true,
+   "result": "win"
   }
  ]
 }
