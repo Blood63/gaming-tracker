@@ -12,6 +12,8 @@ const get=async(f,j=true)=>{try{const r=await fetch(f+'?v='+Date.now());if(!r.ok
 const jl=async f=>((await get(f,false))||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c',rlA:'#3b82f6',rlB:'#22c55e'};
 COL.val='#ff4655';
+document.addEventListener('touchstart',()=>{},{passive:true});
+{const up=()=>document.querySelectorAll('.px.press').forEach(e=>e.classList.remove('press'));document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.px');if(b&&e.pointerType!='mouse')b.classList.add('press')},{passive:true});['pointerup','pointercancel','scroll'].forEach(t=>document.addEventListener(t,up,{passive:true,capture:true}))}
 const COL0={...COL},THC={rl:{cy:'#ff5cbf',vi:'#b26bff',pk:'#ff8ad4',bl:'#4aa3ff',or:'#ff9a3c',rlA:'#ff5cbf',rlB:'#ffb347'},
  cod:{cy:'#4fd3ff',vi:'#ff8a3d',pk:'#9be7ff',bl:'#4fd3ff',or:'#ff8a3d'},
  omen:{cy:'#a594ff',vi:'#7c5cff',pk:'#c9a8ff',bl:'#6f8bff',val:'#a594ff'},
@@ -551,25 +553,44 @@ function home(){
   <h2>Activité récente <a class="more" href="#/activite">Tout voir ›</a></h2>${tlHTML(timeline().slice(0,5))}`;
   animBars();animRings();
 }
+function steamWin(days){const H=D.steamH;if(H.length<2)return null;const now=Date.now(),last=H.at(-1);
+  const base=[...H].reverse().find(x=>new Date(x.fetched_at).getTime()<=now-days*864e5),b0=base||H[0];
+  const pf=g=>g.playtime_forever!=null?g.playtime_forever:Math.round((g.hours||0)*60),m={};
+  (last.games||[]).forEach(g=>{const a=(b0.games||[]).find(x=>x.appid==g.appid);if(a)m[g.appid]=pf(g)-pf(a)});return{m,full:!!base,from:b0.fetched_at}}
+const fmin=d=>d>=60?fnum(d/60,1)+' h':fnum(d,0)+' min';
+function steamCard(g,W,M,i){const w=W?.m[g.appid]||0,mo=M?.m[g.appid]||0,never=!g.hours&&!g.last;
+  const tape=['tp-a','tp-b','tp-c'][i%3];
+  return `<a class="pcard" href="#/steam/${g.appid}" style="--tilt:${i%2?'-3deg':'3deg'}"><span class="tape ${tape}" aria-hidden="true"></span>
+   <span class="frame"><img loading="lazy" decoding="async" src="${esc(g.img)}" width="460" height="215" alt="" onerror="this.style.opacity=0"></span>
+   <span class="pn">${esc(g.name)}</span>
+   <span class="pm">${never?'<span class="tag warn">Jamais lancé</span>':`<span title="Temps joué sur 7 jours (calculé)">7 j : <b>${w>0?'+'+fmin(w):'—'}</b></span><span title="Temps joué sur 30 jours (calculé)">30 j : <b>${mo>0?'+'+fmin(mo):'—'}</b></span>`}${g.ach_total?`<span>🏆 ${g.ach_unlocked||0}/${g.ach_total}${g.pct==100?' · 100 %':''}</span>`:''}</span>
+   <span class="pbadge px px-vi">${g.hours?fnum(g.hours,1)+' h':'0 h'}</span></a>`}
 function library(){
   const st=JSON.parse(sessionStorage.getItem('lib')||'{}');const q=st.q||'',f=st.f||'all',s=st.s||'hours';
   const genres=[...new Set(D.games.flatMap(g=>g.genres))].sort();
+  const W=steamWin(7),M=steamWin(30);
+  const FL=[['all','Tous'],['playing','Joués'],['week','Joués cette semaine'],['never','Jamais lancés'],['done','100 % succès'],['dlc','Avec DLC']],SO=[['hours','Temps de jeu'],['week','7 jours'],['month','30 jours'],['last','Dernière session'],['pct','Succès %'],['name','Nom'],['meta','Metacritic']];
   app.innerHTML=`<div class="stats">${stat('Temps total',fnum(D.totalH,1)+' h')}${stat('Jeux',D.games.length,`${D.games.filter(g=>!g.hours&&!g.last).length} jamais lancés`)}${stat('Succès',`${D.ach}/${D.achT}`,D.achT?fnum(100*D.ach/D.achT,1)+' %':'')}${stat('Niveau Steam',D.steam?.level??'—')}</div>
   <h2>Bibliothèque</h2>
-  <div class="tool"><label class="glass search">🔎<input id="q" type="search" placeholder="Rechercher un jeu…" value="${esc(q)}" autocomplete="off"></label>
-  <select id="f" aria-label="Filtre"><option value="all">Tous</option><option value="playing">Joués</option><option value="never">Jamais lancés</option><option value="done">100 % succès</option><option value="dlc">Avec DLC</option>${genres.map(x=>`<option value="g:${esc(x)}">${esc(x)}</option>`).join('')}</select>
-  <select id="s" aria-label="Tri"><option value="hours">Temps de jeu</option><option value="last">Dernière session</option><option value="pct">Succès %</option><option value="name">Nom</option><option value="meta">Metacritic</option></select></div>
-  <div id="res" class="grid"></div>
+  <div class="shopbar"><label class="glass search">🔎<input id="q" type="search" placeholder="Rechercher un jeu…" value="${esc(q)}" autocomplete="off"></label>
+   <div class="pxrow" id="fl" role="group" aria-label="Filtre">${FL.map(([k,n])=>`<button type="button" class="px px-bl${k==f?' on':''}" data-f="${k}" aria-pressed="${k==f}">${n}</button>`).join('')}<select id="fg" class="px px-bl pxsel" aria-label="Genre"><option value="">Genre…</option>${genres.map(x=>`<option value="g:${esc(x)}"${f=='g:'+x?' selected':''}>${esc(x)}</option>`).join('')}</select></div>
+   <div class="pxrow sort" role="group" aria-label="Tri"><span class="mut">Trier :</span>${SO.map(([k,n])=>`<button type="button" class="px px-gh${k==s?' on':''}" data-s="${k}" aria-pressed="${k==s}">${n}</button>`).join('')}</div></div>
+  <p class="mut" style="font-size:.8rem;margin:.2rem 0 1rem">Badge = temps total · 7 j / 30 j = temps joué sur la période (calculé à partir des relevés Steam${W&&!W.full?` ; historique encore court : depuis le ${fdate(W.from)}`:M&&!M.full?` ; « 30 j » depuis le premier relevé du ${fdate(M.from)}`:''}).</p>
+  <div id="res" class="pgrid"></div>
   <h2>Complétion des succès</h2><div class="glass chart" style="height:${Math.max(220,D.games.filter(g=>g.ach_total).length*26)}px"><canvas id="c2"></canvas></div>
   <h2>Temps de jeu</h2><div class="glass chart"><canvas id="c1"></canvas></div>${steamPlaytimeHTML()}`;
-  bindPlayRows();$('#f').value=f;$('#s').value=s;
-  const draw=()=>{const q=$('#q').value.trim().toLowerCase(),f=$('#f').value,s=$('#s').value;sessionStorage.setItem('lib',JSON.stringify({q,f,s}));
-    let g=D.games.filter(x=>!q||x.name.toLowerCase().includes(q));
-    if(f=='playing')g=g.filter(x=>x.hours>0);if(f=='never')g=g.filter(x=>!x.hours&&!x.last);if(f=='done')g=g.filter(x=>x.ach_total&&x.pct==100);if(f=='dlc')g=g.filter(x=>x.st.dlc_count>0);if(f.startsWith('g:'))g=g.filter(x=>x.genres.includes(f.slice(2)));
-    const k={hours:x=>-(x.hours||0),last:x=>-(x.last||0),pct:x=>-(x.pct??-1),name:x=>x.name.toLowerCase(),meta:x=>-(x.st.metacritic?.score||0)}[s];
+  bindPlayRows();
+  let cf=f,cs=s;
+  const draw=()=>{const q=$('#q').value.trim().toLowerCase();sessionStorage.setItem('lib',JSON.stringify({q,f:cf,s:cs}));
+    let g=D.games.filter(x=>!q||x.name.toLowerCase().includes(q)),f=cf,s=cs;
+    if(f=='playing')g=g.filter(x=>x.hours>0);if(f=='week')g=g.filter(x=>(W?.m[x.appid]||0)>0);if(f=='never')g=g.filter(x=>!x.hours&&!x.last);if(f=='done')g=g.filter(x=>x.ach_total&&x.pct==100);if(f=='dlc')g=g.filter(x=>x.st.dlc_count>0);if(f.startsWith('g:'))g=g.filter(x=>x.genres.includes(f.slice(2)));
+    const k={hours:x=>-(x.hours||0),week:x=>-(W?.m[x.appid]||0),month:x=>-(M?.m[x.appid]||0),last:x=>-(x.last||0),pct:x=>-(x.pct??-1),name:x=>x.name.toLowerCase(),meta:x=>-(x.st.metacritic?.score||0)}[s];
     g.sort((a,b)=>{const A=k(a),B=k(b);return A<B?-1:A>B?1:0});
-    $('#res').innerHTML=g.length?g.map(x=>gameCard(x,s=='last'?(x.last?ago(x.last):'jamais'):s=='meta'?(x.st.metacritic?'MC '+x.st.metacritic.score:'MC —'):undefined)).join(''):'<div class="glass empty" style="grid-column:1/-1">Aucun jeu ne correspond.</div>';animBars()};
-  $('#q').oninput=draw;$('#f').onchange=draw;$('#s').onchange=draw;draw();
+    $('#res').innerHTML=g.length?g.map((x,i)=>steamCard(x,W,M,i)).join(''):'<div class="glass empty" style="grid-column:1/-1">Aucun jeu ne correspond.</div>'};
+  const sync=()=>{$$('#fl [data-f]').forEach(b=>{b.classList.toggle('on',b.dataset.f==cf);b.setAttribute('aria-pressed',b.dataset.f==cf)});$('#fg').classList.toggle('on',cf.startsWith('g:'));if(!cf.startsWith('g:'))$('#fg').value='';$$('.sort [data-s]').forEach(b=>{b.classList.toggle('on',b.dataset.s==cs);b.setAttribute('aria-pressed',b.dataset.s==cs)})};
+  $$('#fl [data-f]').forEach(b=>b.onclick=()=>{cf=b.dataset.f;sync();draw()});$('#fg').onchange=e=>{cf=e.target.value||'all';sync();draw()};
+  $$('.sort [data-s]').forEach(b=>b.onclick=()=>{cs=b.dataset.s;sync();draw()});
+  $('#q').oninput=draw;sync();draw();
   const top=D.games.filter(x=>x.hours>0).slice(0,6);
   const H=D.steamH.filter((x,i,a)=>!i||x.fetched_at.slice(0,10)!=a[i-1].fetched_at.slice(0,10));
   if(H.length>1)chart($('#c1'),{type:'line',data:{labels:H.map(x=>fshort(x.fetched_at)),datasets:top.map((t,i)=>lineDS(t.name,H.map(s=>(s.games.find(y=>y.appid==t.appid)||{}).hours??null),PAL[i],{fill:false}))}});
