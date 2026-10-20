@@ -367,3 +367,32 @@ body[data-skin=px] main .shots img{border-radius:0;border:4px solid #4a4585}
 body[data-skin=px] .back{width:44px;height:44px;padding:0 0 4px;font-size:1.3rem;--fill:#24214d;--top:#35316b;--bot:#17153a;--pc:#05040f;--fg:#e6e3ff;border-radius:0}
 body[data-skin=px] main .px.btnw{min-height:48px}
 .px:disabled{opacity:.6;cursor:default;transform:none!important}
+/* ========== RL : thème selon la voiture (data-car) + fond 2 voitures ========== */
+body[data-theme=rl][data-car="1"]{--cy:#ff9fd2;--vi:#b57bff;--rl:#ff9fd2;--bg:#120a15;--mut:#d6c2d4;--line:rgba(255,170,215,.24);--hdr:rgba(20,10,22,.78);--navbg:rgba(22,11,24,.9);--grad:linear-gradient(90deg,#ffb3dc,#f6eef5 55%,#c39bff)}
+body[data-theme=rl][data-car="2"]{--cy:#ff3fb4;--vi:#62d0ff;--rl:#ff3fb4;--bg:#07070a;--mut:#b8bcc8;--line:rgba(255,63,180,.22);--hdr:rgba(8,8,11,.8);--navbg:rgba(9,9,12,.92);--grad:linear-gradient(90deg,#ff3fb4,#ff6fc8 55%,#62d0ff)}
+body[data-theme=rl][data-car="1"] .glass{box-shadow:0 0 0 1px rgba(255,190,225,.07),0 12px 34px -18px rgba(255,159,210,.5),0 0 26px -14px rgba(181,123,255,.35)}
+body[data-theme=rl][data-car="2"] .glass{box-shadow:0 0 0 1px rgba(255,63,180,.08),0 10px 30px -18px rgba(255,63,180,.55),0 0 22px -16px rgba(98,208,255,.35)}
+body[data-theme=rl][data-car="1"] h2{color:#fbeef6}
+body[data-theme=rl][data-car="2"] h2{color:#ffd1ec}
+body[data-theme=rl][data-car="1"] h2:after{background:linear-gradient(90deg,rgba(255,159,210,.6),rgba(181,123,255,.35),transparent)}
+body[data-theme=rl][data-car="2"] h2:after{background:linear-gradient(90deg,rgba(255,63,180,.6),rgba(98,208,255,.3),transparent)}
+body[data-theme=rl][data-car="1"] header{border-bottom-color:rgba(255,190,225,.38)}
+body[data-theme=rl][data-car="2"] header{border-bottom-color:rgba(255,63,180,.4)}
+body[data-theme=rl][data-car="2"] .tbl th:first-child,body[data-theme=rl][data-car="2"] .tbl td:first-child{background:#0e0d12}
+/* fondu au changement de voiture : transitions ciblées (pas d'animation de variables sur toute la page) */
+body.carfx{transition:background-color .5s ease}
+@media(prefers-reduced-motion:no-preference){body.carfx header,body.carfx h2,body.carfx .glass,body.carfx .pill,body.carfx .btn,body.carfx nav.tabs a,body.carfx .garage .sw button,body.carfx .stat b{transition:color .5s ease,background-color .5s ease,border-color .5s ease,box-shadow .5s ease!important}}
+/* fond : composite des 2 voitures, très atténué, + lueurs propres à chaque voiture (fondu d'opacité) */
+#rlbg{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .6s ease;contain:strict}
+#rlbg i{position:absolute;inset:0;transition:opacity .6s ease}
+body[data-theme=rl] #rlbg{opacity:1}
+body[data-theme=rl] #rlbg .img{background:url('assets/rl-duo.webp') center top/100% auto no-repeat;opacity:.8;-webkit-mask-image:linear-gradient(#000 35%,transparent 92%);mask-image:linear-gradient(#000 35%,transparent 92%)}
+@media(max-width:700px){body[data-theme=rl] #rlbg .img{background-image:url('assets/rl-duo-m.webp')}}
+#rlbg .sh{background:linear-gradient(180deg,rgba(10,6,14,.6),rgba(10,6,14,.74) 35%,rgba(10,6,14,.88) 70%)}
+#rlbg .h,#rlbg .f{opacity:0}
+#rlbg .h{background:radial-gradient(60% 40% at 15% 0%,rgba(255,180,220,.2),transparent 70%),radial-gradient(50% 40% at 90% 30%,rgba(181,123,255,.16),transparent 70%),radial-gradient(40% 30% at 50% 100%,rgba(246,238,245,.06),transparent 70%)}
+#rlbg .f{background:radial-gradient(55% 40% at 85% 0%,rgba(255,40,170,.2),transparent 70%),radial-gradient(40% 35% at 8% 35%,rgba(98,208,255,.14),transparent 70%),repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0 3px,transparent 3px 6px),repeating-linear-gradient(-45deg,rgba(0,0,0,.25) 0 3px,transparent 3px 6px)}
+body[data-car="1"] #rlbg .h,body[data-car="2"] #rlbg .f{opacity:1}
+.rl-gcard{background-image:linear-gradient(180deg,rgba(10,9,32,.92) 22%,rgba(10,9,32,.45) 60%,rgba(10,9,32,.75)),url('assets/rl-duo-m.webp');background-size:cover;background-position:center 55%}
+@media(min-width:701px){.rl-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.93) 35%,rgba(10,9,32,.3)),url('assets/rl-duo-card.webp');background-position:right center}}
+body[data-theme=rl]{isolation:isolate}
