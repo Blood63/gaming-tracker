@@ -199,6 +199,12 @@ const syncURLs=()=>{const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)retur
   // trop long pour le titre : une demande par changement
   return [...u.adds.map(g=>ghNew('Objectifs – ajouter 1 objectif',{action:'sync',goals:[gClean(g)]},'objectif')),...(u.dels.length?[ghNew(`Objectifs – supprimer ${u.dels.length}`,{action:'delete',ids:u.dels},'objectif')]:[])]};
 const syncURL=()=>syncURLs()[0]||null;
+function addGoal(o){if(goals().some(x=>x.type==o.type&&x.target==o.target&&(x.playlist||'')==(o.playlist||'')&&(x.mode||'')==(o.mode||'')&&(x.appid||0)==(o.appid||0)&&(x.div||1)==(o.div||1)&&x.pending!=3)){toast('ℹ️ Cet objectif existe déjà');return false}const g=gClean({id:Date.now(),created:new Date().toISOString(),...o}),L=LS.get(GK,[]);L.push(g);
+  if(!LS.set(GK,L)){toast('⚠️ Impossible d\'enregistrer sur cet appareil (stockage bloqué / navigation privée ?)');return false}
+  toast('✅ Objectif ajouté sur cet appareil — touche « Synchroniser » pour l\'avoir partout');return true}
+function delGoal(id){const g=goals().find(x=>x.id==id);if(!g)return;
+  if(g.pending==2){LS.set(GK,LS.get(GK,[]).filter(x=>+x.id!=id));toast('Objectif supprimé');return}
+  const d=LS.get('gt-dels',[]);if(!d.includes(id))d.push(id);LS.set('gt-dels',d);toast('Objectif masqué ici — touche « Synchroniser » pour le supprimer partout')}
 function syncBox(){const u=unsynced(),n=u.adds.length+u.dels.length;if(!n)return '';
   const at=LS.get(SK,0),late=at&&Date.now()-at>6e5;
   return `<div class="glass pad" id="syncbox" style="border-color:var(--warn);margin:.6rem 0">
