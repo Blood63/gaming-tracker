@@ -981,11 +981,12 @@ function render(){
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }
+let ready=false; // pas de rendu avant la fin du chargement des données (sinon erreur si on change de page pendant le chargement)
 function route(){
-  navCount++;
+  navCount++;if(!ready)return;
   if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches){try{const t=document.startViewTransition(render);[t.ready,t.finished,t.updateCallbackDone].forEach(x=>x&&x.catch(()=>{}))}catch(e){render()}}
   else{app.classList.remove('view');void app.offsetWidth;app.classList.add('view');render()}
 }
 window.addEventListener('hashchange',route);
 app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';
-load().then(render).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});
+load().then(()=>{ready=true;render()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});
