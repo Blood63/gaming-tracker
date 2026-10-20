@@ -292,8 +292,9 @@ body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18
 .vhero .vcard{width:52px;height:52px;border-radius:12px;flex:none;box-shadow:0 0 0 2px rgba(var(--glow,255,255,255),.5)}
 /* ========== Steam : boutique « polaroïd » + boutons pixel (style inspiré d'une vitrine pixel-art, couleurs de l'appli) ========== */
 /* Bouton pixel : bord 4 px à coins en escalier, liseré clair en haut (relief), bande foncée en bas. Implémentation propre (dégradés). */
-.px{--p:4px;--o:8px;--pc:#0b0a1f;--fill:#9cc3e6;--top:#cfe3f4;--bot:#6f9fca;--fg:#0b1a2b;
- position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;min-height:44px;padding:calc(var(--p) + .35rem) calc(var(--p) + .8rem) calc(var(--p)*2 + .35rem);
+.px{display:inline-flex}
+.px,body[data-skin=px] .back{--p:4px;--o:8px;--pc:#0b0a1f;--fill:#9cc3e6;--top:#cfe3f4;--bot:#6f9fca;--fg:#0b1a2b;
+ position:relative;align-items:center;justify-content:center;gap:.35rem;min-height:44px;padding:calc(var(--p) + .35rem) calc(var(--p) + .8rem) calc(var(--p)*2 + .35rem);
  font:inherit;font-weight:700;font-size:.9rem;letter-spacing:.02em;color:var(--fg);border:0;border-radius:0;cursor:pointer;background-color:transparent;outline:none;-webkit-user-select:none;user-select:none;
  background-image:
   linear-gradient(90deg,transparent var(--o),var(--pc) var(--o) calc(100% - var(--o)),transparent calc(100% - var(--o))),
@@ -309,8 +310,8 @@ body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18
  background-size:100% var(--p),var(--p) 100%,100% var(--p),var(--p) 100%,100% var(--p),100% var(--p),100% var(--p),100% var(--p),100% calc(100% - var(--o));
  background-repeat:no-repeat;transition:none}
 /* effet identique à la référence : survol/focus = descend de 1 px ; appui = descend de 4 px (taille d'un pixel), instantané */
-.px:hover,.px:focus-visible{transform:translateY(1px);--top:var(--fill)}
-.px:active,.px.press{transform:translateY(var(--p))}
+.px:hover,.px:focus-visible,body[data-skin=px] .back:hover,body[data-skin=px] .back:focus-visible{transform:translateY(1px);--top:var(--fill)}
+.px:active,.px.press,body[data-skin=px] .back:active,body[data-skin=px] .back.press{transform:translateY(var(--p))}
 .px:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 3px var(--cy))}
 .px-bl{--fill:#9cc3e6;--top:#d3e6f6;--bot:#6c9cc8;--pc:#0d1b2e;--fg:#0b1a2b}
 .px-bl.on{--fill:#f6d860;--top:#fbeaa4;--bot:#d4b33a;--pc:#2b2205;--fg:#2b2205}
@@ -321,7 +322,7 @@ body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18
 .pxsel option{color:var(--txt);background:var(--bg2)}
 .pxsel+.x{display:none}
 .shopbar{display:grid;gap:.7rem;margin-bottom:.4rem}
-.pxrow{display:flex;flex-wrap:wrap;gap:.55rem .5rem;align-items:center}
+.pxrow{display:flex;overflow-y:hidden;flex-wrap:wrap;gap:.55rem .5rem;align-items:center}
 .pxrow.sort .mut{font-size:.8rem;margin-right:.1rem}
 /* grille « polaroïd » */
 .pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2.6rem 1rem;padding:.9rem .2rem 2.4rem}
@@ -347,3 +348,22 @@ body[data-theme=cod] .cod-hero{border-color:rgba(79,211,255,.35);box-shadow:0 18
 .pcard:nth-child(even) .tape{transform:translateX(-50%) rotate(4deg)}
 @media (prefers-reduced-motion:reduce){.pcard:hover,.pcard:active,.pcard:focus-visible{scale:none;rotate:none}}
 @media(max-width:699px){.pxrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin:0 -1rem;padding:2px 1rem 8px}.pxrow::-webkit-scrollbar{display:none}.pxrow>*{flex:none}.pxrow .pxsel{max-width:10rem}}
+
+/* ========== cartes image de l'accueil : fond calé sur la boîte de bordure (corrige la bande claire à gauche) ========== */
+.gcard{background-repeat:no-repeat;background-origin:border-box;background-clip:border-box}
+.steam-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.94) 45%,rgba(10,9,32,.42)),url('assets/home-steam.webp');background-size:cover;background-position:62% 50%}
+.val-gcard{background-image:linear-gradient(100deg,rgba(10,9,32,.94) 45%,rgba(10,9,32,.35)),url('assets/home-val.webp');background-size:cover;background-position:60% 30%}
+/* ========== onglet Jeux (Steam) : cadres pixel cohérents avec les cartes polaroïd ========== */
+body[data-skin=px] main .glass:not(.pcard){border-radius:0;border:4px solid #3a356f;background:#1a1740;box-shadow:4px 4px 0 0 rgba(0,0,0,.55);backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-skin=px] main .search{border-color:#4a4585}
+body[data-skin=px] main .search:focus-within{border-color:#9cc3e6}
+body[data-skin=px] main .chart-read{border-radius:0;border:4px solid #2b2760;background:#14123a;box-shadow:4px 4px 0 0 rgba(0,0,0,.45)}
+body[data-skin=px] main .tbl th:first-child,body[data-skin=px] main .tbl td:first-child{background:#1a1740}
+body[data-skin=px] main .pill{border-radius:0;border-width:2px}
+body[data-skin=px] main .bar,body[data-skin=px] main .bar>i{border-radius:0}
+body[data-skin=px] main .pnote{border-radius:0;border:4px solid #2b2760;border-left-color:#66c0f4;background:#14123a;padding:.55rem .75rem;margin:.3rem 0 1.2rem;font-size:.8rem;color:#b9b5e0;box-shadow:4px 4px 0 0 rgba(0,0,0,.45)}
+body[data-skin=px] main .cover{border-radius:0;border:4px solid #4a4585;box-shadow:4px 4px 0 0 rgba(0,0,0,.55);background:#0f0d29}
+body[data-skin=px] main .shots img{border-radius:0;border:4px solid #4a4585}
+body[data-skin=px] .back{width:44px;height:44px;padding:0 0 4px;font-size:1.3rem;--fill:#24214d;--top:#35316b;--bot:#17153a;--pc:#05040f;--fg:#e6e3ff;border-radius:0}
+body[data-skin=px] main .px.btnw{min-height:48px}
+.px:disabled{opacity:.6;cursor:default;transform:none!important}

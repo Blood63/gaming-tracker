@@ -13,7 +13,7 @@ const jl=async f=>((await get(f,false))||'').trim().split('\n').filter(Boolean).
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c',rlA:'#3b82f6',rlB:'#22c55e'};
 COL.val='#ff4655';
 document.addEventListener('touchstart',()=>{},{passive:true});
-{const up=()=>document.querySelectorAll('.px.press').forEach(e=>e.classList.remove('press'));document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.px');if(b&&e.pointerType!='mouse')b.classList.add('press')},{passive:true});['pointerup','pointercancel','scroll'].forEach(t=>document.addEventListener(t,up,{passive:true,capture:true}))}
+{const up=()=>document.querySelectorAll('.press').forEach(e=>e.classList.remove('press'));document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest(document.body.dataset.skin=='px'?'.px,.back':'.px');if(b&&e.pointerType!='mouse')b.classList.add('press')},{passive:true});['pointerup','pointercancel','scroll'].forEach(t=>document.addEventListener(t,up,{passive:true,capture:true}))}
 const COL0={...COL},THC={rl:{cy:'#ff5cbf',vi:'#b26bff',pk:'#ff8ad4',bl:'#4aa3ff',or:'#ff9a3c',rlA:'#ff5cbf',rlB:'#ffb347'},
  cod:{cy:'#4fd3ff',vi:'#ff8a3d',pk:'#9be7ff',bl:'#4fd3ff',or:'#ff8a3d'},
  omen:{cy:'#a594ff',vi:'#7c5cff',pk:'#c9a8ff',bl:'#6f8bff',val:'#a594ff'},
@@ -530,8 +530,8 @@ function compCards(){
   const v=D.vOk.at(-1),r=D.rOk.at(-1),ck=kdOf(D.cod);
   const vRank=v&&S(overview(v),'rank')?.metadata?.tierName;
   const rlBest=r&&segs(r).filter(s=>s.type=='playlist').map(s=>num(S(s,'rating')?.value)).filter(x=>x!=null).sort((a,b)=>b-a)[0];
-  return `<a class="glass gcard" style="--c:var(--steam)" href="#/steam"><div class="t"><i></i>Steam</div><div class="big">${fnum(D.totalH,0)} h</div><div class="s">${D.games.length} jeux · niv. ${D.steam?.level??'—'}</div></a>
-   <a class="glass gcard" style="--c:var(--val)" href="#/valorant"><div class="t"><i></i>Valorant</div><div class="big">${D.vh?vIcon(D.vh.mmr.tier_id,26)+' '+esc(vTier(D.vh.mmr.tier)):v?esc(vRank||'—'):'⏳'}</div><div class="s">${D.vh?fnum(D.vh.mmr.rr)+' RR · Blood#7629':v?'Blood#7629':trnStatus(D.val)}</div></a>
+  return `<a class="glass gcard steam-gcard" style="--c:var(--steam)" href="#/steam"><div class="t"><i></i>Steam</div><div class="big">${fnum(D.totalH,0)} h</div><div class="s">${D.games.length} jeux · niv. ${D.steam?.level??'—'}</div></a>
+   <a class="glass gcard val-gcard" style="--c:var(--val)" href="#/valorant"><div class="t"><i></i>Valorant</div><div class="big">${D.vh?vIcon(D.vh.mmr.tier_id,26)+' '+esc(vTier(D.vh.mmr.tier)):v?esc(vRank||'—'):'⏳'}</div><div class="s">${D.vh?fnum(D.vh.mmr.rr)+' RR · Blood#7629':v?'Blood#7629':trnStatus(D.val)}</div></a>
    <a class="glass gcard rl-gcard" style="--c:var(--rl)" href="#/rl"><div class="t"><i></i>Rocket League</div><div class="big">${r?fnum(rlBest)+' MMR':D.rlm?esc(D.rlm.playlists.find(p=>p.id=='3v3')?.tier_name||'—'):'⏳'}</div><div class="s">${r?'443Blood · Epic':D.rlm?'3v3 · '+fnum(D.rlm.playlists.find(p=>p.id=='3v3')?.mmr)+' MMR (manuel)':trnStatus(D.rl)}</div></a>
    <a class="glass gcard cod-gcard" style="--c:var(--cod)" href="#/cod"><div class="t"><i></i>COD Mobile</div><div class="big">${D.cod.length?'K/D '+fnum(ck,2):D.cp?'É/M '+fnum(D.cp.multiplayer?.kd,2):'📸'}</div><div class="s">${D.cod.length?D.cod.length+' parties suivies':D.cp?fnum((D.cp.multiplayer?.matches||0)+(D.cp.battle_royale?.matches||0))+' parties en carrière':'Envoie ta 1ʳᵉ capture'}</div></a>`;
 }
@@ -575,7 +575,7 @@ function library(){
   <div class="shopbar"><label class="glass search">🔎<input id="q" type="search" placeholder="Rechercher un jeu…" value="${esc(q)}" autocomplete="off"></label>
    <div class="pxrow" id="fl" role="group" aria-label="Filtre">${FL.map(([k,n])=>`<button type="button" class="px px-bl${k==f?' on':''}" data-f="${k}" aria-pressed="${k==f}">${n}</button>`).join('')}<select id="fg" class="px px-bl pxsel" aria-label="Genre"><option value="">Genre…</option>${genres.map(x=>`<option value="g:${esc(x)}"${f=='g:'+x?' selected':''}>${esc(x)}</option>`).join('')}</select></div>
    <div class="pxrow sort" role="group" aria-label="Tri"><span class="mut">Trier :</span>${SO.map(([k,n])=>`<button type="button" class="px px-gh${k==s?' on':''}" data-s="${k}" aria-pressed="${k==s}">${n}</button>`).join('')}</div></div>
-  <p class="mut" style="font-size:.8rem;margin:.2rem 0 1rem">Badge = temps total · 7 j / 30 j = temps joué sur la période (calculé à partir des relevés Steam${W&&!W.full?` ; historique encore court : depuis le ${fdate(W.from)}`:M&&!M.full?` ; « 30 j » depuis le premier relevé du ${fdate(M.from)}`:''}).</p>
+  <p class="pnote">Badge = temps total · 7 j / 30 j = temps joué sur la période (calculé à partir des relevés Steam${W&&!W.full?` ; historique encore court : depuis le ${fdate(W.from)}`:M&&!M.full?` ; « 30 j » depuis le premier relevé du ${fdate(M.from)}`:''}).</p>
   <div id="res" class="pgrid"></div>
   <h2>Complétion des succès</h2><div class="glass chart" style="height:${Math.max(220,D.games.filter(g=>g.ach_total).length*26)}px"><canvas id="c2"></canvas></div>
   <h2>Temps de jeu</h2><div class="glass chart"><canvas id="c1"></canvas></div>${steamPlaytimeHTML()}`;
@@ -600,7 +600,7 @@ function library(){
 }
 function steamGame(id){
   const g=D.games.find(x=>x.appid==id);
-  if(!g){app.innerHTML=`<div class="glass wait"><div class="ico">❓</div><h3>Jeu introuvable</h3><a class="btn" href="#/steam">Retour à la bibliothèque</a></div>`;return}
+  if(!g){app.innerHTML=`<div class="glass wait"><div class="ico">❓</div><h3>Jeu introuvable</h3><a class="px px-bl" href="#/steam">Retour à la bibliothèque</a></div>`;return}
   const s=g.st,mc=s.metacritic,price=s.price?(s.price.discount?`<s style="color:var(--mut);font-size:.9rem">${esc(s.price.initial)}</s> `:'')+esc(s.price.text):'—';
   const hist=D.steamH.map(x=>({t:x.fetched_at,g:x.games.find(y=>y.appid==id)})).filter(x=>x.g).filter((x,i,a)=>!i||x.t.slice(0,10)!=a[i-1].t.slice(0,10));
   const hasGoal=goals().some(x=>x.appid==id);
@@ -609,8 +609,8 @@ function steamGame(id){
   ${stat('Succès',g.ach_total?`${g.ach_unlocked||0}/${g.ach_total}`:'—',g.pct!=null?g.pct+' % '+bar(g.pct):'Pas de succès')}
   ${stat('Metacritic',mc?`<span style="color:${mc.score>=75?'var(--gr)':mc.score>=50?'var(--warn)':'var(--bad)'}">${mc.score}</span>`:'—',mc?.url?`<a href="${esc(mc.url)}" target="_blank" rel="noopener">voir la critique ›</a>`:'Pas de note')}
   ${stat('Prix actuel',price,s.price?.discount?`<span class="up">-${s.price.discount} % en promo</span>`:'Boutique Steam FR')}</div>
-  <div class="tool" style="margin-top:.8rem"><a class="btn alt" href="${esc(s.url||`https://store.steampowered.com/app/${id}/`)}" target="_blank" rel="noopener">🛒 Page Steam</a>
-  ${g.ach_total&&g.pct<100?`<button class="btn ghost" id="gA" ${hasGoal?'disabled':''}>🎯 ${hasGoal?'Objectif en cours':'Objectif 100 % succès'}</button>`:''}</div>
+  <div class="tool" style="margin-top:.8rem"><a class="px px-bl btnw" href="${esc(s.url||`https://store.steampowered.com/app/${id}/`)}" target="_blank" rel="noopener">🛒 Page Steam</a>
+  ${g.ach_total&&g.pct<100?`<button class="px px-vi btnw" id="gA" ${hasGoal?'disabled':''}>🎯 ${hasGoal?'Objectif en cours':'Objectif 100 % succès'}</button>`:''}</div>
   ${s.short_description?`<h2>Description</h2><div class="glass desc">${esc(s.short_description)}</div>`:''}
   <h2>Infos</h2><div class="glass kv"><span>Développeur</span><span>${esc((s.developers||[]).join(', ')||'—')}</span><span>Éditeur</span><span>${esc((s.publishers||[]).join(', ')||'—')}</span><span>Sortie</span><span>${esc(s.release_date||'—')}</span><span>Catégories</span><span>${(s.categories||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')||'—'}</span></div>
   ${(s.screenshots||[]).length?`<h2>Captures</h2><div class="shots">${s.screenshots.map((u,i)=>`<img loading="lazy" src="${esc(u)}" data-full="${esc((s.screenshots_full||[])[i]||u)}" alt="">`).join('')}</div>`:''}
@@ -961,7 +961,7 @@ function render(){
   charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
   const p=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean),r=p[0]||'';
   const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
-  document.body.classList.toggle('sub',!top);document.body.classList.toggle('cod-amb',r=='cod');setTheme(r=='rl'?'rl':r=='cod'?'cod':r=='valorant'?valAgent():'');
+  document.body.classList.toggle('sub',!top);document.body.classList.toggle('cod-amb',r=='cod');setTheme(r=='rl'?'rl':r=='cod'?'cod':r=='valorant'?valAgent():'');document.body.dataset.skin=r=='steam'?'px':'';
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
   $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]=='profil'?'Carte de joueur':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
   try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(+p[1]):cod(),profil,objectifs,activite}[r]||home)()}
