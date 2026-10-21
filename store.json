@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-10-17T23:39:16.981411+00:00",
+ "fetched_at": "2026-10-21T00:16:56.905021+00:00",
  "apps": {
   "3159330": {
    "name": "Assassin’s Creed Shadows",
@@ -211,9 +211,9 @@
      "appid": 895490,
      "name": "Life is Strange 2 - Episode 2",
      "price": {
-      "text": "2,39€",
-      "initial": "7,99€",
-      "discount": 70
+      "text": "7,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895490/header.jpg?t=1728485584",
      "release": "24 janv. 2019",
@@ -223,9 +223,9 @@
      "appid": 895491,
      "name": "Life is Strange 2 - Episode 3",
      "price": {
-      "text": "2,39€",
-      "initial": "7,99€",
-      "discount": 70
+      "text": "7,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895491/header.jpg?t=1585231190",
      "release": "9 mai 2019",
@@ -235,9 +235,9 @@
      "appid": 895492,
      "name": "Life is Strange 2 - Episode 4",
      "price": {
-      "text": "2,39€",
-      "initial": "7,99€",
-      "discount": 70
+      "text": "7,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895492/header.jpg?t=1585231241",
      "release": "22 aout 2019",
@@ -247,9 +247,9 @@
      "appid": 895493,
      "name": "Life is Strange 2 - Episode 5",
      "price": {
-      "text": "2,39€",
-      "initial": "7,99€",
-      "discount": 70
+      "text": "7,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895493/header.jpg?t=1585231285",
      "release": "3 déc. 2019",
@@ -1093,9 +1093,9 @@
    "release_date": "9 sept. 2021",
    "metacritic": null,
    "price": {
-    "text": "17,99€",
-    "initial": "59,99€",
-    "discount": 70
+    "text": "59,99€",
+    "initial": null,
+    "discount": 0
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_93afc98cccbc51c1364fedb56548896c69ef3704.600x338.jpg?t=1771867255",
@@ -1354,9 +1354,9 @@
    "name": "Call of Duty®",
    "type": "game",
    "short_description": "L'expérience Call of Duty® prend en charge Modern Warfare® 4, Black Ops 7 et Call of Duty®: Warzone™.",
-   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1792179713",
-   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/0ac3cc02398b9db61c8db4fef2e3e1b4b8b66e4b/capsule_231x87.jpg?t=1792179713",
-   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/daf5d7dee8c89ae737aaac6b712288b934ee84dc/page_bg_raw.jpg?t=1792179713",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1792523940",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/0ac3cc02398b9db61c8db4fef2e3e1b4b8b66e4b/capsule_231x87.jpg?t=1792523940",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/daf5d7dee8c89ae737aaac6b712288b934ee84dc/page_bg_raw.jpg?t=1792523940",
    "developers": [
     "Treyarch",
     "Raven Software",
@@ -1387,24 +1387,24 @@
    "metacritic": null,
    "price": null,
    "screenshots": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.600x338.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.600x338.jpg?t=1792179713"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.600x338.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.600x338.jpg?t=1792523940"
    ],
    "screenshots_full": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.1920x1080.jpg?t=1792179713",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.1920x1080.jpg?t=1792179713"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.1920x1080.jpg?t=1792523940",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.1920x1080.jpg?t=1792523940"
    ],
    "achievements_total": 157,
    "dlc_count": 46,
