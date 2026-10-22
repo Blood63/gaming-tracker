@@ -2,10 +2,10 @@
 """Succès Steam détaillés -> steam_achievements.json (fichier unique, réécrit à chaque passage ; l'historique n'est pas touché).
 Sources : ISteamUserStats/GetPlayerAchievements (l=french), GetSchemaForGame (l=french : nom, description, icônes, caché),
 GetGlobalAchievementPercentagesForApp (rareté). Icônes = URL du CDN Steam (non téléchargées). Clé : STEAM_API_KEY (jamais affichée)."""
-import json, os, time, urllib.request, urllib.error, datetime
+import json, os, re, time, urllib.request, urllib.error, datetime
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SID="76561198754159593"; SK=os.environ.get("STEAM_API_KEY"); A="https://api.steampowered.com"
-CDN="https://cdn.akamai.steamstatic.com/steamcommunity/public/images/apps/"
+CDN="https://cdn.akamai.steamstatic.com/steamcommunity/public/images/apps/"  # vérifié : sert les mêmes fichiers que steamcdn-a / shared.*.steamstatic
 def api(path,**q):
     qs="&".join(f"{k}={v}" for k,v in q.items())
     try:
@@ -16,8 +16,23 @@ def api(path,**q):
         return {"error_http":e.code,"body":body}
     except Exception as e: return {"error":type(e).__name__}
 def ico(u,appid):
+    # on ne garde que le nom de fichier ; l'app reconstruit l'URL du CDN Steam (cdn + appid + "/" + fichier)
     if not u: return ""
-    p=f"{CDN}{appid}/"; return u[len(p):] if u.startswith(p) else u
+    m=re.search(rf"/apps/{appid}/([^/?#]+)$",u); return m.group(1) if m else u
+PAT=re.compile(r'api_name\\+":\\+"([A-Za-z0-9_.\-]+)\\+",\\+"name\\+":\\+"(?:.*?)\\+",\\+"description\\+":\\+"(.*?)\\+",\\+"hidden')
+def dec(v):
+    for _ in range(4):
+        try: n=json.loads('"'+v+'"')
+        except Exception: break
+        if n==v: break
+        v=n
+    return v
+def community_desc(appid):
+    """Descriptions officielles (fr) de la page publique des statistiques du jeu : sert uniquement à combler les descriptions absentes de l'API (succès cachés). Jamais de texte inventé."""
+    try:
+        with urllib.request.urlopen(urllib.request.Request(f"https://steamcommunity.com/stats/{appid}/achievements/?l=french",headers={"User-Agent":"Mozilla/5.0","Accept-Language":"fr"}),timeout=25) as f: s=f.read().decode("utf-8","replace")
+    except Exception: return {}
+    return {m.group(1):dec(m.group(2)).strip() for m in PAT.finditer(s) if dec(m.group(2)).strip()}
 if not SK: raise SystemExit("STEAM_API_KEY manquante")
 games=json.load(open(f"{D}/steam_latest.json")).get("games",[])
 out={"fetched_at":datetime.datetime.now().astimezone().isoformat(),"cdn":CDN,"games":{}}
@@ -38,6 +53,10 @@ for g in games:
         L.append({"k":k,"n":(s.get("displayName") or m.get("name") or k).strip(),"d":d,"i":ico(s.get("icon"),ap),"g":ico(s.get("icongray"),ap),
                   **({"h":1} if s.get("hidden") else {}),**({"t":m["unlocktime"]} if m.get("achieved") and m.get("unlocktime") else {}),
                   **({"u":1} if m.get("achieved") else {}),**({"p":pct[k]} if k in pct else {})})
+    if any(not x["d"] for x in L):
+        time.sleep(0.5); cd=community_desc(ap)
+        for x in L:
+            if not x["d"] and cd.get(x["k"]): x["d"]=cd[x["k"]]; x["ds"]=1   # ds = description issue de la page publique Steam
     e={"name":g.get("name"),"total":len(L),"unlocked":sum(1 for x in L if x.get("u")),"list":L}
     if not ps.get("success"): e["note"]=ps.get("error") or f"HTTP {pa.get('error_http')}" or "erreur"
     out["games"][str(ap)]=e
