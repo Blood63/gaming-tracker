@@ -6,6 +6,11 @@ on:
     - cron: "0 23 * * 2"   # mercredi 00:00 Paris en hiver (CET)
     - cron: "0 23 * * 6"   # dimanche 00:00 Paris en hiver
   workflow_dispatch:
+    inputs:
+      only:
+        description: "'achievements' = seulement les succès Steam détaillés (aucun relevé d'historique)"
+        required: false
+        default: ""
 permissions:
   contents: write
 concurrency: { group: data-commit, cancel-in-progress: false }
@@ -19,24 +24,28 @@ jobs:
           if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "0 22 * * 2" ] || [ "$s" = "0 22 * * 6" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "0 23 * * 2" ] || [ "$s" = "0 23 * * 6" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@v4
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
         run: python3 fetch_stats.py
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
           TRN_API_KEY: ${{ secrets.TRN_API_KEY }}
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
         run: python3 tools/fetch_store.py || echo "store fetch failed"
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
         run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed"
         env:
           BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
           TZ: Europe/Paris
       - if: steps.gate.outputs.run == 'true'
+        run: python3 tools/fetch_steam_ach.py || echo "steam achievements failed"
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+      - if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json
+          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json steam_achievements.json
           git diff --cached --quiet || git commit -m "Snapshot $(date -I)"
           git pull --rebase -q && git push
