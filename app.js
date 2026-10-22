@@ -657,8 +657,8 @@ function achBlock(id){
   const seg=(k,l,n)=>`<button class="px px-gh${f==k?' on':''}" data-af="${k}" aria-pressed="${f==k}">${l} <small>${n}</small></button>`;
   const so=(k,l)=>`<button class="px px-gh${s==k?' on':''}" data-as="${k}" aria-pressed="${s==k}">${l}</button>`;
   return`<h2>Succès</h2><div class="glass achp"><div class="ah"><b>${ok} / ${t}</b><span>${pc} % obtenus</span></div><div class="pxbar" role="progressbar" aria-valuemin="0" aria-valuemax="${t}" aria-valuenow="${ok}" aria-label="Succès obtenus"><i style="width:${pc}%"></i></div></div>
-  <div class="achtool"><div class="seg" id="achF">${seg('ok','Obtenus',ok)}${seg('todo','À obtenir',t-ok)}${seg('all','Tous',t)}</div>
-  <div class="seg" id="achS"><span class="mut">Trier :</span>${so('rar','Rareté')}${so('date','Date')}${so('nom','Nom')}</div></div>
+  <div class="achtool"><div class="achseg" id="achF">${seg('ok','Obtenus',ok)}${seg('todo','À obtenir',t-ok)}${seg('all','Tous',t)}</div>
+  <div class="achseg" id="achS"><span class="mut">Trier :</span>${so('rar','Rareté')}${so('date','Date')}${so('nom','Nom')}</div></div>
   <div class="achl" id="achL">${achRows(id)}</div>${G.list.some(a=>a.ds)?'<p class="mut achsrc">Descriptions des succès cachés : page publique des statistiques Steam.</p>':''}`;
 }
 function achBind(id){
