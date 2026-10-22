@@ -87,14 +87,14 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter 
 /* ========== données ========== */
 const D={};
 async function load(){
-  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm,bc]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json'),get('ballchasing_latest.json')]);
+  const [steamH,store,val,rl,cod,codp,codr,setup,vh,gj,rlm,bc,sach]=await Promise.all([jl('history/steam.jsonl'),get('store.json'),jl('history/valorant.jsonl'),jl('history/rocket_league.jsonl'),get('cod_mobile.json'),get('cod_profile.json'),get('cod_ranks.json'),get('setup.json'),get('valorant.json'),get('goals.json'),get('rocket_league.json'),get('ballchasing_latest.json'),get('steam_achievements.json')]);
   D.steamH=steamH.filter(x=>x.games&&x.games.length);D.steam=D.steamH.at(-1)||null;D.store=(store&&store.apps)||{};D.storeAt=store&&store.fetched_at;
   D.val=val;D.rl=rl;D.codRepo=((cod&&cod.matches)||[]);D.cod=[];
   D.games=(D.steam?.games||[]).map(g=>{const s=D.store[g.appid]||{};return{...g,st:s,pct:g.ach_total?Math.round(100*(g.ach_unlocked||0)/g.ach_total):null,
     img:s.header_image||`https://cdn.cloudflare.steamstatic.com/steam/apps/${g.appid}/header.jpg`,genres:s.genres||[],last:g.rtime_last_played?g.rtime_last_played*1000:null}});
   D.codCard=(codp&&codp.player_card)||null;{const p=LS.get('gt-cod-card',null);if(p&&D.codCard&&p.level==D.codCard.level&&p.clan==D.codCard.clan&&p.likes==D.codCard.likes)localStorage.removeItem('gt-cod-card')}D.codP=((codp&&codp.history)||[]).sort((a,b)=>a.date<b.date?-1:1);D.cp=D.codP.at(-1)||null;
   D.ranksRepo={MP:(codr?.MP||[]).slice().sort((a,b)=>a.date<b.date?-1:1),BR:(codr?.BR||[]).slice().sort((a,b)=>a.date<b.date?-1:1)};D.ranks={MP:[],BR:[]};for(const m of['MP','BR'])D.ranksRepo[m]=D.ranksRepo[m].map(codRankNorm);codRankRefresh();
-  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;
+  D.setup=setup;D.vh=vh&&vh.mmr?vh:null;D.goals=(gj&&gj.goals)||[];codRefresh();D.rlm=rlm&&rlm.playlists?rlm:null;D.bc=bc||null;D.sach=sach&&sach.games?sach:null;
   D.totalH=D.games.reduce((a,x)=>a+(x.hours||0),0);
   D.ach=D.games.reduce((a,x)=>a+(x.ach_unlocked||0),0);D.achT=D.games.reduce((a,x)=>a+(x.ach_total||0),0);
   D.vOk=trnOk(D.val);D.rOk=trnOk(D.rl);
@@ -624,15 +624,49 @@ function steamGame(id){
   ${stat('Prix actuel',price,s.price?.discount?`<span class="up">-${s.price.discount} % en promo</span>`:'Boutique Steam FR')}</div>
   <div class="tool" style="margin-top:.8rem"><a class="px px-bl btnw" href="${esc(s.url||`https://store.steampowered.com/app/${id}/`)}" target="_blank" rel="noopener">🛒 Page Steam</a>
   ${g.ach_total&&g.pct<100?`<button class="px px-vi btnw" id="gA" ${hasGoal?'disabled':''}>🎯 ${hasGoal?'Objectif en cours':'Objectif 100 % succès'}</button>`:''}</div>
+  ${achBlock(id)}
   ${s.short_description?`<h2>Description</h2><div class="glass desc">${esc(s.short_description)}</div>`:''}
   <h2>Infos</h2><div class="glass kv"><span>Développeur</span><span>${esc((s.developers||[]).join(', ')||'—')}</span><span>Éditeur</span><span>${esc((s.publishers||[]).join(', ')||'—')}</span><span>Sortie</span><span>${esc(s.release_date||'—')}</span><span>Catégories</span><span>${(s.categories||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')||'—'}</span></div>
   ${(s.screenshots||[]).length?`<h2>Captures</h2><div class="shots">${s.screenshots.map((u,i)=>`<img loading="lazy" src="${esc(u)}" data-full="${esc((s.screenshots_full||[])[i]||u)}" alt="">`).join('')}</div>`:''}
   <h2>Progression</h2>${hist.length>1?`<div class="glass chart"><canvas id="c1"></canvas></div>`:`<div class="glass empty">📈 La courbe de progression apparaîtra après le prochain relevé (chaque dimanche 20 h).</div>`}
   <h2>DLC (${s.dlc_count??0})</h2>${(s.dlc||[]).length?`<div class="list">${s.dlc.map(d=>`<a class="glass row" href="${esc(d.url)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(d.image||g.img)}" alt=""><span class="n">${esc(d.name||'DLC '+d.appid)}${d.release?`<br><small>${esc(d.release)}</small>`:''}</span><span class="p">${d.price?(d.price.discount?`<s>${esc(d.price.initial)}</s>`:'')+esc(d.price.text):'<small class="mut">—</small>'}</span></a>`).join('')}</div>${s.dlc_count>s.dlc.length?`<p class="pill">+${s.dlc_count-s.dlc.length} autres sur la boutique</p>`:''}`:`<div class="glass empty">${s.name?'Aucun DLC pour ce jeu.':'Données boutique indisponibles.'}</div>`}`;
   $$('.shots img').forEach(i=>i.onclick=()=>lb(i.dataset.full));
+  achBind(id);
   const b=$('#gA');if(b)b.onclick=()=>{addGoal({type:'game_ach',appid:id,target:100});b.disabled=true;b.textContent='🎯 Objectif en cours'};
   if(hist.length>1)chart($('#c1'),{data:{labels:hist.map(x=>fshort(x.t)),datasets:[{type:'line',...lineDS('Heures',hist.map(x=>x.g.hours),COL.cy)},{type:'line',...lineDS('Succès',hist.map(x=>x.g.ach_unlocked??null),COL.vi,{fill:false,yAxisID:'y2'})}]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
   animBars();
+}
+/* ---- Succès Steam détaillés ---- */
+const ACH_CDN='https://cdn.akamai.steamstatic.com/steamcommunity/public/images/apps/';
+function achIco(f,ap){return !f?'':/^https?:/.test(f)?f:ACH_CDN+ap+'/'+f}
+function achRar(p){if(p==null)return null;return p<5?['Très rare','r1']:p<10?['Rare','r2']:p<30?['Peu commun','r3']:['Commun','r4']}
+function achState(){return{f:sessionStorage.getItem('achF')||'all',s:sessionStorage.getItem('achS')||'rar'}}
+function achRows(id){
+  const G=D.sach?.games?.[id];if(!G)return'';const {f,s}=achState();
+  let L=G.list.filter(a=>f=='all'||(f=='ok'?a.u:!a.u));
+  const cmp={rar:(a,b)=>(a.p??101)-(b.p??101),date:(a,b)=>(b.t||0)-(a.t||0)||(b.p??0)-(a.p??0),nom:(a,b)=>a.n.localeCompare(b.n,'fr')}[s];
+  L=L.slice().sort(cmp);
+  if(!L.length)return`<div class="glass empty">${f=='ok'?'Aucun succès obtenu pour l’instant.':'Tous les succès sont obtenus 🎉'}</div>`;
+  return L.map(a=>{const r=achRar(a.p),hid=a.h&&!a.u,desc=a.d?esc(a.d):'<i>Description masquée par Steam</i>';
+    return`<div class="ach${a.u?' ok':''}"><img loading="lazy" decoding="async" width="48" height="48" src="${esc(achIco(a.u?a.i:(a.g||a.i),id))}" alt=""><div class="at">
+    <b>${esc(a.n)}</b>${hid?`<span class="ad hid"><span class="hm">🔒 Succès caché</span> <button class="px px-gh arv" type="button" aria-expanded="false">Révéler</button><span class="rv" hidden>${desc}</span></span>`:`<span class="ad">${desc}</span>`}
+    <span class="am">${a.u&&a.t?`<span class="ok">✔ Obtenu le ${fdate(a.t*1000)}</span>`:a.u?'<span class="ok">✔ Obtenu</span>':'<span>À obtenir</span>'}${a.p!=null?`<span>${fnum(a.p,1)} % des joueurs</span>`:''}${r?`<span class="rb ${r[1]}">${r[0]}</span>`:''}</span></div></div>`}).join('');
+}
+function achBlock(id){
+  const G=D.sach?.games?.[id];if(!G||!G.total)return'';const {f,s}=achState(),ok=G.unlocked,t=G.total,pc=Math.round(100*ok/t);
+  const seg=(k,l,n)=>`<button class="px px-gh${f==k?' on':''}" data-af="${k}" aria-pressed="${f==k}">${l} <small>${n}</small></button>`;
+  const so=(k,l)=>`<button class="px px-gh${s==k?' on':''}" data-as="${k}" aria-pressed="${s==k}">${l}</button>`;
+  return`<h2>Succès</h2><div class="glass achp"><div class="ah"><b>${ok} / ${t}</b><span>${pc} % obtenus</span></div><div class="pxbar" role="progressbar" aria-valuemin="0" aria-valuemax="${t}" aria-valuenow="${ok}" aria-label="Succès obtenus"><i style="width:${pc}%"></i></div></div>
+  <div class="achtool"><div class="seg" id="achF">${seg('ok','Obtenus',ok)}${seg('todo','À obtenir',t-ok)}${seg('all','Tous',t)}</div>
+  <div class="seg" id="achS"><span class="mut">Trier :</span>${so('rar','Rareté')}${so('date','Date')}${so('nom','Nom')}</div></div>
+  <div class="achl" id="achL">${achRows(id)}</div>${G.list.some(a=>a.ds)?'<p class="mut achsrc">Descriptions des succès cachés : page publique des statistiques Steam.</p>':''}`;
+}
+function achBind(id){
+  const L=$('#achL');if(!L)return;
+  const redraw=()=>{const {f,s}=achState();$$('#achF button').forEach(b=>{b.classList.toggle('on',b.dataset.af==f);b.setAttribute('aria-pressed',b.dataset.af==f)});$$('#achS button').forEach(b=>{b.classList.toggle('on',b.dataset.as==s);b.setAttribute('aria-pressed',b.dataset.as==s)});L.innerHTML=achRows(id)};
+  $$('#achF button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('achF',b.dataset.af);redraw()});
+  $$('#achS button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('achS',b.dataset.as);redraw()});
+  L.onclick=e=>{const b=e.target.closest('.arv');if(!b)return;const r=b.parentNode.querySelector('.rv'),o=r.hidden;r.hidden=!o;b.setAttribute('aria-expanded',o);b.textContent=o?'Masquer':'Révéler'};
 }
 function compet(){
   app.innerHTML=`<h2>Jeux compétitifs</h2><div class="list">
