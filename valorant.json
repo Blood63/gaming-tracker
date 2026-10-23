@@ -1,19 +1,19 @@
 {
  "source": "HenrikDev API (non officielle)",
- "fetched_at": "2026-10-22T21:36:34+02:00",
+ "fetched_at": "2026-10-23T03:06:50+02:00",
  "account": {
   "name": "Blood",
   "tag": "7629",
   "region": "eu",
-  "level": 107,
+  "level": 108,
   "card": "https://media.valorant-api.com/playercards/3d582a4f-498e-2104-5c7f-6dab3f8a85eb/smallart.png"
  },
  "mmr": {
   "tier": "Silver 1",
   "tier_id": 9,
-  "rr": 79,
-  "last_change": 10,
-  "elo": 679,
+  "rr": 58,
+  "last_change": -21,
+  "elo": 658,
   "peak": "Silver 3",
   "peak_id": 11,
   "peak_season": "e11a5",
@@ -61,10 +61,10 @@
    {
     "season": "e11a6",
     "wins": 13,
-    "games": 24,
+    "games": 25,
     "end_tier": "Silver 1",
     "end_tier_id": 9,
-    "end_rr": 79
+    "end_rr": 58
    }
   ]
  },
@@ -551,6 +551,17 @@
    "change": 10,
    "elo": 679,
    "map": "Summit",
+   "season": "e11a6"
+  },
+  {
+   "match_id": "54a32e0f-b7ce-42af-b049-1d4a6b6bfa38",
+   "date": "2026-10-22T19:15:12.862Z",
+   "tier": "Silver 1",
+   "tier_id": 9,
+   "rr": 58,
+   "change": -21,
+   "elo": 658,
+   "map": "Sunset",
    "season": "e11a6"
   }
  ],
@@ -8533,6 +8544,196 @@
    ],
    "rr_change": 10,
    "tier_after": "Silver 1"
+  },
+  {
+   "id": "54a32e0f-b7ce-42af-b049-1d4a6b6bfa38",
+   "date": "2026-10-22T19:15:12.862Z",
+   "mode": "Competitive",
+   "map": "Sunset",
+   "season": "e11a6",
+   "agent": "Omen",
+   "team": "Blue",
+   "rounds_won": 10,
+   "rounds_lost": 13,
+   "result": "loss",
+   "kills": 11,
+   "deaths": 19,
+   "assists": 11,
+   "score": 3493,
+   "head": 4,
+   "body": 44,
+   "leg": 14,
+   "dmg": 2277,
+   "dmg_recv": 3581,
+   "tier_id": 9,
+   "length_s": 2342,
+   "rounds": 23,
+   "first_kills": 0,
+   "mvp": false,
+   "scoreboard": [
+    {
+     "name": "FL Cobra10TV",
+     "tag": "T24",
+     "me": false,
+     "team": "Blue",
+     "agent": "Reyna",
+     "tier": "Gold 1",
+     "k": 31,
+     "d": 16,
+     "a": 1,
+     "score": 9626,
+     "hs": 28,
+     "bs": 55,
+     "ls": 4,
+     "dmg": 6257
+    },
+    {
+     "name": "LeBronze James",
+     "tag": "SENK",
+     "me": false,
+     "team": "Red",
+     "agent": "Jett",
+     "tier": "Silver 2",
+     "k": 27,
+     "d": 16,
+     "a": 9,
+     "score": 7992,
+     "hs": 17,
+     "bs": 69,
+     "ls": 2,
+     "dmg": 5285
+    },
+    {
+     "name": "SamPlee",
+     "tag": "2864",
+     "me": false,
+     "team": "Red",
+     "agent": "Phoenix",
+     "tier": "Gold 1",
+     "k": 28,
+     "d": 13,
+     "a": 3,
+     "score": 7160,
+     "hs": 15,
+     "bs": 66,
+     "ls": 4,
+     "dmg": 4393
+    },
+    {
+     "name": "xena夜風",
+     "tag": "00112",
+     "me": false,
+     "team": "Red",
+     "agent": "Brimstone",
+     "tier": "Silver 1",
+     "k": 20,
+     "d": 18,
+     "a": 2,
+     "score": 5352,
+     "hs": 16,
+     "bs": 23,
+     "ls": 4,
+     "dmg": 3484
+    },
+    {
+     "name": "WoutWoutor",
+     "tag": "3910",
+     "me": false,
+     "team": "Red",
+     "agent": "Killjoy",
+     "tier": "Silver 1",
+     "k": 11,
+     "d": 15,
+     "a": 14,
+     "score": 3861,
+     "hs": 2,
+     "bs": 62,
+     "ls": 16,
+     "dmg": 2818
+    },
+    {
+     "name": "Kλiru",
+     "tag": "0000",
+     "me": false,
+     "team": "Blue",
+     "agent": "Phoenix",
+     "tier": "Silver 1",
+     "k": 14,
+     "d": 21,
+     "a": 4,
+     "score": 3776,
+     "hs": 7,
+     "bs": 36,
+     "ls": 0,
+     "dmg": 2717
+    },
+    {
+     "name": "Djorie",
+     "tag": "EUW",
+     "me": false,
+     "team": "Blue",
+     "agent": "Sova",
+     "tier": "Silver 2",
+     "k": 12,
+     "d": 20,
+     "a": 4,
+     "score": 3697,
+     "hs": 3,
+     "bs": 36,
+     "ls": 6,
+     "dmg": 2319
+    },
+    {
+     "name": "Blood",
+     "tag": "7629",
+     "me": true,
+     "team": "Blue",
+     "agent": "Omen",
+     "tier": "Silver 1",
+     "k": 11,
+     "d": 19,
+     "a": 11,
+     "score": 3493,
+     "hs": 4,
+     "bs": 44,
+     "ls": 14,
+     "dmg": 2277
+    },
+    {
+     "name": "neiwex",
+     "tag": "3673",
+     "me": false,
+     "team": "Red",
+     "agent": "Vyse",
+     "tier": "Silver 1",
+     "k": 11,
+     "d": 11,
+     "a": 3,
+     "score": 2886,
+     "hs": 2,
+     "bs": 48,
+     "ls": 6,
+     "dmg": 1895
+    },
+    {
+     "name": "Cobragirl",
+     "tag": "N24",
+     "me": false,
+     "team": "Blue",
+     "agent": "Sage",
+     "tier": "Silver 1",
+     "k": 5,
+     "d": 21,
+     "a": 7,
+     "score": 1726,
+     "hs": 4,
+     "bs": 22,
+     "ls": 0,
+     "dmg": 1246
+    }
+   ],
+   "rr_change": -21,
+   "tier_after": "Silver 1"
   }
  ],
  "level_history": [
@@ -8547,6 +8748,10 @@
   {
    "date": "2026-10-18T20:21:01+02:00",
    "level": 107
+  },
+  {
+   "date": "2026-10-23T03:06:50+02:00",
+   "level": 108
   }
  ]
 }
