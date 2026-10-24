@@ -36,7 +36,8 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             res=$(python3 tools/goal_intake.py)
-            git add goals.json
+            python3 tools/build_home.py >/dev/null
+            git add goals.json home.json build.json
             if git diff --cached --quiet; then break; fi
             git commit -qm "Objectifs : issue #$N" && git push -q origin HEAD:main && break
             sleep $((RANDOM % 8 + 3))

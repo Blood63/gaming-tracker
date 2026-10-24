@@ -417,3 +417,8 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 .ach .am{display:flex;flex-wrap:wrap;gap:.3rem .7rem;font-size:.76rem;color:#bdb8e6;align-items:center}.ach .am .ok{color:#8fe3a8}
 .rb{padding:.05rem .4rem;border:2px solid;font-weight:700;font-size:.7rem}.rb.r1{color:#ffd76a;border-color:#ffd76a}.rb.r2{color:#d7b8ff;border-color:#b98cff}.rb.r3{color:#9fd4ff;border-color:#66c0f4}.rb.r4{color:#c9c5ee;border-color:#6d68a8}
 .achsrc{font-size:.75rem;margin-top:.5rem}
+/* t89 : âge des données (accueil), jours de l'activité */
+.ages{font-size:.78rem;line-height:1.6;margin:.55rem 0 0}.ages span{white-space:nowrap;margin-right:.85rem}.ages span:last-child{margin-right:0}
+.tlday{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:1.1rem 0 .5rem;font-weight:700}
+.tlday:first-child{margin-top:.2rem}
+#lb:focus{outline:none}

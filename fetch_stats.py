@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Fetch public gaming stats and append dated snapshots to history/<game>.jsonl.
-Valorant: HenrikDev API (tools/fetch_valorant.py, HENRIK_API_KEY), tracker.gg fallback.
-RL: needs official TRN API key (https://tracker.gg/developers) in env TRN_API_KEY;
-scraping tracker.gg is blocked by them, so do not scrape. Steam: public profile XML (+ STEAM_API_KEY optional for games/playtime)."""
+"""Relevé Steam (mercredi et dimanche 00:00, heure de Paris) -> history/steam.jsonl + steam_latest.json.
+Valorant : HenrikDev (tools/fetch_valorant.py, HENRIK_API_KEY) ; Rocket League : ballchasing (tools/fetch_ballchasing.py).
+tracker.gg n'est plus interrogé (clé refusée, 401) : on n'ajoute plus d'échecs à history/valorant.jsonl ni history/rocket_league.jsonl,
+et les fichiers existants sont conservés tels quels."""
 import urllib.error, json, os, datetime, urllib.request, re, time
 D=os.path.dirname(os.path.abspath(__file__)); NOW=datetime.datetime.now().astimezone().isoformat()
 def get(u,h={}):
@@ -12,17 +12,10 @@ def save(game,data):
     now=datetime.datetime.now().astimezone().isoformat()
     with open(f"{D}/history/{game}.jsonl","a") as f: f.write(json.dumps({"fetched_at":now,**data},ensure_ascii=False)+"\n")
     json.dump({"fetched_at":now,**data},open(f"{D}/{game}_latest.json","w"),ensure_ascii=False,indent=1)
-K=os.environ.get("TRN_API_KEY")
 import subprocess, sys
-# Valorant : HenrikDev en priorité (valorant.json) ; tracker.gg seulement en secours
-HENRIK_OK=bool(os.environ.get("HENRIK_API_KEY")) and subprocess.run([sys.executable,f"{D}/tools/fetch_valorant.py"]).returncode==0
-# NB : rocket_league.json = données manuelles (captures tracker.gg) ; ce script n'écrit QUE history/*.jsonl et *_latest.json, jamais rocket_league.json.
-for game,path in [("valorant","valorant/standard/profile/riot/Blood%237629"),("rocket_league","rocket-league/standard/profile/epic/443Blood")]:
-    if game=="valorant" and HENRIK_OK: continue
-    if not K: save(game,{"status":"skipped","reason":"no TRN_API_KEY; tracker.gg blocks unauthenticated requests"}); continue
-    try: s,b=get("https://public-api.tracker.gg/v2/"+path,{"TRN-Api-Key":K}); save(game,{"status":"ok","raw":json.loads(b)})
-    except urllib.error.HTTPError as e: save(game,{"status":"error","http":e.code,"reason":e.read().decode(errors="replace")[:500]})
-    except Exception as e: save(game,{"status":"error","reason":str(e)})
+# Valorant : HenrikDev (valorant.json). tracker.gg : plus aucun appel (voir en-tête).
+# NB : rocket_league.json = données manuelles (captures tracker.gg), jamais écrit par ce script.
+if os.environ.get("HENRIK_API_KEY"): subprocess.run([sys.executable,f"{D}/tools/fetch_valorant.py"])
 SID="76561198754159593"; out={"steamid64":SID}
 try:
     try: s,x=get(f"https://steamcommunity.com/profiles/{SID}/?xml=1")

@@ -1,0 +1,31 @@
+name: Synchro app
+# Synchro « un geste » : l'app envoie un repository_dispatch (type gt-sync) avec un jeton GitHub à grain fin
+# (dépôt Blood63/gaming-tracker uniquement, Contents : lecture/écriture), stocké seulement sur l'appareil.
+# Les éléments passent par les mêmes scripts d'intégration que les issues (validations + fusion idempotente).
+on:
+  repository_dispatch:
+    types: [gt-sync]
+permissions:
+  contents: write
+jobs:
+  sync:
+    if: github.actor == 'Blood63'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Pas de file d'attente partagée : on rejoue sur la dernière version et on réessaie si le push est refusé (409/non fast-forward).
+      - env:
+          GT_ITEMS: ${{ toJSON(github.event.client_payload.items) }}
+          TZ: Europe/Paris
+        run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python3 tools/app_sync.py
+            python3 tools/build_home.py
+            git add goals.json cod_mobile.json cod_ranks.json cod_profile.json home.json build.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "Synchro app" && git push -q origin HEAD:main && break
+            sleep $((RANDOM % 8 + 3))
+          done
+          if grep -q '"ok": false' sync_result.json; then echo "::error::Au moins un élément refusé (voir le détail ci-dessus)"; exit 1; fi
