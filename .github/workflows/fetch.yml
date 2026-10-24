@@ -1,4 +1,5 @@
 name: Fetch stats
+# Relevé Steam (+ boutique, succès, ballchasing) : mercredi et dimanche à 00:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
 on:
   schedule:
     - cron: "0 22 * * 2"   # mercredi 00:00 Paris en été (CEST)
@@ -28,7 +29,6 @@ jobs:
         run: python3 fetch_stats.py
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
-          TRN_API_KEY: ${{ secrets.TRN_API_KEY }}
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
       - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
@@ -46,6 +46,7 @@ jobs:
         run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json steam_achievements.json
+          python3 tools/build_home.py
+          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json steam_achievements.json home.json build.json
           git diff --cached --quiet || git commit -m "Snapshot $(date -I)"
           git pull --rebase -q && git push

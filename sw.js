@@ -8,8 +8,9 @@ self.addEventListener('fetch',e=>{
   if(r.method!=='GET')return;
   const own=u.origin===self.location.origin,chartjs=u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('/chart.js');
   if(!own&&!chartjs)return;
-  // données JSON chargées avec ?v=<horodatage> : une seule entrée de cache par fichier (sinon le cache grossit sans fin)
-  const key=own&&/^\?v=\d{12,}$/.test(u.search)?u.origin+u.pathname:r;
+  // fichiers chargés avec ?v=<empreinte build.json> (ou ancien horodatage) : une seule entrée de cache par fichier,
+  // remplacée à chaque nouvelle version (réseau d'abord : une nouvelle empreinte = nouvelle requête, donc données fraîches).
+  const key=own&&/^\?v=[\w.-]{1,40}$/.test(u.search)?u.origin+u.pathname:r;
   e.respondWith((async()=>{
     try{const res=await fetch(r);if(res&&((res.ok&&(res.type==='basic'||res.type==='cors'))||(chartjs&&res.type==='opaque'))){const c=await caches.open(C);c.put(key,res.clone()).catch(()=>{})}return res}
     catch(err){const c=await caches.open(C);const hit=await c.match(key)||(r.mode==='navigate'?await c.match(new URL('./',self.location).href)||await c.match(new URL('index.html',self.location).href):null);if(hit)return hit;throw err}

@@ -1,0 +1,26 @@
+name: Résumé accueil (home.json)
+# Régénère home.json + build.json quand des données sont modifiées à la main (push).
+# Les robots les régénèrent eux-mêmes ; leurs push (GITHUB_TOKEN) ne relancent pas ce workflow.
+on:
+  push:
+    branches: [main]
+    paths: ["history/**","*.json","!home.json","!build.json","tools/build_home.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: data-commit, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python3 tools/build_home.py
+            git add home.json build.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "Résumé accueil" && git push -q origin HEAD:main && break
+            sleep 5
+          done

@@ -34,7 +34,8 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             res=$(python3 tools/cod_profile_intake.py)
-            git add cod_profile.json
+            python3 tools/build_home.py >/dev/null
+            git add cod_profile.json home.json build.json
             if git diff --cached --quiet; then break; fi
             git commit -qm "COD profil : issue #$N" && git push -q origin HEAD:main && break
             sleep $((RANDOM % 8 + 3))
