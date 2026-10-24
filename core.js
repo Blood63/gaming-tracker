@@ -86,3 +86,11 @@ function rlStyle(pf){const g=num(pf&&pf.goals_pct),s=num(pf&&pf.saves_pct);if(g=
   return g-s>=10?'Profil plutôt offensif : tu marques plus que tu ne défends.':s-g>=10?'Profil plutôt défensif : tu défends plus que tu ne marques.':'Profil équilibré : tu marques à peu près autant que tu défends.'}
 /* Échantillon minimal pour donner un conseil (COD, Valorant, RL). */
 const MIN_SAMPLE=5;
+/* Classement des cartes COD (multijoueur) : score = taux de victoire + K/D plafonné, seulement les cartes avec ≥ min parties.
+   Retourne {best,worst,ok,maps} ; ok=false s'il n'y a pas 2 cartes éligibles ou si la « pire » n'est pas réellement moins bonne. */
+const MAP_MIN=3;
+function codMapRank(list,min=MAP_MIN){const g={};(list||[]).filter(x=>(x.type||'MP')=='MP'&&x.map).forEach(x=>(g[x.map]??=[]).push(x));
+  const st=a=>({n:a.length,wr:wr(a),kd:kdOf(a)});
+  const all=Object.entries(g).map(([k,a])=>({map:k,...st(a)})),E=all.filter(s=>s.n>=min&&(s.wr!=null||s.kd!=null));
+  const sc=s=>(s.wr??50)/100+Math.min(s.kd??1,5)/5;E.sort((a,b)=>sc(b)-sc(a)||b.n-a.n);
+  const ok=E.length>=2&&sc(E[0])>sc(E.at(-1));return{ok,best:ok?E[0]:null,worst:ok?E.at(-1):null,eligible:E.length,maps:all.length,min}}

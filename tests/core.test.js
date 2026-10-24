@@ -75,3 +75,19 @@ test('rlStyle : texte offensif / défensif / équilibré calculé',()=>{
   assert.equal(run('rlStyle({})'),'');
   assert.equal(run('MIN_SAMPLE'),5);
 });
+test('codMapRank : minimum de parties, pas de « pire carte » à 100 %',()=>{
+  const M=(map,result,k,d)=>({type:'MP',map,result,kills:k,deaths:d});
+  // cas réel du bug : cartes à 1 partie, toutes gagnées -> rien
+  let r=run(`codMapRank(${JSON.stringify([M('Express','win',7,1),M('Nuketown','win',20,3),M('Stand de tir','win',16,5),M('Stand de tir','win',44,4)])})`);
+  assert.equal(r.ok,false);assert.equal(r.worst,null);assert.equal(r.eligible,0);
+  // 2 cartes avec 3 parties : la pire = moins de victoires
+  const L=[M('A','win',10,5),M('A','win',8,4),M('A','loss',6,6),M('B','loss',3,9),M('B','loss',4,8),M('B','win',7,7),M('C','loss',0,9)];
+  r=run(`codMapRank(${JSON.stringify(L)})`);
+  assert.equal(r.ok,true);assert.equal(r.best.map,'A');assert.equal(r.worst.map,'B');assert.equal(r.eligible,2);assert.equal(r.maps,3);
+  assert.ok(Math.abs(r.worst.wr-100/3)<1e-9);assert.equal(r.worst.n,3);
+  // égalité parfaite -> pas de pire carte inventée
+  r=run(`codMapRank(${JSON.stringify([M('A','win',5,5),M('A','win',5,5),M('A','win',5,5),M('B','win',5,5),M('B','win',5,5),M('B','win',5,5)])})`);
+  assert.equal(r.ok,false);
+  // BR ignoré
+  r=run(`codMapRank(${JSON.stringify([{type:'BR',map:'Isolated',placement:1},{type:'BR',map:'Isolated',placement:1},{type:'BR',map:'Isolated',placement:1}])})`);assert.equal(r.maps,0);
+});
