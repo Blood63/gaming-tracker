@@ -1,13 +1,13 @@
 {
- "fetched_at": "2026-10-21T00:16:56.905021+00:00",
+ "fetched_at": "2026-10-24T23:52:23.632602+00:00",
  "apps": {
   "3159330": {
    "name": "Assassin’s Creed Shadows",
    "type": "game",
    "short_description": "Plongez dans une épopée d'action-aventure au cœur du Japon féodal ! Incarnez une Assassin shinobi meurtrière et un puissant samouraï légendaire tout en explorant un magnifique monde ouvert plongé dans le chaos.",
-   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/header.jpg?t=1789746114",
-   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/fe6c8f40f405c8bb3a05788d1316ebd8e3c31b6a/capsule_231x87.jpg?t=1789746114",
-   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/b783388ebdfb08515387d04f43ce9698e7eda526/page_bg_raw.jpg?t=1789746114",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/header.jpg?t=1792778493",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/fe6c8f40f405c8bb3a05788d1316ebd8e3c31b6a/capsule_231x87.jpg?t=1792778493",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/b783388ebdfb08515387d04f43ce9698e7eda526/page_bg_raw.jpg?t=1792778493",
    "developers": [
     "Ubisoft Quebec",
     "Ubisoft Belgrade",
@@ -49,24 +49,24 @@
     "discount": 0
    },
    "screenshots": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.600x338.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.600x338.jpg?t=1789746114"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.600x338.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.600x338.jpg?t=1792778493"
    ],
    "screenshots_full": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.1920x1080.jpg?t=1789746114",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.1920x1080.jpg?t=1789746114"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/86653e3e54574cb65155452fa6657b7214a8d877/ss_86653e3e54574cb65155452fa6657b7214a8d877.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/dbadf23ede7af4684012bab610ffb52f33fdb9e2/ss_dbadf23ede7af4684012bab610ffb52f33fdb9e2.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/c6b98b5978b0054173b38d5700dc3c9681d0513c/ss_c6b98b5978b0054173b38d5700dc3c9681d0513c.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/3e587ce8e677f7381748fdc0a61e4938b76625ba/ss_3e587ce8e677f7381748fdc0a61e4938b76625ba.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/81bbd04dae05b0a52dc62818dc5219abeb849f8d/ss_81bbd04dae05b0a52dc62818dc5219abeb849f8d.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/e53dc9ec73e3de9b8e680472898de775f0dc1cae/ss_e53dc9ec73e3de9b8e680472898de775f0dc1cae.1920x1080.jpg?t=1792778493",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/2e74c5442faa027ea699dcfa15be173b43a8d37a/ss_2e74c5442faa027ea699dcfa15be173b43a8d37a.1920x1080.jpg?t=1792778493"
    ],
    "achievements_total": 75,
    "dlc_count": 2,
@@ -123,9 +123,9 @@
    "release_date": "29 oct. 2020",
    "metacritic": null,
    "price": {
-    "text": "48,99€",
-    "initial": null,
-    "discount": 0
+    "text": "4,89€",
+    "initial": "48,99€",
+    "discount": 90
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/ss_235eb54ee3c3fa2075e7d1424547e780cf59d48f.600x338.jpg?t=1760651835",
@@ -506,9 +506,9 @@
     "url": "https://www.metacritic.com/game/pc/gundam-breaker-4?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "23,99€",
-    "initial": "59,99€",
-    "discount": 60
+    "text": "59,99€",
+    "initial": null,
+    "discount": 0
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_43c49626d2334cf7c6d6d6c86a5203178d037a7c.600x338.jpg?t=1788195356",
@@ -537,9 +537,9 @@
      "appid": 2884450,
      "name": "GUNDAM BREAKER 4 Season Pass",
      "price": {
-      "text": "20,99€",
-      "initial": "29,99€",
-      "discount": 30
+      "text": "29,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884450/header.jpg?t=1788195365",
      "release": "28 aout 2024",
@@ -549,9 +549,9 @@
      "appid": 3498540,
      "name": "GUNDAM BREAKER 4 - Builder and Power-Up Set",
      "price": {
-      "text": "9,74€",
-      "initial": "14,99€",
-      "discount": 35
+      "text": "14,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498540/b7f474d129382825dffa0821bddd112c5403f17f/header.jpg?t=1788195441",
      "release": "26 mars 2025",
@@ -561,9 +561,9 @@
      "appid": 3498520,
      "name": "GUNDAM BREAKER 4 - Builders' Vault Bundle",
      "price": {
-      "text": "6,99€",
-      "initial": "9,99€",
-      "discount": 30
+      "text": "9,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498520/ea7290d50fbba41cd7ca451413670a635f4de522/header.jpg?t=1788290714",
      "release": "26 mars 2025",
@@ -573,9 +573,9 @@
      "appid": 3498530,
      "name": "GUNDAM BREAKER 4 - Power-up Booster Bundle",
      "price": {
-      "text": "4,19€",
-      "initial": "5,99€",
-      "discount": 30
+      "text": "5,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3498530/2873257601dc0b75cf66c8234cd16296e9a55d24/header.jpg?t=1788195447",
      "release": "26 mars 2025",
@@ -585,9 +585,9 @@
      "appid": 2884460,
      "name": "GUNDAM BREAKER 4 Diorama Pack Set",
      "price": {
-      "text": "9,74€",
-      "initial": "14,99€",
-      "discount": 35
+      "text": "14,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884460/header.jpg?t=1788195411",
      "release": "28 aout 2024",
@@ -597,9 +597,9 @@
      "appid": 2884330,
      "name": "GUNDAM BREAKER 4 - Story Mission DLC 1 - GO! RESTART!!",
      "price": {
-      "text": "4,89€",
-      "initial": "6,99€",
-      "discount": 30
+      "text": "6,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884330/header.jpg?t=1788195371",
      "release": "23 oct. 2024",
@@ -609,9 +609,9 @@
      "appid": 2884340,
      "name": "GUNDAM BREAKER 4 - Story Mission DLC 2 - BRAVE DIVE",
      "price": {
-      "text": "4,89€",
-      "initial": "6,99€",
-      "discount": 30
+      "text": "6,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884340/header.jpg?t=1788195376",
      "release": "30 oct. 2024",
@@ -621,9 +621,9 @@
      "appid": 2884350,
      "name": "GUNDAM BREAKER 4 - Story Mission DLC 3 - BATTLE TOURNAMENT",
      "price": {
-      "text": "4,89€",
-      "initial": "6,99€",
-      "discount": 30
+      "text": "6,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884350/header.jpg?t=1788195390",
      "release": "6 nov. 2024",
@@ -633,9 +633,9 @@
      "appid": 2884360,
      "name": "GUNDAM BREAKER 4 - Story Mission DLC 4 - BATTLE FIERCELY",
      "price": {
-      "text": "4,89€",
-      "initial": "6,99€",
-      "discount": 30
+      "text": "6,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884360/header.jpg?t=1788195394",
      "release": "13 nov. 2024",
@@ -645,9 +645,9 @@
      "appid": 2884370,
      "name": "GUNDAM BREAKER 4 - Story Mission DLC 5 - BEYOND BORDERS",
      "price": {
-      "text": "4,89€",
-      "initial": "6,99€",
-      "discount": 30
+      "text": "6,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884370/header.jpg?t=1788195406",
      "release": "13 nov. 2024",
@@ -657,9 +657,9 @@
      "appid": 2884390,
      "name": "GUNDAM BREAKER 4 - Diorama Pack 1 - Colony Set",
      "price": {
-      "text": "2,79€",
-      "initial": "3,99€",
-      "discount": 30
+      "text": "3,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884390/header.jpg?t=1788195415",
      "release": "23 oct. 2024",
@@ -669,9 +669,9 @@
      "appid": 2884400,
      "name": "GUNDAM BREAKER 4 - Diorama Pack 2 - Mobile Weapon & Colony Laser Inner Wall",
      "price": {
-      "text": "2,79€",
-      "initial": "3,99€",
-      "discount": 30
+      "text": "3,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884400/header.jpg?t=1788195419",
      "release": "30 oct. 2024",
@@ -681,9 +681,9 @@
      "appid": 2884410,
      "name": "GUNDAM BREAKER 4 - Diorama Pack 3 - Class Room Set & Haro",
      "price": {
-      "text": "2,79€",
-      "initial": "3,99€",
-      "discount": 30
+      "text": "3,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884410/header.jpg?t=1788195421",
      "release": "6 nov. 2024",
@@ -693,9 +693,9 @@
      "appid": 2884420,
      "name": "GUNDAM BREAKER 4 - Diorama Pack 4 - Beach Set & Effect",
      "price": {
-      "text": "2,79€",
-      "initial": "3,99€",
-      "discount": 30
+      "text": "3,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2884420/header.jpg?t=1788195427",
      "release": "13 nov. 2024",
@@ -818,9 +818,9 @@
     "url": "https://www.metacritic.com/game/pc/among-us?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "2,69€",
-    "initial": "4,49€",
-    "discount": 40
+    "text": "4,49€",
+    "initial": null,
+    "discount": 0
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_b7374128e5b786a302a716bca038d604b00ffe46.600x338.jpg?t=1792187809",
@@ -851,9 +851,9 @@
    "name": "Aniimo",
    "type": "game",
    "short_description": "Aniimo est un RPG en monde ouvert nouvelle génération de capture de créatures. Explorez un vaste continent, fusionnez avec des Aniimos uniques pour débloquer de nouvelles capacités, et rencontrez d'autres Nomades pour vivre des combats palpitants et percer les mystères de ce monde.",
-   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/bf9b76d25ac135baf8f313d9a095e754fd2e950b/header.jpg?t=1791771029",
-   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/9cd26f736939c12a37f54cd3a49a9c08a318ec03/capsule_231x87.jpg?t=1791771029",
-   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/437120a74f1cb3a7dd315852485f645e49787967/page_bg_raw.jpg?t=1791771029",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/bf9b76d25ac135baf8f313d9a095e754fd2e950b/header.jpg?t=1792665446",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/9cd26f736939c12a37f54cd3a49a9c08a318ec03/capsule_231x87.jpg?t=1792665446",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/437120a74f1cb3a7dd315852485f645e49787967/page_bg_raw.jpg?t=1792665446",
    "developers": [
     "Pawprint Studio"
    ],
@@ -886,24 +886,24 @@
     "text": "Gratuit"
    },
    "screenshots": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.600x338.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.600x338.jpg?t=1791771029"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.600x338.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.600x338.jpg?t=1792665446"
    ],
    "screenshots_full": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.1920x1080.jpg?t=1791771029",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.1920x1080.jpg?t=1791771029"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/c6c6dfe1260dd953b538e83298e257c4ca3c2e9a/ss_c6c6dfe1260dd953b538e83298e257c4ca3c2e9a.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c/ss_25c0c7e6c5c5fd530c056ee032b7ba366fb81c0c.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/a2c7b9293be7978b904bb672d49ede44d5bb52f7/ss_a2c7b9293be7978b904bb672d49ede44d5bb52f7.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/4b7934615abc485253f56e14d4bef1aa636dcd18/ss_4b7934615abc485253f56e14d4bef1aa636dcd18.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/519a496bd09ac75d726ac45baa9c9ac44f480acf/ss_519a496bd09ac75d726ac45baa9c9ac44f480acf.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/48555a45adb748849eea04efc29349211398ce38/ss_48555a45adb748849eea04efc29349211398ce38.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/624f41ad7ea2443274c70ea95cc70d090c8f0011/ss_624f41ad7ea2443274c70ea95cc70d090c8f0011.1920x1080.jpg?t=1792665446",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4126040/ccccafc7f89e9062094f0ee2b62cf340b1a69fce/ss_ccccafc7f89e9062094f0ee2b62cf340b1a69fce.1920x1080.jpg?t=1792665446"
    ],
    "achievements_total": 64,
    "dlc_count": 0,
@@ -1354,9 +1354,9 @@
    "name": "Call of Duty®",
    "type": "game",
    "short_description": "L'expérience Call of Duty® prend en charge Modern Warfare® 4, Black Ops 7 et Call of Duty®: Warzone™.",
-   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1792523940",
-   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/0ac3cc02398b9db61c8db4fef2e3e1b4b8b66e4b/capsule_231x87.jpg?t=1792523940",
-   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/daf5d7dee8c89ae737aaac6b712288b934ee84dc/page_bg_raw.jpg?t=1792523940",
+   "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1792807032",
+   "capsule": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/0ac3cc02398b9db61c8db4fef2e3e1b4b8b66e4b/capsule_231x87.jpg?t=1792807032",
+   "background": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/daf5d7dee8c89ae737aaac6b712288b934ee84dc/page_bg_raw.jpg?t=1792807032",
    "developers": [
     "Treyarch",
     "Raven Software",
@@ -1387,27 +1387,27 @@
    "metacritic": null,
    "price": null,
    "screenshots": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.600x338.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.600x338.jpg?t=1792523940"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/10d6a60711209aa8019cedab4667532af49f5d2a/ss_10d6a60711209aa8019cedab4667532af49f5d2a.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/61b168480470e396b6160dfbb2e934f1e7945eed/ss_61b168480470e396b6160dfbb2e934f1e7945eed.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/3b091c0e1911b3b070baa3ae40471a9ec4a98ab7/ss_3b091c0e1911b3b070baa3ae40471a9ec4a98ab7.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/f1ad176144e4a7c47f8871c6f8c5f3e4cfb46c1e/ss_f1ad176144e4a7c47f8871c6f8c5f3e4cfb46c1e.600x338.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/edca7d2177120c3786f14d002040a2c302a8c5c0/ss_edca7d2177120c3786f14d002040a2c302a8c5c0.600x338.jpg?t=1792807032"
    ],
    "screenshots_full": [
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ca97243a998802a38c7cddf195cee327c5760353/ss_ca97243a998802a38c7cddf195cee327c5760353.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/c6f865bd79b76a1fa50c59cd17a68d7837abf0b2/ss_c6f865bd79b76a1fa50c59cd17a68d7837abf0b2.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/619503d5c40001a5e72717bedccbbca027084d94/ss_619503d5c40001a5e72717bedccbbca027084d94.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/88dbb0eae312359216204ce3ab34b2f476177efd/ss_88dbb0eae312359216204ce3ab34b2f476177efd.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/90880487f8532ac5f183ac95f721965048056250/ss_90880487f8532ac5f183ac95f721965048056250.1920x1080.jpg?t=1792523940",
-    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.1920x1080.jpg?t=1792523940"
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/ee5f6b6aebe4dc9e86b49c4e309d361b132df308/ss_ee5f6b6aebe4dc9e86b49c4e309d361b132df308.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/6b8f4040a1e923f036e04d9eb21ecb0f866be57e/ss_6b8f4040a1e923f036e04d9eb21ecb0f866be57e.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/10d6a60711209aa8019cedab4667532af49f5d2a/ss_10d6a60711209aa8019cedab4667532af49f5d2a.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/69ebde0b83f6d45a259494397402df7a9f5fa50a/ss_69ebde0b83f6d45a259494397402df7a9f5fa50a.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/61b168480470e396b6160dfbb2e934f1e7945eed/ss_61b168480470e396b6160dfbb2e934f1e7945eed.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/3b091c0e1911b3b070baa3ae40471a9ec4a98ab7/ss_3b091c0e1911b3b070baa3ae40471a9ec4a98ab7.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/f1ad176144e4a7c47f8871c6f8c5f3e4cfb46c1e/ss_f1ad176144e4a7c47f8871c6f8c5f3e4cfb46c1e.1920x1080.jpg?t=1792807032",
+    "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/edca7d2177120c3786f14d002040a2c302a8c5c0/ss_edca7d2177120c3786f14d002040a2c302a8c5c0.1920x1080.jpg?t=1792807032"
    ],
-   "achievements_total": 157,
-   "dlc_count": 46,
+   "achievements_total": 175,
+   "dlc_count": 47,
    "dlc": [
     {
      "appid": 4200780,
@@ -1960,6 +1960,18 @@
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2053671/header.jpg?t=1767985543",
      "release": "28 oct. 2022",
      "url": "https://store.steampowered.com/app/2053671/"
+    },
+    {
+     "appid": 5008900,
+     "name": "Call of Duty Endowment (C.O.D.E.) Pack Courage",
+     "price": {
+      "text": "19,99€",
+      "initial": null,
+      "discount": 0
+     },
+     "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/5008900/353292e17b2daa18e85ad092e79a6c46f0320be5/header.jpg?t=1792774872",
+     "release": "23 oct. 2026",
+     "url": "https://store.steampowered.com/app/5008900/"
     }
    ],
    "url": "https://store.steampowered.com/app/1938090/"
