@@ -1074,7 +1074,7 @@ function comparer(ka,kb){const S=srcAll(),now=Date.now(),first=Math.min(...[...(
   $$('#cgame button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('cmpG',b.dataset.g);rerender()});
 }
 /* Records & séries */
-const REK='gt-records',GSK='gt-goal-state',SNK='gt-snap',NTK='gt-notif';
+const REK='gt-records',GSK='gt-goal-state2',SNK='gt-snap',NTK='gt-notif';
 const GICO={valorant:'🎯',cod:'🔫',rl:'🚗'};
 function recordsHTML(compact){const R=records(srcAll()),b=(LS.get(REK,null)||{}).b||{},L=compact?R.filter(r=>b[r.id]):R;if(!L.length)return compact?'':'<div class="glass empty">Pas encore de record : joue quelques parties.</div>';
   return `<div class="recs">${L.map(r=>`<${r.link?`a href="${r.link}"`:'div'} class="glass rec${b[r.id]?' new':''}"><div class="k">${GICO[r.g]||''} ${esc(r.l)}</div><div class="v">${fnum(r.v,r.dec)}${r.u}</div><div class="d mut">${esc(r.sub||'')}${r.sub&&r.at?' · ':''}${r.at?fshort(r.at):''}${r.cur!=null&&r.cur>0?` · en cours : ${r.cur}`:''}</div>${b[r.id]?'<span class="pill ok">🏆 Nouveau record</span>':''}</${r.link?'a':'div'}>`).join('')}</div>`}
@@ -1086,8 +1086,15 @@ const lastReplay=()=>{const R=(D.bc?.replays||[]).filter(r=>r.date&&!r.bots);ret
 function checkNews(){try{const now=Date.now(),ev=snapEvents(LS.get(SNK,null),snapNow());LS.set(SNK,snapNow());
   const ru=recordsUpdate(LS.get(REK,null),records(srcAll()),now);LS.set(REK,ru.st);ru.beaten.forEach(r=>ev.push({k:'rec',title:`🏆 Nouveau record : ${r.l}`,body:`${GICO[r.g]||''} ${fnum(r.v,r.dec)}${r.u}`,link:'#/profil'}));
   const gu=goalsUpdate(LS.get(GSK,null),goals().filter(x=>!x.pending).map(x=>({id:x.id,...goalProg(x)})).map(g=>({...g,p:Math.max(0,Math.min(100,g.p||0)),done:g.done??g.p>=100})),now);LS.set(GSK,gu.st);
-  gu.reached.forEach(g=>ev.push({k:'goal',title:'🎉 Objectif atteint',body:g.label,link:'#/objectifs'}));
+  gu.reached.forEach(g=>ev.push({k:'goal',title:'🎉 Objectif atteint',body:g.label,link:'#/objectifs'}));celebrate(gu.reached);
   if(ev.length){NEWS=[...ev,...NEWS].slice(0,8);toast(ev.length==1?ev[0].title:`${ev.length} nouveautés depuis ta dernière visite`);notify(ev)}}catch(e){console.error(e)}}
+/* t95 : petite fête quand un objectif est atteint — une seule fois par objectif (gt-celebrated), en surcouche fixe (aucun décalage), couleurs du thème */
+const CBK='gt-celebrated';
+function celebrate(list){const seen=new Set(LS.get(CBK,[])||[]),nw=(list||[]).filter(g=>g&&g.id!=null&&!seen.has(g.id));if(!nw.length)return;
+  nw.forEach(g=>seen.add(g.id));LS.set(CBK,[...seen].slice(-200));
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches,o=document.createElement('div');o.className='celeb'+(rm?' still':'');o.setAttribute('role','status');o.setAttribute('aria-live','polite');
+  o.innerHTML=`<div class="cb glass solid"><span class="ci">🎉</span><b>Objectif atteint !</b><small>${esc(nw[0].label||'')}${nw.length>1?` (+${nw.length-1})`:''}</small></div>`+(rm?'':Array.from({length:28},(_,i)=>`<i style="--x:${(Math.random()*2-1).toFixed(2)};--d:${(Math.random()*.4).toFixed(2)}s;--r:${Math.round(Math.random()*720)}deg;--c:var(${['--vi','--cy','--pc'][i%3]})"></i>`).join(''));
+  document.body.appendChild(o);o.onclick=()=>o.remove();setTimeout(()=>o.remove(),rm?3500:3200)}
 const notifOn=()=>LS.get(NTK,false)===true&&'Notification' in window&&Notification.permission=='granted';
 async function notify(ev){if(!notifOn())return;for(const e of ev.slice(0,4)){const o={body:e.body,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:'gt-'+e.k+'-'+(e.title.length),data:{link:e.link}};
   try{const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();if(r&&r.showNotification){await r.showNotification(e.title,o);continue}}catch(x){}

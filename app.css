@@ -472,3 +472,13 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 .rllast .ic{font-size:1.5rem;flex:none}.rllast .n{flex:1;min-width:0}.rllast .n b{display:block}.rllast .n small{display:block;font-size:.82rem;color:var(--mut)}
 .rllast.old{border-color:rgba(251,191,36,.4)}.rllast small.warn{color:var(--warn)!important;margin-top:.2rem}
 .ages a{white-space:nowrap;color:inherit;text-decoration:underline dotted}
+
+/* t95 : fête objectif atteint (surcouche fixe, sans décalage de mise en page) */
+.celeb{position:fixed;inset:0;z-index:9999;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
+.celeb .cb{pointer-events:auto;margin-top:18vh;padding:.9rem 1.2rem;border-radius:16px;text-align:center;display:flex;flex-direction:column;gap:.2rem;max-width:86vw;border:1px solid var(--vi);color:var(--fg);animation:cbIn .45s cubic-bezier(.2,1.4,.4,1) both,cbOut .4s ease 2.8s forwards}
+.celeb .ci{font-size:2rem}.celeb small{color:var(--mut)}
+.celeb i{position:absolute;top:28vh;left:50%;width:8px;height:12px;border-radius:2px;background:var(--c);opacity:0;animation:cbF 1.8s ease-out var(--d) forwards;will-change:transform,opacity}
+.celeb.still .cb{animation:none}
+@keyframes cbIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+@keyframes cbOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes cbF{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(calc(var(--x)*42vw),55vh) rotate(var(--r))}}
