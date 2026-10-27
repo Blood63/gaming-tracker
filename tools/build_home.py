@@ -7,7 +7,7 @@ comme clé de cache (?v=) au lieu de Date.now()."""
 import json, os, hashlib, datetime
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA=["history/steam.jsonl","store.json","history/valorant.jsonl","history/rocket_league.jsonl","cod_mobile.json","cod_profile.json","cod_ranks.json",
-      "setup.json","valorant.json","goals.json","rocket_league.json","ballchasing_latest.json","steam_achievements.json"]
+      "setup.json","valorant.json","goals.json","rocket_league.json","ballchasing_latest.json","steam_achievements.json","rl_local/index.json"]
 def rd(p,default=None):
     try: return json.load(open(f"{D}/{p}",encoding="utf-8"))
     except Exception: return default

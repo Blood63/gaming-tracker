@@ -81,6 +81,74 @@ def weekly(reps):
           "saves":round(sum(x.get("saves") or 0 for x in a)/len(a),2),"goals":round(sum(x.get("goals") or 0 for x in a)/len(a),2),
           "focus":{"k":f,"label":LABEL[f],"txt":TIPS[f][0],"drill":TIPS[f][1]} if f else None})
     return out
+
+# ───────── Replays analysés localement (rl_local/index.json, voir tools/rl-analyzer) ─────────
+LOCAL_IDX=f"{D}/rl_local/index.json"
+LPL={13:"3v3",11:"2v2",10:"1v1",3:"Occasionnel 3v3",2:"Occasionnel 2v2",1:"Occasionnel 1v1"}
+MAPS={"TrainStation_Dawn_P":"Urban Central (Dawn)","UtopiaStadium_Dusk_P":"Utopia Coliseum (Dusk)","EuroStadium_P":"Mannfield","TrainStation_Night_P":"Urban Central (Night)","stadium_day_p":"DFH Stadium (Day)","Park_Night_P":"Beckwith Park (Midnight)","Farm_GRS_P":"Farmstead (Pitched)","street_p":"Sovereign Heights (Dusk)","CHN_Stadium_P":"Forbidden Temple","cs_p":"Champions Field","Wasteland_GRS_P":"Wasteland (Pitched)","Underwater_GRS_P":"AquaDome (Salty Shallows)","NeoTokyo_Standard_P":"Neo Tokyo (Standard)","Outlaw_Oasis_P":"Deadeye Canyon (Oasis)","Beach_Night_GRS_P":"Salty Shores (Salty Fest)","Park_Rainy_P":"Beckwith Park (Stormy)","TrainStation_P":"Urban Central","Underwater_P":"Aquadome","UtopiaStadium_Lux_P":"Utopia Coliseum (Gilded)","CHN_Stadium_Day_P":"Forbidden Temple (Day)","EuroStadium_Rainy_P":"Mannfield (Stormy)","NeoTokyo_Arcade_P":"Neo Tokyo (Arcade)","cs_day_p":"Champions Field (Day)","FF_Dusk_P":"Estadio Vida (Dusk)","EuroStadium_Night_P":"Mannfield (Night)","Stadium_P":"DFH Stadium","UtopiaStadium_P":"Utopia Coliseum","EuroStadium_Dusk_P":"Mannfield (Dusk)","Park_P":"Beckwith Park"}
+def map_name(code):
+    if code in MAPS: return MAPS[code]
+    s=(code or "").replace("_P","").replace("_GRS","").replace("_"," ").strip()
+    return s.title() if s else None
+def local_metrics(s):
+    k=("shooting_pct","shots_against","goals_against","clears","centers","aerial_hits","bpm","avg_boost","pct_zero_boost","pct_full_boost","stolen","overfill_pct","small_pads","big_pads","avg_speed","pct_supersonic","pct_slow","pct_ground","pct_high_air","powerslides","pct_def_third","pct_off_third","pct_behind_ball","pct_most_back","pct_most_forward","pct_closest_ball","dist_mates","demos","demos_taken")
+    m={x:s.get(x) for x in k}
+    if m.get("bpm") is not None: m["bpm"]=round(m["bpm"])
+    return m
+def find_local_match(L,R):
+    """Réplique bc correspondant à une analyse locale : liens connus (lid / bc / rl_id), sinon date (±6 s) + score identique."""
+    for r in R.values():
+        if r.get("src")=="local": continue
+        if r.get("lid")==L["id"] or L.get("bc")==r["id"] or (r.get("rl_id") and r["rl_id"]==L["id"]): return r
+    try: t=datetime.datetime.fromisoformat(L["date"].replace("Z","+00:00"))
+    except Exception: return None
+    for r in R.values():
+        if r.get("src")=="local" or r.get("lid"): continue
+        try: u=datetime.datetime.fromisoformat(r["date"].replace("Z","+00:00"))
+        except Exception: continue
+        if abs((t-u).total_seconds())<=6 and r.get("team_goals")==L.get("team_goals") and r.get("opp_goals")==L.get("opp_goals"): return r
+    return None
+def local_entry(L):
+    s=L["s"]; pl=LPL.get(L.get("playlist_id")) or {1:"1v1",2:"2v2",3:"3v3"}.get(L.get("team_size"),"Autre")
+    if L.get("bots"): pl="Contre des bots ("+pl+")"
+    return {"id":L["id"],"src":"local","lid":L["id"],"date":L["date"],"playlist":pl,"map":map_name(L.get("map")),"duration":round(L.get("duration") or 0),"overtime":bool(L.get("overtime")),
+      "team_goals":L.get("team_goals"),"opp_goals":L.get("opp_goals"),"result":L.get("result"),"goals":s.get("goals"),"assists":s.get("assists"),"saves":s.get("saves"),"shots":s.get("shots"),"score":s.get("score"),
+      "mvp":False,"boost_avg":s.get("avg_boost"),"bpm":round(s["bpm"]) if s.get("bpm") is not None else None,"rank":None,"rank_tier":None,"rank_div":None,"mmr":None,"rl_id":L["id"],
+      "m":local_metrics(s),"name":"443Blood","bots":bool(L.get("bots"))}
+def merge_local(R):
+    """Ajoute à R (dict id → replay) les replays analysés localement. Idempotent. Ne modifie jamais les stats bc existantes :
+    sur une entrée bc déjà connue on ajoute seulement le lien « lid » ; un replay absent de bc devient une entrée « src: local »."""
+    try: idx=json.load(open(LOCAL_IDX,encoding="utf-8")).get("replays",[])
+    except Exception: return 0
+    for i in [i for i,r in R.items() if r.get("src")=="local"]: R.pop(i)   # reconstruit : évite tout doublon si bc reçoit le replay plus tard
+    n=0
+    for L in sorted(idx,key=lambda x:x.get("date") or ""):
+        if (L.get("date") or "")[:10]<MIN_DATE or L.get("bc") in EXCLUDE: continue
+        r=find_local_match(L,R)
+        if r is not None: r["lid"]=L["id"]; continue
+        if not L.get("s") or L.get("result") not in ("win","loss"): continue
+        R[L["id"]]=local_entry(L); n+=1
+    return n
+def finalize(R,found_n,new_n,history=True):
+    for r in R.values():
+        if r.get("bots") and not str(r.get("playlist","")).startswith("Contre"): r["playlist"]="Contre des bots ("+str(r["playlist"])+")"
+    for r in R.values():
+        if r.get("m"): r["analysis"]=judge(r["m"])
+    reps=sorted(R.values(),key=lambda r:r["date"] or "")
+    per={}
+    for r in reps: per.setdefault(r["playlist"],[]).append(r)
+    def agg(a):
+        s=lambda k:sum((x.get(k) or 0) for x in a); n=len(a); w=sum(1 for x in a if x["result"]=="win"); b=[x["boost_avg"] for x in a if x.get("boost_avg") is not None]
+        last=next((x for x in reversed(a) if x.get("rank")),None)
+        return {"matches":n,"wins":w,"win_rate":round(100*w/n,1) if n else None,"goals":s("goals"),"assists":s("assists"),"saves":s("saves"),"shots":s("shots"),
+          "score_avg":round(s("score")/n,1) if n else None,"goals_avg":round(s("goals")/n,2) if n else None,"shot_pct":round(100*s("goals")/s("shots"),1) if s("shots") else None,
+          "mvp":s("mvp"),"boost_avg":round(sum(b)/len(b),1) if b else None,"rank":last and last["rank"],"mmr":next((x["mmr"] for x in reversed(a) if x.get("mmr")),None)}
+    out={"source":"ballchasing.com","fetched_at":now(),"status":"ok" if reps else "no_replays","replays_found":found_n,"replays_count":len(reps),
+         "playlists":{k:agg(v) for k,v in per.items()},"weekly":weekly([r for r in reps if not r.get("bots")]),"bench_note":"Repères indicatifs pour un joueur Or en 3v3 (estimation).","excluded":sorted(EXCLUDE),"min_date":MIN_DATE,"replays":reps}
+    json.dump(out,open(F,"w"),ensure_ascii=False,indent=1)
+    if history:
+      with open(f"{D}/history/ballchasing.jsonl","a") as f: f.write(json.dumps({k:v for k,v in out.items() if k not in ("replays","weekly")},ensure_ascii=False)+"\n")
+    return len(reps)
 def now(): return datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 def main():
     if not K: print("no BALLCHASING_API_KEY"); return 1
@@ -113,25 +181,10 @@ def main():
           "duration":d.get("duration"),"overtime":d.get("overtime"),"team_goals":gs(my),"opp_goals":gs(oth),"result":"win" if gs(my)>gs(oth) else "loss",
           "goals":c.get("goals"),"assists":c.get("assists"),"saves":c.get("saves"),"shots":c.get("shots"),"score":c.get("score"),"mvp":c.get("mvp"),
           "boost_avg":bo.get("avg_amount"),"bpm":bo.get("bpm"),"rank":(me.get("rank") or {}).get("name"),"rank_tier":(me.get("rank") or {}).get("tier"),"rank_div":(me.get("rank") or {}).get("division"),
-          "mmr":me.get("mmr"),"m":metrics(me),"name":me.get("name"),"bots":any((p.get("id") or {})=={} for t in ("blue","orange") for p in d.get(t,{}).get("players",[]) or [])}
-    for r in R.values():
-        if r.get("bots") and not str(r.get("playlist","")).startswith("Contre"): r["playlist"]="Contre des bots ("+str(r["playlist"])+")"
-    for r in R.values():
-        if r.get("m"): r["analysis"]=judge(r["m"])
-    reps=sorted(R.values(),key=lambda r:r["date"] or "")
-    per={}
-    for r in reps: per.setdefault(r["playlist"],[]).append(r)
-    def agg(a):
-        s=lambda k:sum((x.get(k) or 0) for x in a); n=len(a); w=sum(1 for x in a if x["result"]=="win"); b=[x["boost_avg"] for x in a if x.get("boost_avg") is not None]
-        last=next((x for x in reversed(a) if x.get("rank")),None)
-        return {"matches":n,"wins":w,"win_rate":round(100*w/n,1) if n else None,"goals":s("goals"),"assists":s("assists"),"saves":s("saves"),"shots":s("shots"),
-          "score_avg":round(s("score")/n,1) if n else None,"goals_avg":round(s("goals")/n,2) if n else None,"shot_pct":round(100*s("goals")/s("shots"),1) if s("shots") else None,
-          "mvp":s("mvp"),"boost_avg":round(sum(b)/len(b),1) if b else None,"rank":last and last["rank"],"mmr":next((x["mmr"] for x in reversed(a) if x.get("mmr")),None)}
-    out={"source":"ballchasing.com","fetched_at":now(),"status":"ok" if reps else "no_replays","replays_found":len(found),"replays_count":len(reps),
-         "playlists":{k:agg(v) for k,v in per.items()},"weekly":weekly([r for r in reps if not r.get("bots")]),"bench_note":"Repères indicatifs pour un joueur Or en 3v3 (estimation).","excluded":sorted(EXCLUDE),"min_date":MIN_DATE,"replays":reps}
-    json.dump(out,open(F,"w"),ensure_ascii=False,indent=1)
-    with open(f"{D}/history/ballchasing.jsonl","a") as f: f.write(json.dumps({k:v for k,v in out.items() if k not in ("replays","weekly")},ensure_ascii=False)+"\n")
-    print(f"OK ballchasing: {len(reps)} replays ({len(new)} nouveaux)"); return 0
+          "mmr":me.get("mmr"),"rl_id":d.get("rocket_league_id"),"m":metrics(me),"name":me.get("name"),"bots":any((p.get("id") or {})=={} for t in ("blue","orange") for p in d.get(t,{}).get("players",[]) or [])}
+    merge_local(R)
+    nrep=finalize(R,len(found),len(new))
+    print(f"OK ballchasing: {nrep} replays ({len(new)} nouveaux)"); return 0
 if __name__=="__main__":
     try: sys.exit(main())
     except Exception as e: print("FAIL",e); sys.exit(1)

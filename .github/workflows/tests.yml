@@ -14,3 +14,4 @@ jobs:
         with: { node-version: 20 }
       - run: node --check core.js && node --check app.js
       - run: node --test tests/
+      - run: python3 -m unittest discover -s tests -p "test_*.py"
