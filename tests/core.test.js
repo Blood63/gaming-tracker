@@ -91,3 +91,62 @@ test('codMapRank : minimum de parties, pas de « pire carte » à 100 %',()=>{
   // BR ignoré
   r=run(`codMapRank(${JSON.stringify([{type:'BR',map:'Isolated',placement:1},{type:'BR',map:'Isolated',placement:1},{type:'BR',map:'Isolated',placement:1}])})`);assert.equal(r.maps,0);
 });
+
+/* ===== t94 ===== */
+const deq=(a,b,m)=>assert.deepEqual(JSON.parse(JSON.stringify(a)),b,m);
+const T=s=>Date.parse(s);
+test('weekStart / monthStart : lundi et 1er du mois à minuit heure de Paris, changement d’heure compris',()=>{
+  assert.equal(new Date(run(`weekStart(${T('2026-10-27T17:00:00Z')})`)).toISOString(),'2026-10-25T23:00:00.000Z'); // lun. 26 oct. 00:00 (UTC+1)
+  assert.equal(new Date(run(`weekStart(${T('2026-10-25T21:30:00Z')})`)).toISOString(),'2026-10-18T22:00:00.000Z'); // dim. 25 23:30 Paris → lun. 19 (UTC+2)
+  assert.equal(new Date(run(`weekStart(${T('2026-10-25T23:30:00Z')})`)).toISOString(),'2026-10-25T23:00:00.000Z'); // lun. 26 00:30 Paris
+  assert.equal(new Date(run(`monthStart(${T('2026-11-01T10:00:00Z')})`)).toISOString(),'2026-10-31T23:00:00.000Z');
+  const p=run(`periodOf('S',${T('2026-10-21T12:00:00Z')})`);assert.equal(p.key,'S2026-10-19');assert.equal(p.to-p.from,7*864e5+36e5,'semaine du passage à l’heure d’hiver = 169 h');
+  assert.equal(run(`periodFromKey('M2026-10').key`),'M2026-10');assert.equal(run(`periodFromKey('S2026-10-19').from`),p.from);assert.equal(run(`periodFromKey('x')`),null);
+});
+test('periodList : de la période en cours jusqu’à la première donnée, la plus récente d’abord',()=>{
+  const L=run(`periodList('S',${T('2026-10-07T10:00:00Z')},${T('2026-10-27T10:00:00Z')})`);
+  deq(L.map(p=>p.key),['S2026-10-26','S2026-10-19','S2026-10-12','S2026-10-05']);
+  deq(run(`periodList('M',NaN,1)`),[]);
+});
+const SRC=`({vh:{mmr_history:[{date:'2026-10-13T20:00:00Z',change:20,elo:620,tier:'Silver 1'},{date:'2026-10-20T20:00:00Z',change:-10,elo:610,tier:'Silver 1'},{date:'2026-10-21T20:00:00Z',change:30,elo:640,tier:'Silver 1'}],
+  matches:[{date:'2026-10-20T20:00:00Z',mode:'Competitive',result:'loss',kills:10,deaths:15},{date:'2026-10-21T20:00:00Z',mode:'Competitive',result:'win',kills:20,deaths:10},{date:'2026-10-21T21:00:00Z',mode:'Deathmatch',kills:40,deaths:20},{date:'2026-10-13T20:00:00Z',mode:'Competitive',result:'win',kills:12,deaths:12}]},
+  cod:[{date:'2026-10-20T12:00:00+02:00',kills:20,deaths:10,result:'win',damage:2000},{date:'2026-10-14T12:00:00+02:00',kills:10,deaths:10,result:'loss',damage:1000}],
+  rl:[{date:'2026-10-20T19:00:00Z',result:'win',goals:2,saves:1,id:'a'},{date:'2026-10-20T19:10:00Z',result:'win',goals:3,saves:0,id:'b'},{date:'2026-10-20T19:20:00Z',result:'loss',goals:0,saves:2,id:'c'}],
+  steamH:[{fetched_at:'2026-10-11T22:00:00Z',games:[{appid:1,playtime_forever:100}]},{fetched_at:'2026-10-18T21:00:00Z',games:[{appid:1,playtime_forever:160}]},{fetched_at:'2026-10-25T21:00:00Z',games:[{appid:1,playtime_forever:400}]}]})`;
+test('periodStats : chaque jeu sur la période (classé seulement pour Valorant)',()=>{
+  const P=run(`periodOf('S',${T('2026-10-21T12:00:00Z')})`);const s=run(`periodStats(${SRC},${P.from},${P.to})`);
+  assert.equal(s.val.n,2);near(s.val.wr,50);near(s.val.kd,30/25);assert.equal(s.val.rr,20);assert.equal(s.val.elo,640);
+  assert.equal(s.cod.n,1);near(s.cod.kd,2);assert.equal(s.rl.n,3);near(s.rl.wr,200/3);near(s.rl.goals,5/3);
+  assert.equal(s.steam.min,240,'400 − 160 min (relevé ≤ début → dernier relevé avant la fin)');
+  const e=run(`periodStats({vh:null,cod:[],rl:[],steamH:[]},0,1)`);assert.equal(e.val.n,0);assert.equal(e.val.wr,null);assert.equal(e.steam.min,null);
+});
+test('compareStats / weekRecap : écarts et sens (▲ mieux)',()=>{
+  const R=run(`weekRecap(${SRC},${T('2026-10-27T10:00:00Z')})`);assert.equal(R.week.key,'S2026-10-19');assert.equal(R.prev.key,'S2026-10-12');assert.ok(R.played);
+  const g=(x,k)=>R.rows.find(r=>r.g==x&&r.k==k);
+  assert.equal(g('val','rr').d,0);assert.equal(g('val','rr').dir,0);
+  near(g('cod','kd').d,1);assert.equal(g('cod','kd').dir,1);near(g('steam','min').a,4);near(g('steam','min').b,1);
+  assert.equal(run(`compareStats(null,null)`).length,0);
+});
+test('records : pics, séries de victoires, maximum par partie ; Deathmatch exclu',()=>{
+  const R=run(`records(${SRC})`),g=id=>R.find(r=>r.id==id);
+  assert.equal(g('val_elo').v,640);assert.equal(g('val_kills').v,20,'le Deathmatch (40) ne compte pas');assert.equal(g('val_streak').v,1);
+  assert.equal(g('cod_kills').v,20);near(g('cod_kd').v,2);assert.equal(g('rl_streak').v,2);assert.equal(g('rl_streak').cur,0);assert.equal(g('rl_goals').v,3);assert.equal(g('rl_goals').link,'#/rl/b');
+  deq(run(`streaks([{date:'1',result:'win'},{date:'2',result:'win'},{date:'3'},{date:'4',result:'win'}],x=>x.result=='win',x=>!!x.result)`),{best:3,bestAt:'4',cur:3},'parties sans résultat ignorées');
+  assert.equal(run(`records({})`).length,0);
+});
+test('recordsUpdate : 1re visite = point de départ, puis record battu signalé 7 jours',()=>{
+  const a=run(`recordsUpdate(null,[{id:'x',v:5}],1000)`);assert.equal(a.beaten.length,0);assert.equal(a.st.v.x,5);
+  ctx.ST=a.st;const b=run(`recordsUpdate(ST,[{id:'x',v:7},{id:'y',v:2}],2000)`);deq(b.beaten.map(r=>r.id),['x'],'un nouveau type de record n’est pas « battu »');assert.equal(b.st.b.x,2000);
+  ctx.ST=b.st;const c=run(`recordsUpdate(ST,[{id:'x',v:6}],2000+8*864e5)`);assert.equal(c.beaten.length,0);assert.equal(c.st.v.x,7,'on garde le meilleur');assert.equal(c.st.b.x,undefined,'badge expiré');
+});
+test('goalsUpdate : objectif atteint une seule fois, progression gardée entre deux relevés',()=>{
+  const a=run(`goalsUpdate(null,[{id:1,p:90,done:false}],1)`);assert.equal(a.reached.length,0);
+  ctx.GS=a.st;const b=run(`goalsUpdate(GS,[{id:1,p:100,done:true},{id:2,p:100,done:true}],2)`);deq(b.reached.map(g=>g.id),[1],'un objectif ajouté déjà atteint ne déclenche pas d’alerte');assert.equal(b.recent.length,1);
+  ctx.GS=b.st;const c=run(`goalsUpdate(GS,[{id:1,p:100,done:true}],3)`);assert.equal(c.reached.length,0,'pas de 2e alerte');assert.equal(c.st[1].t,2);
+  ctx.GS=run(`goalsUpdate(null,[{id:3,p:10}],1)`).st;ctx.GS=run(`goalsUpdate(GS,[{id:3,p:30}],2)`).st;assert.equal(ctx.GS[3].d,20);ctx.GS=run(`goalsUpdate(GS,[{id:3,p:30}],3)`).st;assert.equal(ctx.GS[3].d,20,'écart conservé tant que rien ne bouge');
+});
+test('snapEvents : rang Valorant et nouveaux replays RL',()=>{
+  const e=run(`snapEvents({vt:9,vn:'Silver 1',rlN:5},{vt:10,vn:'Silver 2',rlN:7})`);assert.equal(e.length,2);assert.match(e[0].title,/promotion/);assert.equal(e[0].body,'Argent 1 → Argent 2');assert.match(e[1].title,/2 nouveaux replays/);
+  assert.equal(run(`snapEvents(null,{vt:1})`).length,0);assert.equal(run(`snapEvents({vt:9,rlN:3},{vt:9,rlN:3})`).length,0);
+  assert.match(run(`snapEvents({vt:10,vn:'Silver 2'},{vt:9,vn:'Silver 1'})`)[0].title,/rétrogradation/);
+});
