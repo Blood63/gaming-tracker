@@ -86,7 +86,7 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter 
 /* Chargement : home.json (résumé compact généré par les robots) suffit pour l'accueil ; les fichiers détaillés sont chargés
    à la demande, page par page (NEED). Sans home.json (ancienne version des données), tout est chargé comme avant. */
 const SRC={steamH:['history/steam.jsonl',1],store:['store.json'],val:['history/valorant.jsonl',1],rl:['history/rocket_league.jsonl',1],cod:['cod_mobile.json'],codp:['cod_profile.json'],codr:['cod_ranks.json'],setup:['setup.json'],vh:['valorant.json'],gj:['goals.json'],rlm:['rocket_league.json'],bc:['ballchasing_latest.json'],sach:['steam_achievements.json']};
-const NEED={steam:['steamH','store','sach'],valorant:['vh'],rl:['bc'],setup:['setup'],bilan:['vh','bc','steamH'],activite:['vh','bc','steamH','val','rl'],profil:['vh','steamH','store']};
+const NEED={steam:['steamH','store','sach'],valorant:['vh'],rl:['bc'],setup:['setup'],bilan:['vh','bc','steamH'],comparer:['vh','bc','steamH'],activite:['vh','bc','steamH','val','rl'],profil:['vh','steamH','store']};
 const RAW={},FULL=new Set(),FAILED=new Set(),INFLIGHT={};
 function fetchKeys(keys){return Promise.all(keys.filter(k=>!FULL.has(k)).map(k=>INFLIGHT[k]||(INFLIGHT[k]=(async()=>{const [f,isJl]=SRC[k];const t=await get(f,!isJl);
   if(t!=null){RAW[k]=isJl?jlParse(t):t;FULL.add(k)}else if(!(k in RAW))RAW[k]=isJl?[]:null})().finally(()=>{delete INFLIGHT[k]}))))}
@@ -408,6 +408,7 @@ function bcHTML(){const B=D.bc;
 function rlManual(){
   const R=D.rlm,P=R.playlists,H=R.mmr_history,pf=R.performance||{};
   let h=`${rlGarage()}<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,color-mix(in srgb,var(--rl) 40%,transparent),transparent 65%)"><div class="ttl"><h3>Profil</h3><span class="pill">${esc(R.player)} · ${esc(R.platform)}</span><span class="pill">${esc(R.season)}</span>${R.reward_level?`<span class="pill">Récompenses : ${esc(R.reward_level)}</span>`:''}</div></div>
+  ${rlLastHTML()}
   <p class="mut" style="font-size:.8rem;margin-top:.5rem">📸 Source : captures tracker.gg, mise à jour manuelle (${fdate(R.updated)}). Base conservée ; les stats détaillées viennent des replays ballchasing.com (ci-dessous).</p>
   <h2>Rangs classés</h2><div class="list">${P.map(p=>`<div class="glass row" style="align-items:center"><span class="ic" style="font-size:1.8rem;width:44px;text-align:center">${rlIcon(p.tier)}</span><span class="n"><b>${esc(p.name)}</b><br><span style="font-size:1.05rem;font-weight:700">${esc(p.tier_name)} · div. ${RL_DIV[p.div-1]}</span><br><small class="mut">Meilleur : ${fnum(p.best_mmr)} MMR (${esc(p.best_season)})${p.matches?' · '+fnum(p.matches)+' parties':''}${p.percentile?' · '+esc(p.percentile):''}${p.streak?` · <span class="${p.streak.type=='loss'?'down':'up'}">série de ${p.streak.count} ${p.streak.type=='loss'?'défaites':'victoires'}</span>`:''}</small></span><span class="p" style="text-align:right"><b style="font-size:1.2rem">${fnum(p.mmr)}</b><br><small class="mut">MMR</small><br><small class="${p.mmr<p.best_mmr?'down':'up'}">${p.mmr-p.best_mmr} vs record</small></span></div>`).join('')}</div>
   <div class="stats" style="margin-top:.6rem">${(R.other||[]).map(o=>stat(o.name,o.mmr!=null?fnum(o.mmr):'≈ '+o.mmr_range.join('–'),o.note||'MMR')).join('')}</div>
@@ -494,7 +495,7 @@ const wkWin=(a,days=7)=>{const n=Date.now();return a.filter(x=>{const t=new Date
 const wkPrev=(a,days=7)=>{const n=Date.now();return a.filter(x=>{const t=new Date(x.date||x.fetched_at).getTime();return t>n-2*days*864e5&&t<=n-days*864e5})};
 const delta=(a,b,d=1,u='')=>{if(a==null||b==null)return '<span class="mut">—</span>';const x=a-b;return `<span class="${x>0?'up':x<0?'down':''}">${x>0?'▲ +':x<0?'▼ ':''}${fnum(x,d)}${u}</span> <small class="mut">(avant : ${fnum(b,d)}${u})</small>`};
 function bilan(){
-  setTimeout(bindPlayRows,0);
+  setTimeout(bindPlayRows,0);try{LS.set(RSEEN,weekRecap(srcAll(),Date.now()).week.key)}catch(e){}
   const now=new Date(),c1=wkWin(D.cod),c0=wkPrev(D.cod);
   const vAll=(D.vh?.matches||[]).filter(x=>x.mode=='Competitive'),v1=wkWin(vAll),v0=wkPrev(vAll);
   const R=bcReps(),r1=wkWin(R),r0=wkPrev(R),W=D.bc?.weekly||[];
@@ -520,10 +521,12 @@ function bilan(){
   const row=(n,a,b,d=1,u='')=>`<tr><td>${n}</td><td>${a==null?'—':fnum(a,d)+u}</td><td>${delta(a,b,d,u)}</td></tr>`;
   const tbl=(t,rows)=>rows.some(r=>r[1]!=null)?`<h2>${t}</h2><div class="glass tbl"><table><tr><th></th><th>7 j</th><th>Écart vs 7 j avant</th></tr>${rows.map(r=>row(...r)).join('')}</table></div>`:`<h2>${t}</h2><div class="glass empty">Pas de partie cette semaine — rien à comparer (reviens après quelques parties).</div>`;
   app.innerHTML=`<h2>📊 Bilan de la semaine</h2><p class="mut" style="font-size:.85rem">Comparaison calculée : 7 derniers jours vs 7 jours précédents, d'après tes parties enregistrées. Semaine en cours depuis le ${fshort(new Date(now-7*864e5))}.</p>
+  ${recapCard(true)}
   ${tbl('🔫 COD Mobile',[['Parties',c1.length,c0.length,0],['Victoires %',wr(c1),wr(c0),0,' %'],['K/D',kdOf(c1),kdOf(c0),2],['Élim. moy.',avg(c1,'kills'),avg(c0,'kills')],['Dégâts moy.',avg(c1,'damage'),avg(c0,'damage'),0],['Impact moy.',avg(c1,'impact'),avg(c0,'impact'),0],['Précision %',avg(c1,'accuracy_pct'),avg(c0,'accuracy_pct'),1,' %']])}
   ${tbl('🎯 Valorant (classé)',[['Parties',v1.length,v0.length,0],['Victoires %',vw(v1),vw(v0),0,' %'],['RR gagnés/perdus',rr(v1),rr(v0),0],['K/D',vAgg(v1).kd,vAgg(v0).kd,2],['HS %',vAgg(v1).hs,vAgg(v0).hs,0,' %'],['ADR',vAgg(v1).adr,vAgg(v0).adr,0]])}
   ${tbl('🚗 Rocket League (replays)',[['Replays',r1.length,r0.length,0],['Victoires %',r1.length?100*r1.filter(x=>x.result=='win').length/r1.length:null,r0.length?100*r0.filter(x=>x.result=='win').length/r0.length:null,0,' %'],['Précision tirs %',rm(r1,'shooting_pct'),rm(r0,'shooting_pct'),1,' %'],['Boost moyen',rm(r1,'avg_boost'),rm(r0,'avg_boost'),1],['Temps supersonique %',rm(r1,'pct_supersonic'),rm(r0,'pct_supersonic'),1,' %'],['Derrière la balle %',rm(r1,'pct_behind_ball'),rm(r0,'pct_behind_ball'),1,' %']])}
   ${steamPlaytimeHTML()}
+  ${weekHistoryHTML()}
   <h2>🏋️ Coaching (avis, d'après tes faiblesses mesurées)</h2>${coach.length?`<div class="list">${coach.map(([g,t,x,d])=>`<div class="glass pad"><small class="mut">${g}</small><br><b>${esc(t)}</b><p style="margin:.35rem 0">${esc(x)}</p><p class="mut" style="margin:0">🏋️ ${esc(d)}</p></div>`).join('')}</div>`:'<div class="glass empty">Pas assez de données récentes pour un coaching ciblé : enregistre quelques parties COD, replays RL ou parties classées Valorant.</div>'}
   <p class="mut" style="font-size:.78rem">« Calculé » = dérivé de tes chiffres. « Avis » = interprétation et exercices proposés, à adapter à ton ressenti.</p>`;
 }
@@ -570,17 +573,19 @@ function compCards(){
 /* Âge des données par jeu (accueil) */
 const agoH=t=>{const m=Math.floor((Date.now()-new Date(t))/6e4);return isNaN(m)?'':m<1?"à l'instant":m<60?`il y a ${m} min`:m<1440?`il y a ${Math.floor(m/60)} h`:`il y a ${Math.floor(m/1440)} j`};
 function agesHTML(){const A=[['Valorant',D.vh?.fetched_at],['Rocket League',D.bc?.fetched_at||D.rlm?.updated],['Steam',D.steam?.fetched_at],['COD',(D.codRepo||[]).map(m=>m.date).filter(Boolean).sort((a,b)=>new Date(a)-new Date(b)).at(-1)]].filter(([,t])=>t&&agoH(t));
-  return A.length?`<p class="ages mut"><span aria-hidden="true" style="margin-right:.35rem">🕒</span>${A.map(([n,t])=>`<span title="${esc(fdate(t))}">${n} · ${agoH(t)}</span>`).join(' ')}</p>`:''}
+  return A.length?`<p class="ages mut"><span aria-hidden="true" style="margin-right:.35rem">🕒</span>${A.map(([n,t])=>`<span title="${esc(fdate(t))}">${n} · ${agoH(t)}</span>`).join(' ')}${(()=>{const r=lastReplay();return r?` <a href="#/rl" title="${esc(fdate(r.date))}">🎬 Dernier replay RL · ${agoH(r.date)}</a>`:''})()}</p>`:''}
 /* ========== pages ========== */
 function home(){
   const recent=(D.steam?.recent?.games||[]).map(r=>({g:D.games.find(x=>x.appid==r.appid),r})).filter(x=>x.g);
   const backlog=D.games.filter(g=>!g.hours&&!g.last);
   const near=D.games.filter(g=>g.ach_total&&g.pct>=40&&g.pct<100).sort((a,b)=>b.pct-a.pct).slice(0,3);
-  const gl=goals().map(x=>({x,...goalProg(x)})).filter(x=>x.p<100).slice(0,2);
-  app.innerHTML=`${levelCard()}
+  const GS=LS.get(GSK,{})||{},gall=goals().map(x=>({x,...goalProg(x)})),hit=gall.filter(o=>{const s=GS[o.x.id];return s&&s.done&&s.t&&Date.now()-s.t<7*864e5}).slice(0,2),gl=[...hit,...gall.filter(x=>x.p<100&&!hit.includes(x))].slice(0,Math.max(2,hit.length+1));
+  setTimeout(bindNews,0);const recNew=recordsHTML(true);
+  app.innerHTML=`${newsHTML()}${levelCard()}
   <h2>Mes jeux</h2><div class="hero">${compCards()}</div>${agesHTML()}
   <div style="margin-top:.8rem">${codBtn('full')}</div>
-  <a class="glass tile" style="--c:var(--vi)" href="#/bilan"><span class="ic">📊</span><span class="n"><b>Bilan de la semaine</b><small class="mut">Progression et coaching</small></span><span class="chev">›</span></a>
+  <h2>Cette semaine <a class="more" href="#/comparer">Comparer ›</a></h2>${recapCard()}
+  ${recNew?`<h2>🏆 Records battus <a class="more" href="#/profil" data-goto="records">Tous ›</a></h2>${recNew}`:''}
   ${recent.length?`<h2>Joué récemment <a class="more" href="#/steam">Tout voir ›</a></h2><div class="grid">${recent.map(({g,r})=>gameCard(g,`${fnum(r.playtime_2weeks/60,1)} h / 2 sem.`)).join('')}</div>`:''}
   <h2>En bref</h2><div class="stats">${stat('Succès',`${D.ach}/${D.achT}`,D.achT?fnum(100*D.ach/D.achT,0)+' % débloqués':'')}${stat('Jeu favori',esc(D.games[0]?.name||'—'),D.games[0]?fnum(D.games[0].hours,1)+' h':'')}${stat('Jamais lancés',backlog.length,`sur ${D.games.length} jeux`)}${stat('Badges',`${badges().filter(b=>b.ok).length}/${badges().length}`,'<a href="#/profil">voir ›</a>')}</div>
   ${near.length?`<h2>Presque complétés</h2><div class="list">${near.map(g=>`<a class="glass row" href="#/steam/${g.appid}"><img src="${esc(g.img)}" alt="" loading="lazy"><span class="n"><b>${esc(g.name)}</b><br><small>${g.ach_unlocked}/${g.ach_total} succès</small>${bar(g.pct)}</span><span class="p">${g.pct} %</span></a>`).join('')}</div>`:''}
@@ -950,7 +955,7 @@ function careerCharts(){
   if(D.codP.length>1)chart($('#chist'),{type:'line',data:{labels:D.codP.map(x=>fshort(x.date)),datasets:[lineDS('É/M multijoueur',D.codP.map(x=>num(x.multiplayer?.kd)),COL.cy,{fill:false}),lineDS('Victoires BR',D.codP.map(x=>num(x.battle_royale?.wins)),COL.gr,{fill:false,yAxisID:'y2'})]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
 }
 function profil(){
-  setTimeout(()=>{storageFill();bindSyncSettings();if(sessionStorage.getItem('gt-goto')=='sync'){sessionStorage.removeItem('gt-goto');$('#sync')?.scrollIntoView({block:'start'})}},0);
+  setTimeout(()=>{storageFill();bindSyncSettings();bindNotif();const eb=$('#expb');if(eb)eb.onclick=doExport;{const g=sessionStorage.getItem('gt-goto');if(g&&/^[a-z]+$/.test(g)){sessionStorage.removeItem('gt-goto');$('#'+g)?.scrollIntoView({block:'start'})}}},0);
   const x=D.xp,T=tastes(),B=badges(),top=T.genres.slice(0,8),tot=top.reduce((a,g)=>a+g[1],0)||1;
   const fav=Object.entries(T.styles).sort((a,b)=>b[1]-a[1])[0];
   app.innerHTML=`${levelCard(false)}
@@ -960,9 +965,12 @@ function profil(){
   <div class="two"><div class="glass chart sq"><canvas id="c1"></canvas></div><div class="glass chart sq"><canvas id="c2"></canvas></div></div>
   <p class="mut" style="font-size:.8rem">Pondéré par le temps de jeu, d'après les genres de la boutique Steam.${T.notes.length?' '+esc(T.notes.join(' · '))+'.':''}</p>
   <h2>Badges (${B.filter(b=>b.ok).length}/${B.length})</h2><div class="badges">${B.map(b=>`<div class="glass bdg ${b.ok?'':'lock'}"><div class="e">${b.e}</div><b>${esc(b.n)}</b><small class="mut">${esc(b.d)}</small>${b.ok?'<small class="up">Débloqué ✓</small>':bar(b.p)}</div>`).join('')}</div>
+  <h2 id="records">🏆 Records & séries</h2>${recordsHTML(false)}
+  ${notifHTML()}
   ${syncSettingsHTML()}
+  ${exportHTML()}
   ${storageHTML()}
-  <h2>Plus</h2><div class="list"><a class="glass tile" style="--c:var(--vi)" href="#/bilan"><span class="ic">📊</span><span class="n"><b>Bilan de la semaine</b><small class="mut">Comparaisons et coaching</small></span><span class="chev">›</span></a><a class="glass tile" style="--c:var(--cy)" href="#/activite"><span class="ic">🕒</span><span class="n"><b>Activité</b><small class="mut">Chronologie de tes sessions et progrès</small></span><span class="chev">›</span></a>
+  <h2>Plus</h2><div class="list"><a class="glass tile" style="--c:var(--vi)" href="#/bilan"><span class="ic">📊</span><span class="n"><b>Bilan de la semaine</b><small class="mut">Comparaisons et coaching</small></span><span class="chev">›</span></a><a class="glass tile" style="--c:var(--cy)" href="#/comparer"><span class="ic">⚖️</span><span class="n"><b>Comparer deux périodes</b><small class="mut">Deux semaines ou deux mois, côte à côte</small></span><span class="chev">›</span></a><a class="glass tile" style="--c:var(--cy)" href="#/activite"><span class="ic">🕒</span><span class="n"><b>Activité</b><small class="mut">Chronologie de tes sessions et progrès</small></span><span class="chev">›</span></a>
   <a class="glass tile" style="--c:var(--vi)" href="#/objectifs"><span class="ic">🎯</span><span class="n"><b>Objectifs</b><small class="mut">${goals().length} en cours</small></span><span class="chev">›</span></a>
   <a class="glass tile" style="--c:var(--gr)" href="https://github.com/Blood63/gaming-tracker" target="_blank" rel="noopener"><span class="ic">⚙️</span><span class="n"><b>Données & automatisation</b><small class="mut">Dépôt GitHub · relevés automatiques</small></span><span class="chev">›</span></a></div>`;
   chart($('#c1'),{type:'doughnut',data:{labels:top.map(g=>g[0]),datasets:[{data:top.map(g=>+g[1].toFixed(1)),backgroundColor:PAL,borderColor:'#0a0920',borderWidth:3,hoverOffset:8}]},options:{cutout:'62%',plugins:{title:{display:true,text:'Genres (heures)'},tooltip:{callbacks:{label:c=>` ${c.label} : ${fnum(c.raw,1)} h (${fnum(100*c.raw/tot,0)} %)`}}}}});
@@ -970,9 +978,9 @@ function profil(){
   chart($('#c2'),{type:'radar',data:{labels:STYLES,datasets:[{label:'Affinité',data:sv2.map(v=>Math.round(100*v/mx)),borderColor:COL.cy,backgroundColor:COL.vi+'40',pointBackgroundColor:COL.gr,borderWidth:2}]},options:{scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'rgba(160,150,255,.15)'},angleLines:{color:'rgba(160,150,255,.15)'},pointLabels:{color:'#cfcaf5',font:{size:11}}}},plugins:{legend:{display:false},title:{display:true,text:'Profil de joueur'}}}});
   animBars();animRings();
 }
-function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0),done=o.done??p>=100;
+function goalHTML(o){const p=Math.min(100,o.p),dec=o.dec||(o.u=='h'?1:0),done=o.done??p>=100,gs=o.x&&(LS.get(GSK,{})||{})[o.x.id],fresh=done&&gs&&gs.t&&Date.now()-gs.t<7*864e5,mv=!done&&gs&&Math.abs(gs.d||0)>=.5?gs.d:0;
   const dl0=o.dl??(o.x?.deadline?Math.ceil((new Date(o.x.deadline+'T23:59')-Date.now())/864e5):null);o.dl=dl0;const dl=o.dl!=null&&!(done&&o.dl<0)?`<span class="pill ${o.dl<0&&!done?'warn':''}" style="margin-left:.3rem">${o.dl<0?'Échéance dépassée':o.dl==0?'Aujourd\'hui':'J−'+o.dl}</span>`:'';
-  return `<div class="glass goal"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?.pending?`<span class="pill warn" style="margin-left:.3rem">${o.x.pending==2?'📲 pas encore synchronisé':'🗑️ suppression à synchroniser'}</span>`:''}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>':fnum(p,0)+' %'}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
+  return `<div class="glass goal${done?' reached':''}${fresh?' fresh':''}"><div class="h"><b>${o.icon||''} ${esc(o.label)}</b>${dl}${o.x?.pending?`<span class="pill warn" style="margin-left:.3rem">${o.x.pending==2?'📲 pas encore synchronisé':'🗑️ suppression à synchroniser'}</span>`:''}${o.x?`<button class="x" data-del="${o.x.id}" aria-label="Supprimer">✕</button>`:''}</div>${o.wait?`<div class="mut" style="font-size:.85rem">⏳ ${esc(o.wait)}</div>${bar(0)}`:`<div class="mut" style="font-size:.85rem">${o.u=='RR'||o.type=='rank'?'':fnum(o.cur,dec)+(o.u?' '+o.u:'')+' / '+fnum(o.t,dec)+(o.u?' '+o.u:'')+' · '}${done?'<span class="up">Atteint 🎉</span>'+(fresh?' <span class="pill ok">Nouveau</span>':''):fnum(p,0)+' %'+(mv?` <span class="${mv>0?'up':'down'}" title="depuis le relevé précédent">${mv>0?'▲':'▼'} ${fnumS(mv,0)} pts</span>`:'')}</div>${bar(p,done?'gr':'')}${o.info?`<div class="mut" style="font-size:.8rem;margin-top:.3rem;line-height:1.35">${o.info}</div>`:''}`}</div>`}
 const goalsFor=types=>goals().filter(x=>types.includes(x.type)).map(x=>({x,...goalProg(x)}));
 const goalsBlock=(types,title='Objectifs de rang')=>{const G=goalsFor(types);return `<h2>${title}</h2>${G.length?`<div class="list">${G.map(goalHTML).join('')}</div>`:''}${syncBox()}<a class="btn ghost full" href="#/objectifs" style="margin-top:.5rem">🎯 ${G.length?'Gérer mes objectifs':'Fixer un objectif de rang'}</a>`};
 const bindGoalDel=re=>{bindSync();$$('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer cet objectif ? (sur tous tes appareils)')){delGoal(+b.dataset.del);re()}})};
@@ -1024,8 +1032,95 @@ function activite(){
   $$('#aseg button').forEach(b=>b.onclick=()=>draw(b.dataset.f));draw('all');
 }
 
+/* ========== t94 : bilan hebdo (accueil + historique), comparaison de périodes, records, objectifs atteints, nouveautés/notifications, export ========== */
+const srcAll=()=>({vh:D.vh,cod:D.cod,rl:bcReps(),steamH:D.steamH});
+const fnumS=(v,d)=>(v>0?'+':v<0?'−':'')+fnum(Math.abs(v),d);
+const prange=P=>P.kind=='M'?new Date(P.from+12*36e5).toLocaleDateString('fr-FR',{...TZ,month:'long',year:'numeric'}):`${fshort(P.from)} → ${fshort(P.to-1)}`;
+const pname=P=>P.kind=='M'?prange(P).replace(/^./,c=>c.toUpperCase()):'Semaine du '+prange(P);
+const RSEEN='gt-recap-seen';
+/* ligne ▲/▼ du bilan */
+const recapLine=r=>{const v=r.a==null?'—':fnum(r.a,r.dec)+r.u,dd=r.d==null?'<span class="mut">nouveau</span>':`<span class="${r.dir>0?'up':r.dir<0?'down':'mut'}">${r.dir>0?'▲':r.dir<0?'▼':'='} ${fnumS(r.d,r.dec)}${r.u}</span>`;return `<li><span class="rk">${esc(r.l)}</span><b>${v}</b>${dd}</li>`};
+function recapPick(rows,n=6){const s=r=>(r.kind=='vol'?0:2)+(r.d==null?0:1)+(r.k=='rr'||r.k=='kd'?1:0);const by={};rows.forEach(r=>(by[r.g]??=[]).push(r));
+  const out=[];Object.values(by).forEach(a=>out.push(...a.sort((x,y)=>s(y)-s(x)).slice(0,2)));return out.slice(0,n)}
+function recapCard(onBilan){const W=weekRecap(srcAll(),Date.now()),seen=LS.get(RSEEN,'')==W.week.key,up=W.rows.filter(r=>r.dir>0&&r.kind!='vol').length,dn=W.rows.filter(r=>r.dir<0&&r.kind!='vol').length;
+  const P=recapPick(W.rows),G=[...new Set(P.map(r=>r.g))];
+  return `<a class="glass recap" href="${onBilan?`#/comparer/${W.week.key}/${W.prev.key}`:'#/bilan'}" id="recap" style="--c:var(--vi)"><div class="rh"><span class="ic">📊</span><span class="n"><b>${onBilan?'Semaine terminée (lundi → dimanche)':'Bilan de la semaine'}</b><small class="mut">${esc(prange(W.week))}${W.played?` · ${up} en progrès · ${dn} en baisse`:''}</small></span>${seen||onBilan?'':'<span class="pill ok new">Nouveau</span>'}<span class="chev">›</span></div>
+  ${W.played?G.map(g=>`<div class="rg"><small>${esc(P.find(r=>r.g==g).gl)}</small><ul>${P.filter(r=>r.g==g).map(recapLine).join('')}</ul></div>`).join(''):'<p class="mut" style="margin:.4rem 0 0;font-size:.85rem">Aucune partie la semaine dernière : rien à comparer. Le prochain bilan arrive lundi.</p>'}</a>`}
+function weekHistoryHTML(){const S=srcAll(),now=Date.now(),first=Math.min(...[...(S.vh?.matches||[]),...S.cod,...S.rl].map(tOf).filter(x=>x!=null)),L=periodList('S',isFinite(first)?first:now,now,13).slice(1);
+  if(!L.length)return '';
+  const rows=L.map((P,i)=>{const A=periodStats(S,P.from,P.to),B=L[i+1]?periodStats(S,L[i+1].from,L[i+1].to):null,C=compareStats(A,B).filter(r=>r.a!=null&&r.kind!='vol'),n=A.val.n+A.cod.n+A.rl.n;
+    const chip=(g,lab,k,dec,u)=>{const r=C.find(x=>x.g==g&&x.k==k);return r?`<span class="pill">${lab} ${fnum(r.a,dec)}${u}${r.dir?` <i class="${r.dir>0?'up':'down'}">${r.dir>0?'▲':'▼'}</i>`:''}</span>`:''};
+    return `<a class="glass wk" href="#/comparer/${P.key}/${L[i+1]?.key||''}"><div class="h"><b>${esc(pname(P))}</b><small class="mut">${n} partie${n>1?'s':''}${A.steam.min?` · ${fnum(A.steam.min/60,1)} h Steam`:''}</small></div>
+    <div>${chip('val','🎯 RR','rr',0,'')}${chip('val','🎯 K/D','kd',2,'')}${chip('cod','🔫 K/D','kd',2,'')}${chip('rl','🚗','wr',0,' % vict.')}${n||A.steam.min?'':'<span class="mut" style="font-size:.8rem">Semaine sans partie</span>'}</div></a>`}).join('');
+  return `<h2>📅 Semaines passées <a class="more" href="#/comparer">Comparer ›</a></h2><p class="mut" style="font-size:.8rem">Semaines du lundi au dimanche (heure de Paris), comparées à la précédente. Touche une semaine pour le détail.</p><div class="list">${rows}</div>`}
+/* Comparaison de deux périodes : #/comparer[/A/B] */
+function comparer(ka,kb){const S=srcAll(),now=Date.now(),first=Math.min(...[...(S.vh?.matches||[]),...S.cod,...S.rl,...(S.steamH||[])].map(tOf).filter(x=>x!=null));
+  let kind=(ka||'')[0]=='M'?'M':(ka||'')[0]=='S'?'S':sessionStorage.getItem('cmpK')||'S';const L=periodList(kind,isFinite(first)?first:now,now,kind=='M'?24:52);
+  let A=periodFromKey(ka),B=periodFromKey(kb);if(!A||A.kind!=kind||!L.some(p=>p.key==A.key))A=L[1]||L[0];if(!B||B.kind!=kind||!L.some(p=>p.key==B.key))B=L[L.indexOf(L.find(p=>p.key==A?.key))+1]||L.at(-1);
+  const gf=sessionStorage.getItem('cmpG')||'all';
+  if(!A){app.innerHTML='<div class="glass empty">Pas encore assez de données pour comparer.</div>';return}
+  const sa=periodStats(S,A.from,A.to),sb=periodStats(S,B.from,B.to),R=compareStats(sa,sb,gf=='all'?null:[gf]);
+  const opt=sel=>L.map(p=>`<option value="${p.key}"${p.key==sel.key?' selected':''}>${esc(pname(p))}${p.to>now?' (en cours)':''}</option>`).join('');
+  const groups=[...new Set(R.map(r=>r.g))];
+  app.innerHTML=`<h2>⚖️ Comparer deux périodes</h2><p class="mut" style="font-size:.85rem">Calculé depuis tes parties, replays et relevés Steam (heure de Paris).</p>
+  <div class="seg" id="ckind">${[['S','Semaines'],['M','Mois']].map(([k,n])=>`<button data-k="${k}" class="${k==kind?'on':''}" aria-pressed="${k==kind}">${n}</button>`).join('')}</div>
+  <div class="glass pad cmpsel"><label><small class="mut">Période A</small><select id="ca">${opt(A)}</select></label><button type="button" class="btn ghost sm" id="cswap" aria-label="Inverser A et B">⇄</button><label><small class="mut">Période B</small><select id="cb">${opt(B)}</select></label></div>
+  <div class="seg" id="cgame">${[['all','Tous'],['val','🎯 Valorant'],['cod','🔫 COD'],['rl','🚗 RL'],['steam','🕹️ Steam']].map(([k,n])=>`<button data-g="${k}" class="${k==gf?'on':''}" aria-pressed="${k==gf}">${n}</button>`).join('')}</div>
+  ${R.length?groups.map(g=>`<h2>${esc(R.find(r=>r.g==g).gl)}</h2><div class="glass tbl cmp"><table><tr><th></th><th>A</th><th>B</th><th>Écart</th></tr>${R.filter(r=>r.g==g).map(r=>`<tr><td>${esc(r.l)}</td><td><b>${r.a==null?'—':fnum(r.a,r.dec)+r.u}</b></td><td>${r.b==null?'—':fnum(r.b,r.dec)+r.u}</td><td>${r.d==null?'<span class="mut">—</span>':`<span class="${r.kind=='vol'?'':r.dir>0?'up':r.dir<0?'down':''}">${r.dir>0?'▲':r.dir<0?'▼':'='} ${fnumS(r.d,r.dec)}${r.u}</span>`}</td></tr>`).join('')}</table></div>`).join(''):'<div class="glass empty">Aucune partie sur ces deux périodes pour ce jeu.</div>'}
+  <p class="mut" style="font-size:.78rem">A = ${esc(pname(A))} · B = ${esc(pname(B))}. ▲ = A meilleur que B. Valorant : parties classées uniquement ; Steam : écart des relevés (le premier relevé date du ${fshort(S.steamH?.[0]?.fetched_at)}).</p>`;
+  const nav=(a,b)=>{history.replaceState(null,'',`#/comparer/${a}/${b}`);rerender()};
+  $('#ca').onchange=()=>nav($('#ca').value,$('#cb').value);$('#cb').onchange=()=>nav($('#ca').value,$('#cb').value);$('#cswap').onclick=()=>nav($('#cb').value,$('#ca').value);
+  $$('#ckind button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('cmpK',b.dataset.k);if(b.dataset.k!=kind){history.replaceState(null,'','#/comparer');rerender()}});
+  $$('#cgame button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('cmpG',b.dataset.g);rerender()});
+}
+/* Records & séries */
+const REK='gt-records',GSK='gt-goal-state',SNK='gt-snap',NTK='gt-notif';
+const GICO={valorant:'🎯',cod:'🔫',rl:'🚗'};
+function recordsHTML(compact){const R=records(srcAll()),b=(LS.get(REK,null)||{}).b||{},L=compact?R.filter(r=>b[r.id]):R;if(!L.length)return compact?'':'<div class="glass empty">Pas encore de record : joue quelques parties.</div>';
+  return `<div class="recs">${L.map(r=>`<${r.link?`a href="${r.link}"`:'div'} class="glass rec${b[r.id]?' new':''}"><div class="k">${GICO[r.g]||''} ${esc(r.l)}</div><div class="v">${fnum(r.v,r.dec)}${r.u}</div><div class="d mut">${esc(r.sub||'')}${r.sub&&r.at?' · ':''}${r.at?fshort(r.at):''}${r.cur!=null&&r.cur>0?` · en cours : ${r.cur}`:''}</div>${b[r.id]?'<span class="pill ok">🏆 Nouveau record</span>':''}</${r.link?'a':'div'}>`).join('')}</div>`}
+/* état comparé à la dernière visite → nouveautés (toast + carte d'accueil + notification si activée) */
+let NEWS=[];
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('[data-goto]');if(a)sessionStorage.setItem('gt-goto',a.dataset.goto)});
+const snapNow=()=>({vt:D.vh?.mmr?.tier_id??null,vn:D.vh?.mmr?.tier||null,rlN:D.bc?bcReps().length:null,rlLast:lastReplay()?.date||null,bv:BV});
+const lastReplay=()=>{const R=(D.bc?.replays||[]).filter(r=>r.date&&!r.bots);return R.length?R.reduce((a,b)=>Date.parse(b.date)>Date.parse(a.date)?b:a):null};
+function checkNews(){try{const now=Date.now(),ev=snapEvents(LS.get(SNK,null),snapNow());LS.set(SNK,snapNow());
+  const ru=recordsUpdate(LS.get(REK,null),records(srcAll()),now);LS.set(REK,ru.st);ru.beaten.forEach(r=>ev.push({k:'rec',title:`🏆 Nouveau record : ${r.l}`,body:`${GICO[r.g]||''} ${fnum(r.v,r.dec)}${r.u}`,link:'#/profil'}));
+  const gu=goalsUpdate(LS.get(GSK,null),goals().filter(x=>!x.pending).map(x=>({id:x.id,...goalProg(x)})).map(g=>({...g,p:Math.max(0,Math.min(100,g.p||0)),done:g.done??g.p>=100})),now);LS.set(GSK,gu.st);
+  gu.reached.forEach(g=>ev.push({k:'goal',title:'🎉 Objectif atteint',body:g.label,link:'#/objectifs'}));
+  if(ev.length){NEWS=[...ev,...NEWS].slice(0,8);toast(ev.length==1?ev[0].title:`${ev.length} nouveautés depuis ta dernière visite`);notify(ev)}}catch(e){console.error(e)}}
+const notifOn=()=>LS.get(NTK,false)===true&&'Notification' in window&&Notification.permission=='granted';
+async function notify(ev){if(!notifOn())return;for(const e of ev.slice(0,4)){const o={body:e.body,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:'gt-'+e.k+'-'+(e.title.length),data:{link:e.link}};
+  try{const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();if(r&&r.showNotification){await r.showNotification(e.title,o);continue}}catch(x){}
+  try{const n=new Notification(e.title,o);n.onclick=()=>{window.focus();go(e.link);n.close()}}catch(x){}}}
+function newsHTML(){if(!NEWS.length)return '';return `<div class="glass news" id="news"><div class="h"><b>✨ Nouveautés depuis ta dernière visite</b><button class="x" id="newsx" aria-label="Masquer">✕</button></div>${NEWS.map(e=>`<a href="${e.link}">${esc(e.title)}<small class="mut"> · ${esc(e.body)}</small></a>`).join('')}</div>`}
+const bindNews=()=>{const x=$('#newsx');if(x)x.onclick=()=>{NEWS=[];$('#news')?.remove()}};
+/* retour sur l'appli (onglet/app de nouveau visible) : si les robots ont publié de nouvelles données, on les recharge sans recharger la page */
+let reloading=false;
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState!='visible'||!ready||reloading)return;reloading=true;try{const v0=BV;await stamp();if(BV&&v0&&BV!=v0){
+  for(const k of Object.keys(RAW))delete RAW[k];FULL.clear();FAILED.clear();await load();checkNews();if(!$('form'))rerender()}}catch(e){console.error(e)}finally{reloading=false}});
+function notifHTML(){const sup='Notification' in window,perm=sup?Notification.permission:'unsupported',on=LS.get(NTK,false)===true&&perm=='granted',ios=/iPhone|iPad/.test(navigator.userAgent),standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  return `<h2 id="notifs">🔔 Notifications</h2><div class="glass pad"><label class="tgl"><input type="checkbox" id="ntf"${on?' checked':''}${sup?'':' disabled'}><span class="sw" aria-hidden="true"></span><span><b>Me prévenir des nouveautés</b><br><small class="mut">Changement de rang Valorant, nouveaux replays RL analysés, objectif atteint, record battu.</small></span></label>
+  <p class="mut" id="ntfst" style="font-size:.8rem;margin:.6rem 0 0">${!sup?(ios&&!standalone?'📱 Sur iPhone, ajoute d’abord l’appli à l’écran d’accueil (Partager › Sur l’écran d’accueil), puis ouvre-la depuis l’icône pour activer les notifications.':'Ce navigateur ne gère pas les notifications. Les nouveautés s’affichent quand même dans l’appli.'):perm=='denied'?'🚫 Notifications bloquées pour ce site : autorise-les dans les réglages du navigateur, puis réessaie.':on?'✅ Activées sur cet appareil.':'Désactivées.'}</p>
+  <p class="mut" style="font-size:.78rem;margin:.4rem 0 0">ℹ️ Le site est hébergé sans serveur (GitHub Pages) : la vérification se fait quand tu ouvres l’appli ou que tu y reviens. Pas d’alerte quand l’appli est complètement fermée. Les nouveautés s’affichent aussi en haut de l’accueil.</p>
+  ${on?'<button type="button" class="btn ghost sm" id="ntft" style="margin-top:.6rem">Envoyer une notification de test</button>':''}</div>`}
+function bindNotif(){const c=$('#ntf');if(!c)return;c.onchange=async()=>{if(c.checked){let p=Notification.permission;if(p=='default'){try{p=await Notification.requestPermission()}catch(e){}}LS.set(NTK,p=='granted');if(p!='granted')toast('Notifications non autorisées')}else LS.set(NTK,false);rerender()};
+  const t=$('#ntft');if(t)t.onclick=()=>notify([{k:'test',title:'🔔 GameTrack',body:'Les notifications fonctionnent sur cet appareil.',link:'#/profil'}])}
+/* Export de toutes les données en un fichier JSON */
+function exportHTML(){return `<h2>📦 Exporter mes données</h2><div class="glass pad"><p class="mut" style="margin:0 0 .6rem;font-size:.85rem">Télécharge toutes tes données (Steam, Valorant, Rocket League, COD, objectifs, setup) et ce qui attend d’être synchronisé sur cet appareil, en un seul fichier JSON. Ta clé GitHub n’y figure jamais.</p><button type="button" class="btn full" id="expb">⬇️ Télécharger l’export (.json)</button><p class="mut" id="expst" style="font-size:.8rem;margin:.5rem 0 0"></p></div>`}
+async function doExport(){const b=$('#expb'),st=$('#expst');if(!b||b.disabled)return;b.disabled=true;st.textContent='Préparation…';
+  try{const files={},miss=[];await Promise.all(Object.values(SRC).map(async([f,isJl])=>{const t=await get(f,false);if(t==null){miss.push(f);return}try{files[f]=isJl?jlParse(t):JSON.parse(t)}catch(e){files[f]=t}}));
+    const dev={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||k==TOKK||/token|tok/i.test(k))continue;try{dev[k]=JSON.parse(localStorage.getItem(k))}catch(e){dev[k]=localStorage.getItem(k)}}
+    const out={format:'gaming-tracker-export',version:1,exported_at:new Date().toISOString(),data_version:BV,fichiers:files,manquants:miss,appareil:dev},
+      blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a'),[y,m,d]=parisYMD(Date.now());
+    a.href=u;a.download=`gaming-tracker-export-${y}-${pad2(m)}-${pad2(d)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+    st.textContent=`✅ ${Object.keys(files).length} fichiers exportés (${fnum(blob.size/1024,0)} Ko)${miss.length?` · indisponibles hors ligne : ${miss.join(', ')}`:''}.`}
+  catch(e){console.error(e);st.textContent='⚠️ Export impossible : '+e.message}finally{b.disabled=false}}
+/* RL : date du dernier replay reçu */
+function rlLastHTML(){if(!D.bc)return '';const r=lastReplay(),t=r&&Date.parse(r.date),old=t&&Date.now()-t>7*864e5;
+  return `<div class="glass rllast${old?' old':''}"><span class="ic">🎬</span><span class="n"><b>Dernier replay reçu</b><small>${r?`${esc(new Date(t).toLocaleDateString('fr-FR',{...TZ,weekday:'short',day:'numeric',month:'short'}))} à ${esc(new Date(t).toLocaleTimeString('fr-FR',{...TZ,hour:'2-digit',minute:'2-digit'}))} (${agoH(t)})`:'aucun pour l’instant'} · vérifié ${agoH(D.bc.fetched_at)||'—'}</small>${old?'<small class="warn">Plus de 7 jours : si tu as joué depuis, vérifie que l’envoi automatique tourne sur le PC.</small>':''}</span></div>`}
+
 /* ========== routeur ========== */
-const TITLES={bilan:'Bilan hebdo','':'GameTrack',setup:'Mon setup',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité'};
+const TITLES={bilan:'Bilan hebdo','':'GameTrack',setup:'Mon setup',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité',comparer:'Comparer'};
 let lbBack=null;
 function lb(u){const b=$('#lb');lbBack=document.activeElement;$('#lb img').src=u;b.style.display='flex';b.focus({preventScroll:true})}
 function lbClose(){const b=$('#lb');if(b.style.display!='flex')return;b.style.display='none';const f=lbBack;lbBack=null;if(f&&f.isConnected&&f.focus)f.focus({preventScroll:true})}
@@ -1043,7 +1138,7 @@ function render(){
   $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]=='profil'?'Carte de joueur':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
   const need=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));
   if(need.length){const h0=location.hash;app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';fetchKeys(need).then(()=>{need.forEach(k=>{if(!FULL.has(k))FAILED.add(k)});build();if(location.hash==h0)render()});return}
-  try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(decodeURIComponent(p[1])):cod(),profil,objectifs,activite}[r]||home)()}
+  try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(decodeURIComponent(p[1])):cod(),profil,objectifs,activite,comparer:()=>comparer(p[1],p[2])}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
 }
@@ -1057,4 +1152,4 @@ window.addEventListener('hashchange',route);
 // préchargement à l'intention (doigt posé / survol d'un lien) : les données détaillées de la page visée arrivent plus tôt
 document.addEventListener('pointerdown',e=>{const a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a||!ready)return;const r=a.getAttribute('href').slice(2).split('/')[0];const n=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));if(n.length)fetchKeys(n)},{passive:true});
 app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';
-load().then(()=>{ready=true;render()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});
+load().then(()=>{ready=true;checkNews();render()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});

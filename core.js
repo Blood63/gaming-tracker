@@ -94,3 +94,82 @@ function codMapRank(list,min=MAP_MIN){const g={};(list||[]).filter(x=>(x.type||'
   const all=Object.entries(g).map(([k,a])=>({map:k,...st(a)})),E=all.filter(s=>s.n>=min&&(s.wr!=null||s.kd!=null));
   const sc=s=>(s.wr??50)/100+Math.min(s.kd??1,5)/5;E.sort((a,b)=>sc(b)-sc(a)||b.n-a.n);
   const ok=E.length>=2&&sc(E[0])>sc(E.at(-1));return{ok,best:ok?E[0]:null,worst:ok?E.at(-1):null,eligible:E.length,maps:all.length,min}}
+
+/* ========== t94 : périodes (semaines/mois, heure de Paris), bilan hebdo, records, objectifs atteints, nouveautés ========== */
+const PFMT=(()=>{try{return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'})}catch(e){return null}})();
+/* décalage (ms) de l'heure de Paris par rapport à UTC à l'instant t */
+function tzOff(t){if(!PFMT)return 0;const p={};PFMT.formatToParts(new Date(t)).forEach(x=>p[x.type]=x.value);return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute,+p.second)-Math.floor(t/1000)*1000}
+const parisYMD=t=>{const d=new Date(t+tzOff(t));return[d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate()]};
+/* minuit (heure de Paris) du jour y-m-d, en ms UTC — gère le changement d'heure */
+function parisMidnight(y,m,d){const g=Date.UTC(y,m-1,d);let t=g-tzOff(g);t=g-tzOff(t);return t}
+const pad2=n=>String(n).padStart(2,'0');
+/* début de la semaine (lundi 00:00 Paris) contenant t */
+function weekStart(t){const[y,m,d]=parisYMD(t),wd=(new Date(Date.UTC(y,m-1,d)).getUTCDay()+6)%7,u=new Date(Date.UTC(y,m-1,d-wd));return parisMidnight(u.getUTCFullYear(),u.getUTCMonth()+1,u.getUTCDate())}
+function monthStart(t){const[y,m]=parisYMD(t);return parisMidnight(y,m,1)}
+const addDays=(t,n)=>{const[y,m,d]=parisYMD(t+12*36e5),u=new Date(Date.UTC(y,m-1,d+n));return parisMidnight(u.getUTCFullYear(),u.getUTCMonth()+1,u.getUTCDate())};
+const addMonths=(t,n)=>{const[y,m]=parisYMD(t+12*36e5),u=new Date(Date.UTC(y,m-1+n,1));return parisMidnight(u.getUTCFullYear(),u.getUTCMonth()+1,1)};
+/* clé lisible d'une période : 'S2026-10-19' (semaine) ou 'M2026-10' (mois) */
+function periodOf(kind,t){const s=kind=='M'?monthStart(t):weekStart(t),e=kind=='M'?addMonths(s,1):addDays(s,7),[y,m,d]=parisYMD(s+12*36e5);return{kind,from:s,to:e,key:kind=='M'?`M${y}-${pad2(m)}`:`S${y}-${pad2(m)}-${pad2(d)}`}}
+function periodFromKey(key){const r=/^([SM])(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(key||'');if(!r)return null;return periodOf(r[1],parisMidnight(+r[2],+r[3],+(r[4]||1))+12*36e5)}
+/* liste des périodes (plus récente d'abord) de la première donnée jusqu'à now */
+function periodList(kind,first,now,max=60){if(first==null||isNaN(first))return[];const out=[];let p=periodOf(kind,now);while(out.length<max&&p.to>first){out.push(p);p=periodOf(kind,p.from-1)}return out}
+const tOf=x=>{const t=Date.parse(x&&(x.date||x.fetched_at));return isNaN(t)?null:t};
+const inR=(a,f,t)=>(a||[]).filter(x=>{const v=tOf(x);return v!=null&&v>=f&&v<t});
+const byT=a=>(a||[]).filter(x=>tOf(x)!=null).slice().sort((a,b)=>tOf(a)-tOf(b));
+const steamTot=s=>(s&&s.games||[]).reduce((a,g)=>a+(g.playtime_forever!=null?g.playtime_forever:Math.round((g.hours||0)*60)),0);
+/* Stats d'une période pour tous les jeux. src = {vh, cod, rl, steamH} (mêmes formes que les fichiers de données). */
+function periodStats(src,from,to){
+  const vm=inR((src.vh&&src.vh.matches)||[],from,to).filter(m=>m.mode=='Competitive'),vr=vm.filter(m=>m.result),H=byT(src.vh&&src.vh.mmr_history),Hin=inR(H,from,to);
+  const val={n:vm.length,wr:vr.length?100*vr.filter(m=>m.result=='win').length/vr.length:null,kd:kdOf(vm),
+    rr:Hin.length?Hin.reduce((s,h)=>s+(num(h.change)||0),0):null,elo:Hin.length?num(Hin.at(-1).elo):null,tier:Hin.length?Hin.at(-1).tier:null};
+  const c=inR(src.cod,from,to);const cod={n:c.length,wr:wr(c),kd:kdOf(c),kills:avg(c,'kills'),dmg:avg(c,'damage')};
+  const r=inR(src.rl,from,to),rr=r.filter(x=>x.result);const rl={n:r.length,wr:rr.length?100*rr.filter(x=>x.result=='win').length/rr.length:null,goals:avg(r,'goals'),saves:avg(r,'saves')};
+  const S=byT(src.steamH),b=[...S].reverse().find(s=>tOf(s)<=from),e=[...S].reverse().find(s=>tOf(s)<to);
+  const steam={min:b&&e&&tOf(e)>tOf(b)?Math.max(0,steamTot(e)-steamTot(b)):b&&e?0:null};
+  return{from,to,val,cod,rl,steam};
+}
+/* Indicateurs comparés (plus haut = mieux, sauf indication) */
+const KPIS=[['val','🎯 Valorant','rr','RR gagnés/perdus',0,' RR','sum'],['val','🎯 Valorant','elo','MMR (elo) en fin de période',0,''],['val','🎯 Valorant','n','Parties classées',0,'','vol'],['val','🎯 Valorant','wr','Victoires',0,' %'],['val','🎯 Valorant','kd','K/D',2,''],
+ ['cod','🔫 COD Mobile','n','Parties',0,'','vol'],['cod','🔫 COD Mobile','kd','K/D',2,''],['cod','🔫 COD Mobile','wr','Victoires',0,' %'],['cod','🔫 COD Mobile','kills','Éliminations / partie',1,''],['cod','🔫 COD Mobile','dmg','Dégâts / partie',0,''],
+ ['rl','🚗 Rocket League','n','Parties (replays)',0,'','vol'],['rl','🚗 Rocket League','wr','Victoires',0,' %'],['rl','🚗 Rocket League','goals','Buts / partie',2,''],['rl','🚗 Rocket League','saves','Arrêts / partie',2,''],
+ ['steam','🕹️ Steam','min','Temps de jeu',1,' h','vol']];
+/* comparaison A (récente) vs B : lignes {g,gl,k,l,a,b,d,dec,u,dir} ; dir = +1 mieux, -1 moins bien, 0 égal/neutre ; seulement les lignes où A ou B existe */
+function compareStats(A,B,games){return KPIS.filter(k=>!games||games.includes(k[0])).map(([g,gl,k,l,dec,u,kind])=>{
+  let a=A&&A[g]?A[g][k]:null,b=B&&B[g]?B[g][k]:null;if(g=='steam'){a=a==null?null:a/60;b=b==null?null:b/60}
+  if((k=='n'||kind=='vol')&&g!='steam'){if(!a)a=a===0?0:null;if(!b)b=b===0?0:null}
+  const d=a!=null&&b!=null?a-b:null,eps=dec?Math.pow(10,-dec)/2:.5;return{g,gl,k,l,a,b,d,dec,u,kind,dir:d==null||Math.abs(d)<eps?0:d>0?1:-1}}).filter(r=>(r.a!=null&&!(r.kind=='vol'&&r.a===0&&!r.b))||(r.b!=null&&!(r.kind=='vol'&&r.b===0&&!r.a)))}
+/* bilan d'une semaine terminée : faits marquants (progrès/baisses), triés par importance */
+function weekRecap(src,now){const cur=periodOf('S',now),w=periodOf('S',cur.from-1),p=periodOf('S',w.from-1);
+  const A=periodStats(src,w.from,w.to),B=periodStats(src,p.from,p.to),rows=compareStats(A,B).filter(r=>r.a!=null);
+  const played=A.val.n+A.cod.n+A.rl.n>0||(A.steam.min||0)>0;return{week:w,prev:p,A,B,rows,played}}
+/* séries de victoires : meilleure et en cours (liste triée par date) */
+function streaks(list,isW,hasR){let best=0,bestAt=null,cur=0;byT(list).filter(hasR).forEach(x=>{if(isW(x)){cur++;if(cur>best){best=cur;bestAt=x.date}}else cur=0});return{best,bestAt,cur}}
+const maxBy=(a,f)=>{let m=null;(a||[]).forEach(x=>{const v=num(f(x));if(v!=null&&(m==null||v>m.v))m={v,x}});return m};
+/* Records personnels calculés depuis les données (aucune donnée n'est modifiée) */
+function records(src){const R=[],add=(id,g,l,m,dec=0,u='',extra={})=>{if(m&&m.v!=null&&m.v>0)R.push({id,g,l,v:m.v,dec,u,at:m.x&&(m.x.date||m.x.fetched_at)||null,...extra})};
+  const vh=src.vh||{},vm=(vh.matches||[]).filter(m=>!/deathmatch/i.test(m.mode||'')),vc=(vh.matches||[]).filter(m=>m.mode=='Competitive');
+  const pk=maxBy(vh.mmr_history,h=>h.elo);add('val_elo','valorant','Pic de MMR (elo)',pk,0,'',pk?{sub:vTier(pk.x.tier)+' · '+(pk.x.rr??'')+' RR'}:{});
+  const vk=maxBy(vm,m=>m.kills);add('val_kills','valorant','Éliminations en une partie',vk,0,'',vk?{sub:vk.x.map||'',link:'#/valorant/'+vk.x.id}:{});
+  const vs=streaks(vc,m=>m.result=='win',m=>!!m.result);add('val_streak','valorant','Série de victoires (classé)',{v:vs.best,x:{date:vs.bestAt}},0,'',{cur:vs.cur});
+  const cod=src.cod||[],ck=maxBy(cod,m=>m.kills);add('cod_kills','cod','Éliminations en une partie',ck,0,'',ck?{sub:ck.x.map||''}:{});
+  add('cod_dmg','cod','Dégâts en une partie',maxBy(cod,m=>m.damage),0);
+  add('cod_kd','cod','Meilleur K/D (une partie)',maxBy(cod.filter(m=>num(m.kills)!=null&&num(m.deaths)!=null),m=>m.kills/Math.max(1,m.deaths)),2);
+  const cs=streaks(cod.filter(m=>(m.type||'MP')=='MP'),isWin,m=>!!m.result);add('cod_streak','cod','Série de victoires (multi)',{v:cs.best,x:{date:cs.bestAt}},0,'',{cur:cs.cur});
+  const rl=src.rl||[],rs=streaks(rl,x=>x.result=='win',x=>!!x.result);add('rl_streak','rl','Série de victoires',{v:rs.best,x:{date:rs.bestAt}},0,'',{cur:rs.cur});
+  const rg=maxBy(rl,x=>x.goals);add('rl_goals','rl','Buts en une partie',rg,0,'',rg?{link:'#/rl/'+rg.x.id}:{});
+  const rv=maxBy(rl,x=>x.saves);add('rl_saves','rl','Arrêts en une partie',rv,0,'',rv?{link:'#/rl/'+rv.x.id}:{});
+  return R}
+/* Records battus depuis la dernière visite. st = {v:{id:valeur},b:{id:horodatage}} (stockage local). La 1re fois : simple point de départ. */
+function recordsUpdate(st,recs,now,keepMs=7*864e5){const v={...(st&&st.v||{})},b={...(st&&st.b||{})},first=!st||!st.v,beaten=[];
+  recs.forEach(r=>{const o=v[r.id];if(!first&&o!=null&&r.v>o+1e-9){b[r.id]=now;beaten.push(r)}v[r.id]=Math.max(r.v,o??-Infinity)});
+  Object.keys(b).forEach(k=>{if(now-b[k]>keepMs)delete b[k]});return{st:{v,b},beaten}}
+/* Objectifs : atteints depuis la dernière visite et progression. prev = {id:{p,done,t}} */
+function goalsUpdate(prev,cur,now,keepMs=7*864e5){const nx={},reached=[],moved=[],first=!prev;
+  cur.forEach(g=>{const o=prev&&prev[g.id],done=!!g.done;nx[g.id]={p:g.p,done,t:o&&o.done==done?o.t:done&&o&&!first?now:null,d:o&&!first&&Math.abs(g.p-o.p)>=.5?g.p-o.p:o?.d||0};
+    if(!first&&done&&(!o||!o.done)&&o){reached.push(g)}if(!first&&o&&Math.abs(g.p-o.p)>=.5)moved.push({...g,d:g.p-o.p})});
+  return{st:nx,reached,moved,recent:cur.filter(g=>nx[g.id].done&&nx[g.id].t&&now-nx[g.id].t<keepMs)}}
+/* Nouveautés entre deux visites (rang Valorant, replays RL). snap = {vt:tier_id, vn:tier, rlN:nb replays, rlLast:date} */
+function snapEvents(a,b){const ev=[];if(!a||!b)return ev;
+  if(a.vt!=null&&b.vt!=null&&a.vt!=b.vt)ev.push({k:'val',up:b.vt>a.vt,title:`Valorant : ${b.vt>a.vt?'promotion':'rétrogradation'} ${b.vt>a.vt?'▲':'▼'}`,body:`${vTier(a.vn)} → ${vTier(b.vn)}`,link:'#/valorant'});
+  if(b.rlN!=null&&a.rlN!=null&&b.rlN>a.rlN){const n=b.rlN-a.rlN;ev.push({k:'rl',title:`Rocket League : ${n} nouveau${n>1?'x':''} replay${n>1?'s':''} analysé${n>1?'s':''}`,body:'Touche pour voir l’analyse',link:'#/rl'})}
+  return ev}
