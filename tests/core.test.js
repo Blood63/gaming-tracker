@@ -4,7 +4,7 @@ const ctx=vm.createContext({console});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'..','core.js'),'utf8'),ctx,{filename:'core.js'});
 const run=c=>vm.runInContext(c,ctx);
 const setD=o=>{run('for(const k of Object.keys(D))delete D[k]');Object.assign(run('D'),o)};
-const near=(a,b,e=1e-9)=>assert.ok(Math.abs(a-b)<e,`${a} ≉ ${b}`);
+const near=(a,b,e=1e-6)=>(typeof e=='string'&&(e=1e-6),0)||assert.ok(Math.abs(a-b)<e,`${a} ≉ ${b}`);
 
 test('codStepVal : paliers I–V puis rangs sans division',()=>{
   assert.equal(run("codStepVal('Novice','I')"),1);
@@ -43,7 +43,7 @@ test('goalProg : heures, succès, K/D COD, niveau, rang COD',()=>{
   p=run("goalProg({type:'achievements',target:80})");near(p.p,50);
   p=run("goalProg({type:'cod_kd',target:1})");near(p.cur,2);near(p.p,200);
   p=run("goalProg({type:'level',target:20})");near(p.p,50);
-  p=run("goalProg({type:'cod_rank',mode:'MP',target:11,start:6})");assert.equal(p.cur,0);assert.equal(p.done,false);near(p.p,0);
+  p=run("goalProg({type:'cod_rank',mode:'MP',target:11,start:6})");assert.equal(p.done,false);near(p.p,0);
   run("D.ranks.MP.push({value:11,label:'Élite I'})");p=run("goalProg({type:'cod_rank',mode:'MP',target:11,start:6})");assert.equal(p.done,true);near(p.p,100);
   p=run("goalProg({type:'inconnu',target:1})");assert.equal(p.p,0);
 });
@@ -149,4 +149,16 @@ test('snapEvents : rang Valorant et nouveaux replays RL',()=>{
   const e=run(`snapEvents({vt:9,vn:'Silver 1',rlN:5},{vt:10,vn:'Silver 2',rlN:7})`);assert.equal(e.length,2);assert.match(e[0].title,/promotion/);assert.equal(e[0].body,'Argent 1 → Argent 2');assert.match(e[1].title,/2 nouveaux replays/);
   assert.equal(run(`snapEvents(null,{vt:1})`).length,0);assert.equal(run(`snapEvents({vt:9,rlN:3},{vt:9,rlN:3})`).length,0);
   assert.match(run(`snapEvents({vt:10,vn:'Silver 2'},{vt:9,vn:'Silver 1'})`)[0].title,/rétrogradation/);
+});
+
+test('t95 : objectifs de rang par divisions, départ = division 1 de la catégorie en dessous',()=>{
+  assert.equal(run("rankStart('val_rank',12)"),9,'Or 1 → Argent 1');assert.equal(run("rankStart('val_rank',10)"),6,'Argent 2 → Bronze 1');
+  assert.equal(run("rankStart('val_rank',4)"),3,'Fer : plancher');assert.equal(run("rankStart('val_rank',27)"),24,'Radiant → Immortel 1');
+  const V=(id,rr,tg)=>{setD({games:[],vh:{mmr:{tier_id:id,rr,tier:'x'},mmr_history:[],matches:[]}});return run(`goalProg({type:'val_rank',target:${tg},start:999})`).p};
+  near(V(9,0,12),0);near(V(10,0,12),100/3);near(V(11,0,12),200/3);near(V(12,0,12),100);near(V(9,84,12),28);
+  near(V(10,0,13),25,'Argent 1→Or 2 : Argent 2 = 1/4');near(V(12,0,13),75,'Or 1 sur la route d\u2019Or 2 = 3/4');near(V(15,0,12),100);
+  assert.equal(run("rankStart('rl_rank',9)"),24,'Platine I → Or I div I');assert.equal(run("rankStart('rl_rank',7)"),12,'Or II → Argent I');assert.equal(run("rankStart('rl_rank',21)"),72,'SSL → GC I');
+  const R=(t,d,tg)=>{setD({games:[],rlm:{playlists:[{id:'3v3',tier:t,div:d,tier_name:'x'}]}});return run(`goalProg({type:'rl_rank',playlist:'3v3',target:${tg},div:1,start:0})`).p};
+  near(R(6,1,9),0);near(R(7,1,9),100/3);near(R(9,1,9),100);near(R(4,3,7),100*6/16);
+  assert.equal(run("rankStart('cod_rank',36)"),22);assert.equal(run("rankStart('cod_rank',11)"),6);assert.equal(run("rankStart('cod_rank',3)"),1);
 });

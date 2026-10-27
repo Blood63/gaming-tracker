@@ -48,12 +48,20 @@ function valEst(){ // gains/pertes moyens de RR (parties classées récentes)
   const ag=w.length?w.reduce((a,b)=>a+b,0)/w.length:null,al=l.length?l.reduce((a,b)=>a+b,0)/l.length:null;
   return{ag,al,wr,n:H.length,net:ag!=null&&al!=null&&wr!=null?wr*ag-(1-wr)*al:null};
 }
+/* Départ d'un objectif de rang (règle fixe, t95) : division 1 de la catégorie juste en dessous de celle de la cible
+   (cible Or X → départ Argent 1). 0 % au départ, 100 % à la cible, chaque division compte pareil. La valeur « start » enregistrée n'est plus utilisée. */
+function rankStart(type,target){
+  if(type=='val_rank'){const c=target>=27?8:Math.floor((target-3)/3);return 3+Math.max(0,c-1)*3}
+  if(type=='rl_rank'){const c=target>=RL_T.length-1?7:Math.floor(target/3);return rlVal(Math.max(0,c-1)*3,1)}
+  if(type=='cod_rank'){const t=codNormStep(target),tn=COD_STEPS[t-1]?.tier,ti=COD_LADDER.findIndex(l=>l[0]==tn);if(ti<0)return 1;const pn=COD_LADDER[Math.max(0,ti-1)][0];return COD_STEPS.findIndex(x=>x.tier==pn)+1}
+  return 0}
+const rankPct=(cur,start,tgt)=>cur>=tgt?100:tgt<=start?0:Math.max(0,Math.min(100,100*(cur-start)/(tgt-start)));
 function rankGoal(x){
   const dl=x.deadline?Math.ceil((new Date(x.deadline+'T23:59')-Date.now())/864e5):null;
   if(x.type=='val_rank'){const T=VAL_T.find(t=>t.id==x.target)||{n:'?'},lab=`Valorant : atteindre ${vTier(T.n)}`;
     if(!D.vh)return{label:lab,wait:'En attente des données Valorant',cur:0,t:1,p:0,dl};
-    const M=D.vh.mmr,cur=(M.tier_id-3)*100+(M.rr||0),tgt=(x.target-3)*100,start=x.start??cur,rem=Math.max(0,tgt-cur),E=valEst();
-    const p=tgt<=start?(cur>=tgt?100:0):100*(cur-start)/(tgt-start);
+    const M=D.vh.mmr,cur=(M.tier_id-3)*100+(M.rr||0),tgt=(x.target-3)*100,start=(rankStart('val_rank',x.target)-3)*100,rem=Math.max(0,tgt-cur),E=valEst();
+    const p=rankPct(cur,start,tgt);
     let info=rem<=0?'':`${fnum(rem)} RR restants (${vTier(M.tier)} · ${M.rr} RR → ${vTier(T.n)})`;
     if(rem>0&&E.ag){const wins=Math.ceil(rem/E.ag);info+=`<br>≈ ${wins} victoire${wins>1?'s':''} sans défaite (gain moyen +${fnum(E.ag,0)} RR)`;
       if(E.net>0){const g=Math.ceil(rem/E.net);info+=` · ≈ ${g} parties à ton rythme actuel (${fnum(100*E.wr,0)} % de victoires, perte moy. −${fnum(E.al,0)} RR)`}
@@ -63,11 +71,11 @@ function rankGoal(x){
   if(x.type=='rl_rank'){const lab=`Rocket League ${RL_PL[x.playlist]||x.playlist} : ${RL_T[x.target]||'?'}${x.div&&x.target<RL_T.length-1?' div. '+['I','II','III','IV'][x.div-1]:''}`;
     const pl=D.rlm?.playlists?.find(p=>p.id==x.playlist);
     if(!pl)return{label:lab,wait:'En attente de données Rocket League (intégration ballchasing.com prévue)',cur:0,t:1,p:0,dl};
-    const cur=rlVal(pl.tier,pl.div),tgt=rlVal(x.target,x.div||1),start=x.start??cur,rem=tgt-cur,p=tgt<=start?(cur>=tgt?100:0):100*(cur-start)/(tgt-start);
+    const cur=rlVal(pl.tier,pl.div),tgt=rlVal(x.target,x.div||1),start=rankStart('rl_rank',x.target),rem=tgt-cur,p=rankPct(cur,start,tgt);
     return{label:lab,cur:0,t:1,u:'RR',p:Math.max(0,Math.min(100,p)),done:cur>=tgt,dl,info:rem>0?`Actuel : ${esc(pl.tier_name)} div. ${RL_DIV[pl.div-1]} (${fnum(pl.mmr)} MMR, record ${fnum(pl.best_mmr)}) · encore ${rem} division${rem>1?'s':''}. <i>Données manuelles (captures tracker.gg).</i>`:''}}
   if(x.type=='cod_rank'){x.target=codNormStep(x.target);const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
     if(!c)return{label:lab,wait:'Enregistre ton rang actuel (bouton « changement de rang » sur la page COD)',cur:0,t:1,p:0,dl};
-    const start=x.start??c.value,p=x.target<=start?(c.value>=x.target?100:0):100*(c.value-start)/(x.target-start),rem=Math.max(0,x.target-c.value);
+    const start=rankStart('cod_rank',x.target),p=rankPct(c.value,start,x.target),rem=Math.max(0,x.target-c.value);
     return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
 }
 const RL_DIV=['I','II','III','IV'],rlVal=(t,d)=>t*4+((d||1)-1),rlLbl=(t,d)=>RL_T[t]+(d&&t<RL_T.length-1?' div. '+RL_DIV[d-1]:'');
