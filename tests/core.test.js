@@ -162,3 +162,77 @@ test('t95 : objectifs de rang par divisions, départ = division 1 de la catégor
   near(R(6,1,9),0);near(R(7,1,9),100/3);near(R(9,1,9),100);near(R(4,3,7),100*6/16);
   assert.equal(run("rankStart('cod_rank',36)"),22);assert.equal(run("rankStart('cod_rank',11)"),6);assert.equal(run("rankStart('cod_rank',3)"),1);
 });
+
+/* ---- RL : analyse locale (rl_local) ---- */
+const J=x=>JSON.parse(JSON.stringify(x));
+const idxPath=path.join(__dirname,'..','rl_local','index.json');
+const rl=(o)=>({id:'X'+Math.random(),date:'2026-10-10T10:00:00Z',s:{play_s:300,double_commits:3,touches:20,touch_def_pct:40},...o});
+test('rllClean : filtre les bots, dates avant le 1er octobre 2026, replays exclus, trie par date',()=>{
+  setD({});run('var A=[{id:"a",date:"2026-10-05T10:00:00Z",s:{}},{id:"b",date:"2026-04-02T10:00:00Z",s:{}},{id:"c",date:"2026-10-03T10:00:00Z",s:{},bots:true},{id:"d",date:"2026-10-02T10:00:00Z",s:{},bc:"EXC"},{id:"e",date:"2026-10-01T00:00:00Z",s:{}},{id:"f",date:"2026-10-06T10:00:00Z"}]');
+  assert.deepEqual(J(run('rllClean(A,"2026-10-01",["EXC"]).map(r=>r.id)')),['e','a']);
+  assert.deepEqual(J(run('rllClean(null)')),[]);
+});
+test('rllHeat / rllHeatZones : somme des grilles, moitiés et tiers',()=>{
+  const cells=new Array(320).fill(0);for(let x=0;x<16;x++){cells[0*16+x]=10;cells[19*16+x]=10;cells[10*16+x]=20}   // 160 s ligne 0, 160 ligne 19, 320 ligne 10
+  const z=run(`rllHeatZones(rllHeat([{d_heat:${JSON.stringify(cells)}},{d_heat:${JSON.stringify(cells)}},{d_heat:[1,2]}]))`);
+  near(z.def,25,1e-9);near(z.off,25+0,1e-9);near(z.neu,50,1e-9);near(z.defH,25,1e-9);near(z.offH,75,1e-9);
+  assert.equal(run('rllHeat([{d_heat:[1]}]).n'),0,'grille de mauvaise taille ignorée');
+  assert.equal(run('rllHeatZones(rllHeat([]))'),null);
+});
+test('rllKick : taux, 1er contact, réaction, par apparition',()=>{
+  const k=run(`rllKick([{d_kick:[["centre","prend","moi","gagne",0.3,true],["centre","suit","adverse","perdu",0.5,false],["decale","prend","equipe","but_pour",0.4,true],["decale","suit","adverse","but_contre",null,false],["diagonale","prend","aucun","inconnu",null,false],["diagonale","prend","moi","neutre",0.2,true]]}])`);
+  assert.equal(k.n,6);assert.equal(k.fav,2);assert.equal(k.def,2);assert.equal(k.neu,1);assert.equal(k.unk,1);
+  near(k.rate,100*2/5);near(k.teamFirst,50);near(k.meFirst,100*2/6);near(k.reactAvg,(0.3+0.5+0.4+0.2)/4);
+  assert.equal(k.bySpawn.centre.n,2);assert.equal(k.bySpawn.centre.rate,50);assert.equal(k.byRole.suit.n,2);assert.equal(k.goalFor,1);assert.equal(k.goalAgainst,1);
+  assert.equal(run('rllKick([]).rate'),null);assert.equal(run('rllKickSeries([{d_kick:[["centre","prend","moi","gagne",0.3,1]]}])[0]'),null,'moins de 2 coups d’envoi : pas de point');
+});
+test('rllShots / rllGoals',()=>{
+  const s=run(`rllShots([{d_shots:[[0,4000,2000,1,0,"but"],[100,3000,1000,1,1,"arret"],[0,2000,0,0,0,"hors"],[0,5000,1500,1,0,"cadre"]]}])`);
+  assert.equal(s.n,4);assert.equal(s.goals,1);assert.equal(s.onTarget,3);assert.equal(s.saved,1);assert.equal(s.off,1);assert.equal(s.air,1);near(s.onPct,75);near(s.goalPct,25);near(s.avgSpeed,1500,1e-9);assert.equal(s.maxSpeed,2000);
+  const g=run(`rllGoals([{d_goals:[[1,"moi","aerien",2000,1,10],[1,"equipier","au_sol",1000,0,20],[0,"adverse","pres_du_but",1500,0,30],[0,"adverse","aerien",2500,1,40]]}])`);
+  assert.equal(g.me.n,1);assert.equal(g.team.n,2);assert.equal(g.opp.n,2);assert.equal(g.opp.air,1);near(g.opp.speed,2000);assert.equal(g.me.types.aerien,1);
+});
+test('rllPeriods : moyenne pondérée par la durée, tranches rares ignorées',()=>{
+  const mk=(sup,sec)=>({d_periods:[{n:1,sec,sup,speed:1500,boost:50,def:50,behind:70,ball_opp:50,gf:1,ga:0,shots:2,saves:1,touches:5,pickups:10},{n:2,sec:60,sup:10,speed:1400,boost:40,def:50,behind:70,ball_opp:50,gf:0,ga:1,shots:0,saves:0,touches:3,pickups:8}]});
+  const p=run(`rllPeriods([${JSON.stringify(mk(20,60))},${JSON.stringify(mk(10,30))}],2)`);
+  assert.equal(p.length,2);near(p[0].sup,(20*60+10*30)/90);assert.equal(p[0].cnt,2);near(p[0].gf,1);near(p[1].ga,1);
+  assert.equal(run(`rllPeriods([${JSON.stringify(mk(20,60))}],2)`).length,0,'moins de 2 replays : aucune tranche');
+});
+test('rllAfter : avant/après un but encaissé, but suivant',()=>{
+  const g=(f,nf,bs,as)=>({for:f,next_for:nf,before:{sec:30,speed:bs,boost:50,sup:10,behind:70,def:50,touches_min:4},after:{sec:30,speed:as,boost:40,sup:10,behind:60,def:50,touches_min:4}});
+  const r=run(`rllAfter([{d_after_goal:[${JSON.stringify(g(0,1,1600,1400))},${JSON.stringify(g(0,0,1600,1400))},${JSON.stringify(g(0,null,1600,1400))},${JSON.stringify(g(1,1,1500,1500))}]}])`);
+  assert.equal(r.conceded.n,3);assert.deepEqual(J(r.conceded.next),{me:1,opp:1,none:1});near(r.conceded.before.speed,1600);near(r.conceded.after.speed,1400);assert.equal(r.scored.n,1);
+  assert.equal(run('rllAfter([]).conceded.before.speed'),null);
+});
+test('rllCoach : repères, priorités, points forts, aucune donnée = aucun conseil',()=>{
+  const bad=rl({s:{play_s:300,double_commits:10,touches:30,touch_def_pct:70},d_kick:[["centre","prend","adverse","perdu",0.6,0],["centre","prend","adverse","perdu",0.6,0],["decale","prend","adverse","perdu",0.5,0],["decale","suit","moi","gagne",0.5,0]],d_shots:[[0,0,1000,0,0,"hors"],[0,0,1000,0,0,"hors"],[0,0,1000,1,0,"arret"]]});
+  setD({});run('var B='+JSON.stringify(bad));
+  const c=run('rllCoach([B])');const ks=c.weak.map(w=>w.k);
+  assert.ok(ks.includes('kick_win')&&ks.includes('kick_react'),'coups d’envoi');assert.equal(c.weak.length,3,'3 conseils max');
+  for(const w of c.weak){assert.ok(w.txt&&w.drill&&w.label);assert.ok(w.gap>0)}
+  assert.ok(c.weak[0].gap>=c.weak[1].gap&&c.weak[1].gap>=c.weak[2].gap,'trié par priorité');
+  const empty=run('rllCoach([])');assert.deepEqual(J(empty.weak),[]);assert.deepEqual(J(empty.strong),[]);
+  const good=rl({s:{play_s:300,double_commits:1,touches:30,touch_def_pct:30},d_kick:[["centre","prend","moi","gagne",0.25,1],["centre","prend","moi","gagne",0.25,1],["decale","prend","equipe","gagne",0.25,1]],d_shots:[[0,0,2500,1,0,"but"],[0,0,2500,1,0,"but"],[0,0,2500,1,0,"arret"]]});
+  run('var G='+JSON.stringify(good));const cg=run('rllCoach([G])');assert.equal(cg.weak.length,0);assert.ok(cg.strong.length>0);
+});
+test('rllCoach : détecte le ralentissement après un but encaissé et la baisse de rythme en fin de match',()=>{
+  const ag={for:0,next_for:0,before:{sec:30,speed:1700,boost:50,sup:20,behind:80,def:50,touches_min:4},after:{sec:30,speed:1400,boost:30,sup:5,behind:60,def:50,touches_min:4}};
+  const per=[{n:1,sec:60,sup:25},{n:2,sec:60,sup:20},{n:3,sec:60,sup:10}];
+  const reps=[1,2,3].map(()=>({id:'r'+Math.random(),date:'2026-10-10T10:00:00Z',s:{play_s:180},d_after_goal:[ag],d_periods:per}));
+  setD({});run('var R3='+JSON.stringify(reps));
+  const ks=run('rllCoach(R3).weak.map(w=>w.k)');assert.ok(ks.includes('tilt_speed'),ks.join());assert.ok(ks.includes('tilt_pos'));assert.ok(ks.includes('fade'));
+});
+test('rllRoll : moyenne glissante tolérante aux trous',()=>{
+  assert.deepEqual(J(run('rllRoll([2,4,null,6],2)')),[2,3,4,6]);
+});
+test('index réel rl_local : cohérence des agrégats avec les compteurs de chaque replay',{skip:!fs.existsSync(idxPath)},()=>{
+  const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays;ctx.IDX=idx;
+  assert.ok(idx.length>0);
+  const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort');
+  const sh=run('rllShots(rllClean(IDX,"2026-10-01"))'),shots=idx.reduce((t,r)=>t+r.s.shots,0),goals=idx.reduce((t,r)=>t+r.s.goals,0),sg=idx.reduce((t,r)=>t+r.s.shots_goal,0);
+  assert.equal(sh.n,shots,'tirs détaillés = compteur');assert.equal(sh.goals,sg,'tirs marqués détaillés = compteur');
+  const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals);
+  const z=run('rllHeatZones(rllHeat(rllClean(IDX,"2026-10-01")))');near(z.def+z.neu+z.off,100,1e-6);near(z.defH+z.offH,100,1e-6);
+  const k=run('rllKick(rllClean(IDX,"2026-10-01"))');assert.equal(k.n,idx.reduce((t,r)=>t+r.s.kickoffs,0),'coups d’envoi détaillés = compteur');
+  for(const r of idx)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
+});

@@ -1,7 +1,7 @@
 // Service worker : réseau d'abord (toujours la dernière version), copie de secours pour l'usage hors ligne.
 // Seuls les fichiers du site (même origine) et Chart.js sont mis en cache ; les API (GitHub…) et l'OCR passent toujours par le réseau.
 // fichiers sans ?v= (index.html, build.json…) : revalidés auprès du serveur (cache:'no-cache') pour ne jamais rester sur une ancienne version.
-const C='gt-cache-v3';
+const C='gt-cache-v4';
 // install : la page d'accueil est mise en cache tout de suite (hors ligne possible dès la 1re visite) ; un échec n'empêche jamais l'installation.
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.add(new Request('./',{cache:'no-cache'}))).catch(()=>{}))});
 self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==C)await caches.delete(k);await self.clients.claim()})()));

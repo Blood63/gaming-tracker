@@ -1,0 +1,94 @@
+{
+ "21cf42bd02c381e71a21dd2595693398cd67677b3be1e38838719955b2ff199d": {
+  "id": "B4BE9851405BBF4755F5CAB6C9C5BD1B",
+  "s": {
+   "goals": 1,
+   "assists": 1,
+   "saves": 1,
+   "shots": 4,
+   "score": 372,
+   "touches": 24,
+   "demos": 1,
+   "demos_taken": 0,
+   "pct_supersonic": 14.5,
+   "avg_speed": 1530.0,
+   "distance": 487172.0,
+   "pct_off_third": 37.7,
+   "powerslides": 22,
+   "aerials": 0,
+   "kickoffs": 4,
+   "big_pads": 14,
+   "collected": 1911.0,
+   "pct_ground": 58.4
+  }
+ },
+ "5ed8ca57b58e8b1c0bb52f7872c14a61d8f0a426e2f06c4d5bbade2bdf41303e": {
+  "id": "8BB2958A4DDD54A33BE64C96EDB16CA5",
+  "s": {
+   "goals": 0,
+   "assists": 1,
+   "saves": 0,
+   "shots": 1,
+   "score": 132,
+   "touches": 20,
+   "demos": 2,
+   "demos_taken": 1,
+   "pct_supersonic": 25.0,
+   "avg_speed": 1716.0,
+   "distance": 601828.0,
+   "pct_off_third": 19.8,
+   "powerslides": 11,
+   "aerials": 0,
+   "kickoffs": 8,
+   "big_pads": 25,
+   "collected": 2738.0,
+   "pct_ground": 59.0
+  }
+ },
+ "54c5bcf371f35b2746c877fc9afda85b219741b7266fa9699ab8d98cddc7c9f5": {
+  "id": "15AEA2D74DD1A38DE79B108C6D5C193D",
+  "s": {
+   "goals": 2,
+   "assists": 0,
+   "saves": 0,
+   "shots": 2,
+   "score": 328,
+   "touches": 28,
+   "demos": 1,
+   "demos_taken": 1,
+   "pct_supersonic": 14.2,
+   "avg_speed": 1508.0,
+   "distance": 505588.0,
+   "pct_off_third": 23.6,
+   "powerslides": 19,
+   "aerials": 1,
+   "kickoffs": 8,
+   "big_pads": 20,
+   "collected": 2349.0,
+   "pct_ground": 64.1
+  }
+ },
+ "3357fa290f7187951f2cf5a6c9ed2971e636e915da0882c379a153b48b417c49": {
+  "id": "973322E8404362C33BF702AEAF36FAB6",
+  "s": {
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 2,
+   "score": 175,
+   "touches": 14,
+   "demos": 0,
+   "demos_taken": 0,
+   "pct_supersonic": 14.0,
+   "avg_speed": 1544.0,
+   "distance": 292746.0,
+   "pct_off_third": 29.7,
+   "powerslides": 7,
+   "aerials": 1,
+   "kickoffs": 6,
+   "big_pads": 10,
+   "collected": 1190.0,
+   "pct_ground": 57.7
+  }
+ }
+}

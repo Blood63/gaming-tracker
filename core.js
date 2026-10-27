@@ -181,3 +181,79 @@ function snapEvents(a,b){const ev=[];if(!a||!b)return ev;
   if(a.vt!=null&&b.vt!=null&&a.vt!=b.vt)ev.push({k:'val',up:b.vt>a.vt,title:`Valorant : ${b.vt>a.vt?'promotion':'rétrogradation'} ${b.vt>a.vt?'▲':'▼'}`,body:`${vTier(a.vn)} → ${vTier(b.vn)}`,link:'#/valorant'});
   if(b.rlN!=null&&a.rlN!=null&&b.rlN>a.rlN){const n=b.rlN-a.rlN;ev.push({k:'rl',title:`Rocket League : ${n} nouveau${n>1?'x':''} replay${n>1?'s':''} analysé${n>1?'s':''}`,body:'Touche pour voir l’analyse',link:'#/rl'})}
   return ev}
+/* ========== RL : analyse locale des replays (dossier rl_local/, calculée sur le PC par rl-analyzer) ========== */
+/* Terrain en repère « équipe » : x de -4096 à 4096 (16 colonnes de 512), y de -5120 (mon but) à 5120 (but adverse) (20 lignes de 512). Cellule = secondes × 10. */
+const RLL_GW=16,RLL_GH=20;
+const RLL_GT={centre:'Centre',decale:'Décalé',diagonale:'Diagonale'};
+const RLL_GOAL={pres_du_but:'Près du but',aerien:'Aérien',au_sol:'Au sol',longue_distance:'Longue distance',ciseau:'Ciseau',depuis_sa_moitie:'Depuis sa moitié'};
+const RLL_OUT={gagne:'Balle gagnée',perdu:'Balle perdue',neutre:'Neutre',but_pour:'But pour moi',but_contre:'But contre',inconnu:'Inconnu'};
+const rllClean=(a,minDate,excl)=>(a||[]).filter(r=>r&&r.s&&r.id&&!r.bots&&(!minDate||String(r.date||'').slice(0,10)>=minDate)&&!(excl&&r.bc&&excl.includes(r.bc))).sort((x,y)=>String(x.date)<String(y.date)?-1:1);
+const rllSv=(a,k)=>avg(a.map(r=>r.s),k);
+const rllTot=(a,k)=>a.reduce((t,r)=>t+(num(r.s&&r.s[k])||0),0);
+const rllPct=(n,d)=>d>0?100*n/d:null;
+function rllHeat(a,key='d_heat'){const c=new Array(RLL_GW*RLL_GH).fill(0);let n=0;for(const r of a){const h=r[key];if(!Array.isArray(h)||h.length!=c.length)continue;n++;for(let i=0;i<c.length;i++)c[i]+=num(h[i])||0}
+  return{cells:c,total:c.reduce((x,y)=>x+y,0),n}}
+/* Part du temps (en %) par moitié et tiers de terrain à partir de la grille ; les bornes des tiers (±1707) coupent les lignes 6 et 13 : pondération au prorata. */
+function rllHeatZones(h){const row=y=>{let s=0;for(let x=0;x<RLL_GW;x++)s+=h.cells[y*RLL_GW+x];return s},t=h.total;if(!t)return null;
+  let def=0,neu=0,off=0,dh=0,oh=0;for(let y=0;y<RLL_GH;y++){const v=row(y);if(y<10)dh+=v;else oh+=v;
+    if(y<6)def+=v;else if(y==6){def+=v*2/3;neu+=v/3}else if(y<13)neu+=v;else if(y==13){neu+=v/3;off+=v*2/3}else off+=v}
+  return{def:100*def/t,neu:100*neu/t,off:100*off/t,defH:100*dh/t,offH:100*oh/t}}
+/* Coups d'envoi : d_kick = [apparition, rôle, 1er contact, issue, réaction(s), flip] */
+function rllKick(a){const K=a.flatMap(r=>Array.isArray(r.d_kick)?r.d_kick:[]);const mk=()=>({n:0,fav:0,def:0,neu:0,unk:0,goalFor:0,goalAgainst:0,first:{moi:0,equipe:0,adverse:0,aucun:0},react:[]});
+  const add=(o,k)=>{o.n++;const out=k[3];if(out=='gagne'||out=='but_pour')o.fav++;else if(out=='perdu'||out=='but_contre')o.def++;else if(out=='neutre')o.neu++;else o.unk++;if(out=='but_pour')o.goalFor++;if(out=='but_contre')o.goalAgainst++;
+    if(o.first[k[2]]!=null)o.first[k[2]]++;if(num(k[4])!=null)o.react.push(k[4])};
+  const T=mk(),sp={},ro={};for(const k of K){add(T,k);add(sp[k[0]]??(sp[k[0]]=mk()),k);add(ro[k[1]]??(ro[k[1]]=mk()),k)}
+  const fin=o=>{const dec=o.fav+o.def+o.neu;o.rate=rllPct(o.fav,dec);o.teamFirst=rllPct(o.first.moi+o.first.equipe,o.n);o.meFirst=rllPct(o.first.moi,o.n);o.reactAvg=o.react.length?o.react.reduce((x,y)=>x+y,0)/o.react.length:null;return o};
+  fin(T);Object.values(sp).forEach(fin);Object.values(ro).forEach(fin);return{...T,bySpawn:sp,byRole:ro}}
+/* Taux de coups d'envoi gagnés, replay par replay (courbe de progression) */
+const rllKickSeries=a=>a.map(r=>{const k=rllKick([r]);return k.n>=2?k.rate:null});
+/* Tirs : d_shots = [x, y, vitesse, cadré, aérien, issue(but|arret|hors|cadre)] ; x,y en repère équipe (but adverse en y > 0) */
+function rllShots(a){const S=a.flatMap(r=>Array.isArray(r.d_shots)?r.d_shots:[]),g=S.filter(s=>s[5]=='but').length,on=S.filter(s=>s[3]).length,sp=S.map(s=>s[2]).filter(v=>num(v)!=null&&v>0);
+  return{n:S.length,goals:g,onTarget:on,saved:S.filter(s=>s[5]=='arret').length,off:S.filter(s=>s[5]=='hors').length,air:S.filter(s=>s[4]).length,
+    onPct:rllPct(on,S.length),goalPct:rllPct(g,S.length),avgSpeed:sp.length?sp.reduce((x,y)=>x+y,0)/sp.length:null,maxSpeed:sp.length?Math.max(...sp):null,pts:S}}
+/* Buts : d_goals = [pour(1=mon équipe), auteur(moi|equipier|adverse), type, vitesse, aérien, t] */
+function rllGoals(a){const G=a.flatMap(r=>Array.isArray(r.d_goals)?r.d_goals:[]),cnt=(f)=>{const o={};for(const g of G.filter(f))o[g[2]]=(o[g[2]]||0)+1;return o},sp=f=>{const v=G.filter(f).map(g=>g[3]).filter(x=>num(x)!=null);return v.length?v.reduce((x,y)=>x+y,0)/v.length:null};
+  const me=g=>g[1]=='moi',team=g=>g[0]==1,opp=g=>g[0]==0;
+  return{me:{n:G.filter(me).length,types:cnt(me),speed:sp(me),air:G.filter(g=>me(g)&&g[4]).length},team:{n:G.filter(team).length,types:cnt(team)},opp:{n:G.filter(opp).length,types:cnt(opp),speed:sp(opp),air:G.filter(g=>opp(g)&&g[4]).length}}}
+/* Évolution dans le match : moyenne pondérée par la durée de chaque tranche d'une minute (d_periods) */
+function rllPeriods(a,minN=3){const P={};for(const r of a)for(const p of (Array.isArray(r.d_periods)?r.d_periods:[])){const o=P[p.n]??(P[p.n]={n:p.n,cnt:0,sec:0,w:{},t:{gf:0,ga:0,shots:0,saves:0,touches:0,pickups:0}});o.cnt++;o.sec+=p.sec||0;
+    for(const k of['boost','speed','def','behind','sup','ball_opp'])if(num(p[k])!=null){const w=p.sec||0;(o.w[k]??(o.w[k]=[0,0]));o.w[k][0]+=p[k]*w;o.w[k][1]+=w}
+    for(const k of Object.keys(o.t))o.t[k]+=num(p[k])||0}
+  return Object.values(P).filter(o=>o.cnt>=minN).sort((x,y)=>x.n-y.n).map(o=>{const v={n:o.n,cnt:o.cnt};for(const k of['boost','speed','def','behind','sup','ball_opp'])v[k]=o.w[k]&&o.w[k][1]?o.w[k][0]/o.w[k][1]:null;for(const k of Object.keys(o.t))v[k]=o.t[k]/o.cnt;return v})}
+/* Après un but (marqué ou encaissé) : comportement avant/après et issue du but suivant (d_after_goal) */
+function rllAfter(a){const out={};for(const side of['conceded','scored']){const L=a.flatMap(r=>(Array.isArray(r.d_after_goal)?r.d_after_goal:[]).filter(g=>side=='conceded'?g.for==0:g.for==1));
+    const m=(w,k)=>{let s=0,t=0;for(const g of L){const x=g[w]&&g[w][k],sec=g[w]&&g[w].sec;if(num(x)!=null&&sec>0){s+=x*sec;t+=sec}}return t?s/t:null};
+    const nxt={me:0,opp:0,none:0};for(const g of L){if(g.next_for==1)nxt.me++;else if(g.next_for==0)nxt.opp++;else nxt.none++}
+    out[side]={n:L.length,next:nxt,before:{},after:{}};for(const k of['boost','speed','sup','behind','def','touches_min']){out[side].before[k]=m('before',k);out[side].after[k]=m('after',k)}}
+  return out}
+const rllBench={kick_win:[50,null],kick_react:[null,.4],kick_team_first:[50,null],dc_pm:[null,1.5],shot_on:[50,null],touch_def:[null,55],shot_speed:[1450,null]};
+const RLL_TIPS={
+ kick_win:['Tu perds plus de coups d’envoi que tu n’en gagnes.','En free play, répète les 3 types d’apparition (centre, décalé, diagonale) : va chercher la balle avec un flip pris tard, puis pousse-la vers le côté adverse ; sur un coup d’envoi perdu, recule au lieu de rester au contact.'],
+ kick_react:['Ta réaction au coup d’envoi est lente.','Appuie sur boost + avance dès le « Go ! » (pas après) et enchaîne le flip avant d’arriver à la balle ; entraîne-le 5 min en mode Entraînement › coup d’envoi.'],
+ kick_team_first:['Ton équipe prend rarement le premier contact.','Quand tu n’es pas le plus proche, suis en 2e homme pour récupérer la balle ; le plus proche va à la balle, le 2e prend un boost puis monte en soutien.'],
+ dc_pm:['Beaucoup de « double commits » : tu vas à la balle en même temps qu’un coéquipier.','Avant d’engager, regarde où sont tes coéquipiers : si l’un d’eux est plus proche, passe en 2e homme (reste derrière, prends un petit boost) et appelle « Je l’ai » / « À toi » au chat rapide.'],
+ shot_on:['Beaucoup de tirs hors du cadre.','Vise les coins bas avant de frapper fort ; en entraînement, travaille la précision (packs « shooting ») avant la puissance, et lève les yeux vers le but juste avant le contact.'],
+ touch_def:['Tu touches surtout la balle dans ton propre camp.','Quand tu récupères la balle en défense, dégage vers les côtés puis remonte avec la possession ; après un dégagement, avance plutôt que d’attendre au centre.'],
+ shot_speed:['Tes tirs manquent de puissance.','Prends de l’élan : touche la balle avec le nez de la voiture à pleine vitesse, flip au contact, et évite de frapper à l’arrêt.']};
+const RLL_LAB={kick_win:'Coups d’envoi gagnés',kick_react:'Réaction au coup d’envoi',kick_team_first:'1er contact pour ton équipe',dc_pm:'Doubles engagements / min',shot_on:'Tirs cadrés',touch_def:'Touches dans ton camp',shot_speed:'Vitesse moyenne des tirs'};
+const RLL_UNIT={kick_win:' %',kick_react:' s',kick_team_first:' %',dc_pm:'',shot_on:' %',touch_def:' %',shot_speed:' uu/s'};
+/* Valeurs servant au coaching pour un ensemble de replays (un seul replay = liste de 1) */
+function rllMetrics(a){const k=rllKick(a),sh=rllShots(a),play=rllTot(a,'play_s')/60,dc=rllTot(a,'double_commits'),m={};
+  if(k.n>=3){m.kick_win=k.rate;m.kick_react=k.reactAvg;m.kick_team_first=k.teamFirst}
+  if(play>=1.5)m.dc_pm=dc/play;
+  if(sh.n>=3){m.shot_on=sh.onPct;m.shot_speed=sh.avgSpeed}
+  const td=rllSv(a,'touch_def_pct');if(td!=null&&rllTot(a,'touches')>=8)m.touch_def=td;
+  for(const x of Object.keys(m))if(num(m[x])==null)delete m[x];return m}
+/* Conseils : écart au repère indicatif (plus l'écart relatif est grand, plus c'est prioritaire) + points forts. Retourne {weak,strong,ctx} */
+function rllCoach(a,maxW=3){const m=rllMetrics(a),W=[],S=[];
+  for(const[k,[lo,hi]]of Object.entries(rllBench)){const v=m[k];if(v==null)continue;let bad=0;if(lo!=null&&v<lo)bad=(lo-v)/lo;else if(hi!=null&&v>hi)bad=(v-hi)/hi;
+    if(bad>0)W.push({k,label:RLL_LAB[k],value:v,bench:[lo,hi],unit:RLL_UNIT[k],txt:RLL_TIPS[k][0],drill:RLL_TIPS[k][1],gap:bad});
+    else{const ref=lo!=null?lo:hi,mar=Math.abs(v-ref)/Math.max(ref,1e-9);if(mar>=.1)S.push({k,label:RLL_LAB[k],value:v,unit:RLL_UNIT[k],gap:mar})}}
+  const af=rllAfter(a),pe=rllPeriods(a,Math.min(3,Math.max(1,a.length))),ex=[];
+  const c=af.conceded;if(c.n>=3&&c.before.speed&&c.after.speed&&c.after.speed<c.before.speed*.95)W.push({k:'tilt_speed',label:'Vitesse après un but encaissé',value:c.after.speed,ref:c.before.speed,unit:' uu/s',txt:'Après un but encaissé, tu ralentis : '+Math.round(c.after.speed)+' uu/s contre '+Math.round(c.before.speed)+' avant.',drill:'Respire et relance vite : ramasse un boost, puis rejoue à ta vitesse normale. Un but encaissé ne change rien au plan de rotation.',gap:(c.before.speed-c.after.speed)/c.before.speed*2});
+  if(c.n>=3&&c.before.behind!=null&&c.after.behind!=null&&c.after.behind<c.before.behind-6)W.push({k:'tilt_pos',label:'Placement après un but encaissé',value:c.after.behind,ref:c.before.behind,unit:' %',txt:'Après un but encaissé, tu te places moins souvent derrière la balle ('+Math.round(c.after.behind)+' % contre '+Math.round(c.before.behind)+' %).',drill:'Quand on a encaissé, reviens d’abord derrière la balle (3e homme) avant de relancer l’attaque : l’envie de rattraper le score est la cause n°1 des buts en cascade.',gap:(c.before.behind-c.after.behind)/100*2});
+  if(pe.length>=3){const f=pe[0],l=pe.at(-1);if(f.sup!=null&&l.sup!=null&&l.cnt>=3&&l.sup<f.sup*.7&&f.sup-l.sup>=4)W.push({k:'fade',label:'Rythme en fin de match',value:l.sup,ref:f.sup,unit:' %',txt:'Tu es nettement moins souvent supersonique en fin de match ('+fnum(l.sup,0)+' % à la minute '+l.n+' contre '+fnum(f.sup,0)+' % à la minute '+f.n+').',drill:'Garde le même rythme : ramasse les petits boosts en continu et évite de rester à l’arrêt en attente ; en fin de match la vitesse fait la différence.',gap:(f.sup-l.sup)/Math.max(f.sup,1)})}
+  W.sort((x,y)=>y.gap-x.gap);S.sort((x,y)=>y.gap-x.gap);
+  return{weak:W.slice(0,maxW),strong:S.slice(0,3),ctx:m}}
+/* Moyenne glissante sur n points (ignore les valeurs absentes) */
+const rllRoll=(v,n=5)=>v.map((_,i)=>{const w=v.slice(Math.max(0,i-n+1),i+1).filter(x=>x!=null);return w.length?w.reduce((s,x)=>s+x,0)/w.length:null});

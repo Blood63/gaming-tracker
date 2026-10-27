@@ -1,0 +1,14 @@
+RL REPLAY UPLOADER v2 - guide rapide
+
+1) Cree ton jeton GitHub : https://github.com/settings/personal-access-tokens/new
+   - Repository access : Only select repositories -> gaming-tracker
+   - Permissions -> Repository permissions -> Contents : Read and write
+   - Generate token, copie-le.
+2) Double-clique sur 1-Installer.bat
+   - colle la cle ballchasing (https://ballchasing.com/upload -> API key) puis le jeton GitHub.
+3) Pour tester sans rien envoyer : 5-Tester-un-replay.bat (glisse un .replay dans la fenetre).
+4) Joue : a la fin d'un match, clique "Sauvegarder le replay". C'est tout.
+
+Les cles sont stockees chiffrees sur ton PC (%APPDATA%\rl-replay-uploader), jamais dans le depot.
+Probleme ? 6-Voir-letat.bat, et le journal %APPDATA%\rl-replay-uploader\activity.log
+Guide complet : README.md (meme dossier).

@@ -1,0 +1,28 @@
+name: Replays locaux
+# Déclenché quand l'outil du PC (tools/rl-uploader) pousse rl_local/index.json : fusionne ces replays (analysés sur le PC)
+# dans ballchasing_latest.json (sans doublon avec ballchasing), puis régénère home.json. Aucune clé ballchasing nécessaire.
+on:
+  push:
+    branches: [main]
+    paths: ["rl_local/index.json", "tools/merge_rl_local.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: data-commit, cancel-in-progress: false }
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env: { TZ: Europe/Paris }
+        run: |
+          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python3 tools/merge_rl_local.py
+            python3 tools/build_home.py
+            git add ballchasing_latest.json home.json build.json
+            if git diff --cached --quiet; then break; fi
+            git commit -qm "Replays locaux : fusion" && git push -q origin HEAD:main && break
+            sleep $((RANDOM % 8 + 3))
+          done
