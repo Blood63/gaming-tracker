@@ -3,7 +3,7 @@
  "fetched_at": "2026-10-28T04:10:57+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 135,
+ "replays_count": 136,
  "playlists": {
   "3v3": {
    "matches": 71,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 63,
+   "matches": 64,
    "wins": 34,
-   "win_rate": 54.0,
+   "win_rate": 53.1,
    "goals": 93,
-   "assists": 34,
-   "saves": 46,
-   "shots": 179,
-   "score_avg": 379.5,
-   "goals_avg": 1.48,
-   "shot_pct": 52.0,
+   "assists": 35,
+   "saves": 48,
+   "shots": 181,
+   "score_avg": 378.5,
+   "goals_avg": 1.45,
+   "shot_pct": 51.4,
    "mvp": 15,
    "boost_avg": 50.6,
    "rank": null,
@@ -106,20 +106,20 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 55,
+   "matches": 56,
    "wins": 27,
    "avg": {
-    "shooting_pct": 46.0,
+    "shooting_pct": 45.2,
     "avg_boost": 52.3,
     "pct_zero_boost": 11.6,
     "pct_supersonic": 14.5,
     "pct_behind_ball": 72.1,
     "pct_def_third": 47.1,
-    "pct_most_forward": 44.9,
-    "bpm": 345.2
+    "pct_most_forward": 44.8,
+    "bpm": 344.9
    },
-   "saves": 0.62,
-   "goals": 1.22,
+   "saves": 0.64,
+   "goals": 1.2,
    "focus": {
     "k": "avg_boost",
     "label": "Boost moyen",
@@ -15124,6 +15124,122 @@
       "label": "Temps à 0 boost",
       "value": 10.1,
       "txt": "Rarement à court de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "663CD5014A3F3AABCDAEF8A5165C1884",
+   "src": "local",
+   "lid": "663CD5014A3F3AABCDAEF8A5165C1884",
+   "date": "2026-10-28T21:17:08Z",
+   "playlist": "2v2",
+   "map": "Champions Field",
+   "duration": 402,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 0,
+   "assists": 1,
+   "saves": 2,
+   "shots": 2,
+   "score": 311,
+   "mvp": false,
+   "boost_avg": 51.5,
+   "bpm": 326,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "663CD5014A3F3AABCDAEF8A5165C1884",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 6,
+    "goals_against": 3,
+    "clears": 2,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 326,
+    "avg_boost": 51.5,
+    "pct_zero_boost": 15.8,
+    "pct_full_boost": 18.8,
+    "stolen": 562.0,
+    "overfill_pct": 7.4,
+    "small_pads": 61,
+    "big_pads": 15,
+    "avg_speed": 1495.0,
+    "pct_supersonic": 15.9,
+    "pct_slow": 44.2,
+    "pct_ground": 61.3,
+    "pct_high_air": 0.3,
+    "powerslides": 27,
+    "pct_def_third": 48.0,
+    "pct_off_third": 24.5,
+    "pct_behind_ball": 70.8,
+    "pct_most_back": 60.1,
+    "pct_most_forward": 40.9,
+    "pct_closest_ball": 41.8,
+    "dist_mates": 3074.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 18.8,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 60.1,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 15.9,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 7.4,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 44.2,
+      "txt": "Rarement à l'arrêt"
      }
     ]
    }
