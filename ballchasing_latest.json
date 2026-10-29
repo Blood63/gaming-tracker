@@ -3,21 +3,21 @@
  "fetched_at": "2026-10-29T04:36:30+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 141,
+ "replays_count": 142,
  "playlists": {
   "3v3": {
-   "matches": 75,
+   "matches": 76,
    "wins": 36,
-   "win_rate": 48.0,
+   "win_rate": 47.4,
    "goals": 54,
    "assists": 30,
-   "saves": 34,
-   "shots": 125,
-   "score_avg": 225.4,
-   "goals_avg": 0.72,
-   "shot_pct": 43.2,
+   "saves": 35,
+   "shots": 127,
+   "score_avg": 225.5,
+   "goals_avg": 0.71,
+   "shot_pct": 42.5,
    "mvp": 7,
-   "boost_avg": 51.6,
+   "boost_avg": 51.7,
    "rank": null,
    "mmr": null
   },
@@ -106,20 +106,20 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 61,
+   "matches": 62,
    "wins": 30,
    "avg": {
-    "shooting_pct": 44.1,
-    "avg_boost": 52.6,
+    "shooting_pct": 43.4,
+    "avg_boost": 52.8,
     "pct_zero_boost": 11.7,
-    "pct_supersonic": 14.4,
+    "pct_supersonic": 14.3,
     "pct_behind_ball": 72.3,
-    "pct_def_third": 47.2,
-    "pct_most_forward": 44.2,
-    "bpm": 340.8
+    "pct_def_third": 47.4,
+    "pct_most_forward": 43.9,
+    "bpm": 339.9
    },
    "saves": 0.61,
-   "goals": 1.16,
+   "goals": 1.15,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -15820,6 +15820,122 @@
       "label": "Boost gaspillé (surplus)",
       "value": 8.7,
       "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5E5EF6F048F60D02E1250DAC7DB3F5D8",
+   "src": "local",
+   "lid": "5E5EF6F048F60D02E1250DAC7DB3F5D8",
+   "date": "2026-10-29T13:22:57Z",
+   "playlist": "3v3",
+   "map": "Deadeye Canyon (Oasis)",
+   "duration": 649,
+   "overtime": false,
+   "team_goals": 0,
+   "opp_goals": 1,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 2,
+   "score": 228,
+   "mvp": false,
+   "boost_avg": 62.8,
+   "bpm": 286,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "5E5EF6F048F60D02E1250DAC7DB3F5D8",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 5,
+    "goals_against": 1,
+    "clears": 2,
+    "centers": 6,
+    "aerial_hits": 2,
+    "bpm": 286,
+    "avg_boost": 62.8,
+    "pct_zero_boost": 8.8,
+    "pct_full_boost": 19.7,
+    "stolen": 577.0,
+    "overfill_pct": 20.0,
+    "small_pads": 78,
+    "big_pads": 26,
+    "avg_speed": 1359.0,
+    "pct_supersonic": 12.4,
+    "pct_slow": 54.5,
+    "pct_ground": 59.1,
+    "pct_high_air": 2.1,
+    "powerslides": 39,
+    "pct_def_third": 61.7,
+    "pct_off_third": 15.9,
+    "pct_behind_ball": 73.9,
+    "pct_most_back": 45.9,
+    "pct_most_forward": 26.8,
+    "pct_closest_ball": 24.2,
+    "dist_mates": 3727.0,
+    "demos": 2,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 19.7,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 62.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 24.2,
+      "txt": "Tu laisses jouer tes coéquipiers"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 26.8,
+      "txt": "Bonnes rotations (peu de surengagement)"
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 8.8,
+      "txt": "Rarement à court de boost"
      }
     ]
    }
