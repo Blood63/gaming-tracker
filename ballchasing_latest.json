@@ -3,21 +3,21 @@
  "fetched_at": "2026-10-30T04:39:48+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 151,
+ "replays_count": 152,
  "playlists": {
   "3v3": {
-   "matches": 81,
-   "wins": 38,
-   "win_rate": 46.9,
-   "goals": 56,
-   "assists": 32,
-   "saves": 36,
-   "shots": 133,
-   "score_avg": 221.8,
-   "goals_avg": 0.69,
-   "shot_pct": 42.1,
+   "matches": 82,
+   "wins": 39,
+   "win_rate": 47.6,
+   "goals": 58,
+   "assists": 34,
+   "saves": 38,
+   "shots": 137,
+   "score_avg": 226.0,
+   "goals_avg": 0.71,
+   "shot_pct": 42.3,
    "mvp": 7,
-   "boost_avg": 51.8,
+   "boost_avg": 51.9,
    "rank": null,
    "mmr": null
   },
@@ -106,20 +106,20 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 71,
-   "wins": 34,
+   "matches": 72,
+   "wins": 35,
    "avg": {
-    "shooting_pct": 42.7,
-    "avg_boost": 52.9,
+    "shooting_pct": 42.8,
+    "avg_boost": 53.0,
     "pct_zero_boost": 11.8,
-    "pct_supersonic": 14.1,
-    "pct_behind_ball": 71.8,
+    "pct_supersonic": 14.2,
+    "pct_behind_ball": 71.9,
     "pct_def_third": 47.4,
-    "pct_most_forward": 44.0,
-    "bpm": 337.8
+    "pct_most_forward": 43.9,
+    "bpm": 338.2
    },
-   "saves": 0.63,
-   "goals": 1.1,
+   "saves": 0.65,
+   "goals": 1.11,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -16969,6 +16969,111 @@
       "label": "Temps en joueur le plus avancé",
       "value": 35.3,
       "txt": "Bonnes rotations (peu de surengagement)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "D041E2634ED12831E9C5229C1F437963",
+   "src": "local",
+   "lid": "D041E2634ED12831E9C5229C1F437963",
+   "date": "2026-10-30T17:47:30Z",
+   "playlist": "3v3",
+   "map": "Deadeye Canyon (Oasis)",
+   "duration": 248,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 2,
+   "assists": 2,
+   "saves": 2,
+   "shots": 4,
+   "score": 572,
+   "mvp": false,
+   "boost_avg": 60.1,
+   "bpm": 362,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "D041E2634ED12831E9C5229C1F437963",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 3,
+    "goals_against": 0,
+    "clears": 3,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 362,
+    "avg_boost": 60.1,
+    "pct_zero_boost": 6.6,
+    "pct_full_boost": 27.4,
+    "stolen": 520.0,
+    "overfill_pct": 8.2,
+    "small_pads": 23,
+    "big_pads": 13,
+    "avg_speed": 1492.0,
+    "pct_supersonic": 18.5,
+    "pct_slow": 48.8,
+    "pct_ground": 59.6,
+    "pct_high_air": 1.7,
+    "powerslides": 15,
+    "pct_def_third": 49.9,
+    "pct_off_third": 27.3,
+    "pct_behind_ball": 74.0,
+    "pct_most_back": 32.0,
+    "pct_most_forward": 38.1,
+    "pct_closest_ball": 39.3,
+    "dist_mates": 3652.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 27.4,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 60.1,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 18.5,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 8.2,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
