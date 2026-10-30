@@ -3,7 +3,7 @@
  "fetched_at": "2026-10-30T04:39:48+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 147,
+ "replays_count": 148,
  "playlists": {
   "3v3": {
    "matches": 79,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 67,
-   "wins": 35,
-   "win_rate": 52.2,
-   "goals": 97,
-   "assists": 36,
-   "saves": 51,
-   "shots": 189,
-   "score_avg": 376.3,
-   "goals_avg": 1.45,
-   "shot_pct": 51.3,
+   "matches": 68,
+   "wins": 36,
+   "win_rate": 52.9,
+   "goals": 98,
+   "assists": 37,
+   "saves": 53,
+   "shots": 193,
+   "score_avg": 378.2,
+   "goals_avg": 1.44,
+   "shot_pct": 50.8,
    "mvp": 15,
-   "boost_avg": 50.7,
+   "boost_avg": 50.8,
    "rank": null,
    "mmr": null
   },
@@ -106,19 +106,19 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 67,
-   "wins": 31,
+   "matches": 68,
+   "wins": 32,
    "avg": {
-    "shooting_pct": 42.1,
-    "avg_boost": 52.7,
+    "shooting_pct": 41.9,
+    "avg_boost": 52.8,
     "pct_zero_boost": 11.8,
-    "pct_supersonic": 14.3,
-    "pct_behind_ball": 71.9,
-    "pct_def_third": 47.5,
-    "pct_most_forward": 44.0,
-    "bpm": 339.4
+    "pct_supersonic": 14.2,
+    "pct_behind_ball": 72.0,
+    "pct_def_third": 47.4,
+    "pct_most_forward": 44.1,
+    "bpm": 339.1
    },
-   "saves": 0.61,
+   "saves": 0.63,
    "goals": 1.1,
    "focus": {
     "k": "pct_full_boost",
@@ -16516,6 +16516,122 @@
       "label": "Boost ramassé / min",
       "value": 340,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "CF8080F644125B8ED8D95EA486397620",
+   "src": "local",
+   "lid": "CF8080F644125B8ED8D95EA486397620",
+   "date": "2026-10-30T17:09:32Z",
+   "playlist": "2v2",
+   "map": "Estadio Vida (Dusk)",
+   "duration": 507,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 2,
+   "shots": 4,
+   "score": 508,
+   "mvp": false,
+   "boost_avg": 57.8,
+   "bpm": 318,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "CF8080F644125B8ED8D95EA486397620",
+   "m": {
+    "shooting_pct": 25.0,
+    "shots_against": 5,
+    "goals_against": 2,
+    "clears": 2,
+    "centers": 11,
+    "aerial_hits": 2,
+    "bpm": 318,
+    "avg_boost": 57.8,
+    "pct_zero_boost": 11.1,
+    "pct_full_boost": 18.8,
+    "stolen": 867.0,
+    "overfill_pct": 33.3,
+    "small_pads": 74,
+    "big_pads": 26,
+    "avg_speed": 1511.0,
+    "pct_supersonic": 11.1,
+    "pct_slow": 45.0,
+    "pct_ground": 58.8,
+    "pct_high_air": 2.1,
+    "powerslides": 41,
+    "pct_def_third": 40.2,
+    "pct_off_third": 27.2,
+    "pct_behind_ball": 76.2,
+    "pct_most_back": 46.8,
+    "pct_most_forward": 55.4,
+    "pct_closest_ball": 52.1,
+    "dist_mates": 2984.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 33.3,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 18.8,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 55.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 76.2,
+      "txt": "Bon placement derrière la balle"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 11.1,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 45.0,
+      "txt": "Rarement à l'arrêt"
      }
     ]
    }
