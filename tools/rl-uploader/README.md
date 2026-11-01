@@ -44,7 +44,6 @@ et analyse le replay dans les secondes qui suivent. Seuls les replays à partir 
 |---|---|
 | `1-Installer.bat` | Installe, demande les clés, lance en arrière‑plan |
 | `2-Lancer-maintenant.bat` | Traite les replays en attente dans une fenêtre visible, puis s'arrête |
-| `3-Changer-la-cle-ballchasing.bat` | Nouvelle clé ballchasing |
 | `4-Changer-le-jeton-GitHub.bat` | Nouveau jeton GitHub |
 | `5-Tester-un-replay.bat` | Analyse un replay sans rien envoyer |
 | `6-Voir-letat.bat` | File d'attente, derniers envois |

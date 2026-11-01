@@ -1,10 +1,11 @@
 name: Replays locaux
 # Déclenché quand l'outil du PC (tools/rl-uploader) pousse rl_local/index.json : fusionne ces replays (analysés sur le PC)
-# dans ballchasing_latest.json (sans doublon avec ballchasing), puis régénère home.json. Aucune clé ballchasing nécessaire.
+# dans ballchasing_latest.json (sans doublon avec ballchasing), génère l'index léger + les détails (rl_local/light.json, deep.json : chargement rapide de l'appli),
+# puis régénère home.json. Aucune clé ballchasing nécessaire. index.json (écrit par le PC) n'est jamais modifié par le robot.
 on:
   push:
     branches: [main]
-    paths: ["rl_local/index.json", "tools/merge_rl_local.py"]
+    paths: ["rl_local/index.json", "tools/merge_rl_local.py", "tools/split_rl_index.py"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -20,8 +21,9 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main
             python3 tools/merge_rl_local.py
+            python3 tools/split_rl_index.py
             python3 tools/build_home.py
-            git add ballchasing_latest.json home.json build.json
+            git add ballchasing_latest.json rl_local/light.json rl_local/deep.json home.json build.json
             if git diff --cached --quiet; then break; fi
             git commit -qm "Replays locaux : fusion" && git push -q origin HEAD:main && break
             sleep $((RANDOM % 8 + 3))

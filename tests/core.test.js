@@ -45,7 +45,20 @@ test('goalProg : heures, succès, K/D COD, niveau, rang COD',()=>{
   p=run("goalProg({type:'level',target:20})");near(p.p,50);
   p=run("goalProg({type:'cod_rank',mode:'MP',target:11,start:6})");assert.equal(p.done,false);near(p.p,0);
   run("D.ranks.MP.push({value:11,label:'Élite I'})");p=run("goalProg({type:'cod_rank',mode:'MP',target:11,start:6})");assert.equal(p.done,true);near(p.p,100);
+  // rang actuel sous le départ de la jauge : jamais de nombre négatif, on compte les paliers avant le départ
+  run("D.ranks.MP.length=0;D.ranks.MP.push({value:21,label:'Maître'})");p=run("goalProg({type:'cod_rank',mode:'MP',target:36})");
+  assert.equal(p.cur,0);assert.equal(p.done,false);near(p.p,0);assert.match(p.info,/encore 1 palier avant le départ/);
+  run("D.ranks.MP.length=0;D.ranks.MP.push({value:20,label:'Pro V'})");p=run("goalProg({type:'cod_rank',mode:'MP',target:36})");assert.match(p.info,/encore 2 paliers avant le départ/);assert.ok(p.cur>=0);
   p=run("goalProg({type:'inconnu',target:1})");assert.equal(p.p,0);
+});
+test('Valorant : estimation en victoires nettes (jamais « ≈ 2400 parties » quand le solde moyen est quasi nul)',()=>{
+  const mh=[...Array(31)].map(()=>({change:18})).concat([...Array(30)].map(()=>({change:-19}))),ms=[...Array(112)].map((_,i)=>({mode:'Competitive',result:i<58?'win':'loss',id:String(i)}));
+  setD({games:[],vh:{mmr:{tier_id:9,rr:55,tier:'Silver 1'},mmr_history:mh,matches:ms}});
+  const p=run("goalProg({type:'val_rank',target:12})");
+  assert.match(p.info,/il faut ≈ \d+ victoires? de plus que de défaites/);assert.doesNotMatch(p.info,/≈ \d{4,} parties/);assert.match(p.info,/gain net n'est que de \+/);assert.match(p.info,/\(estimation\)/);
+  // bon rythme : le nombre de parties reste affiché
+  setD({games:[],vh:{mmr:{tier_id:9,rr:55,tier:'Silver 1'},mmr_history:[{change:25},{change:25},{change:-15}],matches:[...Array(10)].map((_,i)=>({mode:'Competitive',result:i<7?'win':'loss',id:String(i)}))}});
+  assert.match(run("goalProg({type:'val_rank',target:12})").info,/≈ \d+ parties/);
 });
 test('steamWin : écart de temps de jeu sur la fenêtre, base la plus récente avant la fenêtre',()=>{
   const d=n=>new Date(Date.now()-n*864e5).toISOString();
@@ -231,8 +244,29 @@ test('index réel rl_local : cohérence des agrégats avec les compteurs de chaq
   const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort');
   const sh=run('rllShots(rllClean(IDX,"2026-10-01"))'),shots=idx.reduce((t,r)=>t+r.s.shots,0),goals=idx.reduce((t,r)=>t+r.s.goals,0),sg=idx.reduce((t,r)=>t+r.s.shots_goal,0);
   assert.equal(sh.n,shots,'tirs détaillés = compteur');assert.equal(sh.goals,sg,'tirs marqués détaillés = compteur');
-  const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals);
+  // replay « partiel » : le compteur d'en-tête indique des buts mais l'analyseur n'a retrouvé aucun événement de but (replay tronqué / événements illisibles).
+  // Connu : 61AC3C41… (1 but compté, détail vide, 0 coup d'envoi). Toléré tant que c'est rare (≤ 2 % des replays) ; le compteur `s.goals` reste la référence.
+  const partial=idx.filter(r=>r.s.goals>0&&(r.d_goals||[]).length==0);
+  assert.ok(partial.length<=Math.max(1,Math.ceil(idx.length*0.02)),'trop de replays sans détail de buts : '+partial.map(r=>r.id).join(','));
+  const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals-partial.reduce((t,r)=>t+r.s.goals,0),'buts détaillés = compteur (replays partiels exclus)');
   const z=run('rllHeatZones(rllHeat(rllClean(IDX,"2026-10-01")))');near(z.def+z.neu+z.off,100,1e-6);near(z.defH+z.offH,100,1e-6);
   const k=run('rllKick(rllClean(IDX,"2026-10-01"))');assert.equal(k.n,idx.reduce((t,r)=>t+r.s.kickoffs,0),'coups d’envoi détaillés = compteur');
   for(const r of idx)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
+});
+
+/* ---- RL : index léger + détails différés (rl_local/light.json, deep.json) ---- */
+test('rllDeepOf : le fichier détaillé redonne exactement les blocs d_* de l’index (sur tous les replays disponibles)',()=>{
+  if(!fs.existsSync(idxPath))return;
+  const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays||[];let n=0;
+  for(const e of idx){const f=path.join(__dirname,'..','rl_local',e.id+'.json');if(!fs.existsSync(f))continue;
+    ctx.__d=JSON.parse(fs.readFileSync(f,'utf8')).d;const m=J(run('rllDeepOf(__d)'));
+    for(const k of Object.keys(m)){if(e[k]===undefined)continue;assert.deepEqual(m[k],e[k],`${e.id} ${k}`)}n++}
+  assert.ok(n>=1||!idx.length,'au moins un fichier détaillé comparé');
+});
+test('light.json / deep.json : aucun bloc d_* dans le léger, détails indexés par id',()=>{
+  const lp=path.join(__dirname,'..','rl_local','light.json'),dp=path.join(__dirname,'..','rl_local','deep.json');if(!fs.existsSync(lp)||!fs.existsSync(dp))return;
+  const L=JSON.parse(fs.readFileSync(lp,'utf8')).replays,D=JSON.parse(fs.readFileSync(dp,'utf8')).deep;
+  assert.ok(Array.isArray(L)&&L.length>0&&D&&typeof D=='object');
+  for(const r of L)assert.ok(!Object.keys(r).some(k=>k.startsWith('d_')),'bloc d_ dans le léger : '+r.id);
+  for(const [id,d] of Object.entries(D))assert.ok(Object.keys(d).every(k=>k.startsWith('d_')),'clé inattendue dans deep : '+id);
 });

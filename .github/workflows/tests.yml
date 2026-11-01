@@ -13,5 +13,5 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: node --check core.js && node --check app.js
-      - run: node --test tests/
+      - run: node --test tests/*.test.js
       - run: python3 -m unittest discover -s tests -p "test_*.py"

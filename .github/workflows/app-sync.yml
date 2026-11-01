@@ -23,7 +23,7 @@ jobs:
             git fetch -q origin main && git reset -q --hard origin/main
             python3 tools/app_sync.py
             python3 tools/build_home.py
-            git add goals.json cod_mobile.json cod_ranks.json cod_profile.json home.json build.json
+            git add goals.json cod_mobile.json cod_ranks.json cod_profile.json rocket_league.json home.json build.json
             if git diff --cached --quiet; then break; fi
             git commit -qm "Synchro app" && git push -q origin HEAD:main && break
             sleep $((RANDOM % 8 + 3))

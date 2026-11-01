@@ -1,11 +1,13 @@
 name: Valorant + Rocket League (HenrikDev, ballchasing)
-# Relevés à 18:00 et 01:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
+# Relevés visés à 18:00 et 01:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
+# GitHub retarde les crons « pile à l'heure » de 1 h 30 à 3 h 30 (forte charge) : on déclenche à une minute creuse (:17) et ~45 min plus tôt,
+# pour que le relevé réel tombe au plus près de 18 h / 1 h. L'heure réelle du relevé (fetched_at) est affichée dans l'appli.
 on:
   schedule:
-    - cron: "0 16 * * *"   # 18:00 Paris en été (CEST, +0200)
-    - cron: "0 23 * * *"   # 01:00 Paris en été
-    - cron: "0 17 * * *"   # 18:00 Paris en hiver (CET, +0100)
-    - cron: "0 0 * * *"    # 01:00 Paris en hiver
+    - cron: "17 15 * * *"  # vise 18:00 Paris en été (CEST, +0200) ; déclenché à 17:17
+    - cron: "17 22 * * *"  # vise 01:00 Paris en été ; déclenché à 00:17
+    - cron: "17 16 * * *"  # vise 18:00 Paris en hiver (CET, +0100) ; déclenché à 17:17
+    - cron: "17 23 * * *"  # vise 01:00 Paris en hiver ; déclenché à 00:17
   workflow_dispatch:
 permissions:
   contents: write
@@ -17,7 +19,7 @@ jobs:
       - id: gate
         run: |
           off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
-          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "0 16 * * *" ] || [ "$s" = "0 23 * * *" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "0 17 * * *" ] || [ "$s" = "0 0 * * *" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
+          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "17 15 * * *" ] || [ "$s" = "17 22 * * *" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "17 16 * * *" ] || [ "$s" = "17 23 * * *" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@v4
       - if: steps.gate.outputs.run == 'true'

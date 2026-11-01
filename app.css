@@ -410,7 +410,7 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 .achl{display:grid;gap:.5rem}
 .ach{display:flex;gap:.75rem;align-items:flex-start;padding:.6rem .7rem;background:#1a1740;border:4px solid #3a356f;box-shadow:4px 4px 0 0 rgba(0,0,0,.5)}
 .ach.ok{border-color:#4a6d8f}
-.ach img{width:48px;height:48px;flex:none;image-rendering:auto;border:3px solid #0b0a1f;background:#0b0a1f}
+.ach img,.ach .ach-ph{width:48px;height:48px;flex:none;image-rendering:auto;border:3px solid #0b0a1f;background:#0b0a1f}.ach .ach-ph{box-sizing:border-box;display:grid;place-items:center;font-size:1.3rem;opacity:.7;width:54px;height:54px}
 .ach:not(.ok) img{filter:grayscale(1);opacity:.8}
 .ach .at{min-width:0;display:grid;gap:.2rem}.ach b{color:#f2f0ff}.ach .ad{color:#c9c5ee;font-size:.86rem;line-height:1.35}.ach .ad i{color:#b3aedd}
 .ach .hid{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}.ach .rv{flex-basis:100%}.ach .arv{min-height:30px;font-size:.75rem;padding:0 .55rem}
@@ -498,3 +498,9 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 .rll-read{min-height:34px;margin-top:.5rem}
 .rll-map .rll-read{justify-content:center}
 @media(max-width:520px){.rll-pitch{max-width:300px}}
+/* Replays analysés : emplacements réservés pendant le chargement différé des détails (hauteurs ≈ contenu réel, pour éviter les sauts) */
+.rll-sk{display:grid;place-items:center;text-align:center;padding:1rem;font-size:.85rem;background-image:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.05) 50%,transparent 70%);background-size:220% 100%;animation:rllsk 1.6s linear infinite}
+.rll-sk.fail{animation:none;background-image:none}
+@keyframes rllsk{from{background-position:120% 0}to{background-position:-120% 0}}
+.sk-coach{min-height:340px}.sk-heat{min-height:510px}.sk-kick{min-height:620px}.sk-shots{min-height:810px}.sk-pe{min-height:760px}.sk-after{min-height:300px}
+@media(max-width:859px){.sk-coach{min-height:520px}.sk-heat{min-height:730px}.sk-shots{min-height:1076px}.sk-pe{min-height:810px}}

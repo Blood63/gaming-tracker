@@ -64,7 +64,11 @@ function rankGoal(x){
     const p=rankPct(cur,start,tgt);
     let info=rem<=0?'':`${fnum(rem)} RR restants (${vTier(M.tier)} · ${M.rr} RR → ${vTier(T.n)})`;
     if(rem>0&&E.ag){const wins=Math.ceil(rem/E.ag);info+=`<br>≈ ${wins} victoire${wins>1?'s':''} sans défaite (gain moyen +${fnum(E.ag,0)} RR)`;
-      if(E.net>0){const g=Math.ceil(rem/E.net);info+=` · ≈ ${g} parties à ton rythme actuel (${fnum(100*E.wr,0)} % de victoires, perte moy. −${fnum(E.al,0)} RR)`}
+      // « victoires nettes » = victoires − défaites à gagner (chaque victoire rapporte ~ag RR, chaque défaite coûte ~al RR) : plus parlant qu'un nombre de parties quand le solde moyen est quasi nul
+      const avgSwing=E.al!=null?(E.ag+E.al)/2:E.ag,nw=Math.ceil(rem/avgSwing);
+      info+=` · il faut ≈ ${nw} victoire${nw>1?'s':''} de plus que de défaites (perte moy. −${fnum(E.al??0,0)} RR)`;
+      if(E.net>0){const g=Math.ceil(rem/E.net);
+        info+=g<=300?` · à ton rythme actuel (${fnum(100*E.wr,0)} % de victoires) ≈ ${g} parties`:` · à ton rythme actuel (${fnum(100*E.wr,0)} % de victoires) le gain net n'est que de +${fnum(E.net,1)} RR par partie : gagner un peu plus souvent accélère beaucoup`}
       else if(E.net!=null)info+=' · à ton rythme actuel, le solde de RR est négatif : il faut gagner plus souvent';
       info+=' <i>(estimation)</i>'}
     return{label:lab,cur:Math.max(0,cur-start),t:Math.max(1,tgt-start),u:'RR',p:Math.max(0,Math.min(100,p)),info,dl,done:cur>=tgt,icon:vIcon(x.target,22)}}
@@ -76,7 +80,9 @@ function rankGoal(x){
   if(x.type=='cod_rank'){x.target=codNormStep(x.target);const a=D.ranks[x.mode]||[],c=a.at(-1),lab=`COD Mobile ${x.mode=='BR'?'Battle Royale':'Multijoueur'} : ${codLbl(x.target)}`;
     if(!c)return{label:lab,wait:'Enregistre ton rang actuel (bouton « changement de rang » sur la page COD)',cur:0,t:1,p:0,dl};
     const start=rankStart('cod_rank',x.target),p=rankPct(c.value,start,x.target),rem=Math.max(0,x.target-c.value);
-    return{label:lab,cur:c.value-start,t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info:rem?`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`:'',dl,done:c.value>=x.target}}
+    const before=Math.max(0,start-c.value); // rang actuel sous le départ de la jauge : on compte les paliers qui restent avant le départ (jamais de nombre négatif)
+    const info=!rem?'':before?`Actuel : ${esc(c.label)} · encore ${before} palier${before>1?'s':''} avant le départ de la jauge (${esc(codLbl(start))}), puis ${x.target-start} jusqu'à la cible`:`Actuel : ${esc(c.label)} · encore ${rem} palier${rem>1?'s':''}`;
+    return{label:lab,cur:Math.max(0,c.value-start),t:Math.max(1,x.target-start),u:'',p:Math.max(0,Math.min(100,p)),info,dl,done:c.value>=x.target}}
 }
 const RL_DIV=['I','II','III','IV'],rlVal=(t,d)=>t*4+((d||1)-1),rlLbl=(t,d)=>RL_T[t]+(d&&t<RL_T.length-1?' div. '+RL_DIV[d-1]:'');
 function steamWin(days){const H=D.steamH;if(H.length<2)return null;const now=Date.now(),last=H.at(-1);
@@ -257,3 +263,5 @@ function rllCoach(a,maxW=3){const m=rllMetrics(a),W=[],S=[];
   return{weak:W.slice(0,maxW),strong:S.slice(0,3),ctx:m}}
 /* Moyenne glissante sur n points (ignore les valeurs absentes) */
 const rllRoll=(v,n=5)=>v.map((_,i)=>{const w=v.slice(Math.max(0,i-n+1),i+1).filter(x=>x!=null);return w.length?w.reduce((s,x)=>s+x,0)/w.length:null});
+/* Blocs d_* d'un replay reconstruits depuis son fichier détaillé (rl_local/<id>.json, champ d) : même format que dans rl_local/deep.json. */
+const rllDeepOf=d=>d?{d_kick:(d.kickoffs||[]).map(k=>[k.spawn,k.role,k.first,k.out,k.react,k.flip]),d_shots:(d.shots||[]).map(t=>[t.x,t.y,t.sp,t.on,t.air,t.o]),d_goals:(d.goals||[]).map(g=>[g.for,g.by,g.type,g.speed,g.air,g.t]),d_periods:d.periods||[],d_after_goal:d.after_goal||[],d_heat:d.heat,d_heat_ball:d.heat_ball}:{};
