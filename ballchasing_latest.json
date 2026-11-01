@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-01T21:34:00+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 165,
+ "replays_count": 166,
  "playlists": {
   "3v3": {
-   "matches": 95,
-   "wins": 47,
-   "win_rate": 49.5,
+   "matches": 96,
+   "wins": 48,
+   "win_rate": 50.0,
    "goals": 74,
    "assists": 43,
    "saves": 42,
    "shots": 163,
-   "score_avg": 237.7,
-   "goals_avg": 0.78,
+   "score_avg": 235.6,
+   "goals_avg": 0.77,
    "shot_pct": 45.4,
    "mvp": 7,
-   "boost_avg": 52.4,
+   "boost_avg": 52.5,
    "rank": null,
    "mmr": null
   },
@@ -106,20 +106,20 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 85,
-   "wins": 43,
+   "matches": 86,
+   "wins": 44,
    "avg": {
-    "shooting_pct": 44.7,
-    "avg_boost": 53.3,
-    "pct_zero_boost": 11.8,
-    "pct_supersonic": 14.0,
-    "pct_behind_ball": 72.3,
-    "pct_def_third": 47.2,
-    "pct_most_forward": 42.5,
-    "bpm": 333.4
+    "shooting_pct": 44.2,
+    "avg_boost": 53.5,
+    "pct_zero_boost": 11.7,
+    "pct_supersonic": 13.9,
+    "pct_behind_ball": 72.6,
+    "pct_def_third": 47.1,
+    "pct_most_forward": 42.2,
+    "bpm": 332.0
    },
-   "saves": 0.6,
-   "goals": 1.13,
+   "saves": 0.59,
+   "goals": 1.12,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -18582,6 +18582,122 @@
       "label": "Temps derrière la balle",
       "value": 74.9,
       "txt": "Bon placement derrière la balle"
+     }
+    ]
+   }
+  },
+  {
+   "id": "91510B174A416127CE2A7E8CFEA50E1D",
+   "src": "local",
+   "lid": "91510B174A416127CE2A7E8CFEA50E1D",
+   "date": "2026-11-01T21:37:06Z",
+   "playlist": "3v3",
+   "map": "Estadio Vida (Dusk)",
+   "duration": 124,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 0,
+   "assists": 0,
+   "saves": 0,
+   "shots": 0,
+   "score": 30,
+   "mvp": false,
+   "boost_avg": 67.9,
+   "bpm": 205,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "91510B174A416127CE2A7E8CFEA50E1D",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 0,
+    "goals_against": 0,
+    "clears": 0,
+    "centers": 2,
+    "aerial_hits": 0,
+    "bpm": 205,
+    "avg_boost": 67.9,
+    "pct_zero_boost": 4.3,
+    "pct_full_boost": 26.7,
+    "stolen": 47.0,
+    "overfill_pct": 1.7,
+    "small_pads": 11,
+    "big_pads": 4,
+    "avg_speed": 1311.0,
+    "pct_supersonic": 5.6,
+    "pct_slow": 59.9,
+    "pct_ground": 69.4,
+    "pct_high_air": 2.3,
+    "powerslides": 9,
+    "pct_def_third": 40.2,
+    "pct_off_third": 22.1,
+    "pct_behind_ball": 91.6,
+    "pct_most_back": 48.7,
+    "pct_most_forward": 16.6,
+    "pct_closest_ball": 20.1,
+    "dist_mates": 3926.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 26.7,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 67.9,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 1.7,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 4.3,
+      "txt": "Rarement à court de boost"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 16.6,
+      "txt": "Bonnes rotations (peu de surengagement)"
      }
     ]
    }
