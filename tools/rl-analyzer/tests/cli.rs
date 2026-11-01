@@ -148,3 +148,39 @@ fn entree_d_index_compacte_et_sans_noms() {
     assert!(!txt.contains("\"name\""));
     assert!(txt.len() < 12_000, "entrée d'index trop lourde : {}", txt.len());
 }
+
+#[test]
+fn buts_detailles_ou_replay_partiel_signale() {
+    // Pour chaque replay local : soit tous les buts sont détaillés (d.goals = score des deux équipes),
+    // soit le replay est explicitement marqué « goals_unseen » (enregistrement commencé après des buts).
+    let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
+    let mut n = 0;
+    for e in std::fs::read_dir(d).unwrap().flatten().take(30) {
+        let p = e.path(); if p.extension().map_or(true, |x| x != "replay") { continue; }
+        let o = bin().arg(&p).args(["--me-name", "443Blood", "--me-name", "M8_Blood"]).output().unwrap();
+        if !o.status.success() { continue; } // replay d'un autre joueur : code 5, hors sujet ici
+        let v: serde_json::Value = serde_json::from_slice(&o.stdout).unwrap();
+        let total = v["team_goals"].as_i64().unwrap() + v["opp_goals"].as_i64().unwrap();
+        let seen = v["d"]["goals"].as_array().unwrap().len() as i64;
+        match v.get("goals_unseen").and_then(|x| x.as_i64()) {
+            None => assert_eq!(seen, total, "buts détaillés ≠ score ({:?})", p),
+            Some(u) => assert_eq!(seen + u, total, "goals_unseen incohérent ({:?})", p),
+        }
+        n += 1;
+    }
+    eprintln!("{n} replays vérifiés");
+}
+
+#[test]
+fn replay_sans_buts_vus_61ac3c41() {
+    // Replay connu (jamais publié) : pas de propriété d'en-tête « Goals », compteurs déjà à 3-2 dès la 1re image,
+    // aucun but pendant l'enregistrement → le détail n'existe pas ; l'analyseur doit le dire (goals_unseen = 5).
+    let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
+    let p = d.join("61AC3C4143D9202332987E9DFBB57C4F.replay");
+    if !p.is_file() { eprintln!("replay 61AC3C41 absent : test ignoré"); return }
+    let v = run_json(&p, &["--me-name", "443Blood"]);
+    assert_eq!(v["goals_unseen"].as_i64(), Some(5));
+    assert_eq!(v["d"]["goals"].as_array().unwrap().len(), 0);
+    assert_eq!(v["team_goals"].as_i64(), Some(3));
+    assert_eq!(v["opp_goals"].as_i64(), Some(2));
+}

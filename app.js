@@ -523,6 +523,7 @@ async function rllDetail(x){const box=$('#rlldet');if(!box)return;
   const d=f.d,s=f.s||{},ent=(D.rll||[]).find(r=>r.id==x.lid)||null;let h='';
   const kk=rllKick([{d_kick:(d.kickoffs||[]).map(k=>[k.spawn,k.role,k.first,k.out,k.react,k.flip])}]);
   h+=`<h2>🔬 Analyse locale détaillée</h2><p class="mut" style="font-size:.8rem">Calculée sur ton PC à partir du fichier replay (moteur maison). Terrain : ton but en bas, le but adverse en haut.</p>`;
+  if(f.goals_unseen>0)h+=`<div class="glass pad" id="rllpartial" style="border-color:var(--warn);margin:.6rem 0" role="note"><b>ℹ️ Enregistrement partiel</b><p class="mut" style="font-size:.85rem;margin:.3rem 0 0">Ce replay a commencé après ${f.goals_unseen} but${f.goals_unseen>1?'s':''} (score déjà de ${f.team_goals}-${f.opp_goals}) : leur détail (minute, type, coups d'envoi) n'existe pas dans le fichier. Les stats du match restent exactes.</p></div>`;
   if(ent)h+=rllCoachHTML(rllCoach([{...ent,...rllDeepOf(d)}]),'🧠 Conseils sur ce replay','Repères indicatifs (avis automatique, un seul match = peu de données).');
   h+=`<h2>Évolution pendant le match</h2><div class="glass chart"><canvas id="rlld1"></canvas></div><div class="glass chart"><canvas id="rlld2"></canvas></div>`;
   h+=`<h2>🔥 Cartes de chaleur</h2><div class="seg" id="rlldh">${[['heat','🚗 Ma voiture'],['heat_ball','⚽ La balle']].map(([k,n])=>`<button class="${k=='heat'?'on':''}" data-h="${k}">${n}</button>`).join('')}</div><div id="rlldheat"></div>`;

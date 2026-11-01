@@ -270,6 +270,14 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
     ctr.sort_by_key(|e| e.f);
     let n = players.len();
     for fr in frames.iter_mut() { fr.cars.resize(n, None); }
+    // Repli : certains replays n'ont pas la propriété d'en-tête « Goals ». On reconstruit alors les buts vus pendant
+    // l'enregistrement depuis les compteurs MatchGoals (les valeurs des ~1 premières secondes sont l'état initial, pas des buts).
+    if goals.is_empty() {
+        for e in ctr.iter().filter(|e| e.k == Ctr::Goals && e.f >= 30) {
+            let pl = &players[e.slot];
+            if pl.team <= 1 { goals.push(GoalEv { f: e.f, name: pl.name.clone(), team: pl.team }); }
+        }
+    }
     let id = props.get("Id").cloned().unwrap_or_default();
     let map = props.get("MapName").cloned().unwrap_or_default();
     let date = props.get("Date").cloned().unwrap_or_default();
