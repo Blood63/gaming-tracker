@@ -5,7 +5,7 @@ idempotente : objectifs par id, parties COD par minute/id, rangs par minute+rang
 Entrée : variable d'environnement GT_ITEMS (JSON). Sortie : sync_result.json + ligne OK/FAIL par élément."""
 import json, os, subprocess, sys, tempfile
 T=os.path.dirname(os.path.abspath(__file__))
-SCRIPTS={"goal":"goal_intake.py","cod":"cod_match_intake.py","rank":"cod_rank_intake.py","profile":"cod_profile_intake.py"}
+SCRIPTS={"goal":"goal_intake.py","cod":"cod_match_intake.py","rank":"cod_rank_intake.py","profile":"cod_profile_intake.py","rlrank":"rl_rank_intake.py"}
 def main():
     try: items=json.loads(os.environ.get("GT_ITEMS") or "[]")
     except Exception: items=None

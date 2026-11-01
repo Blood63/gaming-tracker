@@ -5,7 +5,7 @@ GetGlobalAchievementPercentagesForApp (rareté). Icônes = URL du CDN Steam (non
 import json, os, re, time, urllib.request, urllib.error, datetime
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SID="76561198754159593"; SK=os.environ.get("STEAM_API_KEY"); A="https://api.steampowered.com"
-CDN="https://cdn.akamai.steamstatic.com/steamcommunity/public/images/apps/"  # vérifié : sert les mêmes fichiers que steamcdn-a / shared.*.steamstatic
+CDN="https://shared.fastly.steamstatic.com/community_assets/images/apps/"  # vérifié 2026-11 : sert 100 % des icônes ; l'ancien cdn.akamai répond 404 pour les jeux récents
 def api(path,**q):
     qs="&".join(f"{k}={v}" for k,v in q.items())
     try:

@@ -1,11 +1,12 @@
 name: Fetch stats
-# Relevé Steam (+ boutique, succès, ballchasing) : mercredi et dimanche à 00:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
+# Relevé Steam (+ boutique, succès, ballchasing) visé mercredi et dimanche à 00:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
+# Déclenché à une minute creuse (:43), 17 min avant minuit : GitHub retarde les crons de 1 h à 3 h, donc le relevé réel tombe peu après minuit (et reste daté du bon jour). L'heure réelle est affichée dans l'appli.
 on:
   schedule:
-    - cron: "0 22 * * 2"   # mercredi 00:00 Paris en été (CEST)
-    - cron: "0 22 * * 6"   # dimanche 00:00 Paris en été
-    - cron: "0 23 * * 2"   # mercredi 00:00 Paris en hiver (CET)
-    - cron: "0 23 * * 6"   # dimanche 00:00 Paris en hiver
+    - cron: "43 21 * * 2"  # vise mercredi 00:00 Paris en été (CEST) ; déclenché à 23:43
+    - cron: "43 21 * * 6"  # vise dimanche 00:00 Paris en été
+    - cron: "43 22 * * 2"  # vise mercredi 00:00 Paris en hiver (CET)
+    - cron: "43 22 * * 6"  # vise dimanche 00:00 Paris en hiver
   workflow_dispatch:
     inputs:
       only:
@@ -22,7 +23,7 @@ jobs:
       - id: gate
         run: |
           off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
-          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "0 22 * * 2" ] || [ "$s" = "0 22 * * 6" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "0 23 * * 2" ] || [ "$s" = "0 23 * * 6" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
+          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "43 21 * * 2" ] || [ "$s" = "43 21 * * 6" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "43 22 * * 2" ] || [ "$s" = "43 22 * * 6" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
       - if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@v4
       - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
