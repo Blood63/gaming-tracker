@@ -437,6 +437,9 @@ pub fn analyze(m: &Match, o: &Opts) -> Result<Value, String> {
     out.insert("team".into(), json!(team)); out.insert("team_goals".into(), json!(score_me)); out.insert("opp_goals".into(), json!(score_opp)); out.insert("result".into(), json!(if win { "win" } else { "loss" }));
     out.insert("forfeit".into(), json!(m.props.get("bForfeit").map_or(false, |s| s == "true")));
     out.insert("bots".into(), json!(m.players.iter().any(|p| p.bot)));
+    // Replay partiel : l'enregistrement a commencé après certains buts → leur détail n'existe pas dans le fichier.
+    let unseen = (m.score[0] + m.score[1]) - m.goals.len() as i32;
+    if unseen > 0 { out.insert("goals_unseen".into(), json!(unseen)); }
     out.insert("players".into(), json!(n));
     out.insert("s".into(), Value::Object(sm));
     let mut detail = Map::new();

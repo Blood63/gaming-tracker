@@ -244,11 +244,14 @@ test('index réel rl_local : cohérence des agrégats avec les compteurs de chaq
   const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort');
   const sh=run('rllShots(rllClean(IDX,"2026-10-01"))'),shots=idx.reduce((t,r)=>t+r.s.shots,0),goals=idx.reduce((t,r)=>t+r.s.goals,0),sg=idx.reduce((t,r)=>t+r.s.shots_goal,0);
   assert.equal(sh.n,shots,'tirs détaillés = compteur');assert.equal(sh.goals,sg,'tirs marqués détaillés = compteur');
-  // replay « partiel » : le compteur d'en-tête indique des buts mais l'analyseur n'a retrouvé aucun événement de but (replay tronqué / événements illisibles).
-  // Connu : 61AC3C41… (1 but compté, détail vide, 0 coup d'envoi). Toléré tant que c'est rare (≤ 2 % des replays) ; le compteur `s.goals` reste la référence.
-  const partial=idx.filter(r=>r.s.goals>0&&(r.d_goals||[]).length==0);
-  assert.ok(partial.length<=Math.max(1,Math.ceil(idx.length*0.02)),'trop de replays sans détail de buts : '+partial.map(r=>r.id).join(','));
-  const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals-partial.reduce((t,r)=>t+r.s.goals,0),'buts détaillés = compteur (replays partiels exclus)');
+  // Chaque replay a soit tous ses buts détaillés (d_goals = score des deux équipes), soit un drapeau explicite `goals_unseen`
+  // (l'enregistrement a commencé après des buts : leur détail n'existe pas dans le fichier, ex. 61AC3C41…). Plus aucune tolérance silencieuse.
+  for(const r of idx){const tot=r.team_goals+r.opp_goals,seen=(r.d_goals||[]).length,u=r.goals_unseen||0;
+    assert.equal(seen+u,tot,'buts détaillés + non vus = score : '+r.id);}
+  const partial=idx.filter(r=>r.goals_unseen>0);
+  assert.ok(partial.length<=Math.max(1,Math.ceil(idx.length*0.02)),'trop de replays partiels : '+partial.map(r=>r.id).join(','));
+  const miss=idx.filter(r=>r.s.goals>0&&(r.d_goals||[]).length==0&&!(r.goals_unseen>0));assert.equal(miss.length,0,'but compté sans détail ni drapeau : '+miss.map(r=>r.id).join(','));
+  const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals-idx.filter(r=>r.goals_unseen>0).reduce((t,r)=>t+r.s.goals,0),'buts détaillés = compteur (replays partiels exclus)');
   const z=run('rllHeatZones(rllHeat(rllClean(IDX,"2026-10-01")))');near(z.def+z.neu+z.off,100,1e-6);near(z.defH+z.offH,100,1e-6);
   const k=run('rllKick(rllClean(IDX,"2026-10-01"))');assert.equal(k.n,idx.reduce((t,r)=>t+r.s.kickoffs,0),'coups d’envoi détaillés = compteur');
   for(const r of idx)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
