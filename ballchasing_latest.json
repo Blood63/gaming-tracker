@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-01T21:34:00+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 170,
+ "replays_count": 171,
  "playlists": {
   "3v3": {
-   "matches": 100,
-   "wins": 51,
-   "win_rate": 51.0,
-   "goals": 79,
-   "assists": 46,
-   "saves": 48,
-   "shots": 171,
-   "score_avg": 243.1,
+   "matches": 101,
+   "wins": 52,
+   "win_rate": 51.5,
+   "goals": 80,
+   "assists": 47,
+   "saves": 49,
+   "shots": 175,
+   "score_avg": 244.1,
    "goals_avg": 0.79,
-   "shot_pct": 46.2,
+   "shot_pct": 45.7,
    "mvp": 7,
    "boost_avg": 52.6,
    "rank": null,
@@ -106,19 +106,19 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 90,
-   "wins": 47,
+   "matches": 91,
+   "wins": 48,
    "avg": {
-    "shooting_pct": 44.5,
+    "shooting_pct": 44.3,
     "avg_boost": 53.5,
     "pct_zero_boost": 11.8,
     "pct_supersonic": 13.9,
-    "pct_behind_ball": 72.5,
-    "pct_def_third": 47.3,
-    "pct_most_forward": 42.0,
-    "bpm": 331.2
+    "pct_behind_ball": 72.6,
+    "pct_def_third": 47.4,
+    "pct_most_forward": 41.9,
+    "bpm": 331.3
    },
-   "saves": 0.63,
+   "saves": 0.64,
    "goals": 1.12,
    "focus": {
     "k": "pct_full_boost",
@@ -19162,6 +19162,122 @@
       "label": "Boost gaspillé (surplus)",
       "value": 4.4,
       "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "67C83078484D09E632536EA8D078D821",
+   "src": "local",
+   "lid": "67C83078484D09E632536EA8D078D821",
+   "date": "2026-11-01T22:16:43Z",
+   "playlist": "3v3",
+   "map": "Sovereign Heights (Dusk)",
+   "duration": 318,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 1,
+   "shots": 4,
+   "score": 342,
+   "mvp": false,
+   "boost_avg": 57.3,
+   "bpm": 334,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "67C83078484D09E632536EA8D078D821",
+   "m": {
+    "shooting_pct": 25.0,
+    "shots_against": 2,
+    "goals_against": 0,
+    "clears": 1,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 334,
+    "avg_boost": 57.3,
+    "pct_zero_boost": 13.5,
+    "pct_full_boost": 25.2,
+    "stolen": 407.0,
+    "overfill_pct": 9.9,
+    "small_pads": 41,
+    "big_pads": 14,
+    "avg_speed": 1495.0,
+    "pct_supersonic": 14.4,
+    "pct_slow": 46.4,
+    "pct_ground": 58.9,
+    "pct_high_air": 1.5,
+    "powerslides": 20,
+    "pct_def_third": 54.8,
+    "pct_off_third": 22.1,
+    "pct_behind_ball": 79.4,
+    "pct_most_back": 51.2,
+    "pct_most_forward": 31.4,
+    "pct_closest_ball": 29.7,
+    "dist_mates": 3983.0,
+    "demos": 1,
+    "demos_taken": 2
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 25.2,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 57.3,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 25.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 9.9,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 29.7,
+      "txt": "Tu laisses jouer tes coéquipiers"
      }
     ]
    }
