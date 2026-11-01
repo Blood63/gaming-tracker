@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-01T21:34:00+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 168,
+ "replays_count": 169,
  "playlists": {
   "3v3": {
-   "matches": 98,
+   "matches": 99,
    "wins": 50,
-   "win_rate": 51.0,
-   "goals": 77,
+   "win_rate": 50.5,
+   "goals": 78,
    "assists": 45,
    "saves": 46,
-   "shots": 167,
-   "score_avg": 241.3,
+   "shots": 170,
+   "score_avg": 241.5,
    "goals_avg": 0.79,
-   "shot_pct": 46.1,
+   "shot_pct": 45.9,
    "mvp": 7,
    "boost_avg": 52.5,
    "rank": null,
@@ -106,17 +106,17 @@
   {
    "week": "2026-S44",
    "start": "2026-10-26",
-   "matches": 88,
+   "matches": 89,
    "wins": 46,
    "avg": {
-    "shooting_pct": 44.0,
-    "avg_boost": 53.5,
+    "shooting_pct": 43.9,
+    "avg_boost": 53.4,
     "pct_zero_boost": 11.8,
     "pct_supersonic": 13.9,
     "pct_behind_ball": 72.6,
     "pct_def_third": 47.2,
-    "pct_most_forward": 42.0,
-    "bpm": 331.3
+    "pct_most_forward": 41.9,
+    "bpm": 330.7
    },
    "saves": 0.62,
    "goals": 1.12,
@@ -18930,6 +18930,122 @@
       "label": "Temps en joueur le plus avancé",
       "value": 32.3,
       "txt": "Bonnes rotations (peu de surengagement)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "8F7ED6BA49C42BA90A62F4ADD28EB340",
+   "src": "local",
+   "lid": "8F7ED6BA49C42BA90A62F4ADD28EB340",
+   "date": "2026-11-01T22:02:59Z",
+   "playlist": "3v3",
+   "map": "Urban Central",
+   "duration": 347,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 5,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 3,
+   "score": 268,
+   "mvp": false,
+   "boost_avg": 50.9,
+   "bpm": 281,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "8F7ED6BA49C42BA90A62F4ADD28EB340",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 5,
+    "goals_against": 5,
+    "clears": 2,
+    "centers": 6,
+    "aerial_hits": 0,
+    "bpm": 281,
+    "avg_boost": 50.9,
+    "pct_zero_boost": 13.6,
+    "pct_full_boost": 15.9,
+    "stolen": 354.0,
+    "overfill_pct": 8.4,
+    "small_pads": 53,
+    "big_pads": 11,
+    "avg_speed": 1470.0,
+    "pct_supersonic": 12.9,
+    "pct_slow": 47.6,
+    "pct_ground": 62.3,
+    "pct_high_air": 0.7,
+    "powerslides": 27,
+    "pct_def_third": 54.5,
+    "pct_off_third": 22.7,
+    "pct_behind_ball": 69.3,
+    "pct_most_back": 36.9,
+    "pct_most_forward": 35.9,
+    "pct_closest_ball": 35.6,
+    "dist_mates": 4094.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 15.9,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 13.6,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 50.9,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 8.4,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 12.9,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 35.6,
+      "txt": "Tu laisses jouer tes coéquipiers"
      }
     ]
    }
