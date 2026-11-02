@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-02T03:34:28+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 177,
+ "replays_count": 178,
  "playlists": {
   "3v3": {
    "matches": 102,
@@ -22,14 +22,14 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 74,
-   "wins": 40,
-   "win_rate": 54.1,
-   "goals": 112,
-   "assists": 39,
-   "saves": 58,
-   "shots": 210,
-   "score_avg": 387.6,
+   "matches": 75,
+   "wins": 41,
+   "win_rate": 54.7,
+   "goals": 113,
+   "assists": 40,
+   "saves": 60,
+   "shots": 212,
+   "score_avg": 388.9,
    "goals_avg": 1.51,
    "shot_pct": 53.3,
    "mvp": 15,
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 1,
-   "wins": 0,
+   "matches": 2,
+   "wins": 1,
    "avg": {
-    "shooting_pct": 100.0,
-    "avg_boost": 51.1,
-    "pct_zero_boost": 15.0,
-    "pct_supersonic": 15.3,
-    "pct_behind_ball": 70.1,
-    "pct_def_third": 41.6,
-    "pct_most_forward": 56.6,
-    "bpm": 354.0
+    "shooting_pct": 75.0,
+    "avg_boost": 51.0,
+    "pct_zero_boost": 14.4,
+    "pct_supersonic": 13.7,
+    "pct_behind_ball": 71.2,
+    "pct_def_third": 42.0,
+    "pct_most_forward": 54.4,
+    "bpm": 348.0
    },
-   "saves": 0.0,
-   "goals": 2.0,
+   "saves": 1.0,
+   "goals": 1.5,
    "focus": {
     "k": "pct_most_forward",
     "label": "Temps en joueur le plus avancé",
@@ -19997,6 +19997,122 @@
       "k": "bpm",
       "label": "Boost ramassé / min",
       "value": 354,
+      "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "35E7E7474D1446175FAFC3B1524BA968",
+   "src": "local",
+   "lid": "35E7E7474D1446175FAFC3B1524BA968",
+   "date": "2026-11-02T11:44:42Z",
+   "playlist": "2v2",
+   "map": "AquaDome (Salty Shallows)",
+   "duration": 401,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 2,
+   "shots": 2,
+   "score": 478,
+   "mvp": false,
+   "boost_avg": 51.0,
+   "bpm": 342,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "35E7E7474D1446175FAFC3B1524BA968",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 4,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 9,
+    "aerial_hits": 1,
+    "bpm": 342,
+    "avg_boost": 51.0,
+    "pct_zero_boost": 13.9,
+    "pct_full_boost": 15.9,
+    "stolen": 706.0,
+    "overfill_pct": 13.7,
+    "small_pads": 52,
+    "big_pads": 20,
+    "avg_speed": 1476.0,
+    "pct_supersonic": 12.1,
+    "pct_slow": 47.7,
+    "pct_ground": 55.6,
+    "pct_high_air": 2.4,
+    "powerslides": 43,
+    "pct_def_third": 42.4,
+    "pct_off_third": 26.3,
+    "pct_behind_ball": 72.4,
+    "pct_most_back": 48.5,
+    "pct_most_forward": 52.2,
+    "pct_closest_ball": 49.1,
+    "dist_mates": 2721.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 52.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 49.1,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 13.9,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 12.1,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 342,
       "txt": "Bon ramassage de boost"
      }
     ]
