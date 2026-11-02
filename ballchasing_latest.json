@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-02T03:34:28+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 202,
+ "replays_count": 203,
  "playlists": {
   "3v3": {
-   "matches": 103,
-   "wins": 53,
-   "win_rate": 51.5,
-   "goals": 85,
-   "assists": 47,
-   "saves": 49,
-   "shots": 181,
-   "score_avg": 247.4,
+   "matches": 104,
+   "wins": 54,
+   "win_rate": 51.9,
+   "goals": 86,
+   "assists": 48,
+   "saves": 50,
+   "shots": 182,
+   "score_avg": 248.0,
    "goals_avg": 0.83,
-   "shot_pct": 47.0,
+   "shot_pct": 47.3,
    "mvp": 7,
-   "boost_avg": 52.5,
+   "boost_avg": 52.6,
    "rank": null,
    "mmr": null
   },
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 26,
-   "wins": 14,
+   "matches": 27,
+   "wins": 15,
    "avg": {
-    "shooting_pct": 48.9,
-    "avg_boost": 52.0,
-    "pct_zero_boost": 14.0,
-    "pct_supersonic": 13.4,
-    "pct_behind_ball": 73.2,
-    "pct_def_third": 46.1,
-    "pct_most_forward": 49.8,
-    "bpm": 356.8
+    "shooting_pct": 50.8,
+    "avg_boost": 52.2,
+    "pct_zero_boost": 13.8,
+    "pct_supersonic": 13.6,
+    "pct_behind_ball": 73.3,
+    "pct_def_third": 46.4,
+    "pct_most_forward": 49.1,
+    "bpm": 359.1
    },
-   "saves": 0.62,
-   "goals": 1.54,
+   "saves": 0.63,
+   "goals": 1.52,
    "focus": {
     "k": "pct_most_forward",
     "label": "Temps en joueur le plus avancé",
@@ -22898,6 +22898,122 @@
       "label": "Temps au plus près de la balle",
       "value": 31.0,
       "txt": "Tu laisses jouer tes coéquipiers"
+     }
+    ]
+   }
+  },
+  {
+   "id": "17BBC64C493B6BE6ECF52FB04328023C",
+   "src": "local",
+   "lid": "17BBC64C493B6BE6ECF52FB04328023C",
+   "date": "2026-11-02T22:41:29Z",
+   "playlist": "3v3",
+   "map": "Sovereign Heights (Dusk)",
+   "duration": 345,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 1,
+   "shots": 1,
+   "score": 306,
+   "mvp": false,
+   "boost_avg": 55.8,
+   "bpm": 417,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "17BBC64C493B6BE6ECF52FB04328023C",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 6,
+    "goals_against": 1,
+    "clears": 2,
+    "centers": 2,
+    "aerial_hits": 1,
+    "bpm": 417,
+    "avg_boost": 55.8,
+    "pct_zero_boost": 10.7,
+    "pct_full_boost": 21.0,
+    "stolen": 517.0,
+    "overfill_pct": 15.4,
+    "small_pads": 44,
+    "big_pads": 20,
+    "avg_speed": 1541.0,
+    "pct_supersonic": 19.4,
+    "pct_slow": 42.1,
+    "pct_ground": 65.1,
+    "pct_high_air": 1.1,
+    "powerslides": 19,
+    "pct_def_third": 53.1,
+    "pct_off_third": 17.8,
+    "pct_behind_ball": 73.7,
+    "pct_most_back": 45.7,
+    "pct_most_forward": 30.6,
+    "pct_closest_ball": 29.0,
+    "dist_mates": 3379.0,
+    "demos": 1,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 21.0,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 55.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 15.4,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 19.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 417,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
