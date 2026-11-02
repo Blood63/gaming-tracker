@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-02T03:34:28+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 193,
+ "replays_count": 194,
  "playlists": {
   "3v3": {
    "matches": 102,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 90,
+   "matches": 91,
    "wins": 50,
-   "win_rate": 55.6,
-   "goals": 137,
-   "assists": 48,
-   "saves": 68,
-   "shots": 251,
-   "score_avg": 387.9,
+   "win_rate": 54.9,
+   "goals": 138,
+   "assists": 49,
+   "saves": 69,
+   "shots": 253,
+   "score_avg": 387.4,
    "goals_avg": 1.52,
-   "shot_pct": 54.6,
+   "shot_pct": 54.5,
    "mvp": 15,
    "boost_avg": 51.1,
    "rank": null,
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 17,
+   "matches": 18,
    "wins": 10,
    "avg": {
-    "shooting_pct": 51.0,
-    "avg_boost": 52.7,
-    "pct_zero_boost": 12.9,
+    "shooting_pct": 50.9,
+    "avg_boost": 52.6,
+    "pct_zero_boost": 13.0,
     "pct_supersonic": 13.5,
     "pct_behind_ball": 72.6,
-    "pct_def_third": 45.6,
-    "pct_most_forward": 50.4,
-    "bpm": 351.0
+    "pct_def_third": 45.5,
+    "pct_most_forward": 50.6,
+    "bpm": 352.3
    },
-   "saves": 0.59,
-   "goals": 1.59,
+   "saves": 0.61,
+   "goals": 1.56,
    "focus": {
     "k": "pct_most_forward",
     "label": "Temps en joueur le plus avancé",
@@ -21854,6 +21854,122 @@
       "label": "Boost gaspillé (surplus)",
       "value": 10.6,
       "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "C31D4C4046ACA20D76772FA9A1D44FFD",
+   "src": "local",
+   "lid": "C31D4C4046ACA20D76772FA9A1D44FFD",
+   "date": "2026-11-02T17:10:09Z",
+   "playlist": "2v2",
+   "map": "Salty Shores (Salty Fest)",
+   "duration": 378,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 1,
+   "assists": 1,
+   "saves": 1,
+   "shots": 2,
+   "score": 342,
+   "mvp": false,
+   "boost_avg": 49.6,
+   "bpm": 374,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "C31D4C4046ACA20D76772FA9A1D44FFD",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 9,
+    "goals_against": 3,
+    "clears": 1,
+    "centers": 6,
+    "aerial_hits": 1,
+    "bpm": 374,
+    "avg_boost": 49.6,
+    "pct_zero_boost": 16.1,
+    "pct_full_boost": 16.7,
+    "stolen": 584.0,
+    "overfill_pct": 15.4,
+    "small_pads": 72,
+    "big_pads": 20,
+    "avg_speed": 1529.0,
+    "pct_supersonic": 13.5,
+    "pct_slow": 44.8,
+    "pct_ground": 70.2,
+    "pct_high_air": 1.2,
+    "powerslides": 22,
+    "pct_def_third": 44.2,
+    "pct_off_third": 26.3,
+    "pct_behind_ball": 72.6,
+    "pct_most_back": 46.6,
+    "pct_most_forward": 53.4,
+    "pct_closest_ball": 43.5,
+    "dist_mates": 3402.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 16.1,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 53.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 16.7,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 13.5,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 374,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
