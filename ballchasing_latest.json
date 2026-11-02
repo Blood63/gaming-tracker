@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-02T03:34:28+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 196,
+ "replays_count": 197,
  "playlists": {
   "3v3": {
    "matches": 102,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 93,
+   "matches": 94,
    "wins": 52,
-   "win_rate": 55.9,
-   "goals": 139,
-   "assists": 52,
-   "saves": 70,
-   "shots": 256,
-   "score_avg": 387.2,
-   "goals_avg": 1.49,
-   "shot_pct": 54.3,
+   "win_rate": 55.3,
+   "goals": 141,
+   "assists": 53,
+   "saves": 72,
+   "shots": 260,
+   "score_avg": 389.5,
+   "goals_avg": 1.5,
+   "shot_pct": 54.2,
    "mvp": 15,
    "boost_avg": 51.1,
    "rank": null,
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 20,
+   "matches": 21,
    "wins": 12,
    "avg": {
-    "shooting_pct": 47.5,
-    "avg_boost": 52.6,
-    "pct_zero_boost": 13.3,
-    "pct_supersonic": 13.5,
+    "shooting_pct": 47.6,
+    "avg_boost": 52.4,
+    "pct_zero_boost": 13.5,
+    "pct_supersonic": 13.3,
     "pct_behind_ball": 72.9,
-    "pct_def_third": 44.9,
-    "pct_most_forward": 50.5,
-    "bpm": 351.6
+    "pct_def_third": 45.2,
+    "pct_most_forward": 50.6,
+    "bpm": 353.0
    },
-   "saves": 0.6,
-   "goals": 1.45,
+   "saves": 0.67,
+   "goals": 1.48,
    "focus": {
     "k": "pct_most_forward",
     "label": "Temps en joueur le plus avancé",
@@ -22201,6 +22201,122 @@
       "k": "pct_behind_ball",
       "label": "Temps derrière la balle",
       "value": 73.6,
+      "txt": "Bon placement derrière la balle"
+     }
+    ]
+   }
+  },
+  {
+   "id": "C37401234CE3E672CC5AF7A810C525EC",
+   "src": "local",
+   "lid": "C37401234CE3E672CC5AF7A810C525EC",
+   "date": "2026-11-02T17:44:10Z",
+   "playlist": "2v2",
+   "map": "Neo Tokyo (Arcade)",
+   "duration": 416,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 2,
+   "assists": 1,
+   "saves": 2,
+   "shots": 4,
+   "score": 602,
+   "mvp": false,
+   "boost_avg": 49.0,
+   "bpm": 382,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "C37401234CE3E672CC5AF7A810C525EC",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 10,
+    "goals_against": 4,
+    "clears": 5,
+    "centers": 6,
+    "aerial_hits": 2,
+    "bpm": 382,
+    "avg_boost": 49.0,
+    "pct_zero_boost": 18.9,
+    "pct_full_boost": 13.4,
+    "stolen": 367.0,
+    "overfill_pct": 15.8,
+    "small_pads": 51,
+    "big_pads": 25,
+    "avg_speed": 1425.0,
+    "pct_supersonic": 9.9,
+    "pct_slow": 51.1,
+    "pct_ground": 63.9,
+    "pct_high_air": 2.4,
+    "powerslides": 30,
+    "pct_def_third": 50.4,
+    "pct_off_third": 18.6,
+    "pct_behind_ball": 72.5,
+    "pct_most_back": 49.0,
+    "pct_most_forward": 53.7,
+    "pct_closest_ball": 57.9,
+    "dist_mates": 3313.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 18.9,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 57.9,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 53.7,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 382,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 72.5,
       "txt": "Bon placement derrière la balle"
      }
     ]
