@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-03T00:36:31+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 214,
+ "replays_count": 215,
  "playlists": {
   "3v3": {
    "matches": 105,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 108,
+   "matches": 109,
    "wins": 59,
-   "win_rate": 54.6,
-   "goals": 163,
+   "win_rate": 54.1,
+   "goals": 164,
    "assists": 61,
    "saves": 86,
-   "shots": 300,
-   "score_avg": 390.6,
-   "goals_avg": 1.51,
+   "shots": 302,
+   "score_avg": 389.4,
+   "goals_avg": 1.5,
    "shot_pct": 54.3,
    "mvp": 15,
-   "boost_avg": 51.0,
+   "boost_avg": 50.9,
    "rank": null,
    "mmr": null
   },
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 38,
+   "matches": 39,
    "wins": 21,
    "avg": {
-    "shooting_pct": 55.0,
-    "avg_boost": 51.5,
+    "shooting_pct": 54.8,
+    "avg_boost": 51.4,
     "pct_zero_boost": 14.3,
     "pct_supersonic": 13.7,
-    "pct_behind_ball": 73.2,
+    "pct_behind_ball": 73.0,
     "pct_def_third": 46.1,
-    "pct_most_forward": 48.7,
-    "bpm": 355.3
+    "pct_most_forward": 48.8,
+    "bpm": 355.2
    },
-   "saves": 0.76,
-   "goals": 1.55,
+   "saves": 0.74,
+   "goals": 1.54,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -24279,6 +24279,122 @@
       "label": "Boost ramassé / min",
       "value": 354,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1EA0510B4E5E3089D2FD5D8CF2AB879F",
+   "src": "local",
+   "lid": "1EA0510B4E5E3089D2FD5D8CF2AB879F",
+   "date": "2026-11-03T17:48:01Z",
+   "playlist": "2v2",
+   "map": "DFH Stadium",
+   "duration": 357,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 2,
+   "score": 254,
+   "mvp": false,
+   "boost_avg": 48.7,
+   "bpm": 353,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "1EA0510B4E5E3089D2FD5D8CF2AB879F",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 5,
+    "goals_against": 3,
+    "clears": 2,
+    "centers": 5,
+    "aerial_hits": 3,
+    "bpm": 353,
+    "avg_boost": 48.7,
+    "pct_zero_boost": 14.8,
+    "pct_full_boost": 10.8,
+    "stolen": 419.0,
+    "overfill_pct": 9.6,
+    "small_pads": 44,
+    "big_pads": 15,
+    "avg_speed": 1453.0,
+    "pct_supersonic": 14.0,
+    "pct_slow": 51.7,
+    "pct_ground": 60.4,
+    "pct_high_air": 2.9,
+    "powerslides": 27,
+    "pct_def_third": 46.6,
+    "pct_off_third": 25.0,
+    "pct_behind_ball": 66.7,
+    "pct_most_back": 50.4,
+    "pct_most_forward": 52.2,
+    "pct_closest_ball": 43.6,
+    "dist_mates": 2986.0,
+    "demos": 3,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 52.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 14.8,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 50.4,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.0,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 9.6,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
