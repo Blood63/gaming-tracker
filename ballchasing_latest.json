@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-03T00:36:31+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 211,
+ "replays_count": 212,
  "playlists": {
   "3v3": {
-   "matches": 104,
+   "matches": 105,
    "wins": 54,
-   "win_rate": 51.9,
-   "goals": 86,
-   "assists": 48,
+   "win_rate": 51.4,
+   "goals": 87,
+   "assists": 49,
    "saves": 50,
-   "shots": 182,
-   "score_avg": 248.0,
+   "shots": 184,
+   "score_avg": 248.3,
    "goals_avg": 0.83,
    "shot_pct": 47.3,
    "mvp": 7,
-   "boost_avg": 52.6,
+   "boost_avg": 52.5,
    "rank": null,
    "mmr": null
   },
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 35,
+   "matches": 36,
    "wins": 20,
    "avg": {
-    "shooting_pct": 54.9,
-    "avg_boost": 51.7,
+    "shooting_pct": 54.8,
+    "avg_boost": 51.6,
     "pct_zero_boost": 14.3,
     "pct_supersonic": 13.7,
     "pct_behind_ball": 73.2,
-    "pct_def_third": 46.2,
-    "pct_most_forward": 49.3,
-    "bpm": 357.9
+    "pct_def_third": 46.3,
+    "pct_most_forward": 49.0,
+    "bpm": 357.3
    },
-   "saves": 0.77,
-   "goals": 1.57,
+   "saves": 0.75,
+   "goals": 1.56,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -23245,6 +23245,111 @@
       "k": "overfill_pct",
       "label": "Boost gaspillé (surplus)",
       "value": 11.2,
+      "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "4CE9318E11F1D799F09305B88B8FE5C7",
+   "src": "local",
+   "lid": "4CE9318E11F1D799F09305B88B8FE5C7",
+   "date": "2026-11-03T14:14:44Z",
+   "playlist": "3v3",
+   "map": "Mannfield (Stormy)",
+   "duration": 400,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 5,
+   "result": "loss",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 2,
+   "score": 278,
+   "mvp": false,
+   "boost_avg": 48.7,
+   "bpm": 339,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "4CE9318E11F1D799F09305B88B8FE5C7",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 7,
+    "goals_against": 5,
+    "clears": 0,
+    "centers": 7,
+    "aerial_hits": 1,
+    "bpm": 339,
+    "avg_boost": 48.7,
+    "pct_zero_boost": 15.5,
+    "pct_full_boost": 12.7,
+    "stolen": 432.0,
+    "overfill_pct": 10.6,
+    "small_pads": 45,
+    "big_pads": 19,
+    "avg_speed": 1513.0,
+    "pct_supersonic": 15.7,
+    "pct_slow": 48.1,
+    "pct_ground": 55.5,
+    "pct_high_air": 3.1,
+    "powerslides": 9,
+    "pct_def_third": 49.4,
+    "pct_off_third": 27.8,
+    "pct_behind_ball": 71.7,
+    "pct_most_back": 30.8,
+    "pct_most_forward": 36.7,
+    "pct_closest_ball": 39.0,
+    "dist_mates": 3169.0,
+    "demos": 1,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.5,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 48.7,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 15.7,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 10.6,
       "txt": "Peu de boost gaspillé"
      }
     ]
