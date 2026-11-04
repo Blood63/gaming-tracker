@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-04T04:02:13+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 234,
+ "replays_count": 235,
  "playlists": {
   "3v3": {
    "matches": 116,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 117,
-   "wins": 62,
-   "win_rate": 53.0,
-   "goals": 173,
-   "assists": 66,
-   "saves": 95,
-   "shots": 322,
-   "score_avg": 389.5,
-   "goals_avg": 1.48,
-   "shot_pct": 53.7,
+   "matches": 118,
+   "wins": 63,
+   "win_rate": 53.4,
+   "goals": 176,
+   "assists": 69,
+   "saves": 96,
+   "shots": 325,
+   "score_avg": 392.0,
+   "goals_avg": 1.49,
+   "shot_pct": 54.2,
    "mvp": 15,
-   "boost_avg": 51.0,
+   "boost_avg": 50.9,
    "rank": null,
    "mmr": null
   },
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 58,
-   "wins": 30,
+   "matches": 59,
+   "wins": 31,
    "avg": {
-    "shooting_pct": 47.0,
-    "avg_boost": 52.0,
-    "pct_zero_boost": 13.9,
-    "pct_supersonic": 14.2,
+    "shooting_pct": 47.9,
+    "avg_boost": 51.8,
+    "pct_zero_boost": 14.1,
+    "pct_supersonic": 14.1,
     "pct_behind_ball": 72.8,
-    "pct_def_third": 46.5,
-    "pct_most_forward": 47.4,
-    "bpm": 351.6
+    "pct_def_third": 46.4,
+    "pct_most_forward": 47.7,
+    "bpm": 352.0
    },
    "saves": 0.76,
-   "goals": 1.36,
+   "goals": 1.39,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -26599,6 +26599,122 @@
       "label": "Boost moyen",
       "value": 42.2,
       "txt": "Bonne gestion du boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "0132FE6E4118E01F22843BBF3245FDDE",
+   "src": "local",
+   "lid": "0132FE6E4118E01F22843BBF3245FDDE",
+   "date": "2026-11-04T19:58:02Z",
+   "playlist": "2v2",
+   "map": "AquaDome (Salty Shallows)",
+   "duration": 368,
+   "overtime": false,
+   "team_goals": 10,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 3,
+   "assists": 3,
+   "saves": 1,
+   "shots": 3,
+   "score": 690,
+   "mvp": false,
+   "boost_avg": 38.1,
+   "bpm": 376,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "0132FE6E4118E01F22843BBF3245FDDE",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 4,
+    "goals_against": 2,
+    "clears": 0,
+    "centers": 6,
+    "aerial_hits": 0,
+    "bpm": 376,
+    "avg_boost": 38.1,
+    "pct_zero_boost": 24.7,
+    "pct_full_boost": 14.2,
+    "stolen": 1041.0,
+    "overfill_pct": 9.8,
+    "small_pads": 52,
+    "big_pads": 17,
+    "avg_speed": 1433.0,
+    "pct_supersonic": 10.1,
+    "pct_slow": 54.0,
+    "pct_ground": 62.0,
+    "pct_high_air": 3.9,
+    "powerslides": 31,
+    "pct_def_third": 37.2,
+    "pct_off_third": 36.2,
+    "pct_behind_ball": 75.0,
+    "pct_most_back": 38.1,
+    "pct_most_forward": 67.5,
+    "pct_closest_ball": 60.2,
+    "dist_mates": 3288.0,
+    "demos": 1,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 24.7,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 67.5,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 60.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 38.1,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 9.8,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
