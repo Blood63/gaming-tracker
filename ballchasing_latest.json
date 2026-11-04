@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-04T04:02:13+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 230,
+ "replays_count": 231,
  "playlists": {
   "3v3": {
-   "matches": 112,
+   "matches": 113,
    "wins": 59,
-   "win_rate": 52.7,
-   "goals": 94,
+   "win_rate": 52.2,
+   "goals": 95,
    "assists": 54,
-   "saves": 54,
-   "shots": 201,
-   "score_avg": 251.5,
+   "saves": 55,
+   "shots": 204,
+   "score_avg": 251.9,
    "goals_avg": 0.84,
-   "shot_pct": 46.8,
+   "shot_pct": 46.6,
    "mvp": 7,
    "boost_avg": 52.8,
    "rank": null,
@@ -130,20 +130,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 54,
+   "matches": 55,
    "wins": 29,
    "avg": {
-    "shooting_pct": 48.0,
-    "avg_boost": 52.3,
+    "shooting_pct": 47.8,
+    "avg_boost": 52.2,
     "pct_zero_boost": 13.7,
     "pct_supersonic": 14.1,
-    "pct_behind_ball": 72.9,
+    "pct_behind_ball": 73.0,
     "pct_def_third": 46.3,
-    "pct_most_forward": 47.8,
-    "bpm": 350.0
+    "pct_most_forward": 47.6,
+    "bpm": 349.7
    },
    "saves": 0.78,
-   "goals": 1.41,
+   "goals": 1.4,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -26135,6 +26135,122 @@
       "label": "Temps à 0 boost",
       "value": 10.3,
       "txt": "Rarement à court de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "308F9834492C1D8D23AE81A77FB4E245",
+   "src": "local",
+   "lid": "308F9834492C1D8D23AE81A77FB4E245",
+   "date": "2026-11-04T18:51:30Z",
+   "playlist": "3v3",
+   "map": "Beckwith Park (Midnight)",
+   "duration": 379,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 1,
+   "shots": 3,
+   "score": 303,
+   "mvp": false,
+   "boost_avg": 48.8,
+   "bpm": 336,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "308F9834492C1D8D23AE81A77FB4E245",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 7,
+    "goals_against": 4,
+    "clears": 4,
+    "centers": 0,
+    "aerial_hits": 0,
+    "bpm": 336,
+    "avg_boost": 48.8,
+    "pct_zero_boost": 14.3,
+    "pct_full_boost": 23.8,
+    "stolen": 347.0,
+    "overfill_pct": 10.4,
+    "small_pads": 41,
+    "big_pads": 19,
+    "avg_speed": 1471.0,
+    "pct_supersonic": 14.5,
+    "pct_slow": 49.0,
+    "pct_ground": 60.3,
+    "pct_high_air": 1.9,
+    "powerslides": 30,
+    "pct_def_third": 50.1,
+    "pct_off_third": 21.1,
+    "pct_behind_ball": 74.0,
+    "pct_most_back": 37.0,
+    "pct_most_forward": 36.2,
+    "pct_closest_ball": 40.3,
+    "dist_mates": 2993.0,
+    "demos": 4,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 23.8,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 14.3,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 48.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.5,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 10.4,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 74.0,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
