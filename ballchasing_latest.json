@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-04T04:02:13+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 240,
+ "replays_count": 241,
  "playlists": {
   "3v3": {
-   "matches": 117,
+   "matches": 118,
    "wins": 60,
-   "win_rate": 51.3,
-   "goals": 98,
+   "win_rate": 50.8,
+   "goals": 99,
    "assists": 55,
    "saves": 56,
-   "shots": 211,
-   "score_avg": 251.6,
+   "shots": 215,
+   "score_avg": 251.4,
    "goals_avg": 0.84,
-   "shot_pct": 46.4,
+   "shot_pct": 46.0,
    "mvp": 7,
    "boost_avg": 52.6,
    "rank": null,
@@ -130,19 +130,19 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 64,
+   "matches": 65,
    "wins": 34,
    "avg": {
-    "shooting_pct": 50.4,
+    "shooting_pct": 50.0,
     "avg_boost": 51.7,
-    "pct_zero_boost": 14.0,
+    "pct_zero_boost": 14.1,
     "pct_supersonic": 14.1,
     "pct_behind_ball": 72.8,
     "pct_def_third": 46.5,
-    "pct_most_forward": 48.0,
-    "bpm": 354.3
+    "pct_most_forward": 47.9,
+    "bpm": 354.6
    },
-   "saves": 0.75,
+   "saves": 0.74,
    "goals": 1.42,
    "focus": {
     "k": "pct_zero_boost",
@@ -27295,6 +27295,122 @@
       "label": "Temps supersonique",
       "value": 14.8,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "47DE3D6E401C96E48F1549B66F412D91",
+   "src": "local",
+   "lid": "47DE3D6E401C96E48F1549B66F412D91",
+   "date": "2026-11-04T20:42:31Z",
+   "playlist": "3v3",
+   "map": "Farmstead (Pitched)",
+   "duration": 388,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 4,
+   "score": 230,
+   "mvp": false,
+   "boost_avg": 51.7,
+   "bpm": 374,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "47DE3D6E401C96E48F1549B66F412D91",
+   "m": {
+    "shooting_pct": 25.0,
+    "shots_against": 3,
+    "goals_against": 3,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 374,
+    "avg_boost": 51.7,
+    "pct_zero_boost": 15.5,
+    "pct_full_boost": 17.4,
+    "stolen": 463.0,
+    "overfill_pct": 14.2,
+    "small_pads": 51,
+    "big_pads": 21,
+    "avg_speed": 1498.0,
+    "pct_supersonic": 15.9,
+    "pct_slow": 48.4,
+    "pct_ground": 65.0,
+    "pct_high_air": 1.3,
+    "powerslides": 34,
+    "pct_def_third": 46.5,
+    "pct_off_third": 23.4,
+    "pct_behind_ball": 71.5,
+    "pct_most_back": 33.3,
+    "pct_most_forward": 40.3,
+    "pct_closest_ball": 39.5,
+    "dist_mates": 3462.0,
+    "demos": 1,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.5,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 17.4,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 25.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 15.9,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 374,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 71.5,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
