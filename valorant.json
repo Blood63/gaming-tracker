@@ -1,6 +1,6 @@
 {
  "source": "HenrikDev API (non officielle)",
- "fetched_at": "2026-11-06T04:28:32+01:00",
+ "fetched_at": "2026-11-06T22:33:36+01:00",
  "account": {
   "name": "Blood",
   "tag": "7629",
@@ -13164,8 +13164,8 @@
      "dmg": 4514
     },
     {
-     "name": "Katara",
-     "tag": "3605",
+     "name": "Rukia",
+     "tag": "6322",
      "me": false,
      "team": "Red",
      "agent": "Skye",
