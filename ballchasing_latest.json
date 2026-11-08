@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-08T03:32:29+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 263,
+ "replays_count": 264,
  "playlists": {
   "3v3": {
-   "matches": 125,
+   "matches": 126,
    "wins": 63,
-   "win_rate": 50.4,
-   "goals": 104,
+   "win_rate": 50.0,
+   "goals": 105,
    "assists": 58,
    "saves": 59,
-   "shots": 231,
-   "score_avg": 250.6,
+   "shots": 233,
+   "score_avg": 250.8,
    "goals_avg": 0.83,
-   "shot_pct": 45.0,
+   "shot_pct": 45.1,
    "mvp": 7,
-   "boost_avg": 52.5,
+   "boost_avg": 52.3,
    "rank": null,
    "mmr": null
   },
@@ -146,19 +146,19 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 87,
+   "matches": 88,
    "wins": 44,
    "avg": {
     "shooting_pct": 50.8,
-    "avg_boost": 50.5,
-    "pct_zero_boost": 14.5,
+    "avg_boost": 50.4,
+    "pct_zero_boost": 14.7,
     "pct_supersonic": 14.0,
-    "pct_behind_ball": 72.7,
+    "pct_behind_ball": 72.6,
     "pct_def_third": 47.0,
-    "pct_most_forward": 46.9,
+    "pct_most_forward": 46.8,
     "bpm": 353.6
    },
-   "saves": 0.69,
+   "saves": 0.68,
    "goals": 1.38,
    "focus": {
     "k": "pct_zero_boost",
@@ -29978,6 +29978,111 @@
       "k": "avg_boost",
       "label": "Boost moyen",
       "value": 39.6,
+      "txt": "Bonne gestion du boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "BC562B4D4570D9DF379FEA972860C4D6",
+   "src": "local",
+   "lid": "BC562B4D4570D9DF379FEA972860C4D6",
+   "date": "2026-11-08T18:08:05Z",
+   "playlist": "3v3",
+   "map": "Paname Dusk",
+   "duration": 355,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 2,
+   "score": 282,
+   "mvp": false,
+   "boost_avg": 38.0,
+   "bpm": 356,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "BC562B4D4570D9DF379FEA972860C4D6",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 5,
+    "goals_against": 4,
+    "clears": 4,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 356,
+    "avg_boost": 38.0,
+    "pct_zero_boost": 29.9,
+    "pct_full_boost": 12.0,
+    "stolen": 524.0,
+    "overfill_pct": 15.0,
+    "small_pads": 52,
+    "big_pads": 16,
+    "avg_speed": 1503.0,
+    "pct_supersonic": 14.9,
+    "pct_slow": 49.2,
+    "pct_ground": 62.7,
+    "pct_high_air": 1.7,
+    "powerslides": 22,
+    "pct_def_third": 47.0,
+    "pct_off_third": 21.6,
+    "pct_behind_ball": 65.8,
+    "pct_most_back": 29.6,
+    "pct_most_forward": 41.8,
+    "pct_closest_ball": 43.8,
+    "dist_mates": 3189.0,
+    "demos": 3,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 29.9,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 43.8,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.9,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 38.0,
       "txt": "Bonne gestion du boost"
      }
     ]
