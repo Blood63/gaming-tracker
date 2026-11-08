@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-08T03:32:29+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 255,
+ "replays_count": 256,
  "playlists": {
   "3v3": {
-   "matches": 124,
+   "matches": 125,
    "wins": 63,
-   "win_rate": 50.8,
-   "goals": 103,
+   "win_rate": 50.4,
+   "goals": 104,
    "assists": 58,
    "saves": 59,
-   "shots": 227,
-   "score_avg": 250.9,
+   "shots": 231,
+   "score_avg": 250.6,
    "goals_avg": 0.83,
-   "shot_pct": 45.4,
+   "shot_pct": 45.0,
    "mvp": 7,
    "boost_avg": 52.5,
    "rank": null,
@@ -146,20 +146,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 79,
+   "matches": 80,
    "wins": 41,
    "avg": {
-    "shooting_pct": 49.3,
-    "avg_boost": 51.1,
+    "shooting_pct": 49.0,
+    "avg_boost": 51.0,
     "pct_zero_boost": 14.1,
     "pct_supersonic": 13.9,
     "pct_behind_ball": 72.8,
-    "pct_def_third": 46.9,
-    "pct_most_forward": 46.5,
-    "bpm": 350.0
+    "pct_def_third": 47.0,
+    "pct_most_forward": 46.4,
+    "bpm": 350.5
    },
-   "saves": 0.66,
-   "goals": 1.37,
+   "saves": 0.65,
+   "goals": 1.36,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -28471,6 +28471,122 @@
       "label": "Temps derrière la balle",
       "value": 67.2,
       "txt": "Bon placement derrière la balle"
+     }
+    ]
+   }
+  },
+  {
+   "id": "561F06F011F1DB837A79F4B310B8E4A9",
+   "src": "local",
+   "lid": "561F06F011F1DB837A79F4B310B8E4A9",
+   "date": "2026-11-08T13:47:35Z",
+   "playlist": "3v3",
+   "map": "Paname Dusk",
+   "duration": 367,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 4,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 4,
+   "score": 208,
+   "mvp": false,
+   "boost_avg": 46.0,
+   "bpm": 390,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "561F06F011F1DB837A79F4B310B8E4A9",
+   "m": {
+    "shooting_pct": 25.0,
+    "shots_against": 6,
+    "goals_against": 4,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 390,
+    "avg_boost": 46.0,
+    "pct_zero_boost": 15.3,
+    "pct_full_boost": 13.0,
+    "stolen": 620.0,
+    "overfill_pct": 11.9,
+    "small_pads": 53,
+    "big_pads": 20,
+    "avg_speed": 1567.0,
+    "pct_supersonic": 16.9,
+    "pct_slow": 44.5,
+    "pct_ground": 60.0,
+    "pct_high_air": 5.7,
+    "powerslides": 11,
+    "pct_def_third": 51.0,
+    "pct_off_third": 21.1,
+    "pct_behind_ball": 70.1,
+    "pct_most_back": 31.0,
+    "pct_most_forward": 35.8,
+    "pct_closest_ball": 35.1,
+    "dist_mates": 3133.0,
+    "demos": 4,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.3,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 25.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 46.0,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 16.9,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 390,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 11.9,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
