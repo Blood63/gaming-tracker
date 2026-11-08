@@ -3,18 +3,18 @@
  "fetched_at": "2026-11-08T03:32:29+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 249,
+ "replays_count": 250,
  "playlists": {
   "3v3": {
-   "matches": 120,
+   "matches": 121,
    "wins": 61,
-   "win_rate": 50.8,
+   "win_rate": 50.4,
    "goals": 101,
    "assists": 55,
    "saves": 56,
    "shots": 221,
-   "score_avg": 250.6,
-   "goals_avg": 0.84,
+   "score_avg": 249.7,
+   "goals_avg": 0.83,
    "shot_pct": 45.7,
    "mvp": 7,
    "boost_avg": 52.6,
@@ -146,20 +146,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 73,
+   "matches": 74,
    "wins": 38,
    "avg": {
-    "shooting_pct": 49.7,
+    "shooting_pct": 49.0,
     "avg_boost": 51.3,
     "pct_zero_boost": 14.0,
     "pct_supersonic": 13.7,
     "pct_behind_ball": 72.8,
-    "pct_def_third": 47.0,
-    "pct_most_forward": 47.1,
-    "bpm": 346.3
+    "pct_def_third": 46.9,
+    "pct_most_forward": 47.0,
+    "bpm": 347.0
    },
-   "saves": 0.66,
-   "goals": 1.38,
+   "saves": 0.65,
+   "goals": 1.36,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -28355,6 +28355,122 @@
       "label": "Boost ramassé / min",
       "value": 308,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "A8F687994C8E954EBFB420871E593C9D",
+   "src": "local",
+   "lid": "A8F687994C8E954EBFB420871E593C9D",
+   "date": "2026-11-08T14:16:02Z",
+   "playlist": "3v3",
+   "map": "Utopia Coliseum (Gilded)",
+   "duration": 347,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 0,
+   "shots": 0,
+   "score": 136,
+   "mvp": false,
+   "boost_avg": 52.1,
+   "bpm": 400,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "A8F687994C8E954EBFB420871E593C9D",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 3,
+    "goals_against": 3,
+    "clears": 1,
+    "centers": 8,
+    "aerial_hits": 0,
+    "bpm": 400,
+    "avg_boost": 52.1,
+    "pct_zero_boost": 15.0,
+    "pct_full_boost": 17.0,
+    "stolen": 342.0,
+    "overfill_pct": 16.5,
+    "small_pads": 41,
+    "big_pads": 22,
+    "avg_speed": 1548.0,
+    "pct_supersonic": 17.3,
+    "pct_slow": 43.9,
+    "pct_ground": 58.9,
+    "pct_high_air": 2.1,
+    "powerslides": 16,
+    "pct_def_third": 39.8,
+    "pct_off_third": 30.8,
+    "pct_behind_ball": 71.4,
+    "pct_most_back": 24.7,
+    "pct_most_forward": 37.4,
+    "pct_closest_ball": 38.0,
+    "dist_mates": 3605.0,
+    "demos": 2,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.0,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 17.0,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 17.3,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 400,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 43.9,
+      "txt": "Rarement à l'arrêt"
      }
     ]
    }
