@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-09T03:42:41+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 272,
+ "replays_count": 273,
  "playlists": {
   "3v3": {
-   "matches": 134,
-   "wins": 70,
-   "win_rate": 52.2,
-   "goals": 117,
-   "assists": 63,
-   "saves": 61,
-   "shots": 254,
-   "score_avg": 256.2,
+   "matches": 135,
+   "wins": 71,
+   "win_rate": 52.6,
+   "goals": 118,
+   "assists": 64,
+   "saves": 63,
+   "shots": 256,
+   "score_avg": 257.0,
    "goals_avg": 0.87,
    "shot_pct": 46.1,
    "mvp": 7,
-   "boost_avg": 52.0,
+   "boost_avg": 51.9,
    "rank": null,
    "mmr": null
   },
@@ -160,6 +160,30 @@
    },
    "saves": 0.65,
    "goals": 1.39,
+   "focus": {
+    "k": "pct_zero_boost",
+    "label": "Temps à 0 boost",
+    "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+    "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+   }
+  },
+  {
+   "week": "2026-S46",
+   "start": "2026-11-09",
+   "matches": 1,
+   "wins": 1,
+   "avg": {
+    "shooting_pct": 50.0,
+    "avg_boost": 47.0,
+    "pct_zero_boost": 15.3,
+    "pct_supersonic": 22.7,
+    "pct_behind_ball": 76.0,
+    "pct_def_third": 49.5,
+    "pct_most_forward": 37.0,
+    "bpm": 360.0
+   },
+   "saves": 2.0,
+   "goals": 1.0,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -30979,6 +31003,111 @@
       "label": "Temps supersonique",
       "value": 13.0,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "FA89D2304F3AC50CE52BEA9CE72F8A2D",
+   "src": "local",
+   "lid": "FA89D2304F3AC50CE52BEA9CE72F8A2D",
+   "date": "2026-11-09T13:47:56Z",
+   "playlist": "3v3",
+   "map": "Neo Tokyo (Arcade)",
+   "duration": 273,
+   "overtime": false,
+   "team_goals": 5,
+   "opp_goals": 3,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 2,
+   "shots": 2,
+   "score": 373,
+   "mvp": false,
+   "boost_avg": 47.0,
+   "bpm": 360,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "FA89D2304F3AC50CE52BEA9CE72F8A2D",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 5,
+    "goals_against": 3,
+    "clears": 2,
+    "centers": 1,
+    "aerial_hits": 0,
+    "bpm": 360,
+    "avg_boost": 47.0,
+    "pct_zero_boost": 15.3,
+    "pct_full_boost": 12.4,
+    "stolen": 231.0,
+    "overfill_pct": 8.4,
+    "small_pads": 49,
+    "big_pads": 12,
+    "avg_speed": 1653.0,
+    "pct_supersonic": 22.7,
+    "pct_slow": 40.4,
+    "pct_ground": 61.8,
+    "pct_high_air": 1.2,
+    "powerslides": 9,
+    "pct_def_third": 49.5,
+    "pct_off_third": 23.4,
+    "pct_behind_ball": 76.0,
+    "pct_most_back": 31.9,
+    "pct_most_forward": 37.0,
+    "pct_closest_ball": 33.1,
+    "dist_mates": 3452.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 15.3,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 47.0,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 22.7,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 8.4,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
