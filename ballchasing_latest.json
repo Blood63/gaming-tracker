@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-09T03:42:41+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 271,
+ "replays_count": 272,
  "playlists": {
   "3v3": {
-   "matches": 133,
-   "wins": 69,
-   "win_rate": 51.9,
-   "goals": 114,
-   "assists": 62,
+   "matches": 134,
+   "wins": 70,
+   "win_rate": 52.2,
+   "goals": 117,
+   "assists": 63,
    "saves": 61,
-   "shots": 249,
-   "score_avg": 253.8,
-   "goals_avg": 0.86,
-   "shot_pct": 45.8,
+   "shots": 254,
+   "score_avg": 256.2,
+   "goals_avg": 0.87,
+   "shot_pct": 46.1,
    "mvp": 7,
    "boost_avg": 52.0,
    "rank": null,
@@ -146,20 +146,20 @@
   {
    "week": "2026-S45",
    "start": "2026-11-02",
-   "matches": 95,
-   "wins": 50,
+   "matches": 96,
+   "wins": 51,
    "avg": {
-    "shooting_pct": 51.4,
-    "avg_boost": 50.1,
+    "shooting_pct": 51.5,
+    "avg_boost": 50.0,
     "pct_zero_boost": 15.2,
     "pct_supersonic": 14.2,
     "pct_behind_ball": 72.9,
     "pct_def_third": 46.9,
-    "pct_most_forward": 46.2,
-    "bpm": 356.4
+    "pct_most_forward": 46.1,
+    "bpm": 356.6
    },
    "saves": 0.65,
-   "goals": 1.37,
+   "goals": 1.39,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -30879,6 +30879,100 @@
       "label": "Boost gaspillé (surplus)",
       "value": 7.8,
       "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 13.0,
+      "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1FDF698447DC055F06B06FA0240DD111",
+   "src": "local",
+   "lid": "1FDF698447DC055F06B06FA0240DD111",
+   "date": "2026-11-08T20:54:51Z",
+   "playlist": "3v3",
+   "map": "Estadio Vida (Dusk)",
+   "duration": 394,
+   "overtime": false,
+   "team_goals": 5,
+   "opp_goals": 4,
+   "result": "win",
+   "goals": 3,
+   "assists": 1,
+   "saves": 0,
+   "shots": 5,
+   "score": 567,
+   "mvp": false,
+   "boost_avg": 44.2,
+   "bpm": 373,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "1FDF698447DC055F06B06FA0240DD111",
+   "m": {
+    "shooting_pct": 60.0,
+    "shots_against": 6,
+    "goals_against": 4,
+    "clears": 2,
+    "centers": 5,
+    "aerial_hits": 0,
+    "bpm": 373,
+    "avg_boost": 44.2,
+    "pct_zero_boost": 20.1,
+    "pct_full_boost": 12.3,
+    "stolen": 497.0,
+    "overfill_pct": 14.1,
+    "small_pads": 56,
+    "big_pads": 20,
+    "avg_speed": 1490.0,
+    "pct_supersonic": 13.0,
+    "pct_slow": 47.0,
+    "pct_ground": 59.4,
+    "pct_high_air": 2.1,
+    "powerslides": 24,
+    "pct_def_third": 43.3,
+    "pct_off_third": 27.9,
+    "pct_behind_ball": 74.8,
+    "pct_most_back": 32.4,
+    "pct_most_forward": 35.5,
+    "pct_closest_ball": 37.7,
+    "dist_mates": 2968.0,
+    "demos": 2,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 20.1,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 60.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 44.2,
+      "txt": "Bonne gestion du boost"
      },
      {
       "k": "pct_supersonic",
