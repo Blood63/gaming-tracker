@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-09T03:42:41+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 275,
+ "replays_count": 276,
  "playlists": {
   "3v3": {
-   "matches": 137,
-   "wins": 72,
-   "win_rate": 52.6,
-   "goals": 121,
-   "assists": 64,
+   "matches": 138,
+   "wins": 73,
+   "win_rate": 52.9,
+   "goals": 122,
+   "assists": 65,
    "saves": 65,
-   "shots": 260,
-   "score_avg": 257.6,
+   "shots": 261,
+   "score_avg": 257.5,
    "goals_avg": 0.88,
-   "shot_pct": 46.5,
+   "shot_pct": 46.7,
    "mvp": 7,
    "boost_avg": 52.0,
    "rank": null,
@@ -170,25 +170,25 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 3,
-   "wins": 2,
+   "matches": 4,
+   "wins": 3,
    "avg": {
-    "shooting_pct": 66.7,
-    "avg_boost": 51.9,
-    "pct_zero_boost": 14.1,
-    "pct_supersonic": 19.9,
-    "pct_behind_ball": 71.3,
-    "pct_def_third": 43.8,
-    "pct_most_forward": 40.7,
-    "bpm": 357.3
+    "shooting_pct": 75.0,
+    "avg_boost": 52.4,
+    "pct_zero_boost": 13.5,
+    "pct_supersonic": 18.7,
+    "pct_behind_ball": 71.5,
+    "pct_def_third": 44.9,
+    "pct_most_forward": 39.4,
+    "bpm": 368.5
    },
-   "saves": 1.33,
-   "goals": 1.33,
+   "saves": 1.0,
+   "goals": 1.25,
    "focus": {
-    "k": "pct_zero_boost",
-    "label": "Temps à 0 boost",
-    "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
-    "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+    "k": "avg_boost",
+    "label": "Boost moyen",
+    "txt": "Gestion du boost à revoir.",
+    "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
    }
   }
  ],
@@ -31340,6 +31340,111 @@
       "label": "Temps au plus près de la balle",
       "value": 29.1,
       "txt": "Tu laisses jouer tes coéquipiers"
+     }
+    ]
+   }
+  },
+  {
+   "id": "AA47D45D49F438C7C1E95CAC0E3BA272",
+   "src": "local",
+   "lid": "AA47D45D49F438C7C1E95CAC0E3BA272",
+   "date": "2026-11-09T14:13:24Z",
+   "playlist": "3v3",
+   "map": "Beckwith Park (Stormy)",
+   "duration": 364,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 1,
+   "score": 240,
+   "mvp": false,
+   "boost_avg": 53.9,
+   "bpm": 402,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "AA47D45D49F438C7C1E95CAC0E3BA272",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 2,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 3,
+    "aerial_hits": 1,
+    "bpm": 402,
+    "avg_boost": 53.9,
+    "pct_zero_boost": 11.9,
+    "pct_full_boost": 16.3,
+    "stolen": 445.0,
+    "overfill_pct": 11.2,
+    "small_pads": 45,
+    "big_pads": 21,
+    "avg_speed": 1531.0,
+    "pct_supersonic": 15.3,
+    "pct_slow": 45.1,
+    "pct_ground": 61.7,
+    "pct_high_air": 0.5,
+    "powerslides": 22,
+    "pct_def_third": 48.4,
+    "pct_off_third": 23.1,
+    "pct_behind_ball": 71.9,
+    "pct_most_back": 36.6,
+    "pct_most_forward": 35.6,
+    "pct_closest_ball": 33.4,
+    "dist_mates": 3063.0,
+    "demos": 1,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 53.9,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 16.3,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 15.3,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 402,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
