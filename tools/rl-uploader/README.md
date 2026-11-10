@@ -47,7 +47,7 @@ et analyse le replay dans les secondes qui suivent. Seuls les replays à partir 
 | `4-Changer-le-jeton-GitHub.bat` | Nouveau jeton GitHub |
 | `5-Tester-un-replay.bat` | Analyse un replay sans rien envoyer |
 | `6-Voir-letat.bat` | File d'attente, derniers envois |
-| `7-Mettre-a-jour.bat` | Télécharge la dernière version (SHA‑256 vérifié) — **manuel**, jamais automatique |
+| `7-Mettre-a-jour.bat` | Télécharge la dernière version (SHA‑256 vérifié), sauvegarde l’ancienne, et relance l’uploader — **manuel**, jamais automatique |
 | `8-Desinstaller.bat` | Retire le démarrage automatique et arrête l'uploader |
 
 ## Fiabilité

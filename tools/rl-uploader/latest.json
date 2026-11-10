@@ -1,7 +1,7 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "files": {
-    "rl-replay-uploader.ps1": "09ff9d63d22087e97eb8e221eb5b9711c320ceb346b959df559abb13fd171bd0",
+    "rl-replay-uploader.ps1": "9b556c09309677b217c40a20db2f074946f55454291f5eeebc787506cfb1aea2",
     "rl-analyzer.exe": "3d5eca1b0cb39efc28d01b3c41621107e1d0d7f26ae8b98ec16d27079d055b04"
   }
 }
