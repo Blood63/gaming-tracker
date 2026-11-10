@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-10T05:39:37+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 299,
+ "replays_count": 300,
  "playlists": {
   "3v3": {
-   "matches": 142,
-   "wins": 74,
-   "win_rate": 52.1,
-   "goals": 125,
+   "matches": 143,
+   "wins": 75,
+   "win_rate": 52.4,
+   "goals": 126,
    "assists": 65,
-   "saves": 67,
-   "shots": 264,
+   "saves": 68,
+   "shots": 267,
    "score_avg": 255.7,
    "goals_avg": 0.88,
-   "shot_pct": 47.3,
+   "shot_pct": 47.2,
    "mvp": 7,
    "boost_avg": 52.1,
    "rank": null,
@@ -170,20 +170,20 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 27,
-   "wins": 13,
+   "matches": 28,
+   "wins": 14,
    "avg": {
-    "shooting_pct": 59.4,
+    "shooting_pct": 58.4,
     "avg_boost": 51.7,
-    "pct_zero_boost": 14.7,
-    "pct_supersonic": 14.9,
+    "pct_zero_boost": 14.5,
+    "pct_supersonic": 15.0,
     "pct_behind_ball": 72.2,
     "pct_def_third": 45.0,
-    "pct_most_forward": 48.2,
-    "bpm": 361.8
+    "pct_most_forward": 47.6,
+    "bpm": 363.1
    },
    "saves": 0.89,
-   "goals": 1.37,
+   "goals": 1.36,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -34113,6 +34113,111 @@
       "label": "Temps à 0 boost",
       "value": 8.7,
       "txt": "Rarement à court de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "9D976772439C6DD0BBA6248F50F86619",
+   "src": "local",
+   "lid": "9D976772439C6DD0BBA6248F50F86619",
+   "date": "2026-11-10T19:23:05Z",
+   "playlist": "3v3",
+   "map": "Paname Dusk",
+   "duration": 338,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 1,
+   "assists": 0,
+   "saves": 1,
+   "shots": 3,
+   "score": 252,
+   "mvp": false,
+   "boost_avg": 51.8,
+   "bpm": 397,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "9D976772439C6DD0BBA6248F50F86619",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 2,
+    "goals_against": 1,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 397,
+    "avg_boost": 51.8,
+    "pct_zero_boost": 8.9,
+    "pct_full_boost": 14.1,
+    "stolen": 324.0,
+    "overfill_pct": 6.7,
+    "small_pads": 45,
+    "big_pads": 17,
+    "avg_speed": 1480.0,
+    "pct_supersonic": 19.7,
+    "pct_slow": 48.4,
+    "pct_ground": 56.6,
+    "pct_high_air": 1.2,
+    "powerslides": 10,
+    "pct_def_third": 44.6,
+    "pct_off_third": 28.8,
+    "pct_behind_ball": 72.0,
+    "pct_most_back": 32.8,
+    "pct_most_forward": 31.8,
+    "pct_closest_ball": 31.2,
+    "dist_mates": 3397.0,
+    "demos": 1,
+    "demos_taken": 2
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 51.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 14.1,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 19.7,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 6.7,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 397,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
