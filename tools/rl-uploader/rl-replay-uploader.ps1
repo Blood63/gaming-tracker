@@ -23,7 +23,7 @@ param([switch]$Once,[switch]$DryRun,[string]$TestFile,[switch]$ResetKey,[switch]
       [string]$Endpoint,[string]$GitHubApi,[string]$Analyzer,[string]$ConfigDir,[string]$DemosDir,[string]$UpdateBase)
 
 $ErrorActionPreference = 'Stop'
-$UploaderVersion = '2.0.0'
+$UploaderVersion = '2.0.1'
 $AppName  = 'rl-replay-uploader'
 $IsWin = ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)
 if ($ConfigDir) { $CfgDir = $ConfigDir }
@@ -456,9 +456,25 @@ function Invoke-SelfUpdate {
       $changed += $p.Name
     }
     if ($changed.Count -eq 0) { Write-Line ('Deja a jour (version ' + $m.version + ').') 'Green'; return }
+    $bakDir = Join-Path $ScriptDir 'backups'
+    New-Item -ItemType Directory -Force -Path $bakDir | Out-Null
+    foreach ($n in $changed) {
+      $target = Join-Path $ScriptDir $n
+      if (Test-Path $target) {
+        $h = (Get-Sha $target).Substring(0, 8)
+        $bak = Join-Path $bakDir ('{0}-{1}-{2}.bak' -f $n, (Get-Date -Format 'yyyyMMdd-HHmmss'), $h)
+        Copy-Item $target $bak -Force
+      }
+    }
     Stop-Others
     foreach ($n in $changed) { Copy-Item (Join-Path $tmp $n) (Join-Path $ScriptDir $n) -Force }
-    Write-Line ('Mis a jour vers la version {0} : {1}. Relance 2-Lancer-maintenant.bat (ou redemarre Windows).' -f $m.version, ($changed -join ', ')) 'Green'
+    Write-Line ('Mis a jour vers la version {0} : {1}.' -f $m.version, ($changed -join ', ')) 'Green'
+    if ($IsWin) {
+      $pp = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+      $newPs1 = Join-Path $ScriptDir 'rl-replay-uploader.ps1'
+      Start-Process -FilePath $pp -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File', $newPs1, '-Quiet') -WindowStyle Hidden
+      Write-Line 'Uploader relance en arriere-plan avec la nouvelle version.' 'Green'
+    }
   } finally { Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue }
 }
 
