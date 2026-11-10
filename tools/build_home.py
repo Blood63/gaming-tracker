@@ -34,7 +34,10 @@ def main():
     b=rd("ballchasing_latest.json")
     bc=None
     if b: bc={"fetched_at":b.get("fetched_at"),"replays":[{**pick(r,("id","date","playlist","map","team_goals","opp_goals","result","goals","assists","saves")),"m":1} for r in b.get("replays") or [] if r.get("date") and r.get("m") and not r.get("bots")]}
-    home={"lite":True,"steamH":steamH,"store":store,"val":jl("history/valorant.jsonl")[-3:],"rl":jl("history/rocket_league.jsonl")[-3:],
+    def lite_hist(p):
+        # Ne plus exposer les erreurs tracker.gg (401) sur l'accueil : on ne garde que les relevés réussis.
+        return [x for x in jl(p) if x.get("status")=="ok"][-3:]
+    home={"lite":True,"steamH":steamH,"store":store,"val":lite_hist("history/valorant.jsonl"),"rl":lite_hist("history/rocket_league.jsonl"),
           "cod":rd("cod_mobile.json"),"codp":rd("cod_profile.json"),"codr":rd("cod_ranks.json"),"vh":vh,"gj":rd("goals.json"),"rlm":rd("rocket_league.json"),"bc":bc}
     out=json.dumps(home,ensure_ascii=False,separators=(",",":"))
     h=hashlib.sha1()

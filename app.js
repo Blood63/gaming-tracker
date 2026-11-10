@@ -750,8 +750,15 @@ function compCards(){
 
 /* Âge des données par jeu (accueil) */
 const agoH=t=>{const m=Math.floor((Date.now()-new Date(t))/6e4);return isNaN(m)?'':m<1?"à l'instant":m<60?`il y a ${m} min`:m<1440?`il y a ${Math.floor(m/60)} h`:`il y a ${Math.floor(m/1440)} j`};
-function agesHTML(){const A=[['Valorant',D.vh?.fetched_at],['Rocket League',D.bc?.fetched_at||D.rlm?.updated],['Steam',D.steam?.fetched_at],['COD',(D.codRepo||[]).map(m=>m.date).filter(Boolean).sort((a,b)=>new Date(a)-new Date(b)).at(-1)]].filter(([,t])=>t&&agoH(t));
-  return A.length?`<p class="ages mut"><span aria-hidden="true" style="margin-right:.35rem">🕒</span>${A.map(([n,t])=>`<span title="${esc(fhm(t))}">${n} · ${agoH(t)}</span>`).join(' ')}${(()=>{const r=lastReplay();return r?` <a href="#/rl" title="${esc(fdate(r.date))}">🎬 Dernier replay RL · ${agoH(r.date)}</a>`:''})()}</p>`:''}
+function agesHTML(){
+  const stale=t=>(Date.now()-new Date(t))/864e5>=7;
+  const item=(n,t,href)=>{if(!t||!agoH(t))return'';const w=stale(t),tag=href?'a':'span',attr=href?` href="${href}"`:'';
+    return `<${tag}${attr} class="${w?'stale':''}" title="${esc(fhm(t))}${w?' · peut-être périmé':''}">${n} · ${agoH(t)}</${tag}>`};
+  const rankAt=D.rlm?Math.max(0,...(D.rlm.playlists||[]).map(p=>Date.parse(p.rank_at||D.rlm.updated)||0)):0;
+  const lastCod=[...(D.codRepo||[]).map(m=>m.date),...((D.codr?.MP||[]).concat(D.codr?.BR||[])).map(x=>x.date)].filter(Boolean).sort((a,b)=>new Date(a)-new Date(b)).at(-1);
+  const r=lastReplay();
+  const A=[item('Valorant',D.vh?.fetched_at,'#/valorant'),item('Steam',D.steam?.fetched_at,'#/steam'),item('COD',lastCod,'#/cod'),r?item('Replay RL',r.date,'#/rl'):'',rankAt?item('Rangs RL',new Date(rankAt).toISOString(),'#/rl/rang'):''].filter(Boolean);
+  return A.length?`<p class="ages mut"><span aria-hidden="true" style="margin-right:.35rem">🕒</span>${A.join(' ')}</p>`:''}
 /* ========== pages ========== */
 function home(){
   const recent=(D.steam?.recent?.games||[]).map(r=>({g:D.games.find(x=>x.appid==r.appid),r})).filter(x=>x.g);

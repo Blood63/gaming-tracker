@@ -1,38 +1,53 @@
 name: Valorant + Rocket League (HenrikDev, ballchasing)
-# Relevés visés à 18:00 et 01:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
-# GitHub retarde les crons « pile à l'heure » de 1 h 30 à 3 h 30 (forte charge) : on déclenche à une minute creuse (:17) et ~45 min plus tôt,
-# pour que le relevé réel tombe au plus près de 18 h / 1 h. L'heure réelle du relevé (fetched_at) est affichée dans l'appli.
+# Relevés visés à 18:00 et 01:00 heure de Paris.
+# Premier passage ~4 h avant (13:17 / 21:17) pour absorber le retard habituel de GitHub (souvent 3–5 h).
+# Passage de secours juste après l'heure visée (18:17 / 01:17) : sauté si un relevé de ce créneau existe déjà.
+# 2 crons par passage (été/hiver), filtrés par tools/cron_gate.py. L'heure réelle (fetched_at) est affichée dans l'appli.
 on:
   schedule:
-    - cron: "17 15 * * *"  # vise 18:00 Paris en été (CEST, +0200) ; déclenché à 17:17
-    - cron: "17 22 * * *"  # vise 01:00 Paris en été ; déclenché à 00:17
-    - cron: "17 16 * * *"  # vise 18:00 Paris en hiver (CET, +0100) ; déclenché à 17:17
-    - cron: "17 23 * * *"  # vise 01:00 Paris en hiver ; déclenché à 00:17
+    - cron: "17 11 * * *"
+    - cron: "17 12 * * *"
+    - cron: "17 16 * * *"
+    - cron: "17 17 * * *"
+    - cron: "17 19 * * *"
+    - cron: "17 20 * * *"
+    - cron: "17 23 * * *"
+    - cron: "17 0 * * *"
   workflow_dispatch:
 permissions:
   contents: write
-concurrency: { group: data-commit, cancel-in-progress: false }
+concurrency:
+  group: data-commit
+  cancel-in-progress: false
 jobs:
   valorant:
     runs-on: ubuntu-latest
     steps:
-      - id: gate
-        run: |
-          off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
-          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "17 15 * * *" ] || [ "$s" = "17 22 * * *" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "17 16 * * *" ] || [ "$s" = "17 23 * * *" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
-      - if: steps.gate.outputs.run == 'true'
-        uses: actions/checkout@v4
-      - if: steps.gate.outputs.run == 'true'
+      - uses: actions/checkout@v4
+      - id: season
+        env:
+          TZ: Europe/Paris
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: python3 tools/cron_gate.py --kind valorant --phase season
+      - id: slot
+        if: steps.season.outputs.run == 'true'
+        env:
+          TZ: Europe/Paris
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: python3 tools/cron_gate.py --kind valorant --phase slot --file valorant.json --slot "${{ steps.season.outputs.slot }}"
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true'
         run: python3 tools/fetch_valorant.py
         env:
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true'
         run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed (données conservées)"
         env:
           BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
           TZ: Europe/Paris
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true'
         run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"

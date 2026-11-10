@@ -1,12 +1,17 @@
 name: Fetch stats
-# Relevé Steam (+ boutique, succès, ballchasing) visé mercredi et dimanche à 00:00 heure de Paris (2 crons par créneau : été/hiver, filtrés par « gate »).
-# Déclenché à une minute creuse (:43), 17 min avant minuit : GitHub retarde les crons de 1 h à 3 h, donc le relevé réel tombe peu après minuit (et reste daté du bon jour). L'heure réelle est affichée dans l'appli.
+# Relevé Steam (+ boutique, succès, ballchasing) visé mercredi et dimanche à 00:00 heure de Paris.
+# Premier passage 20:43 la veille ; secours 00:43 le jour même, sauté si un relevé de ce créneau existe déjà.
+# 2 crons par passage (été/hiver), filtrés par tools/cron_gate.py.
 on:
   schedule:
-    - cron: "43 21 * * 2"  # vise mercredi 00:00 Paris en été (CEST) ; déclenché à 23:43
-    - cron: "43 21 * * 6"  # vise dimanche 00:00 Paris en été
-    - cron: "43 22 * * 2"  # vise mercredi 00:00 Paris en hiver (CET)
-    - cron: "43 22 * * 6"  # vise dimanche 00:00 Paris en hiver
+    - cron: "43 18 * * 2"
+    - cron: "43 18 * * 6"
+    - cron: "43 19 * * 2"
+    - cron: "43 19 * * 6"
+    - cron: "43 22 * * 2"
+    - cron: "43 22 * * 6"
+    - cron: "43 23 * * 2"
+    - cron: "43 23 * * 6"
   workflow_dispatch:
     inputs:
       only:
@@ -15,35 +20,45 @@ on:
         default: ""
 permissions:
   contents: write
-concurrency: { group: data-commit, cancel-in-progress: false }
+concurrency:
+  group: data-commit
+  cancel-in-progress: false
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - id: gate
-        run: |
-          off=$(TZ=Europe/Paris date +%z); s="${{ github.event.schedule }}"
-          if [ -z "$s" ] || { [ "$off" = "+0200" ] && { [ "$s" = "43 21 * * 2" ] || [ "$s" = "43 21 * * 6" ]; }; } || { [ "$off" = "+0100" ] && { [ "$s" = "43 22 * * 2" ] || [ "$s" = "43 22 * * 6" ]; }; }; then echo run=true >> "$GITHUB_OUTPUT"; else echo run=false >> "$GITHUB_OUTPUT"; fi
-      - if: steps.gate.outputs.run == 'true'
-        uses: actions/checkout@v4
-      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
+      - uses: actions/checkout@v4
+      - id: season
+        env:
+          TZ: Europe/Paris
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: python3 tools/cron_gate.py --kind steam --phase season
+      - id: slot
+        if: steps.season.outputs.run == 'true' && inputs.only != 'achievements'
+        env:
+          TZ: Europe/Paris
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: python3 tools/cron_gate.py --kind steam --phase slot --file history/steam.jsonl --slot "${{ steps.season.outputs.slot }}"
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true' && inputs.only != 'achievements'
         run: python3 fetch_stats.py
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
           HENRIK_API_KEY: ${{ secrets.HENRIK_API_KEY }}
           TZ: Europe/Paris
-      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true' && inputs.only != 'achievements'
         run: python3 tools/fetch_store.py || echo "store fetch failed"
-      - if: steps.gate.outputs.run == 'true' && inputs.only != 'achievements'
+      - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true' && inputs.only != 'achievements'
         run: python3 tools/fetch_ballchasing.py || echo "ballchasing failed"
         env:
           BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
           TZ: Europe/Paris
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.season.outputs.run == 'true' && (steps.slot.outputs.skip != 'true' || inputs.only == 'achievements')
         run: python3 tools/fetch_steam_ach.py || echo "steam achievements failed"
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
-      - if: steps.gate.outputs.run == 'true'
+      - if: steps.season.outputs.run == 'true' && (steps.slot.outputs.skip != 'true' || inputs.only == 'achievements')
         run: |
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"

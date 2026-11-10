@@ -1,8 +1,28 @@
 name: Tests
-# Tests unitaires des fonctions de calcul (core.js) : node --test, sans navigateur.
+# Tests unitaires : node --test et unittest. Pas lancé sur un simple push de données (replays, relevés).
 on:
   push:
+    paths:
+      - "app.js"
+      - "core.js"
+      - "app.css"
+      - "sw.js"
+      - "index.html"
+      - "fetch_stats.py"
+      - "tests/**"
+      - "tools/**"
+      - ".github/workflows/tests.yml"
   pull_request:
+    paths:
+      - "app.js"
+      - "core.js"
+      - "app.css"
+      - "sw.js"
+      - "index.html"
+      - "fetch_stats.py"
+      - "tests/**"
+      - "tools/**"
+      - ".github/workflows/tests.yml"
 permissions:
   contents: read
 jobs:
