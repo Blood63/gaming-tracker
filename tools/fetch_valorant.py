@@ -5,14 +5,22 @@ import json, os, sys, time, datetime, urllib.request, urllib.error
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__))); F=f"{D}/valorant.json"
 NAME,TAG,REG="Blood","7629","eu"; B="https://api.henrikdev.xyz/valorant"
 K=os.environ.get("HENRIK_API_KEY")
-def get(p):
-    for i in range(3):
+def get(p,timeout=30,retries=3,sleep=time.sleep):
+    """GET HenrikDev. 3 tentatives sur délai / erreur réseau, et sur HTTP 429."""
+    last=None
+    for i in range(retries):
         try:
             r=urllib.request.Request(B+p,headers={"Authorization":K,"User-Agent":"gaming-tracker"})
-            with urllib.request.urlopen(r,timeout=30) as f: return json.loads(f.read().decode())
+            with urllib.request.urlopen(r,timeout=timeout) as f: return json.loads(f.read().decode())
         except urllib.error.HTTPError as e:
-            if e.code==429 and i<2: time.sleep(30); continue
-            raise RuntimeError(f"HTTP {e.code} {p.split('?')[0]}: {e.read().decode(errors='replace')[:200]}")
+            body=e.read().decode(errors="replace")[:200]
+            if e.code==429 and i<retries-1: sleep(20*(i+1)); last=RuntimeError(f"HTTP 429 {p.split('?')[0]}: {body}"); continue
+            raise RuntimeError(f"HTTP {e.code} {p.split('?')[0]}: {body}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            last=e
+            if i<retries-1: sleep(5*(i+1)); continue
+            raise RuntimeError(f"délai ou réseau {p.split('?')[0]}: {e}") from e
+    raise RuntimeError(last)
 def main():
     if not K: print("no HENRIK_API_KEY"); return 1
     old=json.load(open(F)) if os.path.exists(F) else {}

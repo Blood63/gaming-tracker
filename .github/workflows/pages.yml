@@ -1,0 +1,34 @@
+name: Pages
+# Déploiement GitHub Pages avec une pause de 3 min : les poussées rapides de replays
+# (une session) se regroupent en un seul déploiement au lieu d'annuler 2–3 builds par match.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Attendre la fin d'une rafale
+        run: sleep 180
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Préparer le site (sans .git)
+        run: |
+          mkdir _site
+          tar --exclude=./.git --exclude=./_site --exclude=./.github -cf - . | tar -C _site -xf -
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
