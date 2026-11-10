@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-10T05:39:37+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 291,
+ "replays_count": 292,
  "playlists": {
   "3v3": {
    "matches": 141,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 145,
-   "wins": 77,
-   "win_rate": 53.1,
+   "matches": 146,
+   "wins": 78,
+   "win_rate": 53.4,
    "goals": 223,
    "assists": 82,
-   "saves": 118,
+   "saves": 119,
    "shots": 402,
-   "score_avg": 398.8,
-   "goals_avg": 1.54,
+   "score_avg": 397.3,
+   "goals_avg": 1.53,
    "shot_pct": 55.5,
    "mvp": 15,
-   "boost_avg": 50.5,
+   "boost_avg": 50.6,
    "rank": null,
    "mmr": null
   },
@@ -170,20 +170,20 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 19,
-   "wins": 10,
+   "matches": 20,
+   "wins": 11,
    "avg": {
-    "shooting_pct": 63.5,
-    "avg_boost": 51.2,
-    "pct_zero_boost": 14.7,
-    "pct_supersonic": 15.0,
-    "pct_behind_ball": 73.0,
-    "pct_def_third": 45.2,
-    "pct_most_forward": 48.4,
-    "bpm": 368.2
+    "shooting_pct": 60.3,
+    "avg_boost": 51.7,
+    "pct_zero_boost": 14.5,
+    "pct_supersonic": 15.1,
+    "pct_behind_ball": 73.2,
+    "pct_def_third": 45.0,
+    "pct_most_forward": 48.0,
+    "bpm": 367.1
    },
    "saves": 0.95,
-   "goals": 1.47,
+   "goals": 1.4,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -33185,6 +33185,122 @@
       "label": "Temps supersonique",
       "value": 14.0,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "49B41A684B625A51E7A860BF983DB539",
+   "src": "local",
+   "lid": "49B41A684B625A51E7A860BF983DB539",
+   "date": "2026-11-10T15:30:50Z",
+   "playlist": "2v2",
+   "map": "AquaDome (Salty Shallows)",
+   "duration": 334,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 0,
+   "score": 182,
+   "mvp": false,
+   "boost_avg": 61.1,
+   "bpm": 348,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "49B41A684B625A51E7A860BF983DB539",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 2,
+    "goals_against": 1,
+    "clears": 1,
+    "centers": 7,
+    "aerial_hits": 0,
+    "bpm": 348,
+    "avg_boost": 61.1,
+    "pct_zero_boost": 11.5,
+    "pct_full_boost": 21.8,
+    "stolen": 391.0,
+    "overfill_pct": 12.9,
+    "small_pads": 46,
+    "big_pads": 16,
+    "avg_speed": 1594.0,
+    "pct_supersonic": 17.6,
+    "pct_slow": 41.3,
+    "pct_ground": 64.6,
+    "pct_high_air": 1.4,
+    "powerslides": 12,
+    "pct_def_third": 41.1,
+    "pct_off_third": 25.5,
+    "pct_behind_ball": 75.6,
+    "pct_most_back": 59.3,
+    "pct_most_forward": 41.9,
+    "pct_closest_ball": 44.1,
+    "dist_mates": 3265.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 21.8,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 61.1,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 17.6,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 41.3,
+      "txt": "Rarement à l'arrêt"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 75.6,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
