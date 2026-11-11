@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-11-08T01:48:10.363427+00:00",
+ "fetched_at": "2026-11-11T00:15:41.343333+00:00",
  "apps": {
   "3159330": {
    "name": "Assassin’s Creed Shadows",
@@ -44,9 +44,9 @@
    "release_date": "19 mars 2025",
    "metacritic": null,
    "price": {
-    "text": "27,99€",
-    "initial": "69,99€",
-    "discount": 60
+    "text": "69,99€",
+    "initial": null,
+    "discount": 0
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3159330/7257f31bb96b01f5b596ae5e0fa714319e43d64a/ss_7257f31bb96b01f5b596ae5e0fa714319e43d64a.600x338.jpg?t=1792778493",
@@ -75,9 +75,9 @@
      "appid": 3362550,
      "name": "Assassin's Creed Shadows - Traque sur Awaji ",
      "price": {
-      "text": "16,24€",
-      "initial": "24,99€",
-      "discount": 35
+      "text": "24,99€",
+      "initial": null,
+      "discount": 0
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3362550/cfcb8cb1b78980966698d929d0496d865d012558/header_french.jpg?t=1764868996",
      "release": "16 sept. 2025",
@@ -506,9 +506,9 @@
     "url": "https://www.metacritic.com/game/pc/gundam-breaker-4?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "39,99€",
-    "initial": "99,99€",
-    "discount": 60
+    "text": "59,99€",
+    "initial": null,
+    "discount": 0
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_43c49626d2334cf7c6d6d6c86a5203178d037a7c.600x338.jpg?t=1788195356",
