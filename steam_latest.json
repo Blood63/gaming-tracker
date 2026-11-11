@@ -1,13 +1,14 @@
 {
- "fetched_at": "2026-11-08T02:48:10.297392+01:00",
+ "fetched_at": "2026-11-11T01:15:41.274615+01:00",
  "steamid64": "76561198754159593",
- "steamID": "Blood",
- "privacyState": "public",
- "onlineState": "offline",
- "memberSince": "December 29, 2025",
- "hoursPlayed2Wk": "0.0",
- "location": "Nantes, Pays de la Loire, France",
- "vacBanned": "0",
+ "profile_xml_error": "HTTP Error 429: Too Many Requests",
+ "steamID": null,
+ "privacyState": null,
+ "onlineState": null,
+ "memberSince": null,
+ "hoursPlayed2Wk": null,
+ "location": null,
+ "vacBanned": null,
  "level": 6,
  "recent": {
   "total_count": 2,
@@ -361,5 +362,6 @@
    "ach_total": 175
   }
  ],
- "status": "ok"
+ "status": "incomplete",
+ "incomplete_reason": "profil Steam incomplet (état en ligne ou confidentialité manquant)"
 }
