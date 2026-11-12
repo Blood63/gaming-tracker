@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-12T00:27:09+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 319,
+ "replays_count": 320,
  "playlists": {
   "3v3": {
    "matches": 158,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 156,
+   "matches": 157,
    "wins": 81,
-   "win_rate": 51.9,
+   "win_rate": 51.6,
    "goals": 237,
    "assists": 91,
-   "saves": 126,
-   "shots": 426,
-   "score_avg": 397.2,
-   "goals_avg": 1.52,
-   "shot_pct": 55.6,
+   "saves": 127,
+   "shots": 427,
+   "score_avg": 395.2,
+   "goals_avg": 1.51,
+   "shot_pct": 55.5,
    "mvp": 15,
    "boost_avg": 50.5,
    "rank": null,
@@ -170,20 +170,20 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 47,
+   "matches": 48,
    "wins": 21,
    "avg": {
-    "shooting_pct": 50.2,
-    "avg_boost": 52.3,
-    "pct_zero_boost": 14.4,
+    "shooting_pct": 49.2,
+    "avg_boost": 52.2,
+    "pct_zero_boost": 14.5,
     "pct_supersonic": 14.8,
     "pct_behind_ball": 72.0,
-    "pct_def_third": 47.9,
-    "pct_most_forward": 44.2,
-    "bpm": 351.3
+    "pct_def_third": 48.0,
+    "pct_most_forward": 44.3,
+    "bpm": 350.9
    },
-   "saves": 0.72,
-   "goals": 1.06,
+   "saves": 0.73,
+   "goals": 1.04,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -36410,6 +36410,122 @@
       "k": "pct_behind_ball",
       "label": "Temps derrière la balle",
       "value": 81.1,
+      "txt": "Bon placement derrière la balle"
+     }
+    ]
+   }
+  },
+  {
+   "id": "18AEDEBF4DCCEAB2C07381BDD04780B0",
+   "src": "local",
+   "lid": "18AEDEBF4DCCEAB2C07381BDD04780B0",
+   "date": "2026-11-12T19:27:11Z",
+   "playlist": "2v2",
+   "map": "Sovereign Heights (Dusk)",
+   "duration": 226,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 5,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 1,
+   "score": 92,
+   "mvp": false,
+   "boost_avg": 47.2,
+   "bpm": 331,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "18AEDEBF4DCCEAB2C07381BDD04780B0",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 7,
+    "goals_against": 5,
+    "clears": 0,
+    "centers": 1,
+    "aerial_hits": 0,
+    "bpm": 331,
+    "avg_boost": 47.2,
+    "pct_zero_boost": 21.1,
+    "pct_full_boost": 19.6,
+    "stolen": 74.0,
+    "overfill_pct": 11.7,
+    "small_pads": 25,
+    "big_pads": 11,
+    "avg_speed": 1478.0,
+    "pct_supersonic": 12.2,
+    "pct_slow": 49.5,
+    "pct_ground": 58.3,
+    "pct_high_air": 2.0,
+    "powerslides": 9,
+    "pct_def_third": 53.2,
+    "pct_off_third": 15.8,
+    "pct_behind_ball": 72.8,
+    "pct_most_back": 51.5,
+    "pct_most_forward": 48.5,
+    "pct_closest_ball": 45.5,
+    "dist_mates": 3272.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 21.1,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 19.6,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 11.7,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 12.2,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 72.8,
       "txt": "Bon placement derrière la balle"
      }
     ]
