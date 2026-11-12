@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-12T21:06:10+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 330,
+ "replays_count": 331,
  "playlists": {
   "3v3": {
-   "matches": 162,
+   "matches": 163,
    "wins": 82,
-   "win_rate": 50.6,
-   "goals": 141,
-   "assists": 74,
-   "saves": 77,
-   "shots": 301,
-   "score_avg": 253.6,
-   "goals_avg": 0.87,
-   "shot_pct": 46.8,
+   "win_rate": 50.3,
+   "goals": 143,
+   "assists": 75,
+   "saves": 79,
+   "shots": 306,
+   "score_avg": 255.5,
+   "goals_avg": 0.88,
+   "shot_pct": 46.7,
    "mvp": 7,
-   "boost_avg": 52.2,
+   "boost_avg": 52.1,
    "rank": null,
    "mmr": null
   },
@@ -170,20 +170,20 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 58,
+   "matches": 59,
    "wins": 26,
    "avg": {
-    "shooting_pct": 53.4,
+    "shooting_pct": 53.1,
     "avg_boost": 51.4,
     "pct_zero_boost": 15.2,
     "pct_supersonic": 15.0,
-    "pct_behind_ball": 72.5,
-    "pct_def_third": 47.9,
-    "pct_most_forward": 44.0,
-    "bpm": 356.4
+    "pct_behind_ball": 72.6,
+    "pct_def_third": 48.0,
+    "pct_most_forward": 43.7,
+    "bpm": 356.3
    },
-   "saves": 0.67,
-   "goals": 1.19,
+   "saves": 0.69,
+   "goals": 1.2,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -37665,6 +37665,111 @@
       "label": "Boost ramassé / min",
       "value": 424,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "32DFF03345F44888E28DF283F9CAB9E6",
+   "src": "local",
+   "lid": "32DFF03345F44888E28DF283F9CAB9E6",
+   "date": "2026-11-12T22:05:21Z",
+   "playlist": "3v3",
+   "map": "Champions Field",
+   "duration": 383,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 5,
+   "result": "loss",
+   "goals": 2,
+   "assists": 1,
+   "saves": 2,
+   "shots": 5,
+   "score": 561,
+   "mvp": false,
+   "boost_avg": 46.8,
+   "bpm": 353,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "32DFF03345F44888E28DF283F9CAB9E6",
+   "m": {
+    "shooting_pct": 40.0,
+    "shots_against": 11,
+    "goals_against": 5,
+    "clears": 1,
+    "centers": 7,
+    "aerial_hits": 0,
+    "bpm": 353,
+    "avg_boost": 46.8,
+    "pct_zero_boost": 18.7,
+    "pct_full_boost": 14.0,
+    "stolen": 319.0,
+    "overfill_pct": 6.4,
+    "small_pads": 46,
+    "big_pads": 18,
+    "avg_speed": 1470.0,
+    "pct_supersonic": 12.7,
+    "pct_slow": 49.9,
+    "pct_ground": 59.1,
+    "pct_high_air": 1.0,
+    "powerslides": 15,
+    "pct_def_third": 50.0,
+    "pct_off_third": 24.7,
+    "pct_behind_ball": 74.0,
+    "pct_most_back": 35.9,
+    "pct_most_forward": 28.8,
+    "pct_closest_ball": 31.6,
+    "dist_mates": 3208.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 18.7,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 46.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 6.4,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 40.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 28.8,
+      "txt": "Bonnes rotations (peu de surengagement)"
      }
     ]
    }
