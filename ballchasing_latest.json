@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-12T00:27:09+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 310,
+ "replays_count": 311,
  "playlists": {
   "3v3": {
-   "matches": 151,
-   "wins": 78,
-   "win_rate": 51.7,
-   "goals": 130,
-   "assists": 68,
+   "matches": 152,
+   "wins": 79,
+   "win_rate": 52.0,
+   "goals": 131,
+   "assists": 69,
    "saves": 72,
-   "shots": 279,
-   "score_avg": 253.6,
+   "shots": 280,
+   "score_avg": 253.4,
    "goals_avg": 0.86,
-   "shot_pct": 46.6,
+   "shot_pct": 46.8,
    "mvp": 7,
-   "boost_avg": 52.2,
+   "boost_avg": 52.3,
    "rank": null,
    "mmr": null
   },
@@ -170,19 +170,19 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 38,
-   "wins": 18,
+   "matches": 39,
+   "wins": 19,
    "avg": {
-    "shooting_pct": 54.9,
-    "avg_boost": 51.9,
-    "pct_zero_boost": 14.5,
-    "pct_supersonic": 14.8,
-    "pct_behind_ball": 71.9,
+    "shooting_pct": 56.1,
+    "avg_boost": 52.2,
+    "pct_zero_boost": 14.3,
+    "pct_supersonic": 14.7,
+    "pct_behind_ball": 72.0,
     "pct_def_third": 47.1,
-    "pct_most_forward": 45.9,
-    "bpm": 352.6
+    "pct_most_forward": 45.6,
+    "bpm": 351.0
    },
-   "saves": 0.82,
+   "saves": 0.79,
    "goals": 1.18,
    "focus": {
     "k": "pct_full_boost",
@@ -35367,6 +35367,122 @@
       "label": "Boost gaspillé (surplus)",
       "value": 12.0,
       "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "5DF6FC4444CD885E9B9128A8BCFC328D",
+   "src": "local",
+   "lid": "5DF6FC4444CD885E9B9128A8BCFC328D",
+   "date": "2026-11-12T14:47:22Z",
+   "playlist": "3v3",
+   "map": "Neo Tokyo (Arcade)",
+   "duration": 288,
+   "overtime": false,
+   "team_goals": 5,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 1,
+   "score": 224,
+   "mvp": false,
+   "boost_avg": 62.2,
+   "bpm": 292,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "5DF6FC4444CD885E9B9128A8BCFC328D",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 3,
+    "goals_against": 1,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 292,
+    "avg_boost": 62.2,
+    "pct_zero_boost": 7.5,
+    "pct_full_boost": 21.7,
+    "stolen": 560.0,
+    "overfill_pct": 16.0,
+    "small_pads": 31,
+    "big_pads": 13,
+    "avg_speed": 1411.0,
+    "pct_supersonic": 14.1,
+    "pct_slow": 52.5,
+    "pct_ground": 63.6,
+    "pct_high_air": 0.0,
+    "powerslides": 9,
+    "pct_def_third": 44.9,
+    "pct_off_third": 27.6,
+    "pct_behind_ball": 78.1,
+    "pct_most_back": 39.0,
+    "pct_most_forward": 34.6,
+    "pct_closest_ball": 32.2,
+    "dist_mates": 3044.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 21.7,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 62.2,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 16.0,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.1,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 7.5,
+      "txt": "Rarement à court de boost"
      }
     ]
    }
