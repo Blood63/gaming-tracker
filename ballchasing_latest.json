@@ -3,34 +3,34 @@
  "fetched_at": "2026-11-12T21:06:10+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 344,
+ "replays_count": 347,
  "playlists": {
   "3v3": {
-   "matches": 171,
+   "matches": 173,
    "wins": 87,
-   "win_rate": 50.9,
-   "goals": 153,
+   "win_rate": 50.3,
+   "goals": 154,
    "assists": 83,
-   "saves": 79,
-   "shots": 322,
-   "score_avg": 258.8,
+   "saves": 80,
+   "shots": 326,
+   "score_avg": 258.0,
    "goals_avg": 0.89,
-   "shot_pct": 47.5,
+   "shot_pct": 47.2,
    "mvp": 7,
    "boost_avg": 52.2,
    "rank": null,
    "mmr": null
   },
   "2v2": {
-   "matches": 168,
+   "matches": 169,
    "wins": 86,
-   "win_rate": 51.2,
+   "win_rate": 50.9,
    "goals": 253,
    "assists": 97,
-   "saves": 131,
+   "saves": 132,
    "shots": 458,
-   "score_avg": 394.0,
-   "goals_avg": 1.51,
+   "score_avg": 393.3,
+   "goals_avg": 1.5,
    "shot_pct": 55.2,
    "mvp": 15,
    "boost_avg": 50.5,
@@ -170,20 +170,20 @@
   {
    "week": "2026-S46",
    "start": "2026-11-09",
-   "matches": 72,
+   "matches": 75,
    "wins": 33,
    "avg": {
-    "shooting_pct": 50.0,
-    "avg_boost": 51.8,
+    "shooting_pct": 48.4,
+    "avg_boost": 51.9,
     "pct_zero_boost": 14.7,
     "pct_supersonic": 15.0,
-    "pct_behind_ball": 72.6,
-    "pct_def_third": 47.8,
-    "pct_most_forward": 43.7,
-    "bpm": 355.0
+    "pct_behind_ball": 72.7,
+    "pct_def_third": 47.7,
+    "pct_most_forward": 43.6,
+    "bpm": 353.8
    },
    "saves": 0.6,
-   "goals": 1.21,
+   "goals": 1.17,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -38587,6 +38587,122 @@
    }
   },
   {
+   "id": "938DEA6011F1DF70039C5A83EF58DF76",
+   "src": "local",
+   "lid": "938DEA6011F1DF70039C5A83EF58DF76",
+   "date": "2026-11-13T13:43:23Z",
+   "playlist": "2v2",
+   "map": "Salty Shores (Salty Fest)",
+   "duration": 316,
+   "overtime": false,
+   "team_goals": 0,
+   "opp_goals": 1,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 0,
+   "score": 291,
+   "mvp": false,
+   "boost_avg": 50.1,
+   "bpm": 289,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "938DEA6011F1DF70039C5A83EF58DF76",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 3,
+    "goals_against": 1,
+    "clears": 4,
+    "centers": 8,
+    "aerial_hits": 3,
+    "bpm": 289,
+    "avg_boost": 50.1,
+    "pct_zero_boost": 17.5,
+    "pct_full_boost": 13.4,
+    "stolen": 228.0,
+    "overfill_pct": 23.6,
+    "small_pads": 45,
+    "big_pads": 13,
+    "avg_speed": 1492.0,
+    "pct_supersonic": 14.0,
+    "pct_slow": 46.1,
+    "pct_ground": 57.3,
+    "pct_high_air": 1.4,
+    "powerslides": 26,
+    "pct_def_third": 41.2,
+    "pct_off_third": 27.5,
+    "pct_behind_ball": 71.2,
+    "pct_most_back": 49.4,
+    "pct_most_forward": 51.8,
+    "pct_closest_ball": 46.0,
+    "dist_mates": 2524.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 23.6,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 17.5,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.0,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 71.2,
+      "txt": "Bon placement derrière la balle"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 46.1,
+      "txt": "Rarement à l'arrêt"
+     }
+    ]
+   }
+  },
+  {
    "id": "D484DC2E46C90EF0E291BBA0FECD6265",
    "src": "local",
    "lid": "D484DC2E46C90EF0E291BBA0FECD6265",
@@ -38929,6 +39045,122 @@
    }
   },
   {
+   "id": "66375DB011F1DF77FB16978682A3D4C9",
+   "src": "local",
+   "lid": "66375DB011F1DF77FB16978682A3D4C9",
+   "date": "2026-11-13T14:32:13Z",
+   "playlist": "3v3",
+   "map": "Champions Field (Day)",
+   "duration": 349,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 0,
+   "shots": 0,
+   "score": 70,
+   "mvp": false,
+   "boost_avg": 57.9,
+   "bpm": 339,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "66375DB011F1DF77FB16978682A3D4C9",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 6,
+    "goals_against": 3,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 339,
+    "avg_boost": 57.9,
+    "pct_zero_boost": 10.9,
+    "pct_full_boost": 25.6,
+    "stolen": 353.0,
+    "overfill_pct": 12.0,
+    "small_pads": 33,
+    "big_pads": 19,
+    "avg_speed": 1599.0,
+    "pct_supersonic": 17.6,
+    "pct_slow": 39.1,
+    "pct_ground": 58.4,
+    "pct_high_air": 2.2,
+    "powerslides": 16,
+    "pct_def_third": 46.9,
+    "pct_off_third": 22.0,
+    "pct_behind_ball": 73.4,
+    "pct_most_back": 41.1,
+    "pct_most_forward": 38.8,
+    "pct_closest_ball": 29.7,
+    "dist_mates": 3176.0,
+    "demos": 0,
+    "demos_taken": 2
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 25.6,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 57.9,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 17.6,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 29.7,
+      "txt": "Tu laisses jouer tes coéquipiers"
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 39.1,
+      "txt": "Rarement à l'arrêt"
+     }
+    ]
+   }
+  },
+  {
    "id": "1B49873843C52634C0664488C6A2AD52",
    "src": "local",
    "lid": "1B49873843C52634C0664488C6A2AD52",
@@ -39040,6 +39272,122 @@
       "label": "Boost gaspillé (surplus)",
       "value": 7.7,
       "txt": "Peu de boost gaspillé"
+     }
+    ]
+   }
+  },
+  {
+   "id": "6DDCA0B211F1DF80F363409746B62918",
+   "src": "local",
+   "lid": "6DDCA0B211F1DF80F363409746B62918",
+   "date": "2026-11-13T15:36:51Z",
+   "playlist": "3v3",
+   "map": "Urban Central",
+   "duration": 466,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 1,
+   "shots": 4,
+   "score": 312,
+   "mvp": false,
+   "boost_avg": 52.2,
+   "bpm": 346,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "6DDCA0B211F1DF80F363409746B62918",
+   "m": {
+    "shooting_pct": 25.0,
+    "shots_against": 5,
+    "goals_against": 3,
+    "clears": 0,
+    "centers": 6,
+    "aerial_hits": 0,
+    "bpm": 346,
+    "avg_boost": 52.2,
+    "pct_zero_boost": 13.1,
+    "pct_full_boost": 21.1,
+    "stolen": 691.0,
+    "overfill_pct": 10.8,
+    "small_pads": 70,
+    "big_pads": 22,
+    "avg_speed": 1477.0,
+    "pct_supersonic": 13.6,
+    "pct_slow": 47.5,
+    "pct_ground": 61.6,
+    "pct_high_air": 1.5,
+    "powerslides": 22,
+    "pct_def_third": 47.3,
+    "pct_off_third": 28.3,
+    "pct_behind_ball": 75.1,
+    "pct_most_back": 34.7,
+    "pct_most_forward": 34.6,
+    "pct_closest_ball": 34.0,
+    "dist_mates": 3563.0,
+    "demos": 2,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 21.1,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 25.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 52.2,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 13.6,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 10.8,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 34.0,
+      "txt": "Tu laisses jouer tes coéquipiers"
      }
     ]
    }
