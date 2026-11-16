@@ -23,7 +23,7 @@ param([switch]$Once,[switch]$DryRun,[string]$TestFile,[switch]$ResetKey,[switch]
       [string]$Endpoint,[string]$GitHubApi,[string]$Analyzer,[string]$ConfigDir,[string]$DemosDir,[string]$UpdateBase)
 
 $ErrorActionPreference = 'Stop'
-$UploaderVersion = '2.0.1'
+$UploaderVersion = '2.0.2'
 $AppName  = 'rl-replay-uploader'
 $IsWin = ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)
 if ($ConfigDir) { $CfgDir = $ConfigDir }
@@ -35,6 +35,7 @@ $QueueDir  = Join-Path $CfgDir 'queue'               # analyses pretes a pousser
 $AnLog     = Join-Path $CfgDir 'analyzed.log'        # nom:taille|id|etat|date
 $PushLog   = Join-Path $CfgDir 'pushed.log'          # id|date
 $FailLog   = Join-Path $CfgDir 'analysis-failed.log' # nom:taille|code|version exe|date
+$ExpFile   = Join-Path $CfgDir 'token-expiry.txt'    # date d'expiration du jeton GitHub (lue dans les reponses de GitHub, pas un secret)
 $UploadUrl = 'https://ballchasing.com/api/v2/upload?visibility=public'
 if ($Endpoint) { $UploadUrl = $Endpoint }            # tests uniquement
 $GhApi = 'https://api.github.com'
@@ -49,6 +50,8 @@ if (-not $Exe) { if ($IsWin) { $Exe = Join-Path $ScriptDir 'rl-analyzer.exe' } e
 $script:BackoffUntil = [DateTime]::MinValue
 $script:BackoffN = 0
 $script:GhDisabled = $false     # jeton refuse : on analyse et met en file, sans pousser
+$script:ExpWarnDay = ''          # avertissement d'expiration du jeton : une fois par jour
+$script:TokenCheckAt = [DateTime]::MinValue
 
 function Write-Line([string]$msg, [string]$color = 'Gray') {
   $line = '{0}  {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $msg
@@ -121,6 +124,7 @@ function Test-BcKey([string]$key) {
 function Get-BcKey($cfg, [switch]$Force) {
   if ($env:BALLCHASING_API_KEY -and -not $IsWin) { return $env:BALLCHASING_API_KEY }  # tests Linux uniquement
   if ($cfg.key -and -not $Force) { try { return (Unprotect-Str $cfg.key) } catch { } }
+  if ($Quiet -and -not $Force) { Stop-NeedsInput 'Cle ballchasing' }
   Write-Host ''
   Write-Host 'Cle API ballchasing.com (ballchasing.com > connecte-toi > Upload > "API key").' -ForegroundColor Cyan
   Write-Host 'Appuie sur Entree sans rien taper pour ne PAS envoyer vers ballchasing (analyse locale seulement).' -ForegroundColor DarkGray
@@ -145,9 +149,13 @@ function Invoke-GH([string]$method, [string]$path, [string]$token, [string]$body
     $code = 0
     try { $c = & $Curl @a 2>$null; $code = [int]$c } catch { $code = 0 }
     if ($LASTEXITCODE -ne 0) { $code = 0 }
-    $limit = $false
-    try { $ht = Get-Content $hdr -Raw; if ($ht -match '(?im)^x-ratelimit-remaining:\s*0') { $limit = $true } } catch { }
-    return @{ code = $code; file = $out; limit = $limit }
+    $limit = $false; $exp = ''
+    try {
+      $ht = Get-Content $hdr -Raw
+      if ($ht -match '(?im)^x-ratelimit-remaining:\s*0') { $limit = $true }
+      if ($ht -match '(?im)^github-authentication-token-expiration:\s*(\d{4}-\d{2}-\d{2})') { $exp = $Matches[1] }
+    } catch { }
+    return @{ code = $code; file = $out; limit = $limit; exp = $exp }
   } finally { Remove-Item $h, $hdr -Force -ErrorAction SilentlyContinue }
 }
 function Read-BodyJson($r) { try { return (Get-Content $r.file -Raw | ConvertFrom-Json) } catch { return $null } }
@@ -155,15 +163,42 @@ function Read-BodyJson($r) { try { return (Get-Content $r.file -Raw | ConvertFro
 function Test-GhToken([string]$token, [string]$repo) {
   $r = Invoke-GH 'GET' "/repos/$repo" $token
   $j = Read-BodyJson $r; Remove-Item $r.file -Force -ErrorAction SilentlyContinue
+  if ($r.code -eq 200) { Save-TokenExpiry $r.exp }
   if ($r.code -eq 200 -and $j -and $j.permissions -and $j.permissions.push) { return 'ok' }
   if ($r.code -eq 200) { return 'readonly' }
   if ($r.code -eq 401) { return 'refuse' }
   if ($r.code -eq 404) { return 'introuvable' }
   return ('http' + $r.code)
 }
+function Get-DaysLeft([string]$d) {
+  try { return [int]([datetime]::ParseExact($d, 'yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture) - (Get-Date).Date).TotalDays } catch { return $null }
+}
+function Save-TokenExpiry([string]$exp) {
+  # GitHub renvoie la date d'expiration du jeton dans chaque reponse : on la garde pour -Status et on previent 14 j avant
+  if ($DryRun -or $TestFile) { return }
+  try {
+    $old = ''; if (Test-Path $ExpFile) { $old = ([string](Get-Content $ExpFile -Raw)).Trim() }
+    if (-not $exp) { if ($old) { Remove-Item $ExpFile -Force -ErrorAction SilentlyContinue }; return }   # jeton sans expiration
+    if ($old -ne $exp) { Set-Content -Path $ExpFile -Value $exp -Encoding ASCII }
+    $left = Get-DaysLeft $exp; $today = (Get-Date).ToString('yyyy-MM-dd')
+    if ($null -ne $left -and $left -le 14 -and $script:ExpWarnDay -ne $today) {
+      $script:ExpWarnDay = $today
+      $msg = "Jeton GitHub : expire le $exp (dans $left j). Cree un nouveau jeton puis lance 4-Changer-le-jeton-GitHub.bat."
+      if ($left -lt 0) { $msg = "Jeton GitHub expire depuis le $exp : cree un nouveau jeton puis lance 4-Changer-le-jeton-GitHub.bat." }
+      Write-Line $msg 'Yellow'; Show-Toast 'Replay Rocket League' $msg
+    }
+  } catch { }
+}
+function Stop-NeedsInput([string]$what) {
+  # lance cache au demarrage (-Quiet) : aucune fenetre pour taper une cle -> on le dit au lieu d'attendre indefiniment
+  $msg = "$what manquant ou illisible : lance $(if ($what -like '*GitHub*') { '4-Changer-le-jeton-GitHub.bat' } else { '2-Lancer-maintenant.bat' }) pour le saisir."
+  Write-Line $msg 'Red'; Show-Toast 'Replay Rocket League' $msg
+  exit 1
+}
 function Get-GhToken($cfg, [switch]$Force) {
   if ($env:GT_GITHUB_TOKEN -and -not $IsWin) { return $env:GT_GITHUB_TOKEN }  # tests Linux uniquement
   if ($cfg.gh -and -not $Force) { try { return (Unprotect-Str $cfg.gh) } catch { } }
+  if ($Quiet -and -not $Force) { Stop-NeedsInput 'Jeton GitHub' }
   Write-Host ''
   Write-Host 'Jeton GitHub (fine-grained) pour envoyer tes stats a l''app. Il doit etre limite au depot' $cfg.repo 'avec "Contents : Read and write".' -ForegroundColor Cyan
   Write-Host '(voir le guide LISEZ-MOI.txt, section Jeton GitHub, pour le creer en 1 minute)' -ForegroundColor DarkGray
@@ -332,6 +367,7 @@ function Invoke-Flush([string]$token) {
       $idxPath = "/repos/$repo/contents/rl_local/index.json?ref=$branch"
       $m = Invoke-GH 'GET' $idxPath $token
       $mj = Read-BodyJson $m; Remove-Item $m.file -Force -ErrorAction SilentlyContinue
+      if ($m.code -eq 200 -or $m.code -eq 404) { Save-TokenExpiry $m.exp; $script:TokenCheckAt = Get-Date }
       $sha = $null; $cur = Join-Path $work 'index-cur.json'
       if ($m.code -eq 404) { Set-Content -Path $cur -Value '' -Encoding ASCII }
       elseif ($m.code -eq 200 -and $mj -and $mj.sha) {
@@ -340,7 +376,7 @@ function Invoke-Flush([string]$token) {
         if ($raw.code -ne 200) { Remove-Item $raw.file -Force -ErrorAction SilentlyContinue; Set-Backoff; return 0 }
         Move-Item $raw.file $cur -Force
       }
-      elseif ($m.code -eq 401 -or ($m.code -eq 403 -and -not $m.limit)) { $script:GhDisabled = $true; Write-Line 'Jeton GitHub refuse : analyses mises en file d''attente. Relance avec -ResetToken.' 'Red'; Show-Toast 'Replay Rocket League' 'Jeton GitHub refuse : relance 5-Changer-le-jeton.bat'; return 0 }
+      elseif ($m.code -eq 401 -or ($m.code -eq 403 -and -not $m.limit)) { $script:GhDisabled = $true; Write-Line 'Jeton GitHub refuse : analyses mises en file d''attente. Relance avec -ResetToken.' 'Red'; Show-Toast 'Replay Rocket League' 'Jeton GitHub refuse : relance 4-Changer-le-jeton-GitHub.bat'; return 0 }
       else { Set-Backoff; return 0 }
       # 2) fusion (sans doublon) faite par l'analyseur
       $new = Join-Path $work 'index-new.json'
@@ -396,6 +432,8 @@ function Invoke-Pass([string]$bcKey, [string]$ghToken) {
   try { $na = Invoke-AnalyzePass $files } catch { Write-Line ('Analyse : ' + $_.Exception.Message) 'Red' }
   if ($DryRun) { return $na }
   if ($ghToken -and -not $script:GhDisabled -and (Get-Date) -ge $script:BackoffUntil) {
+    # verification legere du jeton au demarrage puis 1 fois par jour (date d'expiration), meme sans replay a envoyer
+    if (((Get-Date) - $script:TokenCheckAt).TotalHours -ge 24) { $script:TokenCheckAt = Get-Date; try { [void](Test-GhToken $ghToken $script:Cfg.repo) } catch { } }
     try { [void](Invoke-Flush $ghToken) } catch { Write-Line ('Envoi GitHub : ' + $_.Exception.Message) 'Red'; Set-Backoff }
   }
   return $na
@@ -408,6 +446,17 @@ function Stop-Others {
     Where-Object { $_.CommandLine -like '*rl-replay-uploader.ps1*' -and $_.ProcessId -ne $PID } |
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
   Start-Sleep -Milliseconds 800
+}
+function Restart-Background {
+  # apres un changement de jeton : l'uploader deja lance en arriere-plan garde l'ancien jeton en memoire -> on le relance
+  if (-not $IsWin) { return }
+  $others = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*rl-replay-uploader.ps1*' -and $_.ProcessId -ne $PID })
+  if ($others.Count -eq 0) { return }
+  Stop-Others
+  $ps1 = Join-Path (Join-Path $env:LOCALAPPDATA $AppName) 'rl-replay-uploader.ps1'; if (-not (Test-Path $ps1)) { $ps1 = $PSCommandPath }
+  $pp = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+  Start-Process -FilePath $pp -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File', $ps1, '-Quiet') -WindowStyle Hidden
+  Write-Line 'Uploader en arriere-plan relance avec le nouveau jeton.' 'Green'
 }
 function Install-Startup {
   $dest = Join-Path $env:LOCALAPPDATA $AppName
@@ -504,6 +553,7 @@ if ($Status) {
   Write-Host ("En file d'attente : {0}" -f @(Get-ChildItem $QueueDir -Filter '*.idx.json' -ErrorAction SilentlyContinue).Count)
   Write-Host ("Envoyes a l'app : {0}" -f (Read-KeySet $PushLog).Keys.Count)
   Write-Host ("ballchasing : {0}" -f $(if ($script:Cfg.bc) { 'actif' } else { 'desactive' }))
+  if (Test-Path $ExpFile) { $e = ([string](Get-Content $ExpFile -Raw)).Trim(); Write-Host ("Jeton GitHub : expire le {0} (dans {1} j)" -f $e, (Get-DaysLeft $e)) } else { Write-Host 'Jeton GitHub : pas de date d''expiration connue' }
   if (Test-Path $TextLog) { Get-Content $TextLog -Tail 8 }
   return
 }
@@ -512,6 +562,7 @@ $bcKey = $null
 if ($script:Cfg.bc -or $ResetKey) { $bcKey = Get-BcKey $script:Cfg -Force:$ResetKey; $script:Cfg = Read-Cfg }
 $ghToken = $null
 if (-not $DryRun) { $ghToken = Get-GhToken $script:Cfg -Force:$ResetToken; $script:Cfg = Read-Cfg }
+if ($ResetToken -and $ghToken) { Restart-Background }
 
 if ($Ping) {
   $ok = $true

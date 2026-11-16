@@ -56,6 +56,9 @@ et analyse le replay dans les secondes qui suivent. Seuls les replays à partir 
 - **Hors ligne** : si Internet ou GitHub est indisponible, les analyses restent en file d'attente (`queue\`) et partent à la reconnexion, avec attente progressive (jusqu'à 15 min).
 - **Conflit d'écriture** (le robot de l'app écrit en même temps) : relecture et nouvel essai automatiques.
 - **Jeton refusé / expiré** : l'analyse continue, l'envoi est suspendu, un message te dit de lancer `4-Changer-le-jeton-GitHub.bat`.
+- **Jeton bientôt expiré** (v2.0.2) : la date d'expiration renvoyée par GitHub est vérifiée au démarrage puis chaque jour ; 14 jours avant, une notification et une ligne du journal te préviennent (une fois par jour). `6-Voir-letat.bat` affiche la date.
+- **Changement de jeton** (v2.0.2) : l'uploader déjà lancé en arrière‑plan est relancé tout seul avec le nouveau jeton.
+- **Lancement caché sans jeton lisible** (v2.0.2) : au lieu d'attendre une saisie invisible, l'uploader s'arrête avec une notification qui indique le fichier `.bat` à lancer.
 - **Index distant illisible** : par sécurité, rien n'est écrasé.
 - **Une seule instance** à la fois.
 - Journal : `%APPDATA%\rl-replay-uploader\activity.log`.
