@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-16T00:59:59+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 367,
+ "replays_count": 368,
  "playlists": {
   "3v3": {
    "matches": 180,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 182,
-   "wins": 94,
-   "win_rate": 51.6,
-   "goals": 276,
-   "assists": 101,
-   "saves": 147,
-   "shots": 499,
-   "score_avg": 396.6,
+   "matches": 183,
+   "wins": 95,
+   "win_rate": 51.9,
+   "goals": 278,
+   "assists": 103,
+   "saves": 148,
+   "shots": 502,
+   "score_avg": 397.0,
    "goals_avg": 1.52,
-   "shot_pct": 55.3,
+   "shot_pct": 55.4,
    "mvp": 15,
    "boost_avg": 50.5,
    "rank": null,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 5,
-   "wins": 2,
+   "matches": 6,
+   "wins": 3,
    "avg": {
-    "shooting_pct": 35.0,
-    "avg_boost": 50.6,
-    "pct_zero_boost": 16.2,
-    "pct_supersonic": 12.3,
-    "pct_behind_ball": 72.2,
-    "pct_def_third": 42.5,
-    "pct_most_forward": 52.2,
-    "bpm": 342.6
+    "shooting_pct": 40.3,
+    "avg_boost": 49.6,
+    "pct_zero_boost": 16.3,
+    "pct_supersonic": 12.0,
+    "pct_behind_ball": 72.3,
+    "pct_def_third": 43.4,
+    "pct_most_forward": 51.9,
+    "bpm": 333.5
    },
-   "saves": 1.2,
-   "goals": 1.2,
+   "saves": 1.17,
+   "goals": 1.33,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -41953,6 +41953,122 @@
       "label": "Précision de tir",
       "value": 33.3,
       "txt": "Bonne précision devant le but"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1A2D79CD4F1EE3BB0FF48B94248951E4",
+   "src": "local",
+   "lid": "1A2D79CD4F1EE3BB0FF48B94248951E4",
+   "date": "2026-11-16T14:10:21Z",
+   "playlist": "2v2",
+   "map": "Mannfield (Stormy)",
+   "duration": 263,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 2,
+   "assists": 2,
+   "saves": 1,
+   "shots": 3,
+   "score": 466,
+   "mvp": false,
+   "boost_avg": 45.0,
+   "bpm": 288,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "1A2D79CD4F1EE3BB0FF48B94248951E4",
+   "m": {
+    "shooting_pct": 66.7,
+    "shots_against": 2,
+    "goals_against": 1,
+    "clears": 2,
+    "centers": 1,
+    "aerial_hits": 1,
+    "bpm": 288,
+    "avg_boost": 45.0,
+    "pct_zero_boost": 16.7,
+    "pct_full_boost": 11.9,
+    "stolen": 127.0,
+    "overfill_pct": 26.6,
+    "small_pads": 44,
+    "big_pads": 10,
+    "avg_speed": 1507.0,
+    "pct_supersonic": 10.2,
+    "pct_slow": 46.0,
+    "pct_ground": 57.2,
+    "pct_high_air": 0.7,
+    "powerslides": 9,
+    "pct_def_third": 48.0,
+    "pct_off_third": 19.4,
+    "pct_behind_ball": 72.9,
+    "pct_most_back": 52.5,
+    "pct_most_forward": 50.1,
+    "pct_closest_ball": 54.9,
+    "dist_mates": 2722.0,
+    "demos": 2,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 26.6,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 16.7,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 54.9,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 66.7,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 45.0,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 72.9,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
