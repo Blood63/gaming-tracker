@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-16T00:59:59+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 377,
+ "replays_count": 378,
  "playlists": {
   "3v3": {
    "matches": 180,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 192,
+   "matches": 193,
    "wins": 102,
-   "win_rate": 53.1,
-   "goals": 290,
-   "assists": 111,
-   "saves": 160,
-   "shots": 527,
-   "score_avg": 399.6,
-   "goals_avg": 1.51,
-   "shot_pct": 55.0,
+   "win_rate": 52.8,
+   "goals": 293,
+   "assists": 113,
+   "saves": 161,
+   "shots": 530,
+   "score_avg": 401.3,
+   "goals_avg": 1.52,
+   "shot_pct": 55.3,
    "mvp": 15,
-   "boost_avg": 50.4,
+   "boost_avg": 50.3,
    "rank": null,
    "mmr": null
   },
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 14,
+   "matches": 15,
    "wins": 9,
    "avg": {
-    "shooting_pct": 42.9,
-    "avg_boost": 48.1,
-    "pct_zero_boost": 17.0,
-    "pct_supersonic": 12.9,
-    "pct_behind_ball": 72.3,
-    "pct_def_third": 45.9,
-    "pct_most_forward": 52.9,
-    "bpm": 349.3
+    "shooting_pct": 46.7,
+    "avg_boost": 47.8,
+    "pct_zero_boost": 17.4,
+    "pct_supersonic": 12.8,
+    "pct_behind_ball": 72.2,
+    "pct_def_third": 45.8,
+    "pct_most_forward": 53.7,
+    "bpm": 352.4
    },
-   "saves": 1.29,
-   "goals": 1.29,
+   "saves": 1.27,
+   "goals": 1.4,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -43113,6 +43113,122 @@
       "label": "Temps supersonique",
       "value": 12.9,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "CCC4A3B947FFB1D7670450878B72CEDC",
+   "src": "local",
+   "lid": "CCC4A3B947FFB1D7670450878B72CEDC",
+   "date": "2026-11-16T21:16:31Z",
+   "playlist": "2v2",
+   "map": "Farmstead (Pitched)",
+   "duration": 410,
+   "overtime": false,
+   "team_goals": 5,
+   "opp_goals": 6,
+   "result": "loss",
+   "goals": 3,
+   "assists": 2,
+   "saves": 1,
+   "shots": 3,
+   "score": 721,
+   "mvp": false,
+   "boost_avg": 42.7,
+   "bpm": 396,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "CCC4A3B947FFB1D7670450878B72CEDC",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 7,
+    "goals_against": 6,
+    "clears": 3,
+    "centers": 8,
+    "aerial_hits": 0,
+    "bpm": 396,
+    "avg_boost": 42.7,
+    "pct_zero_boost": 22.3,
+    "pct_full_boost": 14.9,
+    "stolen": 534.0,
+    "overfill_pct": 12.9,
+    "small_pads": 49,
+    "big_pads": 23,
+    "avg_speed": 1444.0,
+    "pct_supersonic": 11.3,
+    "pct_slow": 53.1,
+    "pct_ground": 62.3,
+    "pct_high_air": 0.6,
+    "powerslides": 21,
+    "pct_def_third": 44.3,
+    "pct_off_third": 23.2,
+    "pct_behind_ball": 72.1,
+    "pct_most_back": 61.6,
+    "pct_most_forward": 65.4,
+    "pct_closest_ball": 66.6,
+    "dist_mates": 3167.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 22.3,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 66.6,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 65.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 42.7,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 396,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
