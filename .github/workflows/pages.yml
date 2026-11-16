@@ -1,19 +1,60 @@
 name: Pages
 # Déploiement GitHub Pages avec une pause de 3 min : les poussées rapides de replays
 # (une session) se regroupent en un seul déploiement au lieu d'annuler 2–3 builds par match.
+# Les commits des robots (GITHUB_TOKEN : relevés Valorant/Steam, fusion des replays, synchro de l'appli,
+# formulaires) ne déclenchent pas « push » : on se relance donc à la fin de ces workflows (workflow_run),
+# seulement s'ils ont réellement poussé un commit (main a bougé). On déploie toujours le dernier main.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Valorant + Rocket League (HenrikDev, ballchasing)"
+      - "Fetch stats"
+      - "Replays locaux"
+      - "Synchro app"
+      - "Résumé accueil (home.json)"
+      - "Partie COD"
+      - "Profil COD"
+      - "COD Mobile rang"
+      - "Objectif"
+      - "Rocket League rang"
+      - "Setup"
+    types: [completed]
+    branches: [main]
 permissions:
   contents: read
   pages: write
   id-token: write
-concurrency:
-  group: pages-deploy
-  cancel-in-progress: true
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EV: ${{ github.event_name }}
+          CONCL: ${{ github.event.workflow_run.conclusion }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          go=true
+          if [ "$EV" = "workflow_run" ]; then
+            main=$(gh api "repos/${{ github.repository }}/commits/main" -q .sha)
+            # rien de poussé par le robot (créneau sauté, données identiques) -> pas de déploiement
+            if [ "$CONCL" != "success" ] || [ "$main" = "$RUN_SHA" ]; then go=false; fi
+            echo "robot: $CONCL · run $RUN_SHA · main $main"
+          fi
+          echo "go=$go" | tee -a "$GITHUB_OUTPUT"
   deploy:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
+    # concurrence au niveau du déploiement seulement : un relevé sans changement ne coupe pas un déploiement en attente
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -22,9 +63,12 @@ jobs:
       - name: Attendre la fin d'une rafale
         run: sleep 180
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/configure-pages@v5
       - name: Préparer le site (sans .git)
         run: |
+          echo "déployé : $(git rev-parse --short HEAD)"
           mkdir _site
           tar --exclude=./.git --exclude=./_site --exclude=./.github -cf - . | tar -C _site -xf -
       - uses: actions/upload-pages-artifact@v3

@@ -2,6 +2,8 @@ name: Tests
 # Tests unitaires : node --test et unittest. Pas lancé sur un simple push de données (replays, relevés).
 on:
   push:
+    # branches : sans ce filtre, une poussée d'étiquette (sauvegarde backup-*) lance les tests (les filtres de chemins sont ignorés pour les étiquettes)
+    branches: ["**"]
     paths:
       - "app.js"
       - "core.js"
