@@ -263,7 +263,7 @@ test('rllDeepOf : le fichier détaillé redonne exactement les blocs d_* de l’
   const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays||[];let n=0;
   for(const e of idx){const f=path.join(__dirname,'..','rl_local',e.id+'.json');if(!fs.existsSync(f))continue;
     ctx.__d=JSON.parse(fs.readFileSync(f,'utf8')).d;const m=J(run('rllDeepOf(__d)'));
-    for(const k of Object.keys(m)){if(e[k]===undefined)continue;assert.deepEqual(m[k],e[k],`${e.id} ${k}`)}n++}
+    for(const k of Object.keys(m)){if(e[k]===undefined)continue;assert.deepEqual(m[k],J(e[k]),`${e.id} ${k}`)}n++}  // J des deux côtés : -0.0 (analyseur) et 0 ont la même valeur
   assert.ok(n>=1||!idx.length,'au moins un fichier détaillé comparé');
 });
 test('light.json / deep.json : aucun bloc d_* dans le léger, détails indexés par id',()=>{
