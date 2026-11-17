@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-17T01:46:49+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 389,
+ "replays_count": 390,
  "playlists": {
   "3v3": {
-   "matches": 180,
+   "matches": 181,
    "wins": 90,
-   "win_rate": 50.0,
-   "goals": 162,
+   "win_rate": 49.7,
+   "goals": 166,
    "assists": 86,
    "saves": 84,
-   "shots": 342,
-   "score_avg": 259.5,
-   "goals_avg": 0.9,
-   "shot_pct": 47.4,
+   "shots": 347,
+   "score_avg": 261.7,
+   "goals_avg": 0.92,
+   "shot_pct": 47.8,
    "mvp": 7,
    "boost_avg": 52.1,
    "rank": null,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 26,
+   "matches": 27,
    "wins": 14,
    "avg": {
-    "shooting_pct": 44.9,
+    "shooting_pct": 46.2,
     "avg_boost": 46.0,
     "pct_zero_boost": 18.3,
-    "pct_supersonic": 13.2,
-    "pct_behind_ball": 72.2,
+    "pct_supersonic": 13.3,
+    "pct_behind_ball": 72.1,
     "pct_def_third": 45.8,
-    "pct_most_forward": 55.5,
-    "bpm": 368.4
+    "pct_most_forward": 55.0,
+    "bpm": 368.8
    },
-   "saves": 0.96,
-   "goals": 1.31,
+   "saves": 0.93,
+   "goals": 1.41,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -43924,6 +43924,111 @@
       "k": "bpm",
       "label": "Boost ramassé / min",
       "value": 439,
+      "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E0929DB011F1E2868424B1BE72A1FFC1",
+   "src": "local",
+   "lid": "E0929DB011F1E2868424B1BE72A1FFC1",
+   "date": "2026-11-17T12:00:34Z",
+   "playlist": "3v3",
+   "map": "Deadeye Canyon (Oasis)",
+   "duration": 451,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 5,
+   "result": "loss",
+   "goals": 4,
+   "assists": 0,
+   "saves": 0,
+   "shots": 5,
+   "score": 651,
+   "mvp": false,
+   "boost_avg": 45.4,
+   "bpm": 379,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "E0929DB011F1E2868424B1BE72A1FFC1",
+   "m": {
+    "shooting_pct": 80.0,
+    "shots_against": 4,
+    "goals_against": 5,
+    "clears": 4,
+    "centers": 5,
+    "aerial_hits": 1,
+    "bpm": 379,
+    "avg_boost": 45.4,
+    "pct_zero_boost": 18.2,
+    "pct_full_boost": 13.5,
+    "stolen": 748.0,
+    "overfill_pct": 12.6,
+    "small_pads": 60,
+    "big_pads": 23,
+    "avg_speed": 1535.0,
+    "pct_supersonic": 15.1,
+    "pct_slow": 45.1,
+    "pct_ground": 60.5,
+    "pct_high_air": 0.8,
+    "powerslides": 18,
+    "pct_def_third": 45.9,
+    "pct_off_third": 24.6,
+    "pct_behind_ball": 68.0,
+    "pct_most_back": 26.3,
+    "pct_most_forward": 40.8,
+    "pct_closest_ball": 37.9,
+    "dist_mates": 3389.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 18.2,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 45.4,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 80.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 15.1,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 379,
       "txt": "Bon ramassage de boost"
      }
     ]
