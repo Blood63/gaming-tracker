@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-17T01:46:49+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 385,
+ "replays_count": 387,
  "playlists": {
   "3v3": {
    "matches": 180,
@@ -22,34 +22,34 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 200,
-   "wins": 105,
-   "win_rate": 52.5,
-   "goals": 301,
-   "assists": 123,
+   "matches": 201,
+   "wins": 106,
+   "win_rate": 52.7,
+   "goals": 303,
+   "assists": 124,
    "saves": 164,
-   "shots": 553,
-   "score_avg": 401.4,
-   "goals_avg": 1.5,
-   "shot_pct": 54.4,
+   "shots": 556,
+   "score_avg": 401.1,
+   "goals_avg": 1.51,
+   "shot_pct": 54.5,
    "mvp": 15,
    "boost_avg": 50.1,
    "rank": null,
    "mmr": null
   },
   "1v1": {
-   "matches": 2,
+   "matches": 3,
    "wins": 0,
    "win_rate": 0.0,
    "goals": 4,
    "assists": 0,
-   "saves": 4,
-   "shots": 11,
-   "score_avg": 530.5,
-   "goals_avg": 2.0,
-   "shot_pct": 36.4,
+   "saves": 5,
+   "shots": 13,
+   "score_avg": 424.3,
+   "goals_avg": 1.33,
+   "shot_pct": 30.8,
    "mvp": 0,
-   "boost_avg": 47.7,
+   "boost_avg": 46.5,
    "rank": null,
    "mmr": null
   },
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 22,
-   "wins": 12,
+   "matches": 24,
+   "wins": 13,
    "avg": {
-    "shooting_pct": 43.9,
-    "avg_boost": 46.5,
-    "pct_zero_boost": 18.1,
+    "shooting_pct": 43.1,
+    "avg_boost": 46.3,
+    "pct_zero_boost": 18.2,
     "pct_supersonic": 13.2,
-    "pct_behind_ball": 71.9,
-    "pct_def_third": 45.1,
-    "pct_most_forward": 54.4,
-    "bpm": 363.0
+    "pct_behind_ball": 72.2,
+    "pct_def_third": 45.5,
+    "pct_most_forward": 56.0,
+    "bpm": 368.1
    },
-   "saves": 1.0,
-   "goals": 1.32,
+   "saves": 0.96,
+   "goals": 1.29,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -43345,6 +43345,238 @@
       "label": "Boost ramassé / min",
       "value": 396,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1922A0C011F1E20615E0FE89E1E2E2C4",
+   "src": "local",
+   "lid": "1922A0C011F1E20615E0FE89E1E2E2C4",
+   "date": "2026-11-16T20:38:44Z",
+   "playlist": "2v2",
+   "map": "Farmstead (Pitched)",
+   "duration": 280,
+   "overtime": false,
+   "team_goals": 7,
+   "opp_goals": 4,
+   "result": "win",
+   "goals": 2,
+   "assists": 1,
+   "saves": 0,
+   "shots": 3,
+   "score": 340,
+   "mvp": false,
+   "boost_avg": 42.6,
+   "bpm": 383,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "1922A0C011F1E20615E0FE89E1E2E2C4",
+   "m": {
+    "shooting_pct": 66.7,
+    "shots_against": 4,
+    "goals_against": 4,
+    "clears": 0,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 383,
+    "avg_boost": 42.6,
+    "pct_zero_boost": 19.5,
+    "pct_full_boost": 18.0,
+    "stolen": 214.0,
+    "overfill_pct": 5.4,
+    "small_pads": 29,
+    "big_pads": 13,
+    "avg_speed": 1495.0,
+    "pct_supersonic": 14.9,
+    "pct_slow": 52.4,
+    "pct_ground": 64.5,
+    "pct_high_air": 3.4,
+    "powerslides": 16,
+    "pct_def_third": 45.2,
+    "pct_off_third": 19.2,
+    "pct_behind_ball": 79.0,
+    "pct_most_back": 60.8,
+    "pct_most_forward": 46.2,
+    "pct_closest_ball": 44.9,
+    "dist_mates": 3289.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 19.5,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 60.8,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 18.0,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 66.7,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 5.4,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 42.6,
+      "txt": "Bonne gestion du boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "A60E669011F1E206460AF99F61C00416",
+   "src": "local",
+   "lid": "A60E669011F1E206460AF99F61C00416",
+   "date": "2026-11-16T20:42:40Z",
+   "playlist": "1v1",
+   "map": "Mall Day P",
+   "duration": 194,
+   "overtime": false,
+   "team_goals": 0,
+   "opp_goals": 1,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 2,
+   "score": 212,
+   "mvp": false,
+   "boost_avg": 44.0,
+   "bpm": 465,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "A60E669011F1E206460AF99F61C00416",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 2,
+    "goals_against": 1,
+    "clears": 3,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 465,
+    "avg_boost": 44.0,
+    "pct_zero_boost": 18.9,
+    "pct_full_boost": 17.0,
+    "stolen": 192.0,
+    "overfill_pct": 10.5,
+    "small_pads": 25,
+    "big_pads": 14,
+    "avg_speed": 1411.0,
+    "pct_supersonic": 11.4,
+    "pct_slow": 51.3,
+    "pct_ground": 56.2,
+    "pct_high_air": 1.7,
+    "powerslides": 14,
+    "pct_def_third": 53.8,
+    "pct_off_third": 18.2,
+    "pct_behind_ball": 71.3,
+    "pct_most_back": 100.0,
+    "pct_most_forward": 100.0,
+    "pct_closest_ball": 100.0,
+    "dist_mates": 0.0,
+    "demos": 2,
+    "demos_taken": 2
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 100.0,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 100.0,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 100.0,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 44.0,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 465,
+      "txt": "Bon ramassage de boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 10.5,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
