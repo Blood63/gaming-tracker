@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-17T01:46:49+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 398,
+ "replays_count": 399,
  "playlists": {
   "3v3": {
    "matches": 183,
@@ -22,14 +22,14 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 209,
-   "wins": 111,
-   "win_rate": 53.1,
-   "goals": 313,
-   "assists": 132,
-   "saves": 171,
-   "shots": 576,
-   "score_avg": 400.7,
+   "matches": 210,
+   "wins": 112,
+   "win_rate": 53.3,
+   "goals": 314,
+   "assists": 133,
+   "saves": 173,
+   "shots": 578,
+   "score_avg": 400.8,
    "goals_avg": 1.5,
    "shot_pct": 54.3,
    "mvp": 15,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 35,
-   "wins": 20,
+   "matches": 36,
+   "wins": 21,
    "avg": {
-    "shooting_pct": 48.6,
-    "avg_boost": 47.5,
+    "shooting_pct": 48.7,
+    "avg_boost": 47.6,
     "pct_zero_boost": 17.2,
-    "pct_supersonic": 13.4,
+    "pct_supersonic": 13.5,
     "pct_behind_ball": 73.8,
-    "pct_def_third": 45.6,
+    "pct_def_third": 45.4,
     "pct_most_forward": 52.3,
-    "bpm": 368.5
+    "bpm": 369.4
    },
-   "saves": 0.94,
-   "goals": 1.4,
+   "saves": 0.97,
+   "goals": 1.39,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -45538,6 +45538,122 @@
       "label": "Temps supersonique",
       "value": 14.8,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "8E5E80C24568A220C60BF998CA2887F1",
+   "src": "local",
+   "lid": "8E5E80C24568A220C60BF998CA2887F1",
+   "date": "2026-11-17T18:42:52Z",
+   "playlist": "2v2",
+   "map": "Urban Central",
+   "duration": 367,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 2,
+   "shots": 2,
+   "score": 418,
+   "mvp": false,
+   "boost_avg": 52.2,
+   "bpm": 401,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "8E5E80C24568A220C60BF998CA2887F1",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 6,
+    "goals_against": 2,
+    "clears": 2,
+    "centers": 6,
+    "aerial_hits": 0,
+    "bpm": 401,
+    "avg_boost": 52.2,
+    "pct_zero_boost": 14.2,
+    "pct_full_boost": 12.6,
+    "stolen": 502.0,
+    "overfill_pct": 15.6,
+    "small_pads": 62,
+    "big_pads": 18,
+    "avg_speed": 1556.0,
+    "pct_supersonic": 17.0,
+    "pct_slow": 44.6,
+    "pct_ground": 66.0,
+    "pct_high_air": 3.2,
+    "powerslides": 21,
+    "pct_def_third": 40.3,
+    "pct_off_third": 30.5,
+    "pct_behind_ball": 76.5,
+    "pct_most_back": 46.4,
+    "pct_most_forward": 53.6,
+    "pct_closest_ball": 50.2,
+    "dist_mates": 3010.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 53.6,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 50.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 14.2,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 17.0,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 401,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
