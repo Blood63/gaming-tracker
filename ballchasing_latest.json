@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-17T01:46:49+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 393,
+ "replays_count": 394,
  "playlists": {
   "3v3": {
-   "matches": 181,
-   "wins": 90,
-   "win_rate": 49.7,
-   "goals": 166,
+   "matches": 182,
+   "wins": 91,
+   "win_rate": 50.0,
+   "goals": 167,
    "assists": 86,
-   "saves": 84,
-   "shots": 347,
-   "score_avg": 261.7,
+   "saves": 86,
+   "shots": 348,
+   "score_avg": 261.6,
    "goals_avg": 0.92,
-   "shot_pct": 47.8,
+   "shot_pct": 48.0,
    "mvp": 7,
    "boost_avg": 52.1,
    "rank": null,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 30,
-   "wins": 16,
+   "matches": 31,
+   "wins": 17,
    "avg": {
-    "shooting_pct": 47.1,
-    "avg_boost": 46.8,
-    "pct_zero_boost": 17.8,
-    "pct_supersonic": 13.6,
-    "pct_behind_ball": 72.5,
-    "pct_def_third": 45.7,
-    "pct_most_forward": 54.3,
-    "bpm": 372.4
+    "shooting_pct": 48.8,
+    "avg_boost": 47.1,
+    "pct_zero_boost": 17.6,
+    "pct_supersonic": 13.3,
+    "pct_behind_ball": 73.0,
+    "pct_def_third": 45.8,
+    "pct_most_forward": 53.4,
+    "bpm": 369.4
    },
-   "saves": 0.97,
-   "goals": 1.37,
+   "saves": 1.0,
+   "goals": 1.35,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -44958,6 +44958,122 @@
       "label": "Boost ramassé / min",
       "value": 411,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "045B0ABE44D010A6B13F13B0E512A0AB",
+   "src": "local",
+   "lid": "045B0ABE44D010A6B13F13B0E512A0AB",
+   "date": "2026-11-17T14:50:36Z",
+   "playlist": "3v3",
+   "map": "Beckwith Park (Stormy)",
+   "duration": 139,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 1,
+   "assists": 0,
+   "saves": 2,
+   "shots": 1,
+   "score": 259,
+   "mvp": false,
+   "boost_avg": 53.8,
+   "bpm": 279,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "045B0ABE44D010A6B13F13B0E512A0AB",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 3,
+    "goals_against": 0,
+    "clears": 0,
+    "centers": 1,
+    "aerial_hits": 0,
+    "bpm": 279,
+    "avg_boost": 53.8,
+    "pct_zero_boost": 11.7,
+    "pct_full_boost": 6.3,
+    "stolen": 106.0,
+    "overfill_pct": 12.3,
+    "small_pads": 18,
+    "big_pads": 6,
+    "avg_speed": 1457.0,
+    "pct_supersonic": 5.4,
+    "pct_slow": 51.5,
+    "pct_ground": 71.0,
+    "pct_high_air": 1.8,
+    "powerslides": 5,
+    "pct_def_third": 49.2,
+    "pct_off_third": 21.5,
+    "pct_behind_ball": 88.0,
+    "pct_most_back": 46.0,
+    "pct_most_forward": 27.3,
+    "pct_closest_ball": 23.1,
+    "dist_mates": 2801.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 5.4,
+      "bench": [
+       10,
+       null
+      ],
+      "txt": "Tu ne joues pas assez vite.",
+      "drill": "Free play : fais des tours de terrain en restant supersonique (boost court + flips au sol/wavedash) et, en match, garde ta vitesse en rotation au lieu de freiner."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 53.8,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 279,
+      "bench": [
+       300,
+       null
+      ],
+      "txt": "Tu ramasses peu de boost.",
+      "drill": "Trace tes rotations en passant sur les petites pastilles ; vole les gros boosts adverses quand tu es en attaque."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 23.1,
+      "txt": "Tu laisses jouer tes coéquipiers"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 88.0,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
