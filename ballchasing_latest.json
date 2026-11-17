@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-17T01:46:49+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 382,
+ "replays_count": 383,
  "playlists": {
   "3v3": {
    "matches": 180,
@@ -22,16 +22,16 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 197,
-   "wins": 103,
-   "win_rate": 52.3,
+   "matches": 198,
+   "wins": 104,
+   "win_rate": 52.5,
    "goals": 297,
-   "assists": 119,
-   "saves": 163,
-   "shots": 545,
-   "score_avg": 401.0,
-   "goals_avg": 1.51,
-   "shot_pct": 54.5,
+   "assists": 121,
+   "saves": 164,
+   "shots": 548,
+   "score_avg": 400.5,
+   "goals_avg": 1.5,
+   "shot_pct": 54.2,
    "mvp": 15,
    "boost_avg": 50.2,
    "rank": null,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 19,
-   "wins": 10,
+   "matches": 20,
+   "wins": 11,
    "avg": {
-    "shooting_pct": 43.0,
-    "avg_boost": 47.0,
-    "pct_zero_boost": 17.9,
-    "pct_supersonic": 13.0,
-    "pct_behind_ball": 71.8,
+    "shooting_pct": 40.8,
+    "avg_boost": 46.7,
+    "pct_zero_boost": 18.2,
+    "pct_supersonic": 13.1,
+    "pct_behind_ball": 71.9,
     "pct_def_third": 45.2,
-    "pct_most_forward": 54.3,
-    "bpm": 360.3
+    "pct_most_forward": 54.2,
+    "bpm": 362.1
    },
-   "saves": 1.11,
-   "goals": 1.32,
+   "saves": 1.1,
+   "goals": 1.25,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -43229,6 +43229,122 @@
       "label": "Temps à vitesse lente",
       "value": 44.5,
       "txt": "Rarement à l'arrêt"
+     }
+    ]
+   }
+  },
+  {
+   "id": "158697BA11F1E2054DCB4982B79AC2EF",
+   "src": "local",
+   "lid": "158697BA11F1E2054DCB4982B79AC2EF",
+   "date": "2026-11-16T20:31:28Z",
+   "playlist": "2v2",
+   "map": "Beckwith Park (Midnight)",
+   "duration": 377,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 3,
+   "result": "win",
+   "goals": 0,
+   "assists": 2,
+   "saves": 1,
+   "shots": 3,
+   "score": 310,
+   "mvp": false,
+   "boost_avg": 41.0,
+   "bpm": 396,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "158697BA11F1E2054DCB4982B79AC2EF",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 5,
+    "goals_against": 3,
+    "clears": 1,
+    "centers": 6,
+    "aerial_hits": 0,
+    "bpm": 396,
+    "avg_boost": 41.0,
+    "pct_zero_boost": 24.6,
+    "pct_full_boost": 16.5,
+    "stolen": 664.0,
+    "overfill_pct": 10.7,
+    "small_pads": 49,
+    "big_pads": 20,
+    "avg_speed": 1506.0,
+    "pct_supersonic": 14.3,
+    "pct_slow": 47.0,
+    "pct_ground": 61.4,
+    "pct_high_air": 1.8,
+    "powerslides": 22,
+    "pct_def_third": 45.2,
+    "pct_off_third": 27.4,
+    "pct_behind_ball": 74.3,
+    "pct_most_back": 51.1,
+    "pct_most_forward": 52.4,
+    "pct_closest_ball": 48.8,
+    "dist_mates": 3059.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 24.6,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 52.4,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 41.0,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.3,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 396,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
