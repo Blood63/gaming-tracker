@@ -3,17 +3,17 @@
  "fetched_at": "2026-11-18T21:40:54+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 434,
+ "replays_count": 435,
  "playlists": {
   "3v3": {
-   "matches": 189,
-   "wins": 96,
-   "win_rate": 50.8,
-   "goals": 176,
-   "assists": 88,
+   "matches": 190,
+   "wins": 97,
+   "win_rate": 51.1,
+   "goals": 177,
+   "assists": 89,
    "saves": 92,
-   "shots": 365,
-   "score_avg": 264.1,
+   "shots": 367,
+   "score_avg": 264.3,
    "goals_avg": 0.93,
    "shot_pct": 48.2,
    "mvp": 7,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 71,
-   "wins": 41,
+   "matches": 72,
+   "wins": 42,
    "avg": {
     "shooting_pct": 49.2,
-    "avg_boost": 47.6,
-    "pct_zero_boost": 17.7,
-    "pct_supersonic": 12.9,
+    "avg_boost": 47.8,
+    "pct_zero_boost": 17.6,
+    "pct_supersonic": 12.8,
     "pct_behind_ball": 74.5,
     "pct_def_third": 47.1,
-    "pct_most_forward": 50.9,
-    "bpm": 364.3
+    "pct_most_forward": 50.8,
+    "bpm": 364.2
    },
-   "saves": 0.85,
-   "goals": 1.41,
+   "saves": 0.83,
+   "goals": 1.4,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -49714,6 +49714,122 @@
       "label": "Temps au plus près de la balle",
       "value": 32.5,
       "txt": "Tu laisses jouer tes coéquipiers"
+     }
+    ]
+   }
+  },
+  {
+   "id": "C124129945560E6A415C73AB4F6566E0",
+   "src": "local",
+   "lid": "C124129945560E6A415C73AB4F6566E0",
+   "date": "2026-11-18T23:04:01Z",
+   "playlist": "3v3",
+   "map": "Neo Tokyo (Arcade)",
+   "duration": 315,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 2,
+   "score": 312,
+   "mvp": false,
+   "boost_avg": 57.5,
+   "bpm": 358,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "C124129945560E6A415C73AB4F6566E0",
+   "m": {
+    "shooting_pct": 50.0,
+    "shots_against": 4,
+    "goals_against": 0,
+    "clears": 3,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 358,
+    "avg_boost": 57.5,
+    "pct_zero_boost": 12.7,
+    "pct_full_boost": 16.5,
+    "stolen": 429.0,
+    "overfill_pct": 30.8,
+    "small_pads": 39,
+    "big_pads": 18,
+    "avg_speed": 1399.0,
+    "pct_supersonic": 9.5,
+    "pct_slow": 51.3,
+    "pct_ground": 60.5,
+    "pct_high_air": 0.9,
+    "powerslides": 17,
+    "pct_def_third": 48.9,
+    "pct_off_third": 23.6,
+    "pct_behind_ball": 73.3,
+    "pct_most_back": 26.3,
+    "pct_most_forward": 42.2,
+    "pct_closest_ball": 32.4,
+    "dist_mates": 2898.0,
+    "demos": 1,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 30.8,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 57.5,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 16.5,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 50.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 32.4,
+      "txt": "Tu laisses jouer tes coéquipiers"
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 358,
+      "txt": "Bon ramassage de boost"
      }
     ]
    }
