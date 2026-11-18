@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-18T02:55:16+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 420,
+ "replays_count": 421,
  "playlists": {
   "3v3": {
    "matches": 183,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 231,
+   "matches": 232,
    "wins": 124,
-   "win_rate": 53.7,
-   "goals": 347,
+   "win_rate": 53.4,
+   "goals": 348,
    "assists": 150,
    "saves": 182,
-   "shots": 651,
-   "score_avg": 401.6,
+   "shots": 654,
+   "score_avg": 400.9,
    "goals_avg": 1.5,
-   "shot_pct": 53.3,
+   "shot_pct": 53.2,
    "mvp": 15,
-   "boost_avg": 49.9,
+   "boost_avg": 49.8,
    "rank": null,
    "mmr": null
   },
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 57,
+   "matches": 58,
    "wins": 33,
    "avg": {
-    "shooting_pct": 46.7,
+    "shooting_pct": 46.5,
     "avg_boost": 47.5,
     "pct_zero_boost": 17.6,
     "pct_supersonic": 12.8,
     "pct_behind_ball": 74.6,
     "pct_def_third": 47.0,
-    "pct_most_forward": 52.1,
-    "bpm": 367.2
+    "pct_most_forward": 52.2,
+    "bpm": 366.5
    },
-   "saves": 0.77,
-   "goals": 1.46,
+   "saves": 0.76,
+   "goals": 1.45,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -47278,6 +47278,122 @@
       "label": "Boost ramassé / min",
       "value": 364,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "9868839C11F1E376BEA3A9BC6452EB4A",
+   "src": "local",
+   "lid": "9868839C11F1E376BEA3A9BC6452EB4A",
+   "date": "2026-11-18T16:36:32Z",
+   "playlist": "2v2",
+   "map": "Utopia Coliseum (Dusk)",
+   "duration": 333,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 2,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 3,
+   "score": 254,
+   "mvp": false,
+   "boost_avg": 44.5,
+   "bpm": 327,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "9868839C11F1E376BEA3A9BC6452EB4A",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 5,
+    "goals_against": 2,
+    "clears": 2,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 327,
+    "avg_boost": 44.5,
+    "pct_zero_boost": 21.2,
+    "pct_full_boost": 11.0,
+    "stolen": 471.0,
+    "overfill_pct": 11.8,
+    "small_pads": 43,
+    "big_pads": 13,
+    "avg_speed": 1366.0,
+    "pct_supersonic": 12.1,
+    "pct_slow": 53.8,
+    "pct_ground": 61.2,
+    "pct_high_air": 0.9,
+    "powerslides": 32,
+    "pct_def_third": 42.7,
+    "pct_off_third": 29.6,
+    "pct_behind_ball": 77.1,
+    "pct_most_back": 41.7,
+    "pct_most_forward": 59.5,
+    "pct_closest_ball": 51.8,
+    "dist_mates": 2971.0,
+    "demos": 0,
+    "demos_taken": 1
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 21.2,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 59.5,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 51.8,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 44.5,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 11.8,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 12.1,
+      "txt": "Bonne vitesse de jeu"
      }
     ]
    }
