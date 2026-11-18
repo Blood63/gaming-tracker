@@ -1,19 +1,19 @@
 {
  "source": "HenrikDev API (non officielle)",
- "fetched_at": "2026-11-18T21:40:47+01:00",
+ "fetched_at": "2026-11-19T00:23:02+01:00",
  "account": {
   "name": "Blood",
   "tag": "7629",
   "region": "eu",
-  "level": 115,
+  "level": 116,
   "card": "https://media.valorant-api.com/playercards/3d582a4f-498e-2104-5c7f-6dab3f8a85eb/smallart.png"
  },
  "mmr": {
   "tier": "Silver 2",
   "tier_id": 10,
-  "rr": 86,
-  "last_change": 27,
-  "elo": 786,
+  "rr": 70,
+  "last_change": -16,
+  "elo": 770,
   "peak": "Silver 3",
   "peak_id": 11,
   "peak_season": "e11a5",
@@ -61,10 +61,10 @@
    {
     "season": "e11a6",
     "wins": 50,
-    "games": 94,
+    "games": 95,
     "end_tier": "Silver 2",
     "end_tier_id": 10,
-    "end_rr": 86
+    "end_rr": 70
    }
   ]
  },
@@ -1321,6 +1321,17 @@
    "change": 27,
    "elo": 786,
    "map": "Abyss",
+   "season": "e11a6"
+  },
+  {
+   "match_id": "6cc451b3-1012-4ca4-89f7-353defcec2f2",
+   "date": "2026-11-18T21:21:31.142Z",
+   "tier": "Silver 2",
+   "tier_id": 10,
+   "rr": 70,
+   "change": -16,
+   "elo": 770,
+   "map": "Bind",
    "season": "e11a6"
   }
  ],
@@ -20754,6 +20765,178 @@
    ],
    "rr_change": 27,
    "tier_after": "Silver 2"
+  },
+  {
+   "id": "6cc451b3-1012-4ca4-89f7-353defcec2f2",
+   "date": "2026-11-18T21:21:31.142Z",
+   "mode": "Competitive",
+   "map": "Bind",
+   "season": "e11a6",
+   "agent": "Omen",
+   "team": "Blue",
+   "rounds_won": 12,
+   "rounds_lost": 14,
+   "result": "loss",
+   "kills": 18,
+   "deaths": 22,
+   "assists": 3,
+   "score": 5368,
+   "head": 7,
+   "body": 50,
+   "leg": 22,
+   "dmg": 3454,
+   "dmg_recv": 3484,
+   "tier_id": 10,
+   "length_s": 2825,
+   "rounds": 26,
+   "first_kills": 2,
+   "mvp": false,
+   "scoreboard": [
+    {
+     "me": false,
+     "team": "Red",
+     "agent": "Brimstone",
+     "tier": "Silver 1",
+     "k": 36,
+     "d": 19,
+     "a": 14,
+     "score": 10876,
+     "hs": 19,
+     "bs": 86,
+     "ls": 18,
+     "dmg": 6852
+    },
+    {
+     "me": false,
+     "team": "Blue",
+     "agent": "Jett",
+     "tier": "Gold 1",
+     "k": 23,
+     "d": 22,
+     "a": 9,
+     "score": 7029,
+     "hs": 19,
+     "bs": 49,
+     "ls": 3,
+     "dmg": 4809
+    },
+    {
+     "me": false,
+     "team": "Blue",
+     "agent": "Fade",
+     "tier": "Silver 2",
+     "k": 25,
+     "d": 21,
+     "a": 9,
+     "score": 6954,
+     "hs": 16,
+     "bs": 50,
+     "ls": 3,
+     "dmg": 4436
+    },
+    {
+     "me": false,
+     "team": "Red",
+     "agent": "Deadlock",
+     "tier": "Gold 1",
+     "k": 26,
+     "d": 22,
+     "a": 3,
+     "score": 6372,
+     "hs": 19,
+     "bs": 62,
+     "ls": 4,
+     "dmg": 4486
+    },
+    {
+     "me": false,
+     "team": "Blue",
+     "agent": "Killjoy",
+     "tier": "Silver 3",
+     "k": 21,
+     "d": 18,
+     "a": 5,
+     "score": 5573,
+     "hs": 10,
+     "bs": 65,
+     "ls": 5,
+     "dmg": 3662
+    },
+    {
+     "name": "Blood",
+     "tag": "7629",
+     "me": true,
+     "team": "Blue",
+     "agent": "Omen",
+     "tier": "Silver 2",
+     "k": 18,
+     "d": 22,
+     "a": 3,
+     "score": 5368,
+     "hs": 7,
+     "bs": 50,
+     "ls": 22,
+     "dmg": 3454
+    },
+    {
+     "me": false,
+     "team": "Red",
+     "agent": "Sage",
+     "tier": "Silver 3",
+     "k": 16,
+     "d": 18,
+     "a": 8,
+     "score": 4621,
+     "hs": 5,
+     "bs": 59,
+     "ls": 18,
+     "dmg": 2670
+    },
+    {
+     "me": false,
+     "team": "Blue",
+     "agent": "Phoenix",
+     "tier": "Silver 3",
+     "k": 15,
+     "d": 21,
+     "a": 6,
+     "score": 4056,
+     "hs": 9,
+     "bs": 34,
+     "ls": 4,
+     "dmg": 2694
+    },
+    {
+     "me": false,
+     "team": "Red",
+     "agent": "Skye",
+     "tier": "Gold 1",
+     "k": 13,
+     "d": 21,
+     "a": 12,
+     "score": 3985,
+     "hs": 11,
+     "bs": 44,
+     "ls": 5,
+     "dmg": 2583
+    },
+    {
+     "me": false,
+     "team": "Red",
+     "agent": "Reyna",
+     "tier": "Silver 1",
+     "k": 13,
+     "d": 22,
+     "a": 4,
+     "score": 3405,
+     "hs": 6,
+     "bs": 35,
+     "ls": 6,
+     "dmg": 2236
+    }
+   ],
+   "rr_change": -16,
+   "tier_after": "Silver 2"
   }
  ],
  "level_history": [
@@ -20800,6 +20983,10 @@
   {
    "date": "2026-11-16T23:17:15+01:00",
    "level": 115
+  },
+  {
+   "date": "2026-11-19T00:23:02+01:00",
+   "level": 116
   }
  ]
 }
