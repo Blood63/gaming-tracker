@@ -278,7 +278,7 @@ async function runSync(){const tok=ghTok(),items=pendingItems();if(!tok||!items.
     SYNC=null;LS.set(SK,0);sessionStorage.removeItem('gt-sync-open');toast('✅ Synchronisé sur tous tes appareils');rerender()}
   catch(e){setSync('err',e.message)}finally{syncRun=false;const b=$('#gtsyncbtn');if(b&&SYNC?.st!='run'){b.disabled=false;b.removeAttribute('aria-busy')}}}
 /* Relit les fichiers modifiés directement dans le dépôt (API Contents, sans attendre la publication du site). */
-async function syncPull(t){await Promise.all([['gj','goals.json'],['cod','cod_mobile.json'],['codp','cod_profile.json'],['codr','cod_ranks.json']].map(async([k,f])=>{try{const r=await fetch(GH_API+'/contents/'+f+'?ref=main',{cache:'no-store',headers:{...ghH(t),Accept:'application/vnd.github.raw+json'}});if(r.ok){RAW[k]=await r.json();FULL.add(k)}}catch(e){}}))}
+async function syncPull(t){await Promise.all([['gj','goals.json'],['cod','cod_mobile.json'],['codp','cod_profile.json'],['codr','cod_ranks.json'],['rlm','rocket_league.json']].map(async([k,f])=>{try{const r=await fetch(GH_API+'/contents/'+f+'?ref=main',{cache:'no-store',headers:{...ghH(t),Accept:'application/vnd.github.raw+json'}});if(r.ok){RAW[k]=await r.json();FULL.add(k)}}catch(e){}}))}
 function rerender(){const y=scrollY;render();scrollTo(0,y)}
 /* Réglage du jeton (page Profil) */
 function syncSettingsHTML(){const t=ghTok();return `<h2 id="sync">🔄 Synchronisation GitHub</h2><div class="glass pad" id="tokbox">
