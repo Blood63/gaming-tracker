@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-18T21:40:54+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 426,
+ "replays_count": 427,
  "playlists": {
   "3v3": {
    "matches": 183,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 237,
-   "wins": 127,
-   "win_rate": 53.6,
-   "goals": 353,
+   "matches": 238,
+   "wins": 128,
+   "win_rate": 53.8,
+   "goals": 355,
    "assists": 153,
-   "saves": 190,
-   "shots": 662,
-   "score_avg": 400.5,
+   "saves": 192,
+   "shots": 665,
+   "score_avg": 400.7,
    "goals_avg": 1.49,
-   "shot_pct": 53.3,
+   "shot_pct": 53.4,
    "mvp": 15,
-   "boost_avg": 49.8,
+   "boost_avg": 49.7,
    "rank": null,
    "mmr": null
   },
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 63,
-   "wins": 36,
+   "matches": 64,
+   "wins": 37,
    "avg": {
-    "shooting_pct": 46.7,
-    "avg_boost": 47.4,
-    "pct_zero_boost": 17.6,
+    "shooting_pct": 47.1,
+    "avg_boost": 47.3,
+    "pct_zero_boost": 17.7,
     "pct_supersonic": 12.8,
     "pct_behind_ball": 74.4,
-    "pct_def_third": 46.8,
+    "pct_def_third": 47.0,
     "pct_most_forward": 52.1,
-    "bpm": 366.9
+    "bpm": 366.7
    },
-   "saves": 0.83,
-   "goals": 1.41,
+   "saves": 0.84,
+   "goals": 1.42,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -48786,6 +48786,122 @@
       "label": "Boost ramassé / min",
       "value": 390,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E67EF9A942D0F45011550996C843E08E",
+   "src": "local",
+   "lid": "E67EF9A942D0F45011550996C843E08E",
+   "date": "2026-11-18T21:01:05Z",
+   "playlist": "2v2",
+   "map": "Champions Field",
+   "duration": 354,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 2,
+   "assists": 0,
+   "saves": 2,
+   "shots": 3,
+   "score": 438,
+   "mvp": false,
+   "boost_avg": 39.1,
+   "bpm": 350,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "E67EF9A942D0F45011550996C843E08E",
+   "m": {
+    "shooting_pct": 66.7,
+    "shots_against": 6,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 4,
+    "aerial_hits": 0,
+    "bpm": 350,
+    "avg_boost": 39.1,
+    "pct_zero_boost": 24.8,
+    "pct_full_boost": 11.6,
+    "stolen": 358.0,
+    "overfill_pct": 6.1,
+    "small_pads": 49,
+    "big_pads": 14,
+    "avg_speed": 1358.0,
+    "pct_supersonic": 11.2,
+    "pct_slow": 56.4,
+    "pct_ground": 60.9,
+    "pct_high_air": 0.8,
+    "powerslides": 21,
+    "pct_def_third": 60.5,
+    "pct_off_third": 16.9,
+    "pct_behind_ball": 75.8,
+    "pct_most_back": 50.2,
+    "pct_most_forward": 52.2,
+    "pct_closest_ball": 55.7,
+    "dist_mates": 3273.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 24.8,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 55.7,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es souvent le plus près de la balle : tendance à « ball chase ».",
+      "drill": "Compte 1-2-3 : si un coéquipier est déjà sur la balle, reste en soutien (2e homme) au lieu d'y aller aussi."
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 52.2,
+      "bench": [
+       null,
+       42
+      ],
+      "txt": "Tu es trop souvent le joueur le plus avancé : risque de double commit.",
+      "drill": "Applique la rotation en « cercle » : après ton touché, sors par le côté et redescends ; laisse le coéquipier le mieux placé jouer la balle."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 66.7,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 6.1,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 39.1,
+      "txt": "Bonne gestion du boost"
      }
     ]
    }
