@@ -1,29 +1,172 @@
 {
  "source": "captures tracker.gg, mise à jour manuelle",
- "updated": "2026-10-14",
+ "updated": "2026-11-18",
  "player": "443Blood",
  "platform": "Epic",
  "season": "Saison 24 (S38 tracker.gg)",
  "reward_level": "Or",
  "playlists": [
-  {"id": "1v1", "name": "Duel 1v1", "tier": 4, "tier_name": "Argent II", "div": 3, "mmr": 359, "best_mmr": 409, "best_season": "S36"},
-  {"id": "2v2", "name": "Double 2v2", "tier": 6, "tier_name": "Or I", "div": 3, "mmr": 515, "percentile": "Bottom 5 %", "matches": 130, "best_mmr": 566, "best_season": "S38", "streak": {"type": "loss", "count": 7}},
-  {"id": "3v3", "name": "Standard 3v3", "tier": 7, "tier_name": "Or II", "div": 4, "mmr": 578, "percentile": "Bottom 14 %", "matches": 220, "best_mmr": 654, "best_season": "S38"}
+  {
+   "id": "1v1",
+   "name": "Duel 1v1",
+   "tier": 4,
+   "tier_name": "Argent II",
+   "div": 2,
+   "mmr": 359,
+   "best_mmr": 409,
+   "best_season": "S36",
+   "rank_at": "2026-11-18T22:01:00+01:00",
+   "mmr_at": "2026-11-13"
+  },
+  {
+   "id": "2v2",
+   "name": "Double 2v2",
+   "tier": 9,
+   "tier_name": "Platine I",
+   "div": 1,
+   "mmr": 662,
+   "percentile": "Bottom 5 %",
+   "matches": 130,
+   "best_mmr": 662,
+   "best_season": "saison actuelle",
+   "streak": {
+    "type": "loss",
+    "count": 7
+   },
+   "rank_at": "2026-11-18T22:01:00+01:00"
+  },
+  {
+   "id": "3v3",
+   "name": "Standard 3v3",
+   "tier": 7,
+   "tier_name": "Or II",
+   "div": 2,
+   "mmr": 544,
+   "percentile": "Bottom 14 %",
+   "matches": 220,
+   "best_mmr": 654,
+   "best_season": "S38",
+   "rank_at": "2026-11-18T22:01:00+01:00"
+  }
  ],
  "other": [
-  {"name": "Occasionnel (Casual)", "mmr": 549},
-  {"name": "Heatseeker", "mmr_range": [114, 174], "note": "≈ valeurs approximatives"}
+  {
+   "name": "Occasionnel (Casual)",
+   "mmr": 549
+  },
+  {
+   "name": "Heatseeker",
+   "mmr_range": [
+    114,
+    174
+   ],
+   "note": "≈ valeurs approximatives"
+  }
  ],
  "mmr_history": [
-  {"date": "2026-10-12", "playlist": "3v3", "mmr": 643, "note": "début de session"},
-  {"date": "2026-10-12", "playlist": "3v3", "mmr": 597, "note": "fin de session"},
-  {"date": "2026-10-13", "playlist": "3v3", "mmr": 588, "note": "début de session"},
-  {"date": "2026-10-13", "playlist": "3v3", "mmr": 578, "note": "fin de session"}
+  {
+   "date": "2026-10-12",
+   "playlist": "3v3",
+   "mmr": 643,
+   "note": "début de session"
+  },
+  {
+   "date": "2026-10-12",
+   "playlist": "3v3",
+   "mmr": 597,
+   "note": "fin de session"
+  },
+  {
+   "date": "2026-10-13",
+   "playlist": "3v3",
+   "mmr": 588,
+   "note": "début de session"
+  },
+  {
+   "date": "2026-10-13",
+   "playlist": "3v3",
+   "mmr": 578,
+   "note": "fin de session"
+  },
+  {
+   "date": "2026-11-18",
+   "playlist": "3v3",
+   "mmr": 544,
+   "note": "saisi dans l'app"
+  }
  ],
  "sessions": [
-  {"date": "2026-10-13", "matches": 7, "wins": 3, "goals": 5, "shots": 11, "assists": 4, "saves": 3, "mmr": {"3v3": [588, 578]}},
-  {"date": "2026-10-12", "note": "plusieurs parties 3v3", "mmr": {"3v3": [643, 597]}},
-  {"date": "2026-10-11", "matches": 8, "wins": 4}
+  {
+   "date": "2026-10-13",
+   "matches": 7,
+   "wins": 3,
+   "goals": 5,
+   "shots": 11,
+   "assists": 4,
+   "saves": 3,
+   "mmr": {
+    "3v3": [
+     588,
+     578
+    ]
+   }
+  },
+  {
+   "date": "2026-10-12",
+   "note": "plusieurs parties 3v3",
+   "mmr": {
+    "3v3": [
+     643,
+     597
+    ]
+   }
+  },
+  {
+   "date": "2026-10-11",
+   "matches": 8,
+   "wins": 4
+  }
  ],
- "performance": {"goals_pct": 54.8, "saves_pct": 23.1, "assists_pct": 22.1}
+ "performance": {
+  "goals_pct": 54.8,
+  "saves_pct": 23.1,
+  "assists_pct": 22.1
+ },
+ "rank_log": [
+  {
+   "date": "2026-11-13T18:30:00+01:00",
+   "playlist": "2v2",
+   "tier": 7,
+   "div": 1,
+   "mmr": null
+  },
+  {
+   "date": "2026-11-13T18:30:00+01:00",
+   "playlist": "3v3",
+   "tier": 7,
+   "div": 1,
+   "mmr": null
+  },
+  {
+   "date": "2026-11-18T22:01:00+01:00",
+   "playlist": "1v1",
+   "tier": 4,
+   "div": 2,
+   "mmr": null
+  },
+  {
+   "date": "2026-11-18T22:01:00+01:00",
+   "playlist": "2v2",
+   "tier": 9,
+   "div": 1,
+   "mmr": 662
+  },
+  {
+   "date": "2026-11-18T22:01:00+01:00",
+   "playlist": "3v3",
+   "tier": 7,
+   "div": 2,
+   "mmr": 544
+  }
+ ]
 }
