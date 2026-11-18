@@ -3,7 +3,7 @@
  "fetched_at": "2026-11-18T02:55:16+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 412,
+ "replays_count": 413,
  "playlists": {
   "3v3": {
    "matches": 183,
@@ -22,18 +22,18 @@
    "mmr": null
   },
   "2v2": {
-   "matches": 223,
-   "wins": 118,
-   "win_rate": 52.9,
-   "goals": 336,
-   "assists": 143,
+   "matches": 224,
+   "wins": 119,
+   "win_rate": 53.1,
+   "goals": 337,
+   "assists": 144,
    "saves": 178,
-   "shots": 627,
-   "score_avg": 403.0,
-   "goals_avg": 1.51,
-   "shot_pct": 53.6,
+   "shots": 630,
+   "score_avg": 402.3,
+   "goals_avg": 1.5,
+   "shot_pct": 53.5,
    "mvp": 15,
-   "boost_avg": 50.0,
+   "boost_avg": 49.9,
    "rank": null,
    "mmr": null
   },
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 49,
-   "wins": 27,
+   "matches": 50,
+   "wins": 28,
    "avg": {
-    "shooting_pct": 47.7,
+    "shooting_pct": 47.4,
     "avg_boost": 47.6,
-    "pct_zero_boost": 17.5,
+    "pct_zero_boost": 17.6,
     "pct_supersonic": 13.1,
     "pct_behind_ball": 74.2,
-    "pct_def_third": 46.5,
-    "pct_most_forward": 52.0,
-    "bpm": 370.4
+    "pct_def_third": 46.4,
+    "pct_most_forward": 51.7,
+    "bpm": 369.5
    },
-   "saves": 0.82,
-   "goals": 1.47,
+   "saves": 0.8,
+   "goals": 1.46,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -47162,6 +47162,122 @@
       "label": "Boost ramassé / min",
       "value": 364,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "BD1A550848054C9877F7C2B70F241DE9",
+   "src": "local",
+   "lid": "BD1A550848054C9877F7C2B70F241DE9",
+   "date": "2026-11-18T16:59:35Z",
+   "playlist": "2v2",
+   "map": "Sovereign Heights (Dusk)",
+   "duration": 408,
+   "overtime": false,
+   "team_goals": 6,
+   "opp_goals": 5,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 3,
+   "score": 254,
+   "mvp": false,
+   "boost_avg": 44.8,
+   "bpm": 325,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "BD1A550848054C9877F7C2B70F241DE9",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 6,
+    "goals_against": 5,
+    "clears": 0,
+    "centers": 3,
+    "aerial_hits": 0,
+    "bpm": 325,
+    "avg_boost": 44.8,
+    "pct_zero_boost": 18.2,
+    "pct_full_boost": 10.4,
+    "stolen": 750.0,
+    "overfill_pct": 3.6,
+    "small_pads": 63,
+    "big_pads": 13,
+    "avg_speed": 1440.0,
+    "pct_supersonic": 12.4,
+    "pct_slow": 55.5,
+    "pct_ground": 66.1,
+    "pct_high_air": 0.3,
+    "powerslides": 36,
+    "pct_def_third": 41.4,
+    "pct_off_third": 32.0,
+    "pct_behind_ball": 78.7,
+    "pct_most_back": 59.4,
+    "pct_most_forward": 40.6,
+    "pct_closest_ball": 38.3,
+    "dist_mates": 3115.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 18.2,
+      "bench": [
+       null,
+       12
+      ],
+      "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
+      "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+     },
+     {
+      "k": "pct_most_back",
+      "label": "Temps en dernier défenseur",
+      "value": 59.4,
+      "bench": [
+       20,
+       45
+      ],
+      "txt": "Ton équilibre attaque/défense est déséquilibré.",
+      "drill": "En 3v3, vise ~1/3 du temps en dernier défenseur : alterne 1er, 2e, 3e homme."
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 55.5,
+      "bench": [
+       null,
+       50
+      ],
+      "txt": "Tu passes beaucoup de temps à vitesse lente.",
+      "drill": "Évite de freiner/attendre : en rotation, flippe au sol pour garder de la vitesse ; entraîne les « half-flips » pour te retourner vite."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 3.6,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 44.8,
+      "txt": "Bonne gestion du boost"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 12.4,
+      "txt": "Bonne vitesse de jeu"
      }
     ]
    }
