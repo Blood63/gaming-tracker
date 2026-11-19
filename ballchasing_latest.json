@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-19T00:23:07+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 437,
+ "replays_count": 438,
  "playlists": {
   "3v3": {
-   "matches": 192,
+   "matches": 193,
    "wins": 97,
-   "win_rate": 50.5,
+   "win_rate": 50.3,
    "goals": 179,
    "assists": 89,
    "saves": 95,
-   "shots": 370,
-   "score_avg": 264.8,
+   "shots": 371,
+   "score_avg": 264.1,
    "goals_avg": 0.93,
-   "shot_pct": 48.4,
+   "shot_pct": 48.2,
    "mvp": 7,
    "boost_avg": 52.0,
    "rank": null,
@@ -194,20 +194,20 @@
   {
    "week": "2026-S47",
    "start": "2026-11-16",
-   "matches": 74,
+   "matches": 75,
    "wins": 42,
    "avg": {
-    "shooting_pct": 49.9,
-    "avg_boost": 47.7,
+    "shooting_pct": 49.3,
+    "avg_boost": 47.8,
     "pct_zero_boost": 17.7,
     "pct_supersonic": 12.8,
     "pct_behind_ball": 74.4,
     "pct_def_third": 47.0,
-    "pct_most_forward": 50.5,
-    "bpm": 363.5
+    "pct_most_forward": 50.2,
+    "bpm": 363.1
    },
-   "saves": 0.85,
-   "goals": 1.39,
+   "saves": 0.84,
+   "goals": 1.37,
    "focus": {
     "k": "pct_zero_boost",
     "label": "Temps à 0 boost",
@@ -50061,6 +50061,122 @@
       "k": "pct_most_forward",
       "label": "Temps en joueur le plus avancé",
       "value": 36.2,
+      "txt": "Bonnes rotations (peu de surengagement)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "6B8A3EBB4EDE879BC58319BFEFC2D6B9",
+   "src": "local",
+   "lid": "6B8A3EBB4EDE879BC58319BFEFC2D6B9",
+   "date": "2026-11-19T13:21:36Z",
+   "playlist": "3v3",
+   "map": "Farmstead (Pitched)",
+   "duration": 345,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 3,
+   "result": "loss",
+   "goals": 0,
+   "assists": 0,
+   "saves": 0,
+   "shots": 1,
+   "score": 122,
+   "mvp": false,
+   "boost_avg": 54.1,
+   "bpm": 328,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "6B8A3EBB4EDE879BC58319BFEFC2D6B9",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 5,
+    "goals_against": 3,
+    "clears": 3,
+    "centers": 3,
+    "aerial_hits": 0,
+    "bpm": 328,
+    "avg_boost": 54.1,
+    "pct_zero_boost": 15.4,
+    "pct_full_boost": 20.0,
+    "stolen": 262.0,
+    "overfill_pct": 23.1,
+    "small_pads": 38,
+    "big_pads": 16,
+    "avg_speed": 1496.0,
+    "pct_supersonic": 14.8,
+    "pct_slow": 48.1,
+    "pct_ground": 60.2,
+    "pct_high_air": 1.8,
+    "powerslides": 25,
+    "pct_def_third": 52.3,
+    "pct_off_third": 21.6,
+    "pct_behind_ball": 67.6,
+    "pct_most_back": 38.3,
+    "pct_most_forward": 29.7,
+    "pct_closest_ball": 28.9,
+    "dist_mates": 3080.0,
+    "demos": 4,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 23.1,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 20.0,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.8,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 28.9,
+      "txt": "Tu laisses jouer tes coéquipiers"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 29.7,
       "txt": "Bonnes rotations (peu de surengagement)"
      }
     ]
