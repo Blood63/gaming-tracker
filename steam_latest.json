@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-11-18T02:52:19.360083+01:00",
+ "fetched_at": "2026-11-22T00:56:07.254913+01:00",
  "steamid64": "76561198754159593",
  "steamID": "Blood",
  "privacyState": "public",
@@ -10,26 +10,15 @@
  "vacBanned": "0",
  "level": 6,
  "recent": {
-  "total_count": 3,
+  "total_count": 2,
   "games": [
-   {
-    "appid": 1888930,
-    "name": "The Last of Us™ Part I",
-    "playtime_2weeks": 267,
-    "playtime_forever": 970,
-    "img_icon_url": "6991d13038a61e35bade3aabea400c74bbbf966d",
-    "playtime_windows_forever": 970,
-    "playtime_mac_forever": 0,
-    "playtime_linux_forever": 0,
-    "playtime_deck_forever": 0
-   },
    {
     "appid": 3159330,
     "name": "Assassin's Creed Shadows",
-    "playtime_2weeks": 159,
-    "playtime_forever": 5223,
+    "playtime_2weeks": 361,
+    "playtime_forever": 5426,
     "img_icon_url": "1f8f5a64b174f9cc07d5b277e7b08219c262511f",
-    "playtime_windows_forever": 5223,
+    "playtime_windows_forever": 5426,
     "playtime_mac_forever": 0,
     "playtime_linux_forever": 0,
     "playtime_deck_forever": 0
@@ -51,21 +40,21 @@
   {
    "appid": 3159330,
    "name": "Assassin's Creed Shadows",
-   "playtime_2weeks": 159,
-   "playtime_forever": 5223,
+   "playtime_2weeks": 361,
+   "playtime_forever": 5426,
    "img_icon_url": "1f8f5a64b174f9cc07d5b277e7b08219c262511f",
    "has_community_visible_stats": true,
-   "playtime_windows_forever": 5223,
+   "playtime_windows_forever": 5426,
    "playtime_mac_forever": 0,
    "playtime_linux_forever": 0,
    "playtime_deck_forever": 0,
-   "rtime_last_played": 1794491716,
+   "rtime_last_played": 1795196921,
    "content_descriptorids": [
     2,
     5
    ],
    "playtime_disconnected": 0,
-   "hours": 87.0,
+   "hours": 90.4,
    "ach_unlocked": 38,
    "ach_total": 75
   },
@@ -112,7 +101,6 @@
   {
    "appid": 1888930,
    "name": "The Last of Us™ Part I",
-   "playtime_2weeks": 267,
    "playtime_forever": 970,
    "img_icon_url": "6991d13038a61e35bade3aabea400c74bbbf966d",
    "has_community_visible_stats": true,

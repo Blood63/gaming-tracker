@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-11-18T01:52:19.427261+00:00",
+ "fetched_at": "2026-11-21T23:56:07.318300+00:00",
  "apps": {
   "3159330": {
    "name": "Assassin’s Creed Shadows",
@@ -211,9 +211,9 @@
      "appid": 895490,
      "name": "Life is Strange 2 - Episode 2",
      "price": {
-      "text": "7,99€",
-      "initial": null,
-      "discount": 0
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895490/header.jpg?t=1728485584",
      "release": "24 janv. 2019",
@@ -223,9 +223,9 @@
      "appid": 895491,
      "name": "Life is Strange 2 - Episode 3",
      "price": {
-      "text": "7,99€",
-      "initial": null,
-      "discount": 0
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895491/header.jpg?t=1585231190",
      "release": "9 mai 2019",
@@ -235,9 +235,9 @@
      "appid": 895492,
      "name": "Life is Strange 2 - Episode 4",
      "price": {
-      "text": "7,99€",
-      "initial": null,
-      "discount": 0
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895492/header.jpg?t=1585231241",
      "release": "22 aout 2019",
@@ -247,9 +247,9 @@
      "appid": 895493,
      "name": "Life is Strange 2 - Episode 5",
      "price": {
-      "text": "7,99€",
-      "initial": null,
-      "discount": 0
+      "text": "2,39€",
+      "initial": "7,99€",
+      "discount": 70
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/895493/header.jpg?t=1585231285",
      "release": "3 déc. 2019",
@@ -312,9 +312,9 @@
    "release_date": "28 mars 2023",
    "metacritic": null,
    "price": {
-    "text": "59,99€",
-    "initial": null,
-    "discount": 0
+    "text": "29,99€",
+    "initial": "59,99€",
+    "discount": 50
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_3f1805ecddafacee7f61f87cb8e4624435a83ee3.600x338.jpg?t=1750959031",
@@ -506,9 +506,9 @@
     "url": "https://www.metacritic.com/game/pc/gundam-breaker-4?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "59,99€",
-    "initial": null,
-    "discount": 0
+    "text": "35,99€",
+    "initial": "89,99€",
+    "discount": 60
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1672500/ss_43c49626d2334cf7c6d6d6c86a5203178d037a7c.600x338.jpg?t=1788195356",
@@ -818,9 +818,9 @@
     "url": "https://www.metacritic.com/game/pc/among-us?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "4,49€",
-    "initial": null,
-    "discount": 0
+    "text": "2,69€",
+    "initial": "4,49€",
+    "discount": 40
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_b7374128e5b786a302a716bca038d604b00ffe46.600x338.jpg?t=1793821899",
@@ -1093,9 +1093,9 @@
    "release_date": "9 sept. 2021",
    "metacritic": null,
    "price": {
-    "text": "59,99€",
-    "initial": null,
-    "discount": 0
+    "text": "17,99€",
+    "initial": "59,99€",
+    "discount": 70
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/936790/ss_93afc98cccbc51c1364fedb56548896c69ef3704.600x338.jpg?t=1771867255",
@@ -1255,9 +1255,9 @@
      "appid": 1238430,
      "name": "Tell Me Why: Chapter 2",
      "price": {
-      "text": "16,79€",
-      "initial": null,
-      "discount": 0
+      "text": "4,19€",
+      "initial": "16,79€",
+      "discount": 75
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1238430/header.jpg?t=1599151637",
      "release": "3 sept. 2020",
@@ -1267,9 +1267,9 @@
      "appid": 1266670,
      "name": "Tell Me Why: Chapter 3",
      "price": {
-      "text": "16,79€",
-      "initial": null,
-      "discount": 0
+      "text": "4,19€",
+      "initial": "16,79€",
+      "discount": 75
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1266670/header.jpg?t=1601676756",
      "release": "10 sept. 2020",
@@ -1279,9 +1279,9 @@
      "appid": 1432030,
      "name": "Tell Me Why Original Soundtrack",
      "price": {
-      "text": "8,19€",
-      "initial": null,
-      "discount": 0
+      "text": "3,27€",
+      "initial": "8,19€",
+      "discount": 60
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1432030/header.jpg?t=1601060453",
      "release": "25 sept. 2020",
