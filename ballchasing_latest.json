@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-24T04:19:35+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 450,
+ "replays_count": 451,
  "playlists": {
   "3v3": {
-   "matches": 204,
-   "wins": 103,
-   "win_rate": 50.5,
-   "goals": 192,
+   "matches": 205,
+   "wins": 104,
+   "win_rate": 50.7,
+   "goals": 195,
    "assists": 94,
    "saves": 97,
-   "shots": 397,
-   "score_avg": 265.1,
-   "goals_avg": 0.94,
-   "shot_pct": 48.4,
+   "shots": 401,
+   "score_avg": 265.7,
+   "goals_avg": 0.95,
+   "shot_pct": 48.6,
    "mvp": 7,
    "boost_avg": 52.0,
    "rank": null,
@@ -218,20 +218,20 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 6,
-   "wins": 4,
+   "matches": 7,
+   "wins": 5,
    "avg": {
-    "shooting_pct": 59.7,
-    "avg_boost": 52.1,
-    "pct_zero_boost": 15.2,
-    "pct_supersonic": 11.6,
-    "pct_behind_ball": 74.9,
-    "pct_def_third": 44.6,
-    "pct_most_forward": 38.8,
-    "bpm": 310.7
+    "shooting_pct": 61.9,
+    "avg_boost": 52.5,
+    "pct_zero_boost": 14.3,
+    "pct_supersonic": 11.7,
+    "pct_behind_ball": 76.2,
+    "pct_def_third": 45.6,
+    "pct_most_forward": 37.1,
+    "bpm": 317.3
    },
-   "saves": 0.33,
-   "goals": 1.17,
+   "saves": 0.29,
+   "goals": 1.43,
    "focus": {
     "k": "avg_boost",
     "label": "Boost moyen",
@@ -51594,6 +51594,122 @@
       "label": "Temps supersonique",
       "value": 11.3,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "86CD411146965C210B1BAABB469EF12C",
+   "src": "local",
+   "lid": "86CD411146965C210B1BAABB469EF12C",
+   "date": "2026-11-24T14:57:48Z",
+   "playlist": "3v3",
+   "map": "Urban Central (Night)",
+   "duration": 168,
+   "overtime": false,
+   "team_goals": 4,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 3,
+   "assists": 0,
+   "saves": 0,
+   "shots": 4,
+   "score": 393,
+   "mvp": false,
+   "boost_avg": 55.2,
+   "bpm": 357,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "86CD411146965C210B1BAABB469EF12C",
+   "m": {
+    "shooting_pct": 75.0,
+    "shots_against": 3,
+    "goals_against": 0,
+    "clears": 0,
+    "centers": 1,
+    "aerial_hits": 0,
+    "bpm": 357,
+    "avg_boost": 55.2,
+    "pct_zero_boost": 9.2,
+    "pct_full_boost": 29.5,
+    "stolen": 242.0,
+    "overfill_pct": 8.1,
+    "small_pads": 19,
+    "big_pads": 9,
+    "avg_speed": 1440.0,
+    "pct_supersonic": 12.2,
+    "pct_slow": 55.2,
+    "pct_ground": 68.6,
+    "pct_high_air": 0.9,
+    "powerslides": 10,
+    "pct_def_third": 51.1,
+    "pct_off_third": 24.5,
+    "pct_behind_ball": 84.4,
+    "pct_most_back": 42.7,
+    "pct_most_forward": 26.8,
+    "pct_closest_ball": 35.7,
+    "dist_mates": 3344.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 29.5,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 55.2,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 55.2,
+      "bench": [
+       null,
+       50
+      ],
+      "txt": "Tu passes beaucoup de temps à vitesse lente.",
+      "drill": "Évite de freiner/attendre : en rotation, flippe au sol pour garder de la vitesse ; entraîne les « half-flips » pour te retourner vite."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 75.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 8.1,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 26.8,
+      "txt": "Bonnes rotations (peu de surengagement)"
      }
     ]
    }
