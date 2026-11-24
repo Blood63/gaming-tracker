@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-24T04:19:35+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 441,
+ "replays_count": 442,
  "playlists": {
   "3v3": {
-   "matches": 196,
-   "wins": 98,
-   "win_rate": 50.0,
-   "goals": 181,
+   "matches": 197,
+   "wins": 99,
+   "win_rate": 50.3,
+   "goals": 182,
    "assists": 90,
    "saves": 95,
-   "shots": 377,
-   "score_avg": 263.3,
+   "shots": 378,
+   "score_avg": 262.8,
    "goals_avg": 0.92,
-   "shot_pct": 48.0,
+   "shot_pct": 48.1,
    "mvp": 7,
-   "boost_avg": 52.0,
+   "boost_avg": 52.1,
    "rank": null,
    "mmr": null
   },
@@ -213,6 +213,30 @@
     "label": "Temps à 0 boost",
     "txt": "Tu passes trop de temps sans boost : tu es lent et vulnérable.",
     "drill": "Après chaque action, repasse par 2-3 petites pastilles avant de revenir ; en free play, fais des tours de terrain en ramassant uniquement les petites pastilles."
+   }
+  },
+  {
+   "week": "2026-S48",
+   "start": "2026-11-24",
+   "matches": 1,
+   "wins": 1,
+   "avg": {
+    "shooting_pct": 100.0,
+    "avg_boost": 55.6,
+    "pct_zero_boost": 11.8,
+    "pct_supersonic": 11.1,
+    "pct_behind_ball": 81.0,
+    "pct_def_third": 64.3,
+    "pct_most_forward": 42.5,
+    "bpm": 317.0
+   },
+   "saves": 0.0,
+   "goals": 1.0,
+   "focus": {
+    "k": "pct_full_boost",
+    "label": "Temps à 100 boost",
+    "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+    "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
    }
   }
  ],
@@ -50526,6 +50550,122 @@
       "label": "Boost ramassé / min",
       "value": 373,
       "txt": "Bon ramassage de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "B1BF6EC941F1EFBA13C8CBB34371FAC0",
+   "src": "local",
+   "lid": "B1BF6EC941F1EFBA13C8CBB34371FAC0",
+   "date": "2026-11-24T14:39:26Z",
+   "playlist": "3v3",
+   "map": "Beckwith Park (Stormy)",
+   "duration": 86,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 1,
+   "score": 162,
+   "mvp": false,
+   "boost_avg": 55.6,
+   "bpm": 317,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "B1BF6EC941F1EFBA13C8CBB34371FAC0",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 0,
+    "goals_against": 0,
+    "clears": 2,
+    "centers": 1,
+    "aerial_hits": 1,
+    "bpm": 317,
+    "avg_boost": 55.6,
+    "pct_zero_boost": 11.8,
+    "pct_full_boost": 19.6,
+    "stolen": 42.0,
+    "overfill_pct": 8.6,
+    "small_pads": 10,
+    "big_pads": 3,
+    "avg_speed": 1386.0,
+    "pct_supersonic": 11.1,
+    "pct_slow": 57.0,
+    "pct_ground": 58.8,
+    "pct_high_air": 5.9,
+    "powerslides": 10,
+    "pct_def_third": 64.3,
+    "pct_off_third": 17.3,
+    "pct_behind_ball": 81.0,
+    "pct_most_back": 31.5,
+    "pct_most_forward": 42.5,
+    "pct_closest_ball": 43.8,
+    "dist_mates": 3119.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 19.6,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 55.6,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "pct_slow",
+      "label": "Temps à vitesse lente",
+      "value": 57.0,
+      "bench": [
+       null,
+       50
+      ],
+      "txt": "Tu passes beaucoup de temps à vitesse lente.",
+      "drill": "Évite de freiner/attendre : en rotation, flippe au sol pour garder de la vitesse ; entraîne les « half-flips » pour te retourner vite."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 8.6,
+      "txt": "Peu de boost gaspillé"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 81.0,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
