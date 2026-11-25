@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-11-21T23:56:07.318300+00:00",
+ "fetched_at": "2026-11-25T03:10:42.546238+00:00",
  "apps": {
   "3159330": {
    "name": "Assassin’s Creed Shadows",
@@ -374,9 +374,9 @@
     "url": "https://www.metacritic.com/game/pc/beyond-two-souls?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "19,99€",
-    "initial": null,
-    "discount": 0
+    "text": "1,99€",
+    "initial": "19,99€",
+    "discount": 90
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960990/ss_5da0bcf3be8205d656c271217ead8f0190bd5234.600x338.jpg?t=1667468566",
@@ -939,9 +939,9 @@
    "release_date": "28 janv. 2015",
    "metacritic": null,
    "price": {
-    "text": "9,99€",
-    "initial": null,
-    "discount": 0
+    "text": "0,99€",
+    "initial": "9,99€",
+    "discount": 90
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312840/ss_797fa9da2bfbf114cdd19007c0a839b806390aef.600x338.jpg?t=1715614331",
@@ -998,9 +998,9 @@
    "release_date": "24 nov. 2025",
    "metacritic": null,
    "price": {
-    "text": "39,99€",
-    "initial": null,
-    "discount": 0
+    "text": "31,99€",
+    "initial": "39,99€",
+    "discount": 20
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2373990/6e2f1aa804ce7e85757117e976c22ca0e7f90036/ss_6e2f1aa804ce7e85757117e976c22ca0e7f90036.600x338.jpg?t=1781758887",
@@ -1029,9 +1029,9 @@
      "appid": 4710940,
      "name": "Solo Leveling: ARISE OVERDRIVE - Pack spécial Raid de l'île de Jeju",
      "price": {
-      "text": "4,99€",
-      "initial": null,
-      "discount": 0
+      "text": "3,99€",
+      "initial": "4,99€",
+      "discount": 20
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4710940/d3447a59653715fc361ec0fb70834e541aade215/header.jpg?t=1781749430",
      "release": "17 juin 2026",
@@ -1052,9 +1052,9 @@
      "appid": 3638570,
      "name": "Solo Leveling: ARISE OVERDRIVE - Deluxe Upgrade",
      "price": {
-      "text": "9,99€",
-      "initial": null,
-      "discount": 0
+      "text": "7,99€",
+      "initial": "9,99€",
+      "discount": 20
      },
      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3638570/5de5cfb99d1f04c58e405c9ce397f864cf3ead23/header.jpg?t=1781749443",
      "release": "24 nov. 2025",
@@ -1174,9 +1174,9 @@
     "url": "https://www.metacritic.com/game/pc/heavy-rain?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "19,99€",
-    "initial": null,
-    "discount": 0
+    "text": "1,99€",
+    "initial": "19,99€",
+    "discount": 90
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960910/ss_d7ed4a5e3d155e23331902909f56f90c752c3643.600x338.jpg?t=1675271942",
@@ -1321,9 +1321,9 @@
     "url": "https://www.metacritic.com/game/pc/detroit-become-human?ftag=MCD-06-10aaa1f"
    },
    "price": {
-    "text": "39,99€",
-    "initial": null,
-    "discount": 0
+    "text": "3,99€",
+    "initial": "39,99€",
+    "discount": 90
    },
    "screenshots": [
     "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9c900def2b1d9a003b7d3e202ea2a7556a36e081.600x338.jpg?t=1667468479",
