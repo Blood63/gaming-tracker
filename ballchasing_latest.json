@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-26T22:42:43+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 482,
+ "replays_count": 483,
  "playlists": {
   "3v3": {
-   "matches": 234,
-   "wins": 122,
-   "win_rate": 52.1,
-   "goals": 223,
-   "assists": 118,
-   "saves": 108,
-   "shots": 449,
-   "score_avg": 267.8,
+   "matches": 235,
+   "wins": 123,
+   "win_rate": 52.3,
+   "goals": 224,
+   "assists": 119,
+   "saves": 109,
+   "shots": 452,
+   "score_avg": 268.1,
    "goals_avg": 0.95,
-   "shot_pct": 49.7,
+   "shot_pct": 49.6,
    "mvp": 7,
-   "boost_avg": 52.5,
+   "boost_avg": 52.6,
    "rank": null,
    "mmr": null
   },
@@ -234,19 +234,19 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 37,
-   "wins": 23,
+   "matches": 38,
+   "wins": 24,
    "avg": {
-    "shooting_pct": 45.1,
-    "avg_boost": 55.2,
-    "pct_zero_boost": 12.3,
-    "pct_supersonic": 12.5,
-    "pct_behind_ball": 74.3,
-    "pct_def_third": 48.0,
+    "shooting_pct": 44.8,
+    "avg_boost": 55.5,
+    "pct_zero_boost": 12.2,
+    "pct_supersonic": 12.6,
+    "pct_behind_ball": 74.4,
+    "pct_def_third": 47.8,
     "pct_most_forward": 37.4,
-    "bpm": 301.1
+    "bpm": 302.6
    },
-   "saves": 0.38,
+   "saves": 0.39,
    "goals": 1.03,
    "focus": {
     "k": "pct_full_boost",
@@ -55322,6 +55322,111 @@
       "label": "Temps en joueur le plus avancé",
       "value": 34.4,
       "txt": "Bonnes rotations (peu de surengagement)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "1ADFE0EA490744E8356A2BB4B000CCC1",
+   "src": "local",
+   "lid": "1ADFE0EA490744E8356A2BB4B000CCC1",
+   "date": "2026-11-26T22:13:19Z",
+   "playlist": "3v3",
+   "map": "Beckwith Park (Stormy)",
+   "duration": 330,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 0,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 1,
+   "shots": 3,
+   "score": 332,
+   "mvp": false,
+   "boost_avg": 65.1,
+   "bpm": 357,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "1ADFE0EA490744E8356A2BB4B000CCC1",
+   "m": {
+    "shooting_pct": 33.3,
+    "shots_against": 1,
+    "goals_against": 0,
+    "clears": 1,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 357,
+    "avg_boost": 65.1,
+    "pct_zero_boost": 7.7,
+    "pct_full_boost": 26.6,
+    "stolen": 475.0,
+    "overfill_pct": 9.7,
+    "small_pads": 37,
+    "big_pads": 16,
+    "avg_speed": 1495.0,
+    "pct_supersonic": 14.7,
+    "pct_slow": 45.4,
+    "pct_ground": 57.4,
+    "pct_high_air": 0.7,
+    "powerslides": 20,
+    "pct_def_third": 40.0,
+    "pct_off_third": 23.1,
+    "pct_behind_ball": 76.6,
+    "pct_most_back": 25.9,
+    "pct_most_forward": 37.6,
+    "pct_closest_ball": 41.4,
+    "dist_mates": 3518.0,
+    "demos": 1,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 26.6,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 65.1,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.7,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 7.7,
+      "txt": "Rarement à court de boost"
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 9.7,
+      "txt": "Peu de boost gaspillé"
      }
     ]
    }
