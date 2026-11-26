@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-26T22:42:43+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 481,
+ "replays_count": 482,
  "playlists": {
   "3v3": {
-   "matches": 233,
-   "wins": 121,
-   "win_rate": 51.9,
-   "goals": 222,
+   "matches": 234,
+   "wins": 122,
+   "win_rate": 52.1,
+   "goals": 223,
    "assists": 118,
    "saves": 108,
-   "shots": 448,
-   "score_avg": 268.1,
+   "shots": 449,
+   "score_avg": 267.8,
    "goals_avg": 0.95,
-   "shot_pct": 49.6,
+   "shot_pct": 49.7,
    "mvp": 7,
    "boost_avg": 52.5,
    "rank": null,
@@ -234,19 +234,19 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 36,
-   "wins": 22,
+   "matches": 37,
+   "wins": 23,
    "avg": {
-    "shooting_pct": 43.6,
+    "shooting_pct": 45.1,
     "avg_boost": 55.2,
-    "pct_zero_boost": 12.2,
-    "pct_supersonic": 12.4,
+    "pct_zero_boost": 12.3,
+    "pct_supersonic": 12.5,
     "pct_behind_ball": 74.3,
-    "pct_def_third": 48.1,
-    "pct_most_forward": 37.5,
-    "bpm": 301.5
+    "pct_def_third": 48.0,
+    "pct_most_forward": 37.4,
+    "bpm": 301.1
    },
-   "saves": 0.39,
+   "saves": 0.38,
    "goals": 1.03,
    "focus": {
     "k": "pct_full_boost",
@@ -55206,6 +55206,122 @@
       "label": "Temps supersonique",
       "value": 11.1,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E806BDAF47E7628D70BD1A8DC5903A1A",
+   "src": "local",
+   "lid": "E806BDAF47E7628D70BD1A8DC5903A1A",
+   "date": "2026-11-26T22:06:27Z",
+   "playlist": "3v3",
+   "map": "Champions Field",
+   "duration": 358,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 0,
+   "saves": 0,
+   "shots": 1,
+   "score": 200,
+   "mvp": false,
+   "boost_avg": 56.7,
+   "bpm": 285,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "E806BDAF47E7628D70BD1A8DC5903A1A",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 3,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 4,
+    "aerial_hits": 1,
+    "bpm": 285,
+    "avg_boost": 56.7,
+    "pct_zero_boost": 14.1,
+    "pct_full_boost": 24.2,
+    "stolen": 237.0,
+    "overfill_pct": 17.9,
+    "small_pads": 42,
+    "big_pads": 16,
+    "avg_speed": 1552.0,
+    "pct_supersonic": 16.6,
+    "pct_slow": 43.2,
+    "pct_ground": 60.3,
+    "pct_high_air": 1.4,
+    "powerslides": 18,
+    "pct_def_third": 45.2,
+    "pct_off_third": 21.0,
+    "pct_behind_ball": 76.5,
+    "pct_most_back": 37.0,
+    "pct_most_forward": 34.4,
+    "pct_closest_ball": 34.4,
+    "dist_mates": 3435.0,
+    "demos": 2,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 24.2,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 56.7,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 17.9,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 16.6,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 34.4,
+      "txt": "Bonnes rotations (peu de surengagement)"
      }
     ]
    }
