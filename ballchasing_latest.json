@@ -3,19 +3,19 @@
  "fetched_at": "2026-11-26T01:59:01+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 477,
+ "replays_count": 478,
  "playlists": {
   "3v3": {
-   "matches": 229,
-   "wins": 119,
-   "win_rate": 52.0,
-   "goals": 220,
-   "assists": 115,
+   "matches": 230,
+   "wins": 120,
+   "win_rate": 52.2,
+   "goals": 221,
+   "assists": 116,
    "saves": 107,
-   "shots": 444,
-   "score_avg": 269.1,
+   "shots": 445,
+   "score_avg": 269.2,
    "goals_avg": 0.96,
-   "shot_pct": 49.5,
+   "shot_pct": 49.7,
    "mvp": 7,
    "boost_avg": 52.5,
    "rank": null,
@@ -234,19 +234,19 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 32,
-   "wins": 20,
+   "matches": 33,
+   "wins": 21,
    "avg": {
-    "shooting_pct": 44.3,
-    "avg_boost": 55.1,
-    "pct_zero_boost": 12.0,
-    "pct_supersonic": 12.6,
+    "shooting_pct": 46.0,
+    "avg_boost": 55.2,
+    "pct_zero_boost": 12.1,
+    "pct_supersonic": 12.5,
     "pct_behind_ball": 74.6,
     "pct_def_third": 47.9,
-    "pct_most_forward": 37.0,
-    "bpm": 302.9
+    "pct_most_forward": 36.9,
+    "bpm": 300.7
    },
-   "saves": 0.41,
+   "saves": 0.39,
    "goals": 1.09,
    "focus": {
     "k": "pct_full_boost",
@@ -54742,6 +54742,122 @@
       "label": "Temps à 0 boost",
       "value": 8.9,
       "txt": "Rarement à court de boost"
+     }
+    ]
+   }
+  },
+  {
+   "id": "BB9DC3D5474940B2A542DCAD898D15CF",
+   "src": "local",
+   "lid": "BB9DC3D5474940B2A542DCAD898D15CF",
+   "date": "2026-11-26T20:54:55Z",
+   "playlist": "3v3",
+   "map": "Wasteland (Pitched)",
+   "duration": 397,
+   "overtime": false,
+   "team_goals": 3,
+   "opp_goals": 2,
+   "result": "win",
+   "goals": 1,
+   "assists": 1,
+   "saves": 0,
+   "shots": 1,
+   "score": 286,
+   "mvp": false,
+   "boost_avg": 59.9,
+   "bpm": 228,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "BB9DC3D5474940B2A542DCAD898D15CF",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 3,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 6,
+    "aerial_hits": 1,
+    "bpm": 228,
+    "avg_boost": 59.9,
+    "pct_zero_boost": 14.3,
+    "pct_full_boost": 31.4,
+    "stolen": 250.0,
+    "overfill_pct": 24.6,
+    "small_pads": 36,
+    "big_pads": 17,
+    "avg_speed": 1441.0,
+    "pct_supersonic": 10.7,
+    "pct_slow": 50.5,
+    "pct_ground": 54.9,
+    "pct_high_air": 2.2,
+    "powerslides": 11,
+    "pct_def_third": 49.3,
+    "pct_off_third": 24.4,
+    "pct_behind_ball": 75.4,
+    "pct_most_back": 36.7,
+    "pct_most_forward": 31.9,
+    "pct_closest_ball": 38.4,
+    "dist_mates": 3236.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 31.4,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 24.6,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 59.9,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_most_forward",
+      "label": "Temps en joueur le plus avancé",
+      "value": 31.9,
+      "txt": "Bonnes rotations (peu de surengagement)"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 75.4,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
