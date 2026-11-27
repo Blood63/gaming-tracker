@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-27T02:00:34+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 485,
+ "replays_count": 486,
  "playlists": {
   "3v3": {
-   "matches": 237,
+   "matches": 238,
    "wins": 124,
-   "win_rate": 52.3,
-   "goals": 224,
+   "win_rate": 52.1,
+   "goals": 225,
    "assists": 119,
-   "saves": 109,
-   "shots": 454,
-   "score_avg": 266.7,
+   "saves": 110,
+   "shots": 455,
+   "score_avg": 266.5,
    "goals_avg": 0.95,
-   "shot_pct": 49.3,
+   "shot_pct": 49.5,
    "mvp": 7,
-   "boost_avg": 52.6,
+   "boost_avg": 52.7,
    "rank": null,
    "mmr": null
   },
@@ -234,20 +234,20 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 40,
+   "matches": 41,
    "wins": 25,
    "avg": {
-    "shooting_pct": 42.5,
-    "avg_boost": 55.5,
-    "pct_zero_boost": 12.1,
-    "pct_supersonic": 12.6,
-    "pct_behind_ball": 74.2,
-    "pct_def_third": 47.5,
-    "pct_most_forward": 37.1,
-    "bpm": 302.2
+    "shooting_pct": 43.9,
+    "avg_boost": 55.8,
+    "pct_zero_boost": 11.9,
+    "pct_supersonic": 12.5,
+    "pct_behind_ball": 74.3,
+    "pct_def_third": 47.7,
+    "pct_most_forward": 37.0,
+    "bpm": 300.2
    },
-   "saves": 0.38,
-   "goals": 0.97,
+   "saves": 0.39,
+   "goals": 0.98,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -55659,6 +55659,122 @@
       "label": "Temps supersonique",
       "value": 13.0,
       "txt": "Bonne vitesse de jeu"
+     }
+    ]
+   }
+  },
+  {
+   "id": "3DB31D274DAC2F15232105A31ACA1D0B",
+   "src": "local",
+   "lid": "3DB31D274DAC2F15232105A31ACA1D0B",
+   "date": "2026-11-27T19:36:35Z",
+   "playlist": "3v3",
+   "map": "Deadeye Canyon (Oasis)",
+   "duration": 334,
+   "overtime": false,
+   "team_goals": 1,
+   "opp_goals": 2,
+   "result": "loss",
+   "goals": 1,
+   "assists": 0,
+   "saves": 1,
+   "shots": 1,
+   "score": 224,
+   "mvp": false,
+   "boost_avg": 67.5,
+   "bpm": 219,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "3DB31D274DAC2F15232105A31ACA1D0B",
+   "m": {
+    "shooting_pct": 100.0,
+    "shots_against": 7,
+    "goals_against": 2,
+    "clears": 1,
+    "centers": 2,
+    "aerial_hits": 0,
+    "bpm": 219,
+    "avg_boost": 67.5,
+    "pct_zero_boost": 3.9,
+    "pct_full_boost": 28.2,
+    "stolen": 259.0,
+    "overfill_pct": 18.9,
+    "small_pads": 43,
+    "big_pads": 10,
+    "avg_speed": 1306.0,
+    "pct_supersonic": 8.0,
+    "pct_slow": 57.5,
+    "pct_ground": 67.2,
+    "pct_high_air": 1.2,
+    "powerslides": 21,
+    "pct_def_third": 51.9,
+    "pct_off_third": 20.7,
+    "pct_behind_ball": 76.0,
+    "pct_most_back": 34.2,
+    "pct_most_forward": 32.6,
+    "pct_closest_ball": 31.7,
+    "dist_mates": 3195.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 28.2,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     },
+     {
+      "k": "avg_boost",
+      "label": "Boost moyen",
+      "value": 67.5,
+      "bench": [
+       28,
+       45
+      ],
+      "txt": "Gestion du boost à revoir.",
+      "drill": "Joue « Boost minimum » : ramasse surtout les petites pastilles sur ton trajet et ne roule pas en boostant à fond sans raison."
+     },
+     {
+      "k": "bpm",
+      "label": "Boost ramassé / min",
+      "value": 219,
+      "bench": [
+       300,
+       null
+      ],
+      "txt": "Tu ramasses peu de boost.",
+      "drill": "Trace tes rotations en passant sur les petites pastilles ; vole les gros boosts adverses quand tu es en attaque."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 100.0,
+      "txt": "Bonne précision devant le but"
+     },
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 3.9,
+      "txt": "Rarement à court de boost"
+     },
+     {
+      "k": "pct_closest_ball",
+      "label": "Temps au plus près de la balle",
+      "value": 31.7,
+      "txt": "Tu laisses jouer tes coéquipiers"
      }
     ]
    }
