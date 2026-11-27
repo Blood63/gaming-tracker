@@ -3,21 +3,21 @@
  "fetched_at": "2026-11-27T02:00:34+01:00",
  "status": "ok",
  "replays_found": 125,
- "replays_count": 489,
+ "replays_count": 490,
  "playlists": {
   "3v3": {
-   "matches": 241,
-   "wins": 126,
-   "win_rate": 52.3,
+   "matches": 242,
+   "wins": 127,
+   "win_rate": 52.5,
    "goals": 226,
    "assists": 121,
-   "saves": 110,
+   "saves": 111,
    "shots": 458,
-   "score_avg": 265.2,
-   "goals_avg": 0.94,
+   "score_avg": 264.6,
+   "goals_avg": 0.93,
    "shot_pct": 49.3,
    "mvp": 7,
-   "boost_avg": 52.8,
+   "boost_avg": 52.9,
    "rank": null,
    "mmr": null
   },
@@ -234,20 +234,20 @@
   {
    "week": "2026-S48",
    "start": "2026-11-23",
-   "matches": 44,
-   "wins": 27,
+   "matches": 45,
+   "wins": 28,
    "avg": {
-    "shooting_pct": 43.2,
-    "avg_boost": 56.3,
-    "pct_zero_boost": 11.7,
+    "shooting_pct": 42.3,
+    "avg_boost": 56.5,
+    "pct_zero_boost": 11.5,
     "pct_supersonic": 12.5,
-    "pct_behind_ball": 74.3,
-    "pct_def_third": 47.7,
-    "pct_most_forward": 36.5,
-    "bpm": 296.6
+    "pct_behind_ball": 74.2,
+    "pct_def_third": 47.6,
+    "pct_most_forward": 36.6,
+    "bpm": 295.4
    },
-   "saves": 0.36,
-   "goals": 0.93,
+   "saves": 0.38,
+   "goals": 0.91,
    "focus": {
     "k": "pct_full_boost",
     "label": "Temps à 100 boost",
@@ -56123,6 +56123,122 @@
       "label": "Temps au plus près de la balle",
       "value": 31.3,
       "txt": "Tu laisses jouer tes coéquipiers"
+     }
+    ]
+   }
+  },
+  {
+   "id": "11D0710B409872C9DFF18EA0B221FCBD",
+   "src": "local",
+   "lid": "11D0710B409872C9DFF18EA0B221FCBD",
+   "date": "2026-11-27T20:52:24Z",
+   "playlist": "3v3",
+   "map": "Utopia Coliseum (Dusk)",
+   "duration": 335,
+   "overtime": false,
+   "team_goals": 2,
+   "opp_goals": 1,
+   "result": "win",
+   "goals": 0,
+   "assists": 0,
+   "saves": 1,
+   "shots": 0,
+   "score": 128,
+   "mvp": false,
+   "boost_avg": 67.6,
+   "bpm": 243,
+   "rank": null,
+   "rank_tier": null,
+   "rank_div": null,
+   "mmr": null,
+   "rl_id": "11D0710B409872C9DFF18EA0B221FCBD",
+   "m": {
+    "shooting_pct": 0.0,
+    "shots_against": 6,
+    "goals_against": 1,
+    "clears": 1,
+    "centers": 3,
+    "aerial_hits": 0,
+    "bpm": 243,
+    "avg_boost": 67.6,
+    "pct_zero_boost": 6.7,
+    "pct_full_boost": 26.7,
+    "stolen": 424.0,
+    "overfill_pct": 32.6,
+    "small_pads": 46,
+    "big_pads": 15,
+    "avg_speed": 1482.0,
+    "pct_supersonic": 14.4,
+    "pct_slow": 49.3,
+    "pct_ground": 64.3,
+    "pct_high_air": 1.8,
+    "powerslides": 22,
+    "pct_def_third": 45.4,
+    "pct_off_third": 25.1,
+    "pct_behind_ball": 72.6,
+    "pct_most_back": 34.0,
+    "pct_most_forward": 39.8,
+    "pct_closest_ball": 39.6,
+    "dist_mates": 3313.0,
+    "demos": 0,
+    "demos_taken": 0
+   },
+   "name": "443Blood",
+   "bots": false,
+   "analysis": {
+    "weaknesses": [
+     {
+      "k": "overfill_pct",
+      "label": "Boost gaspillé (surplus)",
+      "value": 32.6,
+      "bench": [
+       null,
+       15
+      ],
+      "txt": "Tu ramasses des gros boosts alors que tu en as déjà beaucoup.",
+      "drill": "Ne prends un gros boost (100) que sous 50 de boost ; sinon laisse-le ou vole celui de l'adversaire."
+     },
+     {
+      "k": "shooting_pct",
+      "label": "Précision de tir",
+      "value": 0.0,
+      "bench": [
+       30,
+       null
+      ],
+      "txt": "Tes tirs manquent souvent le cadre.",
+      "drill": "Training packs de tir débutant/intermédiaire (menu Entraînement › Packs de la communauté, recherche « shooting ») et 10 min de free play à frapper la balle au sol vers le but en visant les coins."
+     },
+     {
+      "k": "pct_full_boost",
+      "label": "Temps à 100 boost",
+      "value": 26.7,
+      "bench": [
+       null,
+       14
+      ],
+      "txt": "Tu gardes ton boost plein trop longtemps (boost « dormant »).",
+      "drill": "Utilise ton boost dès 100 pour gagner en vitesse ou mettre la pression ; vise à arriver à la balle avec 30-60 de boost."
+     }
+    ],
+    "strengths": [
+     {
+      "k": "pct_zero_boost",
+      "label": "Temps à 0 boost",
+      "value": 6.7,
+      "txt": "Rarement à court de boost"
+     },
+     {
+      "k": "pct_supersonic",
+      "label": "Temps supersonique",
+      "value": 14.4,
+      "txt": "Bonne vitesse de jeu"
+     },
+     {
+      "k": "pct_behind_ball",
+      "label": "Temps derrière la balle",
+      "value": 72.6,
+      "txt": "Bon placement derrière la balle"
      }
     ]
    }
