@@ -12,7 +12,7 @@ jobs:
     if: github.actor == 'Blood63'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Pas de file d'attente partagée : on rejoue sur la dernière version et on réessaie si le push est refusé (409/non fast-forward).
       - env:
           GT_ITEMS: ${{ toJSON(github.event.client_payload.items) }}

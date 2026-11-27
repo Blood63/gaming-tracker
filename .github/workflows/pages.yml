@@ -62,17 +62,26 @@ jobs:
     steps:
       - name: Attendre la fin d'une rafale
         run: sleep 180
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - name: Préparer le site (sans .git)
         run: |
           echo "déployé : $(git rev-parse --short HEAD)"
           mkdir _site
           tar --exclude=./.git --exclude=./_site --exclude=./.github -cf - . | tar -C _site -xf -
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      # GitHub renvoie parfois une erreur passagère (« Fetching artifact metadata failed ») : une 2e tentative 30 s plus tard
+      # évite de laisser le site sur l'ancienne version jusqu'au prochain relevé.
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+        continue-on-error: true
+      - name: Nouvelle tentative de déploiement (erreur passagère)
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v5

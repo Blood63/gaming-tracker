@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: ev
         run: |
           gh api repos/${{ github.repository }}/issues/$N > issue.json
