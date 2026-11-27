@@ -239,9 +239,12 @@ test('rllRoll : moyenne glissante tolérante aux trous',()=>{
   assert.deepEqual(J(run('rllRoll([2,4,null,6],2)')),[2,3,4,6]);
 });
 test('index réel rl_local : cohérence des agrégats avec les compteurs de chaque replay',{skip:!fs.existsSync(idxPath)},()=>{
-  const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays;ctx.IDX=idx;
+  // Les parties contre des bots (drapeau `bots`, ex. entraînement) restent dans l'index mais sont écartées des stats par rllClean :
+  // les compteurs de référence se calculent donc sur les replays « réels » uniquement.
+  const all=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays;ctx.IDX=all;const idx=all.filter(r=>!r.bots);
   assert.ok(idx.length>0);
-  const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort');
+  const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort (seuls les replays contre des bots sont écartés)');
+  assert.ok(!a.some(r=>r.bots),'aucun replay contre des bots dans les stats');
   const sh=run('rllShots(rllClean(IDX,"2026-10-01"))'),shots=idx.reduce((t,r)=>t+r.s.shots,0),goals=idx.reduce((t,r)=>t+r.s.goals,0),sg=idx.reduce((t,r)=>t+r.s.shots_goal,0);
   assert.equal(sh.n,shots,'tirs détaillés = compteur');assert.equal(sh.goals,sg,'tirs marqués détaillés = compteur');
   // Chaque replay a soit tous ses buts détaillés (d_goals = score des deux équipes), soit un drapeau explicite `goals_unseen`
@@ -254,7 +257,7 @@ test('index réel rl_local : cohérence des agrégats avec les compteurs de chaq
   const g=run('rllGoals(rllClean(IDX,"2026-10-01"))');assert.equal(g.me.n,goals-idx.filter(r=>r.goals_unseen>0).reduce((t,r)=>t+r.s.goals,0),'buts détaillés = compteur (replays partiels exclus)');
   const z=run('rllHeatZones(rllHeat(rllClean(IDX,"2026-10-01")))');near(z.def+z.neu+z.off,100,1e-6);near(z.defH+z.offH,100,1e-6);
   const k=run('rllKick(rllClean(IDX,"2026-10-01"))');assert.equal(k.n,idx.reduce((t,r)=>t+r.s.kickoffs,0),'coups d’envoi détaillés = compteur');
-  for(const r of idx)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
+  for(const r of all)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
 });
 
 /* ---- RL : index léger + détails différés (rl_local/light.json, deep.json) ---- */
@@ -272,4 +275,14 @@ test('light.json / deep.json : aucun bloc d_* dans le léger, détails indexés 
   assert.ok(Array.isArray(L)&&L.length>0&&D&&typeof D=='object');
   for(const r of L)assert.ok(!Object.keys(r).some(k=>k.startsWith('d_')),'bloc d_ dans le léger : '+r.id);
   for(const [id,d] of Object.entries(D))assert.ok(Object.keys(d).every(k=>k.startsWith('d_')),'clé inattendue dans deep : '+id);
+});
+
+/* ---- t127 : vie privée du tableau des scores Valorant ---- */
+test('valPName : seul ton pseudo est affiché, les autres deviennent « Allié n » / « Adversaire n » (même si une ancienne donnée contient un pseudo)',()=>{
+  assert.equal(run('valPName({me:true,name:"Blood",tag:"7629"},true,0)'),'Blood');
+  assert.equal(run('valPName({me:true},true,0)'),'Toi');
+  const a=run('valPName({me:false,name:"Pseudo<script>",tag:"EUW"},true,2)'),o=run('valPName({me:false},false,3)');
+  assert.ok(a.includes('Allié 2')&&!a.includes('Pseudo')&&!a.includes('EUW'),a);
+  assert.ok(o.includes('Adversaire 3'),o);
+  assert.equal(run('valPName({me:true,name:"<b>x"},true,0)'),'&lt;b&gt;x','pseudo échappé');
 });

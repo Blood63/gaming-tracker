@@ -14,6 +14,10 @@ on:
       - "tests/**"
       - "tools/**"
       - ".github/workflows/tests.yml"
+  # contrôle hebdomadaire des données publiées (doublons, vie privée, secrets) : les poussées de données des robots ne lancent pas ce workflow
+  schedule:
+    - cron: "37 7 * * 1"
+  workflow_dispatch:
   pull_request:
     paths:
       - "app.js"
@@ -31,9 +35,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
       - run: node --check core.js && node --check app.js
       - run: node --test tests/*.test.js
       - run: python3 -m unittest discover -s tests -p "test_*.py"
+      - run: python3 tools/check_data.py
