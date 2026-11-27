@@ -21,6 +21,14 @@ def get(p,timeout=30,retries=3,sleep=time.sleep):
             if i<retries-1: sleep(5*(i+1)); continue
             raise RuntimeError(f"délai ou réseau {p.split('?')[0]}: {e}") from e
     raise RuntimeError(last)
+# Vie privée : aucun pseudo/tag des AUTRES joueurs n'est publié (dépôt et site publics). Seul le joueur suivi garde son nom ;
+# les autres lignes du tableau des scores gardent uniquement les stats (agent, rang, K/D/A…). Appliqué aussi aux anciennes parties.
+def anon_scoreboard(x):
+    for p in x.get("scoreboard") or []:
+        if not p.get("me"):
+            p.pop("name",None); p.pop("tag",None)
+    return x
+
 def main():
     if not K: print("no HENRIK_API_KEY"); return 1
     old=json.load(open(F)) if os.path.exists(F) else {}
@@ -50,7 +58,7 @@ def main():
         M[me["id"]]=x
     for m in det:
         md=m["metadata"]; mid=md["match_id"]; rounds=len(m.get("rounds") or [])
-        pl=[{"name":p["name"],"tag":p["tag"],"me":p["puuid"]==puuid,"team":p["team_id"],"agent":p["agent"]["name"],"tier":(p.get("tier") or {}).get("name"),
+        pl=[{**({"name":p["name"],"tag":p["tag"]} if p["puuid"]==puuid else {}),"me":p["puuid"]==puuid,"team":p["team_id"],"agent":p["agent"]["name"],"tier":(p.get("tier") or {}).get("name"),
              "k":p["stats"]["kills"],"d":p["stats"]["deaths"],"a":p["stats"]["assists"],"score":p["stats"]["score"],
              "hs":p["stats"]["headshots"],"bs":p["stats"]["bodyshots"],"ls":p["stats"]["legshots"],"dmg":p["stats"]["damage"]["dealt"]} for p in m["players"]]
         meP=next((p for p in pl if p["me"]),None)
@@ -72,6 +80,7 @@ def main():
         if rw is not None and rl is not None: x["result"]="win" if rw>rl else "loss" if rw<rl else "draw"
         M[mid]=x
     for x in M.values():
+        anon_scoreboard(x)
         if not x.get("rounds") and x.get("rounds_won") is not None and x.get("rounds_lost") is not None: x["rounds"]=x["rounds_won"]+x["rounds_lost"]
         if mid2:=H.get(x["id"]): x["rr_change"]=mid2.get("change"); x["tier_after"]=mid2.get("tier")
     cur=mmr.get("current") or {}; pk=mmr.get("peak") or {}

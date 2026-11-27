@@ -265,3 +265,6 @@ function rllCoach(a,maxW=3){const m=rllMetrics(a),W=[],S=[];
 const rllRoll=(v,n=5)=>v.map((_,i)=>{const w=v.slice(Math.max(0,i-n+1),i+1).filter(x=>x!=null);return w.length?w.reduce((s,x)=>s+x,0)/w.length:null});
 /* Blocs d_* d'un replay reconstruits depuis son fichier détaillé (rl_local/<id>.json, champ d) : même format que dans rl_local/deep.json. */
 const rllDeepOf=d=>d?{d_kick:(d.kickoffs||[]).map(k=>[k.spawn,k.role,k.first,k.out,k.react,k.flip]),d_shots:(d.shots||[]).map(t=>[t.x,t.y,t.sp,t.on,t.air,t.o]),d_goals:(d.goals||[]).map(g=>[g.for,g.by,g.type,g.speed,g.air,g.t]),d_periods:d.periods||[],d_after_goal:d.after_goal||[],d_heat:d.heat,d_heat_ball:d.heat_ball}:{};
+/* Vie privée : les pseudos des autres joueurs ne sont jamais publiés (retirés des données) ; affichage « Allié 1 », « Adversaire 2 »…
+   (les anciennes données qui contiendraient encore un pseudo sont aussi masquées ici). */
+const valPName=(p,mine,i)=>p.me?esc(p.name||'Toi'):`<span class="mut">${mine?'Allié':'Adversaire'} ${i}</span>`;
