@@ -76,7 +76,7 @@ const lineDS=(label,data,color,extra={})=>({label,data,borderColor:color,backgro
 const bar=(p,cls='')=>p==null?'':`<div class="bar ${cls}"><i data-w="${Math.max(0,Math.min(100,p))}"></i></div>`;
 const animBars=()=>setTimeout(()=>$$('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'),80);
 const stat=(k,v,d='',cls='')=>`<div class="glass stat ${cls}"><div class="k">${esc(k)}</div><div class="v">${v}</div>${d?`<div class="d">${d}</div>`:''}</div>`;
-const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
+const toast=m=>{const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)};
 
 const SETUP_ISSUE='https://github.com/Blood63/gaming-tracker/issues/new?template=setup.yml';
 const RTIERS=['Novice','Vétéran','Élite','Pro','Maître','Grand Maître','Légendaire'],RICON=['🔰','🥉','🥈','🥇','💎','👑','🔥'];
@@ -278,7 +278,7 @@ async function runSync(){const tok=ghTok(),items=pendingItems();if(!tok||!items.
     SYNC=null;LS.set(SK,0);sessionStorage.removeItem('gt-sync-open');toast('✅ Synchronisé sur tous tes appareils');rerender()}
   catch(e){setSync('err',e.message)}finally{syncRun=false;const b=$('#gtsyncbtn');if(b&&SYNC?.st!='run'){b.disabled=false;b.removeAttribute('aria-busy')}}}
 /* Relit les fichiers modifiés directement dans le dépôt (API Contents, sans attendre la publication du site). */
-async function syncPull(t){await Promise.all([['gj','goals.json'],['cod','cod_mobile.json'],['codp','cod_profile.json'],['codr','cod_ranks.json'],['rlm','rocket_league.json']].map(async([k,f])=>{try{const r=await fetch(GH_API+'/contents/'+f+'?ref=main',{cache:'no-store',headers:{...ghH(t),Accept:'application/vnd.github.raw+json'}});if(r.ok){RAW[k]=await r.json();FULL.add(k)}}catch(e){}}))}
+async function syncPull(t){let ok=0;await Promise.all([['gj','goals.json'],['cod','cod_mobile.json'],['codp','cod_profile.json'],['codr','cod_ranks.json'],['rlm','rocket_league.json']].map(async([k,f])=>{try{const r=await fetch(GH_API+'/contents/'+f+'?ref=main',{cache:'no-store',headers:{...ghH(t),Accept:'application/vnd.github.raw+json'}});if(r.ok){RAW[k]=await r.json();FULL.add(k);ok++}}catch(e){}}));return ok}
 function rerender(){const y=scrollY;render();scrollTo(0,y)}
 /* Réglage du jeton (page Profil) */
 function syncSettingsHTML(){const t=ghTok();return `<h2 id="sync">🔄 Synchronisation GitHub</h2><div class="glass pad" id="tokbox">
@@ -364,8 +364,8 @@ function valMatch(id){
   const r=x.rounds,sh=(x.head||0)+(x.body||0)+(x.leg||0);
   let h=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,${x.result=='win'?'#22c55e66':x.result=='loss'?'#ff465566':'#94a3b866'},transparent 65%)"><div class="ttl"><h3>${esc(x.map||'Partie')} · ${x.rounds_won??'?'}-${x.rounds_lost??'?'}</h3><span class="pill">${esc(vMode(x.mode))}</span><span class="pill">${{win:'Victoire',loss:'Défaite',draw:'Égalité'}[x.result]||'—'}</span><span class="pill">${fdate(x.date)}</span></div></div>
   <div class="stats">${stat('Agent',esc(x.agent||'—'))}${stat('K / D / A',`${x.kills}/${x.deaths}/${x.assists}`,'K/D '+fnum(x.deaths?x.kills/x.deaths:x.kills,2))}${stat('ACS',r?fnum(x.score/r,0):'—','score '+fnum(x.score))}${stat('ADR',r&&x.dmg!=null?fnum(x.dmg/r,0):'—','dégâts '+fnum(x.dmg))}${stat('Headshots',sh?fnum(100*x.head/sh,1)+' %':'—',`${x.head||0} tête · ${x.body||0} corps · ${x.leg||0} jambes`)}${x.first_kills!=null?stat('Premières élim.',fnum(x.first_kills)):''}${x.rr_change!=null?stat('RR',`<span class="${x.rr_change>0?'up':x.rr_change<0?'down':''}">${x.rr_change>0?'+':''}${x.rr_change}</span>`,x.tier_after?'→ '+vTier(x.tier_after):''):''}${x.length_s?stat('Durée',Math.round(x.length_s/60)+' min'):''}${x.mvp?stat('MVP','🏅','de l\'équipe'):''}</div>`;
-  if(x.scoreboard){const tm=[...new Set(x.scoreboard.map(p=>p.team))].sort(a=>a==x.team?-1:1);
-    h+=tm.map(t=>`<h2>${t==x.team?'Ton équipe':'Adversaires'}</h2><div class="glass tbl"><table><tr><th>Joueur</th><th>Agent</th><th>Rang</th><th>ACS</th><th>K/D/A</th><th>HS</th></tr>${x.scoreboard.filter(p=>p.team==t).map(p=>{const s=p.hs+p.bs+p.ls;return `<tr${p.me?' style="background:rgba(255,70,85,.15);font-weight:700"':''}><td>${esc(p.name)}</td><td>${esc(p.agent)}</td><td>${esc(vTier(p.tier))}</td><td>${r?fnum(p.score/r,0):'—'}</td><td>${p.k}/${p.d}/${p.a}</td><td>${s?fnum(100*p.hs/s,0)+' %':'—'}</td></tr>`}).join('')}</table></div>`).join('')}
+  if(x.scoreboard){const tm=[...new Set(x.scoreboard.map(p=>p.team))].sort((a,b)=>(b==x.team)-(a==x.team));
+    h+=tm.map(t=>`<h2>${t==x.team?'Ton équipe':'Adversaires'}</h2><div class="glass tbl"><table><tr><th>Joueur</th><th>Agent</th><th>Rang</th><th>ACS</th><th>K/D/A</th><th>HS</th></tr>${(()=>{let n=0;return x.scoreboard.filter(p=>p.team==t).map(p=>{const s=p.hs+p.bs+p.ls;return `<tr${p.me?' style="background:rgba(255,70,85,.15);font-weight:700"':''}><td>${valPName(p,t==x.team,p.me?0:++n)}</td><td>${esc(p.agent)}</td><td>${esc(vTier(p.tier))}</td><td>${r?fnum(p.score/r,0):'—'}</td><td>${p.k}/${p.d}/${p.a}</td><td>${s?fnum(100*p.hs/s,0)+' %':'—'}</td></tr>`}).join('')})()}</table></div>`).join('')}
   else h+=`<p class="mut" style="font-size:.85rem;margin-top:1rem">Tableau des scores complet disponible uniquement pour les parties récentes (relevées après leur fin).</p>`;
   app.innerHTML=h+`<a class="btn ghost" style="margin-top:1rem" href="#/valorant">‹ Retour Valorant</a>`;
 }
@@ -838,7 +838,7 @@ function steamGame(id){
   ${(s.screenshots||[]).length?`<h2>Captures</h2><div class="shots">${s.screenshots.map((u,i)=>`<img loading="lazy" src="${esc(u)}" data-full="${esc((s.screenshots_full||[])[i]||u)}" alt="">`).join('')}</div>`:''}
   <h2>Progression</h2>${hist.length>1?`<div class="glass chart"><canvas id="c1"></canvas></div>`:`<div class="glass empty">📈 La courbe de progression apparaîtra après le prochain relevé (mercredi et dimanche à minuit, heure de Paris).</div>`}
   <h2>DLC (${s.dlc_count??0})</h2>${(s.dlc||[]).length?`<div class="list">${s.dlc.map(d=>`<a class="glass row" href="${esc(d.url)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(d.image||g.img)}" alt=""><span class="n">${esc(d.name||'DLC '+d.appid)}${d.release?`<br><small>${esc(d.release)}</small>`:''}</span><span class="p">${d.price?(d.price.discount?`<s>${esc(d.price.initial)}</s>`:'')+esc(d.price.text):'<small class="mut">—</small>'}</span></a>`).join('')}</div>${s.dlc_count>s.dlc.length?`<p class="pill">+${s.dlc_count-s.dlc.length} autres sur la boutique</p>`:''}`:`<div class="glass empty">${s.name?'Aucun DLC pour ce jeu.':'Données boutique indisponibles.'}</div>`}`;
-  $$('.shots img').forEach(i=>i.onclick=()=>lb(i.dataset.full));
+  shotsBind();
   achBind(id);
   const b=$('#gA');if(b)b.onclick=()=>{addGoal({type:'game_ach',appid:id,target:100});b.disabled=true;b.textContent='🎯 Objectif en cours'};
   if(hist.length>1)chart($('#c1'),{data:{labels:hist.map(x=>fshort(x.t)),datasets:[{type:'line',...lineDS('Heures',hist.map(x=>x.g.hours),COL.cy)},{type:'line',...lineDS('Succès',hist.map(x=>x.g.ach_unlocked??null),COL.vi,{fill:false,yAxisID:'y2'})}]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
@@ -1067,7 +1067,7 @@ function codMatch(key){
   ${(x.medals||[]).length?`<h2>Médailles</h2><div class="badges">${x.medals.map(o=>`<div class="glass bdg"><div class="e">🏅</div><b>${esc(o.name)}</b>${o.count!=null?`<small class="mut">× ${o.count}</small>`:''}</div>`).join('')}</div>`:''}
   ${(x.screenshots||(x.screenshot?[x.screenshot]:[])).length?`<h2>Captures</h2><div class="shots">${(x.screenshots||[x.screenshot]).map(u=>`<img loading="lazy" src="${esc(u)}" data-full="${esc(u)}" alt="">`).join('')}</div>`:''}
   ${x.ocr_notes?.length?`<p class="pill warn">${esc(x.ocr_notes.join(' · '))}</p>`:''}`;
-  $$('.shots img').forEach(i=>{i.tabIndex=0;i.setAttribute('role','button');i.setAttribute('aria-label','Agrandir la capture');i.onclick=()=>lb(i.dataset.full);i.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();lb(i.dataset.full)}}});animBars();
+  shotsBind();animBars();
 }
 function codBind(){rankChart();codRankBind();$$('#tseg button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('codType',b.dataset.t);const y=scrollY;render();scrollTo(0,y)})}
 /* ========== COD : rangs saisis dans l'app (local puis synchro GitHub) ========== */
@@ -1137,7 +1137,7 @@ function career(){
 function careerCharts(){
   if(!D.cp)return;
   $$('#cseg button').forEach(b=>b.onclick=()=>{$$('#cseg button').forEach(x=>x.classList.toggle('on',x===b));$$('.cpan').forEach(p=>p.style.display=p.id=='c-'+b.dataset.c?'':'none');});
-  $$('.shots img').forEach(i=>i.onclick=()=>lb(i.dataset.full));
+  shotsBind();
   const br=D.cp.battle_royale||{};
   if(br.matches)chart($('#cbr'),{type:'doughnut',data:{labels:['Victoires','Autres parties'],datasets:[{data:[br.wins,br.matches-br.wins],backgroundColor:[COL.gr,'rgba(160,150,255,.18)'],borderColor:'#0a0920',borderWidth:3}]},options:{cutout:'68%',plugins:{title:{display:true,text:'Battle Royale : taux de victoire (calculé)'}}}});
   if(D.codP.length>1)chart($('#chist'),{type:'line',data:{labels:D.codP.map(x=>fshort(x.date)),datasets:[lineDS('É/M multijoueur',D.codP.map(x=>num(x.multiplayer?.kd)),COL.cy,{fill:false}),lineDS('Victoires BR',D.codP.map(x=>num(x.battle_royale?.wins)),COL.gr,{fill:false,yAxisID:'y2'})]},options:{scales:{y2:{position:'right',grid:{display:false}}}}});
@@ -1318,6 +1318,8 @@ function rlLastHTML(){if(!D.bc)return '';const r=lastReplay(),t=r&&Date.parse(r.
 const TITLES={bilan:'Bilan hebdo','':'GameTrack',setup:'Mon setup',steam:'Bibliothèque',compet:'Compétitif',valorant:'Valorant',rl:'Rocket League',cod:'COD Mobile',profil:'Profil',objectifs:'Objectifs',activite:'Activité',comparer:'Comparer'};
 let lbBack=null;
 function lb(u){const b=$('#lb');lbBack=document.activeElement;$('#lb img').src=u;b.style.display='flex';b.focus({preventScroll:true})}
+/* Captures cliquables (jeu Steam, partie COD, carte COD) : agrandissement au toucher, à la souris ET au clavier (Entrée / Espace). */
+function shotsBind(){$$('.shots img').forEach(i=>{if(!i.alt)i.alt='Capture';i.tabIndex=0;i.setAttribute('role','button');i.setAttribute('aria-label','Agrandir la capture');i.onclick=()=>lb(i.dataset.full);i.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();lb(i.dataset.full)}}})}
 function lbClose(){const b=$('#lb');if(b.style.display!='flex')return;b.style.display='none';const f=lbBack;lbBack=null;if(f&&f.isConnected&&f.focus)f.focus({preventScroll:true})}
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#lb').style.display=='flex'){e.preventDefault();lbClose()}});
 function go(h){location.hash=h}
@@ -1347,4 +1349,22 @@ window.addEventListener('hashchange',route);
 // préchargement à l'intention (doigt posé / survol d'un lien) : les données détaillées de la page visée arrivent plus tôt
 document.addEventListener('pointerdown',e=>{const a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a||!ready)return;const r=a.getAttribute('href').slice(2).split('/')[0];const n=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));if(n.length)fetchKeys(n)},{passive:true});
 app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';
-load().then(()=>{ready=true;checkNews();render()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p></div>`});
+load().then(()=>{ready=true;checkNews();render();pendingCheck()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p><button type="button" class="btn" onclick="location.reload()">🔄 Réessayer</button></div>`});
+/* Changements « en attente » au démarrage alors qu'un jeton est enregistré : le site publié peut avoir quelques minutes de retard
+   sur le dépôt (déploiement GitHub Pages). On relit directement les 5 fichiers concernés via l'API pour ne pas afficher
+   à tort « N changements seulement sur cet appareil » juste après une synchro réussie. Aucun envoi, lecture seule. */
+async function pendingCheck(){const t=ghTok();if(!t||!navigator.onLine||syncRun||!pendingItems().length)return;
+  try{if(await syncPull(t)){build();if(!document.activeElement?.closest?.('form'))rerender()}}catch(e){}}
+/* Hors ligne / retour du réseau : message clair, et les fichiers qui n'avaient pas pu être chargés sont redemandés. */
+addEventListener('offline',()=>toast('📴 Hors ligne : affichage des dernières données enregistrées'));
+addEventListener('online',()=>{if(!ready)return;const had=FAILED.size;FAILED.clear();toast('📶 De nouveau en ligne');
+  const r=location.hash.replace(/^#\/?/,'').split('/')[0];if(had&&(NEED[r]||[]).some(k=>!FULL.has(k))&&!document.activeElement?.closest?.('form'))render();pendingCheck()});
+/* Accessibilité (appliquée après chaque rendu) : tableaux défilants atteignables au clavier, en-têtes de colonne vides nommés,
+   niveaux de titres continus pour les lecteurs d'écran (sans changer l'apparence). */
+function a11yFix(){
+  const used=new Set([...app.querySelectorAll('[role=region][aria-label]')].map(e=>e.getAttribute('aria-label')));
+  for(const t of app.querySelectorAll('.tbl:not([tabindex]),.tiers:not([tabindex])')){t.tabIndex=0;t.setAttribute('role','region');const h=t.previousElementSibling;
+    let l=h&&/^H[2-4]$/.test(h.tagName)?h.textContent.trim():t.classList.contains('tiers')?'Paliers de niveau':'Tableau';const l0=l;for(let i=2;used.has(l);i++)l=l0+' ('+i+')';used.add(l);t.setAttribute('aria-label',l)}
+  for(const th of app.querySelectorAll('th:empty'))th.innerHTML='<span class="sr">Élément</span>';
+  let prev=1;for(const h of app.querySelectorAll('h2,h3,h4,h5,h6')){if(h.closest('[hidden]'))continue;let l=+(h.getAttribute('aria-level')||h.tagName[1]);if(l>prev+1){l=prev+1;h.setAttribute('role','heading');h.setAttribute('aria-level',l)}prev=l}}
+let a11yQ=0;new MutationObserver(()=>{if(!a11yQ)a11yQ=requestAnimationFrame(()=>{a11yQ=0;a11yFix()})}).observe(app,{childList:true,subtree:true});
