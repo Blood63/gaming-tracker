@@ -13,6 +13,11 @@ self.addEventListener('fetch',e=>{
   // fichiers chargés avec ?v=<empreinte build.json> (ou ancien horodatage) : une seule entrée de cache par fichier,
   // remplacée à chaque nouvelle version (réseau d'abord : une nouvelle empreinte = nouvelle requête, donc données fraîches).
   const key=own&&/^\?v=[\w.-]{1,40}$/.test(u.search)?u.origin+u.pathname:r;
+  // fichiers de données demandés avec ?h=<empreinte du CONTENU> (build.json.f) : même adresse = même contenu, donc servis directement
+  // depuis le cache (aucune attente réseau) ; sinon réseau, mise en cache, et suppression des anciennes versions du même fichier.
+  if(own&&/^\?h=[0-9a-f]{6,16}$/.test(u.search)){e.respondWith((async()=>{const c=await caches.open(C);const hit=await c.match(r.url);if(hit)return hit;
+    try{const res=await fetch(r);if(res&&res.ok&&res.type==='basic'){const cp=res.clone();(async()=>{for(const q of await c.keys()){const x=new URL(q.url);if(x.pathname===u.pathname&&q.url!==r.url)await c.delete(q)}await c.put(r.url,cp)})().catch(()=>{})}return res}
+    catch(err){const old=await c.match(u.origin+u.pathname,{ignoreSearch:true});if(old)return old;throw err}})());return}
   e.respondWith((async()=>{
     try{const res=await (own&&key===r?fetch(r.mode==='navigate'?r.url:r,{cache:'no-cache'}):fetch(r));if(res&&((res.ok&&(res.type==='basic'||res.type==='cors'))||(chartjs&&res.type==='opaque'))){const c=await caches.open(C);c.put(key,res.clone()).catch(()=>{})}return res}
     catch(err){const c=await caches.open(C);const hit=await c.match(key)||(r.mode==='navigate'?await c.match(new URL('./',self.location).href)||await c.match(new URL('index.html',self.location).href):null);if(hit)return hit;throw err}

@@ -2,7 +2,7 @@
 /* Gaming Tracker : fonctions de calcul pures (sans DOM), partagées par app.js et testées par tests/core.test.js (node). */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const TZ={timeZone:'Europe/Paris'};
-const fnum=(v,d=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('fr-FR',{maximumFractionDigits:d,minimumFractionDigits:d});
+const NFMT={},fnum=(v,d=0)=>v==null||isNaN(v)?'—':(NFMT[d]||(NFMT[d]=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:d,minimumFractionDigits:d}))).format(Number(v)); // format créé une fois par nb de décimales (= toLocaleString)
 const num=v=>typeof v=='number'&&isFinite(v)?v:null;
 const COD_SUB=['I','II','III','IV','V'];
 const COD_LADDER=[['Novice',0,5],['Vétéran',1001,5],['Élite',2001,5],['Pro',3001,5],['Maître',4501,0],['Grand Maître',6001,0],['Légendaire',8001,0]];
@@ -268,3 +268,9 @@ const rllDeepOf=d=>d?{d_kick:(d.kickoffs||[]).map(k=>[k.spawn,k.role,k.first,k.o
 /* Vie privée : les pseudos des autres joueurs ne sont jamais publiés (retirés des données) ; affichage « Allié 1 », « Adversaire 2 »…
    (les anciennes données qui contiendraient encore un pseudo sont aussi masquées ici). */
 const valPName=(p,mine,i)=>p.me?esc(p.name||'Toi'):`<span class="mut">${mine?'Allié':'Adversaire'} ${i}</span>`;
+/* Format « tableau » des gros fichiers (rl_local/summary.json, ballchasing_app.json ; écrit par tools/tabpack.py) : {"$tab":{sh,r,c}} -> liste
+   d'objets IDENTIQUE à l'original (mêmes clés, même ordre, null conservés, clés absentes absentes). Tout autre valeur est rendue telle quelle. */
+const untab=t=>{if(!t||typeof t!='object'||!t.$tab)return t;const T=t.$tab,C={},P={};for(const k in T.c){C[k]=untab(T.c[k]);P[k]=0}
+  return T.r.map(si=>{const o={};for(const k of T.sh[si])o[k]=C[k][P[k]++];return o})};
+/* Fichier entier : chaque valeur de 1er niveau au format tableau est décodée (les autres sont gardées telles quelles). */
+const untabFile=o=>{if(!o||typeof o!='object'||Array.isArray(o))return o;let hit=false;const r={};for(const k in o){const v=o[k];if(v&&typeof v=='object'&&v.$tab){r[k]=untab(v);hit=true}else r[k]=v}return hit?r:o};

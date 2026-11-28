@@ -1,15 +1,21 @@
 "use strict";
 /* ========== utilitaires ========== */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],app=$('#app');
-const fdate=s=>s?new Date(s).toLocaleDateString('fr-FR',{...TZ,day:'numeric',month:'short',year:'numeric'}):'—';
-const fhm=s=>s?new Date(s).toLocaleString('fr-FR',{...TZ,day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).replace(',',' à'):'—'; // date + heure réelle (heure de Paris)
-const fshort=s=>s?new Date(s).toLocaleDateString('fr-FR',{...TZ,day:'numeric',month:'short'}):'—';
+// formats de date créés une seule fois (même résultat que toLocaleDateString, mais ~50× plus rapide : des milliers d'appels pour les graphiques RL)
+const dfmt=o=>{const f=new Intl.DateTimeFormat('fr-FR',{...TZ,...o});return s=>{const d=new Date(s);return isNaN(d)?'Invalid Date':f.format(d)}};
+const fdate0=dfmt({day:'numeric',month:'short',year:'numeric'}),fhm0=dfmt({day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),fshort0=dfmt({day:'numeric',month:'short'});
+const fdate=s=>s?fdate0(s):'—';
+const fhm=s=>s?fhm0(s).replace(',',' à'):'—'; // date + heure réelle (heure de Paris)
+const fshort=s=>s?fshort0(s):'—';
 const ago=t=>{const d=Math.floor((Date.now()-t)/864e5);return d<=0?"aujourd'hui":d==1?'hier':d<30?`il y a ${d} j`:d<365?`il y a ${Math.round(d/30)} mois`:`il y a ${Math.round(d/365)} an(s)`};
 // Clé de cache = empreinte des données (build.json, régénéré par les robots à chaque changement) : un seul fichier en cache par version,
 // et les nouvelles données s'affichent dès qu'elles sont publiées. build.json lui-même est toujours relu sans cache.
-let BV=null;const vq=()=>'?v='+(BV||Date.now());
-async function stamp(){try{const r=await fetch('build.json',{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.v)BV=String(j.v).replace(/[^\w.-]/g,'')}}catch(e){}}
-const get=async(f,j=true)=>{try{const r=await fetch(f+vq());if(!r.ok)return null;return j?await r.json():await r.text()}catch(e){return null}};
+// build.json.f = empreinte de chaque fichier : fichier?h=<empreinte> -> un fichier inchangé reste en cache quand un autre change
+// (le service worker sert directement ces fichiers depuis son cache) ; sinon ?v=<empreinte globale> comme avant.
+let BV=null,BF={};const vq=f=>f&&BF[f]?'?h='+BF[f]:'?v='+(BV||Date.now());
+async function stamp(){try{let j=null;const pre=window.GT_BJ;window.GT_BJ=null;if(pre)j=await pre; // 1er chargement : build.json déjà demandé par index.html
+  if(!j){const r=await fetch('build.json',{cache:'no-store'});if(r.ok)j=await r.json()}{if(j&&j.v){BV=String(j.v).replace(/[^\w.-]/g,'');const F={};if(j.f&&typeof j.f=='object')for(const[k,v]of Object.entries(j.f))if(typeof v=='string'&&/^[0-9a-f]{6,16}$/.test(v))F[k]=v;BF=F}}}catch(e){}}
+const get=async(f,j=true)=>{try{const u=f+vq(f),pre=window.GT_PRE&&GT_PRE[u];if(pre)delete GT_PRE[u];const r=await (pre||fetch(u));if(!r.ok)return null;return j?await r.json():await r.text()}catch(e){return null}};
 const jlParse=t=>(t||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
 const jl=async f=>jlParse(await get(f,false));
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c',rlA:'#3b82f6',rlB:'#22c55e'};
@@ -86,16 +92,23 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter 
 /* ========== données ========== */
 /* Chargement : home.json (résumé compact généré par les robots) suffit pour l'accueil ; les fichiers détaillés sont chargés
    à la demande, page par page (NEED). Sans home.json (ancienne version des données), tout est chargé comme avant. */
-const SRC={steamH:['history/steam.jsonl',1],store:['store.json'],val:['history/valorant.jsonl',1],rl:['history/rocket_league.jsonl',1],cod:['cod_mobile.json'],codp:['cod_profile.json'],codr:['cod_ranks.json'],setup:['setup.json'],vh:['valorant.json'],gj:['goals.json'],rlm:['rocket_league.json'],bc:['ballchasing_latest.json'],rll:['rl_local/light.json'],rlld:['rl_local/deep.json'],sach:['steam_achievements.json']};
-const NEED={steam:['steamH','store','sach'],valorant:['vh'],rl:['bc','rll'],setup:['setup'],bilan:['vh','bc','steamH'],comparer:['vh','bc','steamH'],activite:['vh','bc','steamH','val','rl'],profil:['vh','steamH','store']};
-/* rll = index LÉGER (rl_local/light.json, sans les blocs d_*), rlld = détails (deep.json) chargés après l'affichage ; ALT = repli sur l'index complet si le léger n'existe pas encore */
-const ALT={rll:'rl_local/index.json'};
+const SRC={steamH:['history/steam.jsonl',1],store:['store.json'],val:['history/valorant.jsonl',1],rl:['history/rocket_league.jsonl',1],cod:['cod_mobile.json'],codp:['cod_profile.json'],codr:['cod_ranks.json'],setup:['setup.json'],vh:['valorant.json'],gj:['goals.json'],rlm:['rocket_league.json'],bc:['ballchasing_app.json'],bca:['ballchasing_analysis.json'],rll:['rl_local/summary.json'],rlld:['rl_local/deep.json'],sach:['steam_achievements.json']};
+const CHART_R=['rl','valorant','profil'];
+const NEED={steam:['steamH','store','sach'],valorant:['vh'],rl:['bc','rll'],setup:['setup'],bilan:['vh','bc','bca','steamH'],comparer:['vh','bc','steamH'],activite:['vh','bc','steamH','val','rl'],profil:['vh','steamH','store']};
+/* rll = index LÉGER (rl_local/summary.json, sans les blocs d_*, format « tableau » décodé par untabFile), rlld = détails (deep.json) chargés après l'affichage ;
+   bc = ballchasing_app.json (= ballchasing_latest.json sans les conseils par replay, format tableau), bca = ces conseils (chargés à la demande : bcA()).
+   ALT = repli sur le fichier d'origine complet si le dérivé n'existe pas (encore). */
+const ALT={rll:'rl_local/index.json',bc:'ballchasing_latest.json'};
 const RAW={},FULL=new Set(),FAILED=new Set(),INFLIGHT={};
 function fetchKeys(keys){return Promise.all(keys.filter(k=>!FULL.has(k)).map(k=>INFLIGHT[k]||(INFLIGHT[k]=(async()=>{const [f,isJl]=SRC[k];let t=await get(f,!isJl);if(t==null&&ALT[k])t=await get(ALT[k],!isJl);
-  if(t!=null){RAW[k]=isJl?jlParse(t):t;FULL.add(k)}else if(!(k in RAW))RAW[k]=isJl?[]:null})().finally(()=>{delete INFLIGHT[k]}))))}
+  if(t!=null){RAW[k]=isJl?jlParse(t):untabFile(t);FULL.add(k)}else if(!(k in RAW))RAW[k]=isJl?[]:null})().finally(()=>{delete INFLIGHT[k]}))))}
 async function load(){
-  await stamp();const h=await get('home.json');
-  if(h&&h.lite){for(const k of Object.keys(SRC))RAW[k]=k in h?h[k]:(SRC[k][1]?[]:null);['cod','codp','codr','gj','rlm'].forEach(k=>{if(h[k]!=null)FULL.add(k)})}
+  await stamp();
+  // fichiers de la page demandée lancés tout de suite, en parallèle de home.json (au lieu d'attendre l'accueil), + Chart.js pour les pages à graphiques
+  const r0=location.hash.replace(/^#\/?/,'').split('/')[0],early=(NEED[r0]||[]).filter(k=>!FULL.has(k));
+  if(early.length){fetchKeys(early).catch(()=>{});if(CHART_R.includes(r0))setTimeout(()=>loadChart().catch(()=>{}),0)}
+  const h=await get('home.json');
+  if(h&&h.lite){for(const k of Object.keys(SRC))if(!FULL.has(k))RAW[k]=k in h?h[k]:(SRC[k][1]?[]:null);['cod','codp','codr','gj','rlm'].forEach(k=>{if(h[k]!=null)FULL.add(k)})}
   else await fetchKeys(Object.keys(SRC));
   build();
 }
@@ -379,6 +392,8 @@ const rlNext=pl=>Math.min(RL_T.length-1,pl.tier+1);
 /* ========== RL : analyse des replays ========== */
 const BCM={shooting_pct:['Précision de tir','%'],avg_boost:['Boost moyen',''],pct_zero_boost:['Temps à 0 boost','%'],pct_full_boost:['Temps à 100 boost','%'],pct_supersonic:['Temps supersonique','%'],pct_slow:['Temps lent','%'],pct_behind_ball:['Derrière la balle','%'],pct_def_third:['Tiers défensif','%'],pct_off_third:['Tiers offensif','%'],pct_most_forward:['Joueur le plus avancé','%'],pct_most_back:['Dernier défenseur','%'],pct_closest_ball:['Plus près de la balle','%'],bpm:['Boost ramassé / min',''],overfill_pct:['Boost gaspillé','%'],pct_high_air:['Temps haut dans les airs','%'],demos:['Démolitions',''],clears:['Dégagements',''],aerial_hits:['Touches aériennes','']};
 const bcv=(k,v)=>v==null?'—':fnum(v,BCM[k]?.[1]=='%'?1:0)+(BCM[k]?.[1]||'');
+/* conseils d'un replay : dans le replay (fichier d'origine) ou dans ballchasing_analysis.json (chargé à la demande) */
+const bcA=x=>x&&(x.analysis||RAW.bca?.a?.[x.id])||null;
 const bcReps=()=>(D.bc?.replays||[]).filter(r=>r.m&&!r.bots);
 function bcWeekly(){const W=(D.bc?.weekly||[]).at(-1);if(!W)return '';const f=W.focus;
   return `<h2>Bilan de la semaine</h2><div class="glass pad"><div class="stats">${stat('Parties',W.matches,'semaine du '+fdate(W.start))}${stat('Victoires',fnum(100*W.wins/W.matches,0)+' %',W.wins+' / '+W.matches)}${stat('Précision',bcv('shooting_pct',W.avg.shooting_pct))}${stat('Boost moyen',bcv('avg_boost',W.avg.avg_boost))}${stat('Supersonique',bcv('pct_supersonic',W.avg.pct_supersonic))}${stat('Derrière la balle',bcv('pct_behind_ball',W.avg.pct_behind_ball))}</div>
@@ -391,7 +406,7 @@ function bcProgressChart(){const c=$("#bc1");if(!c)return;if(window.Chart)Chart.
   const v=k=='wr'?R.map(r=>r.result=='win'?100:0):R.map(r=>r.m[k]),roll=v.map((_,i)=>{const a=v.slice(Math.max(0,i-4),i+1).filter(x=>x!=null);return a.length?a.reduce((s,x)=>s+x,0)/a.length:null});
   chart(c,{type:'line',data:{labels:R.map(r=>fshort(r.date)),datasets:[lineDS(k=='wr'?'Résultat (100 = victoire)':BCM[k][0],v,COL.rlA,{fill:false,showLine:false,pointRadius:5}),lineDS('Moyenne glissante (5)',roll,COL.cy)]},options:{plugins:{title:{display:true,text:(k=='wr'?'Taux de victoire':BCM[k][0])+' par replay'}}}});
   $$('#bck button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('bcK',b.dataset.k);$$('#bck button').forEach(x=>x.classList.toggle('on',x==b));bcProgressChart()})}
-function rlReplay(id){const x=(D.bc?.replays||[]).find(r=>r.id==id);if(!x){go('#/rl');return}const m=x.m||{},A=x.analysis||{weaknesses:[],strengths:[]};
+function rlReplay(id){const x=(D.bc?.replays||[]).find(r=>r.id==id);if(!x){go('#/rl');return}const m=x.m||{},A=bcA(x)||{weaknesses:[],strengths:[]};
   const grp=(t,ks)=>`<h2>${t}</h2><div class="stats">${ks.filter(k=>m[k]!=null).map(k=>stat(BCM[k][0],bcv(k,m[k]))).join('')}</div>`;
   app.innerHTML=`<div class="cover glass solid" style="background:radial-gradient(120% 120% at 0 0,${x.result=='win'?'#22c55e66':'#ff465566'},transparent 65%)"><div class="ttl"><h3>${esc(x.map||'Replay')} · ${x.team_goals}-${x.opp_goals}</h3><span class="pill">${esc(x.playlist)}</span><span class="pill">${x.result=='win'?'Victoire':'Défaite'}</span><span class="pill">${fdate(x.date)}</span></div></div>
   <div class="stats">${stat('Buts',x.goals)}${stat('Passes',x.assists)}${stat('Arrêts',x.saves)}${stat('Tirs',x.shots,'précision '+bcv('shooting_pct',m.shooting_pct))}${stat('Score',x.score,x.mvp?'🏅 MVP':'')}${stat('Démolitions',m.demos??'—','subies : '+(m.demos_taken??'—'))}</div>
@@ -470,7 +485,8 @@ function rllMerge(){const dp=RAW.rlld&&RAW.rlld.deep,L=D.rll||[];if(dp)for(const
   D.rllDeep=!!(dp||!L.length||L.some(r=>r.d_heat))}
 let rllDK=0;
 function rllDeepKick(){if(D.rllDeep!==false||rllDK||!(D.rll||[]).length)return;rllDK=1;
-  fetchKeys(['rlld']).then(()=>{rllDK=0;if(FULL.has('rlld'))rllMerge();else D.rllDeep='fail';
+  // gros fichier (détails) demandé après Chart.js, pour ne pas ralentir l'affichage des graphiques sur mobile
+  (window.Chart?Promise.resolve():loadChart().catch(()=>{})).then(()=>fetchKeys(['rlld'])).then(()=>{rllDK=0;if(FULL.has('rlld'))rllMerge();else D.rllDeep='fail';
     if(/^#\/rl\/?$/.test(location.hash)&&D.rlm&&!$('form')){const y=scrollY;charts.forEach(ch=>{try{ch.destroy()}catch(e){}});charts=[];rlManual();scrollTo(0,y)}})}
 function rllHTML(){
   const L=D.rll;if(!L||!L.length)return `<h2>🔬 Replays analysés</h2><div class="glass wait"><div class="ico">🔬</div><h3>En attente des premiers replays analysés</h3><p class="mut">À la fin d'un match, choisis <b>« Sauvegarder le replay »</b> dans Rocket League : l'outil de ton PC l'analyse (sur ton ordinateur) puis envoie seulement tes statistiques ici, en quelques minutes. Cartes de chaleur, coups d'envoi, tirs, boost, rotations… apparaîtront sur cette page. Installation : <a href="https://github.com/Blood63/gaming-tracker/blob/main/tools/rl-uploader/README.md" target="_blank" rel="noopener">guide README</a>.</p></div>`;
@@ -680,7 +696,7 @@ function bilan(){
   const rr=a=>a.length?a.reduce((s,x)=>s+(x.rr_change||0),0):null, vw=a=>a.length?100*a.filter(x=>x.result=='win').length/a.length:null;
   const rm=(a,k)=>avg(a.map(x=>({v:x.m?.[k]})),'v'), coach=[];
   // Coaching RL : faiblesses récurrentes des replays
-  const wc={};R.forEach(x=>(x.analysis?.weaknesses||[]).forEach(w=>{(wc[w.label]??={n:0,w}).n++}));const topW=Object.values(wc).sort((a,b)=>b.n-a.n).slice(0,3);
+  const wc={};R.forEach(x=>(bcA(x)?.weaknesses||[]).forEach(w=>{(wc[w.label]??={n:0,w}).n++}));const topW=Object.values(wc).sort((a,b)=>b.n-a.n).slice(0,3);
   const few=(g,n,u)=>coach.push([g,`Pas assez de parties (${n}/${MIN_SAMPLE})`,`Seulement ${n} ${u} analysable${n>1?'s':''} : il en faut au moins ${MIN_SAMPLE} pour un conseil fiable.`,'Joue encore quelques parties : le coaching apparaîtra automatiquement.']);
   if(R.length>=MIN_SAMPLE){topW.forEach(({n,w})=>coach.push(['🚗 Rocket League',`${w.label} — vu dans ${n}/${R.length} replays (calculé)`,w.txt,w.drill]));
   if(!topW.length&&W.length&&W.at(-1).focus)coach.push(['🚗 Rocket League',W.at(-1).focus.label,W.at(-1).focus.txt,W.at(-1).focus.drill])}else if(R.length)few('🚗 Rocket League',R.length,'replay');
@@ -1303,7 +1319,9 @@ function bindNotif(){const c=$('#ntf');if(!c)return;c.onchange=async()=>{if(c.ch
 /* Export de toutes les données en un fichier JSON */
 function exportHTML(){return `<h2>📦 Exporter mes données</h2><div class="glass pad"><p class="mut" style="margin:0 0 .6rem;font-size:.85rem">Télécharge toutes tes données (Steam, Valorant, Rocket League, COD, objectifs, setup) et ce qui attend d’être synchronisé sur cet appareil, en un seul fichier JSON. Ta clé GitHub n’y figure jamais.</p><button type="button" class="btn full" id="expb">⬇️ Télécharger l’export (.json)</button><p class="mut" id="expst" style="font-size:.8rem;margin:.5rem 0 0"></p></div>`}
 async function doExport(){const b=$('#expb'),st=$('#expst');if(!b||b.disabled)return;b.disabled=true;st.textContent='Préparation…';
-  try{const files={},miss=[];await Promise.all(Object.values(SRC).map(async([f,isJl])=>{const t=await get(f,false);if(t==null){miss.push(f);return}try{files[f]=isJl?jlParse(t):JSON.parse(t)}catch(e){files[f]=t}}));
+  // fichiers d'origine (ballchasing_latest.json complet, conseils compris) ; format « tableau » décodé : export lisible, comme avant
+  try{const files={},miss=[],L=Object.entries(SRC).filter(([k])=>k!='bca').map(([k,v])=>k=='bc'?['ballchasing_latest.json']:v);
+    await Promise.all(L.map(async([f,isJl])=>{const t=await get(f,false);if(t==null){miss.push(f);return}try{files[f]=isJl?jlParse(t):untabFile(JSON.parse(t))}catch(e){files[f]=t}}));
     const dev={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||k==TOKK||/token|tok/i.test(k))continue;try{dev[k]=JSON.parse(localStorage.getItem(k))}catch(e){dev[k]=localStorage.getItem(k)}}
     const out={format:'gaming-tracker-export',version:1,exported_at:new Date().toISOString(),data_version:BV,fichiers:files,manquants:miss,appareil:dev},
       blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a'),[y,m,d]=parisYMD(Date.now());
@@ -1333,7 +1351,7 @@ function render(){
   document.body.classList.toggle('sub',!top);document.body.classList.toggle('cod-amb',r=='cod');setTheme(r=='rl'?'rl':r=='cod'?'cod':r=='valorant'?valAgent():'');document.body.dataset.skin=r=='steam'?'px':'';
   $$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r==r||(a.dataset.r=='compet'&&['valorant','rl','cod'].includes(r))||(a.dataset.r=='profil'&&r=='activite')));
   $('#ttl').textContent=r=='setup'&&p[1]?(p[1]=='reglages'?'Réglages':'Conseils'):r=='valorant'&&p[1]?'Partie Valorant':r=='rl'&&p[1]=='rang'?'Mes rangs RL':r=='rl'&&p[1]?'Analyse du replay':r=='cod'&&p[1]=='modes'?'Stats par mode':r=='cod'&&p[1]=='ajouter'?'Ajouter une partie':r=='cod'&&p[1]=='rang'?'Changement de rang':r=='cod'&&p[1]=='profil'?'Carte de joueur':r=='cod'&&p[1]?'Partie COD':r=='steam'&&p[1]?(D.games.find(g=>g.appid==p[1])?.name||'Jeu'):(TITLES[r]??'GameTrack');
-  const need=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));
+  const need=[...(NEED[r]||[]),...(r=='rl'&&p[1]&&p[1]!='rang'?['bca']:[])].filter(k=>!FULL.has(k)&&!FAILED.has(k));
   if(need.length){const h0=location.hash;app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';fetchKeys(need).then(()=>{need.forEach(k=>{if(!FULL.has(k))FAILED.add(k)});build();if(location.hash==h0)render()});return}
   try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]=='rang'&&D.rlm?rlRankForm():p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(decodeURIComponent(p[1])):cod(),profil,objectifs,activite,comparer:()=>comparer(p[1],p[2])}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
@@ -1347,7 +1365,7 @@ function route(){
 }
 window.addEventListener('hashchange',route);
 // préchargement à l'intention (doigt posé / survol d'un lien) : les données détaillées de la page visée arrivent plus tôt
-document.addEventListener('pointerdown',e=>{const a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a||!ready)return;const r=a.getAttribute('href').slice(2).split('/')[0];const n=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));if(n.length)fetchKeys(n)},{passive:true});
+document.addEventListener('pointerdown',e=>{if(ready&&e.target.closest&&e.target.closest('[data-bc]')&&!FULL.has('bca'))fetchKeys(['bca']);const a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a||!ready)return;const r=a.getAttribute('href').slice(2).split('/')[0];const n=(NEED[r]||[]).filter(k=>!FULL.has(k)&&!FAILED.has(k));if(n.length)fetchKeys(n)},{passive:true});
 app.innerHTML='<div class="glass wait"><div class="ico">⚡</div>Chargement…</div>';
 load().then(()=>{ready=true;checkNews();render();pendingCheck()}).catch(e=>{console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Impossible de charger les données</h3><p class="mut">${esc(e.message)}</p><button type="button" class="btn" onclick="location.reload()">🔄 Réessayer</button></div>`});
 /* Changements « en attente » au démarrage alors qu'un jeton est enregistré : le site publié peut avoir quelques minutes de retard
