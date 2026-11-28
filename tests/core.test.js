@@ -307,3 +307,97 @@ test('valPName : seul ton pseudo est affiché, les autres deviennent « Allié n
   assert.ok(o.includes('Adversaire 3'),o);
   assert.equal(run('valPName({me:true,name:"<b>x"},true,0)'),'&lt;b&gt;x','pseudo échappé');
 });
+
+/* ---- t141 : onglet Valorant, « Ce que j'ai amélioré la semaine dernière » et « Ce que je dois faire pour m'améliorer » ---- */
+// fabrique une partie classée ; date = jour à 20 h (heure de Paris en hiver = 19 h UTC)
+const vm1=(day,o={})=>({id:'m'+day+(o.i||''),date:day+'T19:00:00Z',mode:'Competitive',map:'Bind',agent:'Sage',team:'Red',result:'win',kills:20,deaths:10,assists:5,head:20,body:70,leg:10,dmg:3000,dmg_recv:2500,score:4600,rounds:20,first_kills:2,rr_change:20,...o});
+const NOW="Date.parse('2026-11-28T09:00:00Z')"; // samedi 28 nov. : semaine dernière = 16–22 nov., semaine d'avant = 9–15 nov.
+test('valDay / valMonday : semaines du lundi au dimanche en heure de Paris (minuit local, changement d’heure)',()=>{
+  assert.equal(run("valDay('2026-11-22T22:59:00Z')"),'2026-11-22'); // dimanche 23 h 59 Paris
+  assert.equal(run("valDay('2026-11-22T23:00:00Z')"),'2026-11-23'); // lundi 0 h Paris
+  assert.equal(run("valDay('2026-07-05T22:30:00Z')"),'2026-07-06'); // été (UTC+2)
+  assert.equal(run("valMonday('2026-11-28')"),'2026-11-23');
+  assert.equal(run("valMonday('2026-11-23')"),'2026-11-23');
+  assert.equal(run("valMonday('2026-11-22')"),'2026-11-16');
+  assert.equal(run("valMonday('2027-01-03')"),'2026-12-28'); // à cheval sur l'année
+  assert.equal(run("valDay(null)"),null);assert.equal(run("valDay('pas une date')"),null);
+});
+test('valWeekly : semaine dernière vs semaine d’avant vs moyenne, seuls les écarts nets comptent',()=>{
+  ctx.M=[vm1('2026-11-10',{i:1,head:10,body:80,dmg:2400,score:3800,result:'loss',rr_change:-20}),vm1('2026-11-11',{i:2,head:10,body:80,dmg:2400,score:3800}),vm1('2026-11-12',{i:3,head:10,body:80,dmg:2400,score:3800,result:'loss',rr_change:-20}),
+    vm1('2026-11-17',{i:4}),vm1('2026-11-18',{i:5}),vm1('2026-11-22',{i:6}),
+    vm1('2026-11-24',{i:7}),{...vm1('2026-11-19',{i:8}),mode:'Swiftplay'}];
+  const w=run(`valWeekly(M,[],${NOW})`);
+  assert.equal(w.from,'2026-11-16');assert.equal(w.to,'2026-11-22');assert.equal(w.pfrom,'2026-11-09');
+  assert.equal(w.n,3,'non classé exclu, semaine en cours exclue');assert.equal(w.np,3);assert.equal(w.cur.n,1);
+  const r=k=>w.rows.find(x=>x.k==k);
+  near(r('hs').v,20);near(r('hs').p,10);assert.equal(r('hs').vp,'up');
+  assert.equal(r('kd').vp,'flat','K/D identique : pas de flèche');
+  near(r('wr').v,100);assert.equal(r('wr').vp,'up');
+  assert.ok(w.better.some(x=>x.k=='hs'));assert.equal(w.worse.length,0);
+  assert.equal(w.agents[0].name,'Sage');assert.equal(w.agents[0].ok,true);
+  assert.equal(w.rank,null,'pas d’historique MMR : pas de rang inventé');
+});
+test('valWeekly : « plus bas = mieux » pour la place dans l’équipe, et baisse détectée',()=>{
+  const sb=(me,o)=>[{me:true,team:'Red',score:me},...[500,400,300,200].map(s=>({me:false,team:'Red',score:s})),...o];
+  ctx.M=[1,2,3].map(i=>vm1('2026-11-1'+i,{i,score:4600,scoreboard:sb(600,[])})).concat([1,2,3].map(i=>vm1('2026-11-'+(16+i),{i:10+i,score:3000,head:5,body:85,scoreboard:sb(100,[])})));
+  const w=run(`valWeekly(M,[],${NOW})`),pos=w.rows.find(r=>r.k=='pos');
+  near(pos.v,5);near(pos.p,1);assert.equal(pos.vp,'down','5e de l’équipe au lieu de 1er = baisse');
+  assert.ok(w.worse.some(x=>x.k=='hs'));assert.ok(w.worse.some(x=>x.k=='acs'));
+});
+test('valWeekly : aucune partie la semaine dernière, une seule partie, champs manquants',()=>{
+  ctx.M=[vm1('2026-11-10',{i:1}),vm1('2026-11-11',{i:2}),vm1('2026-11-12',{i:3})];
+  let w=run(`valWeekly(M,[],${NOW})`);assert.equal(w.n,0);assert.equal(w.ok,false);assert.equal(w.better.length,0);
+  ctx.M=[vm1('2026-11-18')];w=run(`valWeekly(M,[],${NOW})`);assert.equal(w.n,1);assert.equal(w.ok,false);assert.ok(w.rows.every(r=>r.vp==null&&r.vb==null),'1 partie : aucune comparaison');
+  ctx.M=[{date:'2026-11-17T19:00:00Z',mode:'Competitive'},{date:'2026-11-18T19:00:00Z',mode:'Competitive',kills:3},{date:'2026-11-19T19:00:00Z',mode:'Competitive',result:'win'},null,{mode:'Competitive'}];
+  w=run(`valWeekly(M,undefined,${NOW})`);assert.equal(w.n,3);assert.equal(w.rows.find(r=>r.k=='hs'),undefined,'HS absent : ligne absente, pas de 0 inventé');
+  assert.equal(run(`valWeekly(undefined,null,${NOW})`).n,0);
+});
+test('valWeekly : progression du rang depuis l’historique MMR (fin de semaine − début)',()=>{
+  ctx.M=[vm1('2026-11-17',{i:1}),vm1('2026-11-18',{i:2}),vm1('2026-11-19',{i:3})];
+  ctx.H=[{date:'2026-11-08T19:00:00Z',tier:'Silver 1',rr:50,elo:650},{date:'2026-11-15T19:00:00Z',tier:'Silver 2',rr:0,elo:700},{date:'2026-11-21T19:00:00Z',tier:'Silver 2',rr:60,elo:760},{date:'2026-11-25T19:00:00Z',tier:'Silver 3',rr:5,elo:805}];
+  const w=run(`valWeekly(M,H,${NOW})`);assert.equal(w.rank.net,60);assert.equal(w.rank.prevNet,50);assert.equal(w.rank.end.tier,'Silver 2');
+});
+test('valTeamPos / valStats : place au score dans l’équipe, écart de dégâts, premières élim. par manche',()=>{
+  const sb=[{me:true,team:'Red',score:300},{me:false,team:'Red',score:500},{me:false,team:'Red',score:100},{me:false,team:'Blue',score:900}];
+  assert.equal(run(`valTeamPos(${JSON.stringify({scoreboard:sb})})`),2);
+  assert.equal(run('valTeamPos({})'),null);assert.equal(run('valTeamPos({scoreboard:[{me:true,team:"Red",score:1}]})'),null);
+  const s=run(`valStats([${JSON.stringify(vm1('2026-11-17'))}])`);near(s.dd,25);near(s.fkr,10);near(s.fkm,2);assert.equal(s.rr,20);
+  const e=run('valStats([])');assert.equal(e.n,0);assert.equal(e.dd,null);assert.equal(e.fkr,null);assert.equal(e.pos,null);
+});
+test('valTips : trop peu de parties → aucun conseil inventé',()=>{
+  ctx.M=[vm1('2026-11-17',{i:1}),vm1('2026-11-18',{i:2})];
+  const t=run('valTips(M,{goalTier:12})');assert.equal(t.few,true);assert.equal(t.tips.length,0);assert.equal(t.n,2);
+  assert.equal(run('valTips([],{}).few'),true);assert.equal(run('valTips(undefined).few'),true);
+});
+test('valTips : conseils priorisés avec stat, repère sourcé et objectif ; repère « Or » issu des tableaux des scores',()=>{
+  const gold=[...Array(4)].map((_,i)=>({me:false,team:'Blue',tier:'Gold '+(1+i%3),k:20,d:15,a:4,score:5000,hs:30,bs:60,ls:10,dmg:3400}));
+  const mk=(i,o)=>vm1('2026-11-'+String(1+i).padStart(2,'0'),{i,head:10,body:85,leg:5,kills:12,deaths:16,dmg:2600,dmg_recv:3000,score:3800,first_kills:1,result:i%2?'win':'loss',
+    scoreboard:[{me:true,team:'Red',score:3800,k:12,d:16,hs:10,bs:85,ls:5,dmg:2600,tier:'Silver 3',agent:'Sage'},...gold],...o});
+  ctx.M=[...Array(12)].map((_,i)=>mk(i));
+  const t=run('valTips(M,{goalTier:13})');
+  assert.equal(t.few,false);assert.equal(t.refN,48);assert.ok(t.tips.length>=3&&t.tips.length<=6);
+  const hs=t.tips.find(x=>x.k=='hs');assert.ok(hs,'HS trop bas vs joueurs Or');near(hs.stat,10);near(hs.ref,30);assert.match(hs.refLab,/Or croisés dans tes parties/);
+  assert.equal(t.tips[0].k,'hs','le plus gros écart en premier');
+  for(let i=1;i<t.tips.length;i++)assert.ok(t.tips[i-1].gap>=t.tips[i].gap);
+  assert.ok(!(t.tips.some(x=>x.k=='adr')&&t.tips.some(x=>x.k=='acs')),'ADR et ACS pas en double');
+  const fk=t.tips.find(x=>x.k=='fkr');assert.ok(fk);assert.match(fk.txt,/Sentinelle/,'Sage : conseil d’ouverture adapté au rôle');
+  assert.ok(t.tips.every(x=>x.title&&x.txt&&x.drill&&x.target!=null&&x.stat!=null));
+  assert.equal(JSON.stringify(t).includes('name'),false,'aucun pseudo dans les conseils');
+});
+test('valTips : sans assez de joueurs du rang visé, pas de repère inventé',()=>{
+  ctx.M=[...Array(6)].map((_,i)=>vm1('2026-11-0'+(1+i),{i,head:5,body:90}));
+  const t=run('valTips(M,{goalTier:13})');assert.equal(t.refN,0);assert.equal(t.tips.find(x=>x.k=='hs'),undefined);
+  assert.equal(run('valTips(M,{goalTier:999}).goal'),null);
+});
+test('valTips : carte faible et série de défaites détectées sur assez de parties',()=>{
+  const maps=['Bind','Haven','Lotus','Ascent'];
+  ctx.M=[...Array(40)].map((_,i)=>{const mp=maps[i%4],d='2026-10-'+String(1+Math.floor(i/2)).padStart(2,'0');
+    return{...vm1(d,{i,map:mp,result:mp=='Bind'?'loss':(i%3?'win':'loss')}),date:d+(i%2?'T20:00:00Z':'T19:00:00Z')}});
+  const t=run('valTips(M,{goalTier:13,n:40})'),mp=t.tips.find(x=>x.k=='map');
+  assert.ok(mp,'Bind perdue à chaque fois');assert.match(mp.title,/Bind/);assert.equal(mp.stat,0);assert.equal(mp.target,50);assert.equal(mp.ru,' %');
+});
+test('valTilt : victoires juste après 2 défaites d’affilée le même jour',()=>{
+  ctx.M=[vm1('2026-11-10',{i:1,result:'loss'}),{...vm1('2026-11-10',{i:2,result:'loss'}),date:'2026-11-10T20:00:00Z'},{...vm1('2026-11-10',{i:3,result:'loss'}),date:'2026-11-10T21:00:00Z'},
+    vm1('2026-11-11',{i:4,result:'win'})];
+  const t=run('valTilt(M)');assert.equal(t.n,1);assert.equal(t.wr,0);near(t.all,25);
+});

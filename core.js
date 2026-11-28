@@ -274,3 +274,101 @@ const untab=t=>{if(!t||typeof t!='object'||!t.$tab)return t;const T=t.$tab,C={},
   return T.r.map(si=>{const o={};for(const k of T.sh[si])o[k]=C[k][P[k]++];return o})};
 /* Fichier entier : chaque valeur de 1er niveau au format tableau est décodée (les autres sont gardées telles quelles). */
 const untabFile=o=>{if(!o||typeof o!='object'||Array.isArray(o))return o;let hit=false;const r={};for(const k in o){const v=o[k];if(v&&typeof v=='object'&&v.$tab){r[k]=untab(v);hit=true}else r[k]=v}return hit?r:o};
+/* ========== Valorant : « Ce que j'ai amélioré la semaine dernière » + « Ce que je dois faire pour m'améliorer » (t141) ==========
+   Fonctions pures : uniquement les champs réellement présents dans valorant.json (pas de KAST, d'économie, d'attaque/défense ni de premières morts :
+   l'API ne les fournit pas). Semaines du lundi au dimanche, heure de Paris. Parties classées (Compétition) uniquement. */
+const VAL_PDAY=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit'});
+const valDay=d=>{if(d==null||d==='')return null;const t=new Date(d);return isNaN(t)?null:VAL_PDAY.format(t)}; // AAAA-MM-JJ (Paris)
+const valAddDays=(day,n)=>{const[y,m,d]=day.split('-').map(Number),u=new Date(Date.UTC(y,m-1,d+n));return u.toISOString().slice(0,10)};
+const valMonday=day=>{const[y,m,d]=day.split('-').map(Number),w=(new Date(Date.UTC(y,m-1,d)).getUTCDay()+6)%7;return valAddDays(day,-w)};
+const valRanked=a=>(Array.isArray(a)?a:[]).filter(x=>x&&x.mode=='Competitive'&&valDay(x.date)).slice().sort((x,y)=>new Date(x.date)-new Date(y.date));
+/* Place au score dans ta propre équipe (1 = meilleur ACS de l'équipe), depuis le tableau des scores anonymisé */
+const valTeamPos=x=>{const sb=Array.isArray(x.scoreboard)?x.scoreboard:null,me=sb&&sb.find(p=>p&&p.me);if(!me)return null;
+  const t=sb.filter(p=>p&&p.team==me.team&&num(p.score)!=null);return t.length<2?null:1+t.filter(p=>p.score>me.score).length};
+/* Statistiques d'un groupe de parties : celles de vAgg + premières élim./manche, écart de dégâts/manche, place dans l'équipe, RR */
+function valStats(a){a=Array.isArray(a)?a.filter(Boolean):[];const g=vAgg(a),rd=a.filter(x=>num(x.rounds)>0),fk=rd.filter(x=>num(x.first_kills)!=null),dd=rd.filter(x=>num(x.dmg)!=null&&num(x.dmg_recv)!=null),
+    tp=a.map(valTeamPos).filter(v=>v!=null),rr=a.filter(x=>num(x.rr_change)!=null),R=s=>s.reduce((t,x)=>t+x.rounds,0);
+  return{...g,fkr:fk.length?100*fk.reduce((t,x)=>t+x.first_kills,0)/R(fk):null,fkm:fk.length?fk.reduce((t,x)=>t+x.first_kills,0)/fk.length:null,
+    dd:dd.length?dd.reduce((t,x)=>t+x.dmg-x.dmg_recv,0)/R(dd):null,pos:tp.length?tp.reduce((s,v)=>s+v,0)/tp.length:null,posn:tp.length,
+    rr:rr.length?rr.reduce((s,x)=>s+x.rr_change,0):null}}
+/* Indicateurs comparés : clé, libellé, décimales, unité, seuil d'écart « significatif », sens (1 = plus haut est mieux) */
+const VAL_WK_M=[['wr','Victoires',0,' %',8,1],['kd','K/D',2,'',.08,1],['kda','KDA',2,'',.1,1],['hs','Tirs à la tête',1,' %',2,1],['adr','ADR (dégâts/manche)',0,'',8,1],
+  ['acs','ACS (score/manche)',0,'',10,1],['dd','Écart de dégâts/manche',0,'',8,1],['fkr','Premières élim. (% des manches)',1,' %',1.5,1],['pos','Place au score dans ton équipe',1,'',.3,-1]];
+const VAL_WK_MIN=3;
+const valVerdict=(cur,ref,thr,dir)=>cur==null||ref==null?null:(cur-ref)*dir>=thr?'up':(ref-cur)*dir>=thr?'down':'flat';
+/* Rang en fin de journée : dernière entrée de l'historique MMR strictement avant le jour donné */
+const valRankAt=(H,day)=>{let r=null;for(const h of(Array.isArray(H)?H:[])){const d=valDay(h&&h.date);if(d&&d<day&&num(h.elo)!=null&&(!r||new Date(h.date)>=new Date(r.date)))r=h}return r};
+function valWeekly(matches,history,now=Date.now(),min=VAL_WK_MIN){
+  const all=valRanked(matches),cur=valMonday(valDay(now)),from=valAddDays(cur,-7),pfrom=valAddDays(cur,-14),dayOf=x=>valDay(x.date);
+  const L=all.filter(x=>dayOf(x)>=from&&dayOf(x)<cur),C=all.filter(x=>dayOf(x)>=cur),P=all.filter(x=>dayOf(x)>=pfrom&&dayOf(x)<from),B=all.filter(x=>dayOf(x)<from);
+  const s=valStats(L),p=valStats(P),b=valStats(B),ok=L.length>=min,pok=P.length>=min,bok=B.length>=min;
+  const rows=VAL_WK_M.map(([k,l,d,u,thr,dir])=>({k,l,d,u,dir,v:s[k],p:pok?p[k]:null,b:bok?b[k]:null,vp:ok&&pok?valVerdict(s[k],p[k],thr,dir):null,vb:ok&&bok?valVerdict(s[k],b[k],thr,dir):null})).filter(r=>r.v!=null);
+  const better=rows.filter(r=>r.vp=='up'||(r.vp==null&&r.vb=='up')),worse=rows.filter(r=>r.vp=='down'||(r.vp==null&&r.vb=='down'));
+  // agents / cartes : seulement avec assez de parties des deux côtés (semaine dernière vs ton historique avant)
+  const grp=(k)=>{const o={};L.forEach(x=>(o[x[k]||'?']??=[]).push(x));return Object.entries(o).map(([n,a])=>{const ref=B.filter(x=>(x[k]||'?')==n),g=valStats(a),r=valStats(ref);
+    return{name:n,n:a.length,nb:ref.length,wr:g.wr,wrb:r.wr,acs:g.acs,acsb:r.acs,kd:g.kd,kdb:r.kd,ok:a.length>=min&&ref.length>=min,
+      verdict:a.length>=min&&ref.length>=min?(valVerdict(g.acs,r.acs,15,1)||'flat'):null}}).sort((x,y)=>y.n-x.n)};
+  const r0=valRankAt(history,from),r1=valRankAt(history,cur),rp=valRankAt(history,pfrom);
+  return{cur:{from:cur,n:C.length,s:valStats(C)},from,to:valAddDays(cur,-1),pfrom,pto:valAddDays(from,-1),n:L.length,np:P.length,nb:B.length,ok,pok,bok,min,s,p,b,rows,better,worse,agents:grp('agent'),maps:grp('map'),
+    rank:r0&&r1?{start:r0,end:r1,net:r1.elo-r0.elo,prevNet:rp&&r0?r0.elo-rp.elo:null}:r1?{start:null,end:r1,net:null,prevNet:null}:null}}
+/* Rôle des agents (pour adapter les conseils : une Sentinelle n'est pas censée ouvrir les manches) */
+const VAL_ROLE={Sentinelle:['Sage','Killjoy','Cypher','Chamber','Deadlock','Vyse','Veto'],Duelliste:['Jett','Reyna','Raze','Phoenix','Yoru','Neon','Iso','Waylay'],
+  Contrôleur:['Omen','Brimstone','Viper','Astra','Harbor','Clove','Miks'],Initiateur:['Sova','Breach','Skye','KAY/O','Fade','Gekko','Tejo']};
+const valRole=a=>Object.keys(VAL_ROLE).find(r=>VAL_ROLE[r].includes(a))||null;
+/* Repère « joueurs du rang visé » : moyennes des AUTRES joueurs des tableaux des scores dont le rang commence comme la cible (ex. « Gold »).
+   Aucun pseudo utilisé (les noms ne sont pas dans les données) ; seulement des totaux. */
+function valLobbyRef(matches,tierWord){const T={k:0,d:0,hs:0,sh:0,dmg:0,sc:0,r:0,n:0};
+  for(const x of valRanked(matches)){const r=num(x.rounds);if(!r||!Array.isArray(x.scoreboard))continue;
+    for(const p of x.scoreboard){if(!p||p.me||!p.tier||String(p.tier).split(' ')[0]!=tierWord)continue;const sh=(p.hs||0)+(p.bs||0)+(p.ls||0);
+      T.k+=p.k||0;T.d+=p.d||0;T.hs+=p.hs||0;T.sh+=sh;T.dmg+=p.dmg||0;T.sc+=p.score||0;T.r+=r;T.n++}}
+  return{n:T.n,kd:T.d?T.k/T.d:null,hs:T.sh?100*T.hs/T.sh:null,adr:T.r?T.dmg/T.r:null,acs:T.r?T.sc/T.r:null}}
+/* Victoires après 2 défaites d'affilée le même jour (série « tilt ») vs taux global */
+function valTilt(matches){const a=valRanked(matches).filter(x=>x.result);let n=0,w=0;
+  for(let i=2;i<a.length;i++){const d=valDay(a[i].date);if(a[i-1].result=='loss'&&a[i-2].result=='loss'&&valDay(a[i-1].date)==d&&valDay(a[i-2].date)==d){n++;if(a[i].result=='win')w++}}
+  const all=a.length?100*a.filter(x=>x.result=='win').length/a.length:null;return{n,wr:n?100*w/n:null,all}}
+/* Conseils priorisés (3 à 6) : chaque conseil donne la stat qui le déclenche, le repère utilisé (avec sa source) et un objectif chiffré.
+   opt : {n: nb de parties récentes (20), goalTier: id du rang visé (VAL_T), min: 5} */
+function valTips(matches,opt={}){const N=opt.n||20,MIN=opt.min||MIN_SAMPLE,all=valRanked(matches),R=all.slice(-N),me=valStats(R);
+  if(R.length<MIN)return{few:true,n:R.length,min:MIN,tips:[],strong:[]};
+  const gT=VAL_T.find(t=>t.id==opt.goalTier)||null,word=gT?String(gT.n).split(' ')[0]:null;let ref=word?valLobbyRef(all,word):{n:0},refLab=gT?`moyenne des joueurs ${vTier(word)} croisés dans tes parties`:'';
+  if(ref.n<30)ref={n:0}; // trop peu de joueurs de ce rang croisés : pas de repère (on n'invente pas de chiffre)
+  const tips=[],strong=[],add=t=>tips.push(t),main=Object.entries(R.reduce((o,x)=>(o[x.agent]=(o[x.agent]||0)+1,o),{})).sort((a,b)=>b[1]-a[1])[0]?.[0]||null,role=valRole(main);
+  const cmp=(k,lab,d,u,txt,drill,title)=>{const v=me[k],r=ref[k];if(v==null||r==null)return;const gap=(r-v)/r;
+    if(gap>0.03)add({k,title,stat:v,ref:r,refLab:`${refLab} (${ref.n} lignes de score)`,target:r,d,u,txt,drill,gap});else if(gap<-0.03)strong.push({k,label:lab,v,ref:r,d,u,refLab})};
+  cmp('hs','Tirs à la tête',1,' %','Tu touches moins souvent la tête que les joueurs du rang visé : le placement du viseur (à hauteur de tête, sur l’angle avant de peek) est le levier le plus rentable.',
+    'Avant chaque session : 10 min de Range (bots « moyen », strafes) en ne visant que la tête, puis 1 deathmatch au Sheriff/Guardian. En partie, garde le viseur à hauteur de tête en te déplaçant.','Placement du viseur (tirs à la tête)');
+  cmp('adr','Dégâts par manche',0,'','Tu fais moins de dégâts par manche que les joueurs du rang visé : chaque manche, cherche au moins un échange utile (dégâts, trade, utilitaire offensif).',
+    'Règle sur 5 parties : ne finis aucune manche sans avoir infligé de dégâts si tu étais en vie au contact ; joue à 2 avec un coéquipier pour pouvoir trader.','Plus d’impact par manche (ADR)');
+  cmp('kd','K/D',2,'','Tu meurs plus que les joueurs du rang visé : évite les duels 50/50 sans info, joue les angles où un coéquipier peut te trader.',
+    'Après chaque mort, demande-toi : « avais-je l’info ? étais-je tradable ? » Sur 3 parties, note les morts « inutiles » et vise moins de 4 par partie.','Rester en vie (K/D)');
+  cmp('acs','Score de combat (ACS)',0,'','Ton score de combat par manche est sous celui des joueurs du rang visé : participe à plus de combats utiles (éliminations, assistances, dégâts).',
+    'Joue groupé avec un coéquipier pour trader ses duels ; utilise ton utilitaire pour assister (ralentissement, mur, soins) plutôt qu’en fin de manche.','Score de combat (ACS)');
+  // premières éliminations vs part équitable (1 manche sur 10 pour 10 joueurs) ; moins prioritaire pour une Sentinelle/Contrôleur
+  if(me.fkr!=null&&me.fkr<8){const w=role=='Duelliste'?1:role=='Initiateur'?.7:.35;add({k:'fkr',title:'Ouvrir plus de manches (premières éliminations)',stat:me.fkr,ref:10,refLab:'part moyenne : 10 joueurs, 1 première élim. par manche',target:10,d:1,u:' %',
+    txt:role&&role!='Duelliste'?`En ${role} (${main}) ouvrir n’est pas ton rôle principal, mais tu gagnes peu de duels d’ouverture : prends-les seulement avec un avantage (utilitaire, off-angle, trade).`:'Tu gagnes peu de duels d’ouverture : prépare tes peeks (jiggle pour l’info, puis peek large et rapide) au lieu de peeks lents.',
+    drill:'Range : 10 min de counter-strafe + tir unique sur bots en mouvement ; en partie, pré-vise les angles courants à l’entrée de site.',gap:w*(10-me.fkr)/10})}
+  else if(me.fkr!=null&&me.fkr>=11)strong.push({k:'fkr',label:'Premières élim.',v:me.fkr,ref:10,d:1,u:' %',refLab:'part moyenne'});
+  // dégâts reçus > infligés
+  if(me.dd!=null&&me.dd<-5)add({k:'dd',title:'Prendre moins de dégâts gratuits',stat:me.dd,ref:0,refLab:'équilibre dégâts infligés = reçus',target:0,d:0,u:' / manche',
+    txt:'Tu reçois plus de dégâts que tu n’en infliges : tu es souvent touché en premier (peek trop exposé ou déplacement à découvert).',drill:'Sur 5 parties : coupe les angles un par un (« slicing the pie »), ne traverse jamais un axe ouvert sans fumée/flash ou info.',gap:Math.min(.5,-me.dd/100)});
+  // carte faible (sur les 40 dernières parties classées)
+  const M40=all.slice(-40),mp={};M40.forEach(x=>(mp[x.map||'?']??=[]).push(x));const wr40=valStats(M40).wr;
+  const weak=Object.entries(mp).map(([n,a])=>({n,c:a.length,g:valStats(a)})).filter(m=>m.c>=4&&m.g.wr!=null&&wr40!=null&&m.g.wr<=wr40-15).sort((a,b)=>a.g.wr-b.g.wr)[0];
+  if(weak)add({k:'map',title:`Carte à travailler : ${weak.n}`,stat:weak.g.wr,ref:wr40,refLab:`ton taux de victoire sur tes ${M40.length} dernières parties classées`,target:50,d:0,u:' % de victoires',ru:' %',sub:`${weak.c} parties · ACS ${fnum(weak.g.acs,0)} · K/D ${fnum(weak.g.kd,2)}`,
+    txt:`Tu gagnes nettement moins sur ${weak.n} que sur tes autres cartes.`,drill:`Partie personnalisée sur ${weak.n} : 2 placements de défense par site, les lineups/utilitaires de ${main||'ton agent'} et une rotation sûre ; puis applique-les sur tes 3 prochaines parties dessus.`,gap:(wr40-weak.g.wr)/100})
+  // agent secondaire nettement moins bon que l'agent principal
+  const ag={};R.forEach(x=>(ag[x.agent||'?']??=[]).push(x));const mainS=main?valStats(ag[main]):null;
+  const off=Object.entries(ag).filter(([n,a])=>n!=main&&a.length>=3).map(([n,a])=>({n,c:a.length,g:valStats(a)})).filter(o=>mainS&&o.g.acs!=null&&mainS.acs!=null&&o.g.acs<mainS.acs*.85).sort((a,b)=>a.g.acs-b.g.acs)[0];
+  if(off)add({k:'agent',title:`Reste sur ${main} en classé`,stat:off.g.acs,ref:mainS.acs,refLab:`ton ACS en ${main} sur la même période`,target:mainS.acs,d:0,u:' ACS',ru:'',sub:`${off.n} : ${off.c} parties · ${fnum(off.g.wr,0)} % de victoires`,
+    txt:`Tu es nettement moins performant en ${off.n} qu’en ${main} : garde ${off.n} pour les parties non classées tant que l’écart reste aussi grand.`,drill:`Entraîne ${off.n} en Vélocité/non classé (5 parties) avant de le reprendre en classé.`,gap:(mainS.acs-off.g.acs)/mainS.acs})
+  // régularité : part des parties « ratées » (K/D < 0,7)
+  const bad=R.filter(x=>num(x.deaths)>0&&x.kills/x.deaths<.7).length,pb=100*bad/R.length;
+  if(pb>=25)add({k:'cons',title:'Régularité : moins de parties ratées',stat:pb,ref:null,refLab:'',target:15,op:'≤',d:0,u:' % des parties avec K/D < 0,7',ru:' %',
+    txt:`${bad} de tes ${R.length} dernières parties classées sont « ratées » (K/D sous 0,7) : ce sont elles qui coûtent le plus de RR.`,drill:'Échauffement fixe de 15 min avant la 1re classée (Range + 1 deathmatch) ; si la 1re partie est ratée, fais une pause avant d’en relancer une.',gap:(pb-15)/100});
+  // tilt : victoires après 2 défaites d'affilée le même jour
+  const tl=valTilt(all);if(tl.n>=8&&tl.wr!=null&&tl.all!=null&&tl.wr<=tl.all-8)add({k:'tilt',title:'Stop après 2 défaites d’affilée',stat:tl.wr,ref:tl.all,refLab:`ton taux de victoire global (${tl.n} parties jouées juste après 2 défaites le même jour)`,target:tl.all,d:0,u:' % de victoires',ru:' %',
+    txt:'Après 2 défaites de suite dans la journée, tu gagnes moins souvent : la fatigue ou la frustration te coûtent des RR.',drill:'Règle simple : après 2 défaites d’affilée, pause d’au moins 30 min (ou passe en non classé) avant de relancer une classée.',gap:(tl.all-tl.wr)/100});
+  // ACS et ADR disent presque la même chose : on garde le plus en retard des deux
+  if(tips.some(t=>t.k=='adr')&&tips.some(t=>t.k=='acs')){const a=tips.find(t=>t.k=='adr'),c=tips.find(t=>t.k=='acs');tips.splice(tips.indexOf(a.gap>=c.gap?c:a),1)}
+  tips.sort((a,b)=>b.gap-a.gap);
+  return{few:false,n:R.length,main,role,goal:gT,refN:ref.n,me,tips:tips.slice(0,opt.max||6),strong:strong.sort((a,b)=>Math.abs(b.v-b.ref)/b.ref-Math.abs(a.v-a.ref)/a.ref).slice(0,3)}}
