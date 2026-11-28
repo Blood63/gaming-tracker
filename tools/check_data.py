@@ -2,8 +2,12 @@
 """Contrôle d'intégrité et de confidentialité des données publiées (lecture seule, ne modifie rien).
 Usage : python3 tools/check_data.py [--strict]   -> code 1 si un problème est trouvé.
 Vérifie : JSON lisibles, pas de doublons (parties, replays, relevés), historiques triés, valeurs plausibles,
-aucun pseudo d'un autre joueur dans valorant.json, aucune trace de jeton GitHub dans les fichiers de données."""
-import json, os, re, sys, glob, collections
+aucun pseudo d'un autre joueur dans valorant.json, aucune trace de jeton GitHub dans les fichiers de données,
+aucune localisation (ville/pays du profil Steam : champs location, city…) dans aucun fichier publié,
+fichiers dérivés pour l'appli à jour et identiques à leur source (rl_local/summary.json, ballchasing_app.json, ballchasing_analysis.json),
+build.json à jour (empreintes = contenu réel des fichiers ; sinon l'appli pourrait garder une ancienne version en cache)."""
+import json, os, re, sys, glob, collections, hashlib
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN=re.compile(r"(github_pat_[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}|gho_[A-Za-z0-9]{30,})")
 
@@ -14,6 +18,15 @@ def jl(p):
 def dups(L,key):
     c=collections.Counter(key(x) for x in L); return sorted(str(k) for k,n in c.items() if n>1 and k is not None)
 
+# vie privée : la localisation du profil Steam (ville, région, pays) ne doit jamais être publiée
+LOC_KEYS=re.compile(r"(?i)^(location|city|ville|loccityid|locstatecode|loccountrycode|country|countrycode)$")
+def loc_keys(o,path=""):
+    if isinstance(o,dict):
+        for k,v in o.items():
+            if LOC_KEYS.match(str(k)): yield f"{path}{k}"
+            yield from loc_keys(v,f"{path}{k}.")
+    elif isinstance(o,list):
+        for x in o: yield from loc_keys(x,path)
 def check(root=None):
     global D
     if root: D=root
@@ -24,10 +37,13 @@ def check(root=None):
         try: txt=open(f,encoding="utf-8").read(); json.loads(txt)
         except Exception as e: P.append(f"{rel} : JSON illisible ({e})"); continue
         if TOKEN.search(txt): P.append(f"{rel} : ressemble à un jeton GitHub (secret publié !)")
+        if '"' in txt and re.search(r'(?i)"(location|city|ville|loccityid|locstatecode|loccountrycode|country|countrycode)"\s*:',txt):
+            if k:=next(loc_keys(json.loads(txt)),None): P.append(f"{rel} : localisation publiée ({k}) (vie privée)")
     for f in glob.glob(os.path.join(D,"history","*.jsonl")):
         rel=os.path.relpath(f,D)
         try: L=jl(rel)
         except Exception as e: P.append(f"{rel} : ligne illisible ({e})"); continue
+        if k:=next((k for x in L for k in loc_keys(x)),None): P.append(f"{rel} : localisation publiée ({k}) (vie privée)")
         ts=[str(x.get("fetched_at")) for x in L]
         if ts!=sorted(ts): P.append(f"{rel} : relevés non triés par date")
         if len(ts)!=len(set(ts)): P.append(f"{rel} : relevé en double")
@@ -65,6 +81,33 @@ def check(root=None):
         r=rd("cod_ranks.json")
         for m in ("MP","BR"):
             if d:=dups(r.get(m) or [],lambda x:(x.get("date"),x.get("tier"),x.get("sub"))): P.append(f"cod_ranks.json : rang {m} en double")
+    P+=check_derived()
+    return P
+
+def check_derived():
+    """Fichiers dérivés (format tableau) identiques à leur source, et build.json à jour."""
+    import tabpack, split_rl_index
+    P=[]; ex=lambda p:os.path.exists(os.path.join(D,p))
+    if ex("ballchasing_latest.json"):
+        if not (ex("ballchasing_app.json") and ex("ballchasing_analysis.json")): P.append("ballchasing_app.json / ballchasing_analysis.json absents : lancer tools/build_home.py")
+        else:
+            app,an=tabpack.pack_bc(rd("ballchasing_latest.json"))
+            if rd("ballchasing_app.json")!=json.loads(json.dumps(app)) or rd("ballchasing_analysis.json")!=json.loads(json.dumps(an)):
+                P.append("ballchasing_app.json / ballchasing_analysis.json périmés (≠ ballchasing_latest.json) : lancer tools/build_home.py")
+            elif tabpack.unpack_bc(rd("ballchasing_app.json"),rd("ballchasing_analysis.json"))!=rd("ballchasing_latest.json"):
+                P.append("ballchasing_app.json : le décodage ne redonne pas ballchasing_latest.json")
+    if ex("rl_local/index.json"):
+        if not ex("rl_local/summary.json"): P.append("rl_local/summary.json absent : lancer tools/split_rl_index.py")
+        else:
+            light,_=split_rl_index.split(rd("rl_local/index.json")); S=rd("rl_local/summary.json")
+            if tabpack.untab(S.get("replays"))!=light["replays"] or S.get("v")!=light["v"]: P.append("rl_local/summary.json périmé (≠ index.json) : lancer tools/split_rl_index.py")
+    if ex("build.json"):
+        b=rd("build.json"); F=b.get("f")
+        if isinstance(F,dict):
+            for p,h in F.items():
+                try: real=hashlib.sha1(open(os.path.join(D,p),"rb").read()).hexdigest()[:len(h)]
+                except OSError: real=None
+                if real!=h: P.append(f"build.json périmé pour {p} : lancer tools/build_home.py"); break
     return P
 
 if __name__=="__main__":

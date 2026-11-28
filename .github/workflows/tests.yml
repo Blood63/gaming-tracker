@@ -42,3 +42,10 @@ jobs:
       - run: node --test tests/*.test.js
       - run: python3 -m unittest discover -s tests -p "test_*.py"
       - run: python3 tools/check_data.py
+      # contrat de versionnage : index.html cohérent ; tout fichier de l'appli modifié depuis le dernier push doit avoir un nouveau ?v=
+      - name: Numéros de version (?v=)
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "$BASE" ] && ! printf %s "$BASE" | grep -qE '^0+$'; then git fetch -q --depth=1 origin "$BASE" || true; fi
+          python3 tools/check_versions.py "$BASE"

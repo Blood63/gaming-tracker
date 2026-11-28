@@ -260,7 +260,7 @@ test('index réel rl_local : cohérence des agrégats avec les compteurs de chaq
   for(const r of all)assert.ok(!JSON.stringify(r).includes('"name"'),'aucun nom dans l’index');
 });
 
-/* ---- RL : index léger + détails différés (rl_local/light.json, deep.json) ---- */
+/* ---- RL : index léger + détails différés (rl_local/summary.json, deep.json) ---- */
 test('rllDeepOf : le fichier détaillé redonne exactement les blocs d_* de l’index (sur tous les replays disponibles)',()=>{
   if(!fs.existsSync(idxPath))return;
   const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays||[];let n=0;
@@ -269,12 +269,33 @@ test('rllDeepOf : le fichier détaillé redonne exactement les blocs d_* de l’
     for(const k of Object.keys(m)){if(e[k]===undefined)continue;assert.deepEqual(m[k],J(e[k]),`${e.id} ${k}`)}n++}  // J des deux côtés : -0.0 (analyseur) et 0 ont la même valeur
   assert.ok(n>=1||!idx.length,'au moins un fichier détaillé comparé');
 });
-test('light.json / deep.json : aucun bloc d_* dans le léger, détails indexés par id',()=>{
-  const lp=path.join(__dirname,'..','rl_local','light.json'),dp=path.join(__dirname,'..','rl_local','deep.json');if(!fs.existsSync(lp)||!fs.existsSync(dp))return;
-  const L=JSON.parse(fs.readFileSync(lp,'utf8')).replays,D=JSON.parse(fs.readFileSync(dp,'utf8')).deep;
+test('summary.json / deep.json : aucun bloc d_* dans le léger, détails indexés par id',()=>{
+  const lp=path.join(__dirname,'..','rl_local','summary.json'),dp=path.join(__dirname,'..','rl_local','deep.json');if(!fs.existsSync(lp)||!fs.existsSync(dp))return;
+  ctx.__l=JSON.parse(fs.readFileSync(lp,'utf8'));const L=JSON.parse(run('JSON.stringify(untabFile(__l))')).replays,D=JSON.parse(fs.readFileSync(dp,'utf8')).deep;
   assert.ok(Array.isArray(L)&&L.length>0&&D&&typeof D=='object');
   for(const r of L)assert.ok(!Object.keys(r).some(k=>k.startsWith('d_')),'bloc d_ dans le léger : '+r.id);
   for(const [id,d] of Object.entries(D))assert.ok(Object.keys(d).every(k=>k.startsWith('d_')),'clé inattendue dans deep : '+id);
+});
+
+/* ---- t128 : format « tableau » (summary.json, ballchasing_app.json) ---- */
+test('untab : décodage identique à l’original (ordre des clés, null, clés absentes, objets imbriqués)',()=>{
+  ctx.__e={"$tab":{"sh":[["a","b","s"],["b","a"],["a"],[]],"r":[0,1,2,3,0],"c":{"a":[1,0,-0,5],"b":[null,2,"x"],"s":{"$tab":{"sh":[["x","y"],["y"]],"r":[0,1],"c":{"x":[1.5],"y":[[1,2],null]}}}}}};
+  assert.equal(run('JSON.stringify(untab(__e))'),JSON.stringify([{a:1,b:null,s:{x:1.5,y:[1,2]}},{b:2,a:0},{a:0},{},{a:5,b:"x",s:{y:null}}]));
+  assert.equal(run('JSON.stringify(untab([1,2]))'),'[1,2]');assert.equal(run('untab(null)'),null);
+  assert.equal(run('JSON.stringify(untabFile({v:1,replays:{"$tab":{"sh":[["id"]],"r":[0],"c":{"id":["A"]}}}}))'),'{"v":1,"replays":[{"id":"A"}]}');
+  assert.equal(run('JSON.stringify(untabFile({v:1,x:[1]}))'),'{"v":1,"x":[1]}','fichier ordinaire rendu tel quel');
+});
+test('summary.json / ballchasing_app.json réels : décodés = index léger / ballchasing_latest.json sans conseils, à l’identique',()=>{
+  const R=f=>path.join(__dirname,'..',f);
+  if(fs.existsSync(R('rl_local/summary.json'))&&fs.existsSync(R('rl_local/index.json'))){
+    ctx.__s=JSON.parse(fs.readFileSync(R('rl_local/summary.json'),'utf8'));const dec=JSON.parse(run('JSON.stringify(untabFile(__s))'));
+    const idx=JSON.parse(fs.readFileSync(R('rl_local/index.json'),'utf8')).replays.filter(r=>r&&r.id).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!k.startsWith('d_'))));
+    assert.equal(JSON.stringify(dec.replays),JSON.stringify(idx));}
+  if(fs.existsSync(R('ballchasing_app.json'))){
+    ctx.__b=JSON.parse(fs.readFileSync(R('ballchasing_app.json'),'utf8'));const dec=JSON.parse(run('JSON.stringify(untabFile(__b))'));
+    const src=JSON.parse(fs.readFileSync(R('ballchasing_latest.json'),'utf8')),an=JSON.parse(fs.readFileSync(R('ballchasing_analysis.json'),'utf8')).a;
+    for(const r of src.replays){if('analysis' in r){assert.deepEqual(an[r.id],r.analysis);delete r.analysis}}
+    assert.equal(JSON.stringify(dec),JSON.stringify(src));}
 });
 
 /* ---- t127 : vie privée du tableau des scores Valorant ---- */

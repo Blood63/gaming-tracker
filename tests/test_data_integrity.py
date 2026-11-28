@@ -27,6 +27,47 @@ class Detection(unittest.TestCase):
     def test_donnees_propres(self):
         self.w("valorant.json",{"matches":[{"id":"a","kills":3,"scoreboard":[{"me":True,"name":"Moi"},{"me":False,"agent":"Sage"}]}]})
         self.assertEqual(self.cd.check(self.t),[])
+class T128(unittest.TestCase):
+    """t128 : localisation Steam jamais publiée, fichiers dérivés et build.json à jour."""
+    def setUp(self):
+        self.cd=load("check_data","tools/check_data.py"); self.t=tempfile.mkdtemp(); os.makedirs(self.t+"/history"); os.makedirs(self.t+"/rl_local")
+    def w(self,p,o): json.dump(o,open(os.path.join(self.t,p),"w"))
+    def test_localisation_detectee_partout(self):
+        self.w("steam_latest.json",{"steamID":"Blood","location":"Ville, Pays"})
+        open(self.t+"/history/steam.jsonl","w").write('{"fetched_at":"2026-11-01","x":{"City":"V"}}\n')
+        P=self.cd.check(self.t)
+        self.assertTrue(any("steam_latest.json : localisation" in p for p in P),P); self.assertTrue(any("steam.jsonl : localisation" in p for p in P),P)
+    def test_mot_location_dans_une_valeur_non_signale(self):
+        self.w("store.json",{"apps":{"1":{"name":"Location Simulator","genres":["location"]}}})
+        self.assertEqual(self.cd.check(self.t),[])
+    def test_le_robot_steam_ne_releve_plus_la_ville(self):
+        src=open(os.path.join(ROOT,"fetch_stats.py"),encoding="utf-8").read()
+        line=next(l for l in src.splitlines() if '"steamID","privacyState"' in l)
+        self.assertNotIn('"location"',line.split("]")[0])
+    def test_derives_a_jour_puis_perimes(self):
+        tp=load("tabpack","tools/tabpack.py")
+        b={"fetched_at":"x","replays":[{"id":"a","result":"win","m":{"bpm":1},"analysis":{"weaknesses":[]},"lid":"L"},{"id":"b","result":"loss"}]}
+        self.w("ballchasing_latest.json",b); tp.pack_ballchasing(self.t)
+        self.assertEqual(self.cd.check(self.t),[])
+        b["replays"][1]["result"]="win"; self.w("ballchasing_latest.json",b)
+        self.assertTrue(any("périmés" in p for p in self.cd.check(self.t)))
+    def test_summary_perime(self):
+        sp=load("split_rl_index","tools/split_rl_index.py"); sp.D=self.t
+        self.w("rl_local/index.json",{"v":1,"replays":[{"id":"A","s":{"goals":1},"d_heat":[0]}]}); sp.main()
+        self.assertEqual(self.cd.check(self.t),[])
+        self.w("rl_local/index.json",{"v":1,"replays":[{"id":"A","s":{"goals":2},"d_heat":[0]}]})
+        self.assertTrue(any("summary.json périmé" in p for p in self.cd.check(self.t)))
+    def test_build_json_perime(self):
+        self.w("goals.json",{"goals":[]}); import hashlib
+        h=hashlib.sha1(open(self.t+"/goals.json","rb").read()).hexdigest()[:10]
+        self.w("build.json",{"v":"x","f":{"goals.json":h}}); self.assertEqual(self.cd.check(self.t),[])
+        self.w("goals.json",{"goals":[{"id":1}]}); self.assertTrue(any("build.json périmé" in p for p in self.cd.check(self.t)))
+    def test_tabpack_aller_retour_exact(self):
+        tp=load("tabpack","tools/tabpack.py")
+        rows=[{"a":1,"b":None,"s":{"x":1.5,"y":[1,2]}},{"b":2,"a":0.0},{"a":-0.0,"s":{"y":None}},{"z":{"k":"é"}},{}]
+        enc=json.loads(json.dumps(tp.tab(rows)))
+        self.assertEqual(json.dumps(tp.untab(enc)),json.dumps(rows))
+        self.assertEqual(tp.untab([1,2]),[1,2]); self.assertEqual(tp.untab(tp.tab([])),[])
 class AnonValorant(unittest.TestCase):
     def test_seul_le_joueur_suivi_garde_son_pseudo(self):
         fv=load("fetch_valorant","tools/fetch_valorant.py")

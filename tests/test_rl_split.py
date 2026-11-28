@@ -26,15 +26,27 @@ class T(unittest.TestCase):
             os.makedirs(d + "/rl_local"); json.dump({"v": 1, "replays": [ent("A1"), ent("A2")]}, open(d + "/rl_local/index.json", "w"), ensure_ascii=False)
             old = sys.argv; sys.argv = ["x", d]; sp.D = d
             try:
-                self.assertEqual(sp.main(), 0); a = [open(d + "/rl_local/" + f, "rb").read() for f in ("light.json", "deep.json")]
-                m = [os.path.getmtime(d + "/rl_local/" + f) for f in ("light.json", "deep.json")]
-                self.assertEqual(sp.main(), 0); b = [open(d + "/rl_local/" + f, "rb").read() for f in ("light.json", "deep.json")]
-                self.assertEqual(a, b); self.assertEqual(m, [os.path.getmtime(d + "/rl_local/" + f) for f in ("light.json", "deep.json")])   # rien réécrit
-                self.assertTrue(a[0].endswith(b"\n")); self.assertEqual(json.loads(a[0])["replays"][0]["id"], "A1")
+                self.assertEqual(sp.main(), 0); a = [open(d + "/rl_local/" + f, "rb").read() for f in ("summary.json", "deep.json")]
+                m = [os.path.getmtime(d + "/rl_local/" + f) for f in ("summary.json", "deep.json")]
+                self.assertEqual(sp.main(), 0); b = [open(d + "/rl_local/" + f, "rb").read() for f in ("summary.json", "deep.json")]
+                self.assertEqual(a, b); self.assertEqual(m, [os.path.getmtime(d + "/rl_local/" + f) for f in ("summary.json", "deep.json")])   # rien réécrit
+                self.assertTrue(a[0].endswith(b"\n")); self.assertEqual(sp.untab(json.loads(a[0])["replays"])[0]["id"], "A1")
             finally: sys.argv = old
     def test_index_absent_ou_illisible(self):
         with tempfile.TemporaryDirectory() as d:
             sp.D = d; os.makedirs(d + "/rl_local"); self.assertEqual(sp.main(), 0)                      # pas d'index : rien à faire
             open(d + "/rl_local/index.json", "w").write("{pas du json"); self.assertEqual(sp.main(), 1)  # illisible : échec propre, pas de fichier cassé
-            self.assertFalse(os.path.exists(d + "/rl_local/light.json"))
+            self.assertFalse(os.path.exists(d + "/rl_local/summary.json"))
+    def test_summary_redonne_exactement_le_leger(self):
+        # format « tableau » : décodage(encodage) identique à l'octet près (ordre des clés, null, clés absentes, nombres)
+        idx = {"v": 1, "replays": [ent("A1"), dict(ent("A2", deep=False), off=None), {**ent("A3"), "goals_unseen": 1}]}
+        idx["replays"][1].pop("bc")
+        light, _ = sp.split(idx); s = json.loads(sp.dump(sp.summary(light)))
+        self.assertIn("$tab", s["replays"]); self.assertEqual(s["v"], 1)
+        self.assertEqual(json.dumps(sp.untab(s["replays"])), json.dumps(light["replays"]))
+    def test_ancien_light_json_supprime(self):
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(d + "/rl_local"); json.dump({"v": 1, "replays": [ent("A1")]}, open(d + "/rl_local/index.json", "w"))
+            open(d + "/rl_local/light.json", "w").write("{}"); sp.D = d
+            self.assertEqual(sp.main(), 0); self.assertFalse(os.path.exists(d + "/rl_local/light.json")); self.assertTrue(os.path.exists(d + "/rl_local/summary.json"))
 if __name__ == "__main__": unittest.main()
