@@ -49,3 +49,16 @@ jobs:
         run: |
           if [ -n "$BASE" ] && ! printf %s "$BASE" | grep -qE '^0+$'; then git fetch -q --depth=1 origin "$BASE" || true; fi
           python3 tools/check_versions.py "$BASE"
+  # Analyseur Rust des replays (top 15 n°9) : tests sans corpus (codes de sortie, index-merge, tests purs) + clippy sans avertissement.
+  # Les tests « golden » restent sur la machine de build (RL_TEST_DIR) : aucun .replay n'est publié.
+  rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/rl-analyzer
+    steps:
+      - uses: actions/checkout@v5
+      # rustup lit rust-toolchain.toml (version épinglée + clippy)
+      - run: rustup show active-toolchain || rustup toolchain install
+      - run: cargo test --release --locked
+      - run: cargo clippy --release --all-targets --locked -- -D warnings

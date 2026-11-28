@@ -9,7 +9,7 @@ pub enum Ctr { Score, Goals, Assists, Saves, Shots, BallTouches, CarTouches, Cen
 pub const CTRS: [Ctr; 19] = [Ctr::Score, Ctr::Goals, Ctr::Assists, Ctr::Saves, Ctr::Shots, Ctr::BallTouches, Ctr::CarTouches, Ctr::Centers, Ctr::Clears, Ctr::AerialHits, Ctr::FirstTouches, Ctr::EpicSaves, Ctr::BicycleHits, Ctr::FlipResets, Ctr::Demolishes, Ctr::TimesDemolished, Ctr::SelfDemo, Ctr::BoostPickups, Ctr::Dodges];
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-enum A { Rb, Pawn, PriName, PriId, PriTeam, PriEpic, PriUnique, Counter(Ctr), CompVehicle, Boost, Active, Throttle, Steer, Handbrake, Driving, Pickup, PickupOld, State, BallHit, ReplayFlag, DemoExt, Demo, TeamPaint, TotalTime, Playlist, Other }
+enum A { Rb, Pawn, PriName, PriId, PriTeam, PriEpic, PriUnique, PriBot, OverTime, Counter(Ctr), CompVehicle, Boost, Active, Throttle, Steer, Handbrake, Driving, Pickup, PickupOld, State, BallHit, ReplayFlag, DemoExt, Demo, TeamPaint, TotalTime, Playlist, Other }
 #[derive(Clone, Copy, Debug, PartialEq)]
 enum K { Ball, Car, Pri, Team(u8), Boost, Jump, Dodge, DoubleJump, Pad, GameEvent, Other }
 
@@ -22,6 +22,8 @@ fn attr_kind(n: &str) -> A {
         "Engine.PlayerReplicationInfo:Team" => A::PriTeam,
         "TAGame.PRI_TA:EpicPUID" => A::PriEpic,
         "Engine.PlayerReplicationInfo:UniqueId" => A::PriUnique,
+        "Engine.PlayerReplicationInfo:bBot" => A::PriBot,
+        "TAGame.GameEvent_Soccar_TA:bOverTime" => A::OverTime,
         "TAGame.PRI_TA:MatchScore" => A::Counter(Ctr::Score),
         "TAGame.PRI_TA:MatchGoals" => A::Counter(Ctr::Goals),
         "TAGame.PRI_TA:MatchAssists" => A::Counter(Ctr::Assists),
@@ -77,32 +79,53 @@ fn class_kind(n: &str) -> K {
     }
 }
 
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Copy, Debug, Default)]
 pub struct Car { pub p: [f32; 3], pub v: [f32; 3], pub q: [f32; 4], pub boost: f32, pub held: f32, pub boost_on: bool, pub hb: bool, pub thr: u8, pub steer: u8, pub moving: bool }
 #[derive(Clone, Copy, Debug, Default)]
 pub struct BallS { pub p: [f32; 3], pub v: [f32; 3] }
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Debug)]
 pub struct Frm { pub t: f32, pub dt: f32, pub st: u8, pub ball: Option<BallS>, pub cars: Vec<Option<Car>>, pub hit: bool }
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Debug, Default)]
 pub struct Pl { pub key: i32, pub name: String, pub epic: String, pub team: u8, pub bot: bool }
+/// Vrai bot : drapeau réseau bBot, ou ni compte Epic ni identifiant de plateforme (Steam, PlayStation, Xbox, Switch…).
+/// Un joueur Steam sans EpicAccountId n'est donc plus pris pour un bot (top 15 n°13).
+pub fn is_bot(flag: bool, epic: &str, platform_id: bool) -> bool { flag || (epic.is_empty() && !platform_id) }
 #[derive(Clone, Debug)]
 pub struct CtrEv { pub f: usize, pub slot: usize, pub k: Ctr, pub v: i32 }
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Debug)]
 pub struct PadEv { pub f: usize, pub slot: usize, pub pad: i32, pub p: [f32; 3] }
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Debug)]
 pub struct DemoEv { pub f: usize, pub att: Option<usize>, pub vic: Option<usize>, pub pos: [f32; 3] }
+#[allow(dead_code)] // champs lus du replay mais pas (encore) exploités par calc.rs : gardés pour --debug et les prochaines stats
 #[derive(Clone, Debug)]
 pub struct GoalEv { pub f: usize, pub name: String, pub team: u8 }
+#[derive(Default)]
 pub struct Match { pub playlist: i32,
-    pub frames: Vec<Frm>, pub players: Vec<Pl>, pub ctr: Vec<CtrEv>, pub pads: Vec<PadEv>, pub demos: Vec<DemoEv>, pub goals: Vec<GoalEv>,
+    pub frames: Vec<Frm>, pub players: Vec<Pl>, pub ctr: Vec<CtrEv>, pub pads: Vec<PadEv>, #[allow(dead_code)] pub demos: Vec<DemoEv>, pub goals: Vec<GoalEv>,
     pub props: HashMap<String, String>, pub team_size: i32, pub state_names: HashSet<String>, pub map: String, pub date: String, pub id: String,
     pub score: [i32; 2], pub overtime_hint: bool,
+}
+#[cfg(test)]
+mod tests {
+    use super::is_bot;
+    #[test]
+    fn bot_seulement_si_drapeau_ou_aucun_identifiant() {
+        assert!(is_bot(true, "abc", true));
+        assert!(is_bot(false, "", false));
+        assert!(!is_bot(false, "", true));   // joueur Steam sans compte Epic
+        assert!(!is_bot(false, "abc", false));
+    }
 }
 
 fn prop_str(p: &HeaderProp) -> String { match p { HeaderProp::Str(s) | HeaderProp::Name(s) => s.clone(), HeaderProp::Int(i) => i.to_string(), HeaderProp::Float(f) => f.to_string(), HeaderProp::QWord(q) => q.to_string(), HeaderProp::Bool(b) => b.to_string(), HeaderProp::Byte { value, .. } => value.clone().unwrap_or_default(), _ => String::new() } }
 fn prop_int(p: &HeaderProp) -> Option<i64> { match p { HeaderProp::Int(i) => Some(*i as i64), HeaderProp::QWord(q) => Some(*q as i64), HeaderProp::Float(f) => Some(*f as i64), HeaderProp::Byte { .. } => None, _ => None } }
 
-struct ActorInfo { kind: K, name: String, replay: bool, obj: usize }
+struct ActorInfo { kind: K, #[allow(dead_code)] name: String, replay: bool, obj: usize }
 #[derive(Default)]
 struct PriSt { pgen: usize, key: Option<i32>, name: String, epic: String, team_actor: i32, team: Option<u8>, slot: Option<usize>, ctr: HashMap<usize, i32> }
 #[derive(Default, Clone, Copy)]
@@ -140,24 +163,25 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
     let mut players: Vec<Pl> = vec![];
     let mut team_actor_num: HashMap<i32, u8> = HashMap::new();
     let mut ball_actor: Option<i32> = None;
-    let mut state = 0u8; let mut state_names = HashSet::new(); let mut hit = false; let mut playlist = -1i32;
+    let mut state = 0u8; let mut state_names = HashSet::new(); let mut hit = false; let mut playlist = -1i32; let mut overtime = false;
+    let mut bot_gen: HashSet<usize> = HashSet::new(); let mut plat_gen: HashSet<usize> = HashSet::new();
     let mut frames: Vec<Frm> = Vec::with_capacity(nf.frames.len());
     let mut ctr: Vec<CtrEv> = vec![]; let mut pads: Vec<PadEv> = vec![]; let mut demos: Vec<DemoEv> = vec![];
     let mut last_demo: HashMap<i32, f32> = HashMap::new();
-    let mut gen_n = 0usize; let mut raw_ctr: Vec<(usize, usize, usize, i32)> = vec![]; let mut gen_slot: HashMap<usize, usize> = HashMap::new();
+    let mut gen_n = 0usize; let mut raw_ctr: Vec<(usize, usize, usize, i32)> = vec![]; 
     let mut pad_ids: HashMap<i32, i32> = HashMap::new(); let mut pad_last: HashMap<i32, u8> = HashMap::new();
 
     for (fi, f) in nf.frames.iter().enumerate() {
         for d in &f.deleted_actors {
             let id = d.0;
-            if let Some(a) = actors.remove(&id) { if a.kind == K::Ball && ball_actor == Some(id) { ball_actor = None; } }
+            if let Some(a) = actors.remove(&id) && a.kind == K::Ball && ball_actor == Some(id) { ball_actor = None; }
             rb.remove(&id); car_pri.remove(&id); car_comp.remove(&id); comps.remove(&id); pri.remove(&id); hb.remove(&id); thr.remove(&id); steer.remove(&id);
         }
         for a in &f.new_actors {
             let oi = a.object_id.0 as usize; let k = objk.get(oi).map(|x| x.0).unwrap_or(K::Other);
             let name = a.name_id.and_then(|n| r.names.get(n as usize)).cloned().unwrap_or_default();
-            let again = actors.get(&a.actor_id.0).map_or(false, |x| x.obj == oi); // image clé : l'acteur existe déjà, on garde son état
-            let was_replay = actors.get(&a.actor_id.0).map_or(false, |x| x.replay);
+            let again = actors.get(&a.actor_id.0).is_some_and(|x| x.obj == oi); // image clé : l'acteur existe déjà, on garde son état
+            let was_replay = actors.get(&a.actor_id.0).is_some_and(|x| x.replay);
             actors.insert(a.actor_id.0, ActorInfo { kind: k, name, replay: if again { was_replay } else { false }, obj: oi });
             if again { continue; }
             match k {
@@ -176,7 +200,7 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
         }
         // temps : l'état des compteurs de boost avance au prorata du temps si le turbo est actif
         let dt = f.delta.clamp(0.0, 0.25);
-        for (_, c) in comps.iter_mut() { if c.active && c.got { c.amount = (c.amount - BOOST_PER_SEC * dt).max(0.0); } }
+        for c in comps.values_mut() { if c.active && c.got { c.amount = (c.amount - BOOST_PER_SEC * dt).max(0.0); } }
 
         for u in &f.updated_actors {
             let aid = u.actor_id.0; let oi = u.object_id.0 as usize;
@@ -196,7 +220,13 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
                 (A::PriId, Attribute::Int(i)) => { pri.entry(aid).or_default().key = Some(*i); }
                 (A::PriTeam, Attribute::ActiveActor(x)) => { let p = pri.entry(aid).or_default(); p.team_actor = x.actor.0; p.team = team_actor_num.get(&x.actor.0).copied(); }
                 (A::PriEpic, Attribute::String(s)) => { pri.entry(aid).or_default().epic = s.clone(); }
-                (A::PriUnique, Attribute::UniqueId(uid)) => { if let boxcars::RemoteId::Epic(e) = &uid.remote_id { let p = pri.entry(aid).or_default(); if p.epic.is_empty() { p.epic = e.clone(); } } }
+                (A::PriUnique, Attribute::UniqueId(uid)) => {
+                    let p = pri.entry(aid).or_default();
+                    if !matches!(uid.remote_id, boxcars::RemoteId::SplitScreen(_)) { plat_gen.insert(p.pgen); }
+                    if let boxcars::RemoteId::Epic(e) = &uid.remote_id && p.epic.is_empty() { p.epic = e.clone(); }
+                }
+                (A::PriBot, Attribute::Boolean(b)) => { if *b { bot_gen.insert(pri.entry(aid).or_default().pgen); } }
+                (A::OverTime, Attribute::Boolean(b)) => { if *b { overtime = true; } }
                 (A::Counter(c), Attribute::Int(v)) => {
                     let p = pri.entry(aid).or_default(); p.ctr.insert(c as usize, *v);
                     raw_ctr.push((fi, p.pgen, c as usize, *v));
@@ -215,19 +245,19 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
                 (A::BallHit, Attribute::Boolean(b)) => { hit = *b; }
                 (A::TeamPaint, Attribute::TeamPaint(t)) => { car_team_paint.insert(aid, t.team); }
                 (A::Pickup, Attribute::PickupNew(p)) => {
-                    let fresh = pad_last.insert(aid, p.picked_up) != Some(p.picked_up); if p.picked_up != 255 && fresh { if let Some(ic) = p.instigator { let pos = rb.get(&ic.0).map(|s| s.p).unwrap_or([0.0; 3]);
+                    let fresh = pad_last.insert(aid, p.picked_up) != Some(p.picked_up); if p.picked_up != 255 && fresh && let Some(ic) = p.instigator { let pos = rb.get(&ic.0).map(|s| s.p).unwrap_or([0.0; 3]);
                         let slot = car_pri.get(&ic.0).copied().and_then(|pr| slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, pr));
-                        if let Some(slot) = slot { let pid = pad_ids.get(&aid).copied().unwrap_or(-1); pads.push(PadEv { f: fi, slot, pad: pid, p: pos }); } } }
+                        if let Some(slot) = slot { let pid = pad_ids.get(&aid).copied().unwrap_or(-1); pads.push(PadEv { f: fi, slot, pad: pid, p: pos }); } }
                 }
                 (A::PickupOld, Attribute::Pickup(p)) => {
-                    if p.picked_up { if let Some(ic) = p.instigator { let pos = rb.get(&ic.0).map(|s| s.p).unwrap_or([0.0; 3]);
+                    if p.picked_up && let Some(ic) = p.instigator { let pos = rb.get(&ic.0).map(|s| s.p).unwrap_or([0.0; 3]);
                         let slot = car_pri.get(&ic.0).copied().and_then(|pr| slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, pr));
-                        if let Some(slot) = slot { let pid = pad_ids.get(&aid).copied().unwrap_or(-1); pads.push(PadEv { f: fi, slot, pad: pid, p: pos }); } } }
+                        if let Some(slot) = slot { let pid = pad_ids.get(&aid).copied().unwrap_or(-1); pads.push(PadEv { f: fi, slot, pad: pid, p: pos }); } }
                 }
                 (A::DemoExt, Attribute::DemolishExtended(d)) => {
                     let vic = d.victim.actor.0;
                     let t = f.time;
-                    if last_demo.get(&vic).map_or(true, |lt| t - lt > 2.5) && d.victim.active {
+                    if last_demo.get(&vic).is_none_or(|lt| t - lt > 2.5) && d.victim.active {
                         last_demo.insert(vic, t);
                         let vs = car_pri.get(&vic).copied().and_then(|pr| slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, pr));
                         let at = if d.attacker_pri.active { slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, d.attacker_pri.actor.0) } else { None };
@@ -237,7 +267,7 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
                 }
                 (A::Demo, Attribute::Demolish(d)) => {
                     let vic = d.victim.0; let t = f.time;
-                    if last_demo.get(&vic).map_or(true, |lt| t - lt > 2.5) {
+                    if last_demo.get(&vic).is_none_or(|lt| t - lt > 2.5) {
                         last_demo.insert(vic, t);
                         let vs = car_pri.get(&vic).copied().and_then(|pr| slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, pr));
                         let at = car_pri.get(&d.attacker.0).copied().and_then(|pr| slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, pr));
@@ -250,13 +280,13 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
         }
         // photo de l'image
         let ball = ball_actor.and_then(|b| rb.get(&b).filter(|s| s.has).map(|s| BallS { p: s.p, v: s.v }))
-            .filter(|_| !ball_actor.and_then(|b| actors.get(&b)).map_or(false, |a| a.replay));
+            .filter(|_| !ball_actor.and_then(|b| actors.get(&b)).is_some_and(|a| a.replay));
         let mut cars: Vec<Option<Car>> = vec![None; players.len()];
         for (cid, info) in actors.iter() {
             if info.kind != K::Car || info.replay { continue; }
             let prid = match car_pri.get(cid) { Some(p) => *p, None => continue };
             let slot = match slot_for(&mut pri, &mut players, &mut slot_of_key, &team_actor_num, prid) { Some(s) => s, None => continue };
-            if let Some(tp) = car_team_paint.get(cid) { if players[slot].team == 255 { players[slot].team = *tp; } }
+            if let Some(tp) = car_team_paint.get(cid) && players[slot].team == 255 { players[slot].team = *tp; }
             let s = match rb.get(cid) { Some(s) if s.has => s, _ => continue };
             if cars.len() <= slot { cars.resize(slot + 1, None); }
             let (boost, held, on) = car_comp.get(cid).and_then(|c| comps.get(c)).map(|c| (c.amount, if c.got { c.held } else { 33.3 }, c.active)).unwrap_or((33.3, 33.3, false));
@@ -264,7 +294,11 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
         }
         frames.push(Frm { t: f.time, dt, st: state, ball, cars, hit });
     }
-    gen_slot = GEN_SLOT.with(|g| std::mem::take(&mut *g.borrow_mut()));
+    let gen_slot: HashMap<usize, usize> = GEN_SLOT.with(|g| std::mem::take(&mut *g.borrow_mut()));
+    // bots : drapeau réseau, ou aucun identifiant (ni Epic ni plateforme) sur toute la durée du replay
+    let bot_slots: HashSet<usize> = bot_gen.iter().filter_map(|g| gen_slot.get(g).copied()).collect();
+    let plat_slots: HashSet<usize> = plat_gen.iter().filter_map(|g| gen_slot.get(g).copied()).collect();
+    for (i, p) in players.iter_mut().enumerate() { p.bot = is_bot(bot_slots.contains(&i), &p.epic, plat_slots.contains(&i)); }
     let mut last: HashMap<(usize, usize), i32> = HashMap::new();
     for (f, g, c, v) in raw_ctr { if let Some(&slot) = gen_slot.get(&g) { let l = last.get(&(slot, c)).copied().unwrap_or(0); if v > l { ctr.push(CtrEv { f, slot, k: CTRS[c], v }); last.insert((slot, c), v); } } }
     ctr.sort_by_key(|e| e.f);
@@ -281,7 +315,7 @@ pub fn load(data: &[u8]) -> Result<Match, String> {
     let id = props.get("Id").cloned().unwrap_or_default();
     let map = props.get("MapName").cloned().unwrap_or_default();
     let date = props.get("Date").cloned().unwrap_or_default();
-    Ok(Match { playlist, frames, players, ctr, pads, demos, goals, props, team_size, state_names, map, date, id, score, overtime_hint: false })
+    Ok(Match { playlist, frames, players, ctr, pads, demos, goals, props, team_size, state_names, map, date, id, score, overtime_hint: overtime })
 }
 
 thread_local! { static GEN_SLOT: std::cell::RefCell<HashMap<usize, usize>> = std::cell::RefCell::new(HashMap::new()); }

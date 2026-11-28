@@ -50,7 +50,7 @@ fn invariants_sur_replays_locaux() {
     let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
     let mut n = 0;
     for e in std::fs::read_dir(d).unwrap().flatten().take(12) {
-        let p = e.path(); if p.extension().map_or(true, |x| x != "replay") { continue; }
+        let p = e.path(); if p.extension().is_none_or(|x| x != "replay") { continue; }
         let v = run_json(&p, &[]);
         let s = &v["s"];
         // thirds ≈ 100 %
@@ -78,7 +78,7 @@ fn deterministe_et_valeurs_dorees() {
     let gold: serde_json::Value = serde_json::from_str(include_str!("golden.json")).unwrap();
     let mut checked = 0;
     for e in std::fs::read_dir(d).unwrap().flatten() {
-        let p = e.path(); if p.extension().map_or(true, |x| x != "replay") { continue; }
+        let p = e.path(); if p.extension().is_none_or(|x| x != "replay") { continue; }
         let sha = sha256(&p);
         let Some(g) = gold.get(&sha) else { continue };
         let a = run_json(&p, &[]); let b = run_json(&p, &[]);
@@ -95,7 +95,7 @@ fn deterministe_et_valeurs_dorees() {
 #[test]
 fn decalage_horaire_change_date_locale() {
     let Some(d) = replay_dir() else { return };
-    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().map_or(false, |x| x == "replay")) else { return };
+    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().is_some_and(|x| x == "replay")) else { return };
     let a = run_json(&e.path(), &["--tz-offset-min", "0"]);
     let b = run_json(&e.path(), &["--tz-offset-min", "120"]);
     assert_ne!(a["date"], b["date"]);
@@ -105,7 +105,7 @@ fn decalage_horaire_change_date_locale() {
 #[test]
 fn nom_du_joueur_configurable() {
     let Some(d) = replay_dir() else { return };
-    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().map_or(false, |x| x == "replay")) else { return };
+    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().is_some_and(|x| x == "replay")) else { return };
     // un pseudo inexistant doit échouer proprement (code 5), jamais paniquer
     let o = bin().arg(e.path()).args(["--me-name", "PseudoQuiNExistePas"]).output().unwrap();
     assert_eq!(o.status.code(), Some(5));
@@ -136,17 +136,20 @@ fn index_merge_ajoute_trie_et_dedoublonne() {
 #[test]
 fn entree_d_index_compacte_et_sans_noms() {
     let Some(d) = replay_dir() else { return };
-    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().map_or(false, |x| x == "replay")) else { return };
+    let Some(e) = std::fs::read_dir(d).unwrap().flatten().find(|e| e.path().extension().is_some_and(|x| x == "replay")) else { return };
     let out = std::env::temp_dir().join("rl_idx_entry_test"); let _ = std::fs::remove_dir_all(&out);
     let o = bin().arg(e.path()).arg("--out").arg(&out).output().unwrap(); assert!(o.status.success());
     let id = String::from_utf8_lossy(&o.stdout).trim().to_string();
     let txt = std::fs::read_to_string(out.join(format!("{id}.idx.json"))).unwrap();
     let v: serde_json::Value = serde_json::from_str(&txt).unwrap();
-    for k in ["d_heat", "d_heat_ball", "d_kick_stats", "d_periods", "d_team_stats", "d_shots", "d_goals", "d_kick", "d_after_goal"] { assert!(v.get(k).is_some(), "manque {k}"); }
-    assert_eq!(v["d_heat"].as_array().unwrap().len(), 320);
+    // depuis 0.2.0 : en-tête + stats seulement ; les cartes / tirs / buts restent dans la fiche (deep.json est rebâti à partir des fiches)
+    assert!(v.as_object().unwrap().keys().all(|k| !k.starts_with("d_")), "blocs d_* encore présents");
     assert!(v.get("d").is_none());                                     // pas de détail dans l'index
+    assert!(v["s"].is_object());
     assert!(!txt.contains("\"name\""));
-    assert!(txt.len() < 12_000, "entrée d'index trop lourde : {}", txt.len());
+    assert!(txt.len() < 4_000, "entrée d'index trop lourde : {}", txt.len());
+    let fiche: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(out.join(format!("{id}.json"))).unwrap()).unwrap();
+    assert_eq!(fiche["d"]["heat"].as_array().unwrap().len(), 320);
 }
 
 #[test]
@@ -156,7 +159,7 @@ fn buts_detailles_ou_replay_partiel_signale() {
     let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
     let mut n = 0;
     for e in std::fs::read_dir(d).unwrap().flatten().take(30) {
-        let p = e.path(); if p.extension().map_or(true, |x| x != "replay") { continue; }
+        let p = e.path(); if p.extension().is_none_or(|x| x != "replay") { continue; }
         let o = bin().arg(&p).args(["--me-name", "443Blood", "--me-name", "M8_Blood"]).output().unwrap();
         if !o.status.success() { continue; } // replay d'un autre joueur : code 5, hors sujet ici
         let v: serde_json::Value = serde_json::from_slice(&o.stdout).unwrap();
@@ -183,4 +186,39 @@ fn replay_sans_buts_vus_61ac3c41() {
     assert_eq!(v["d"]["goals"].as_array().unwrap().len(), 0);
     assert_eq!(v["team_goals"].as_i64(), Some(3));
     assert_eq!(v["opp_goals"].as_i64(), Some(2));
+}
+
+#[test]
+fn prolongations_detectees() {
+    // Replays locaux connus (jamais publiés ; seuls leurs id internes figurent ici) : 2 matchs avec prolongation, 1 sans.
+    let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
+    let want = [("37195B064643E54D20D9AA80B951B91B", true), ("B8C41F5C48C3DF72EFFA4F89A9170C23", true), ("B28884E241D801646A130FA11588C35C", false)];
+    let mut seen = 0;
+    for e in std::fs::read_dir(d).unwrap().flatten() {
+        let p = e.path(); if p.extension().is_none_or(|x| x != "replay") { continue; }
+        let o = bin().arg(&p).args(["--me-name", "443Blood", "--me-name", "M8_Blood"]).output().unwrap();
+        if !o.status.success() { continue; }
+        let v: serde_json::Value = serde_json::from_slice(&o.stdout).unwrap();
+        if let Some((_, ot)) = want.iter().find(|(id, _)| v["id"] == *id) { assert_eq!(v["overtime"].as_bool(), Some(*ot), "{:?}", p); seen += 1; }
+        if seen == want.len() { break; }
+    }
+    eprintln!("{seen} replays de prolongation vérifiés");
+}
+#[test]
+fn heatmap_sans_compte_a_rebours() {
+    // la carte de chaleur ne couvre que le jeu actif : le compte à rebours (~3 s par coup d'envoi) n'y est plus.
+    // Total (dixièmes de s) ≤ temps « play » (compte à rebours inclus) − 2 s par coup d'envoi.
+    let Some(d) = replay_dir() else { eprintln!("pas de replays locaux : test ignoré"); return };
+    let mut n = 0;
+    for e in std::fs::read_dir(d).unwrap().flatten().take(10) {
+        let p = e.path(); if p.extension().is_none_or(|x| x != "replay") { continue; }
+        let o = bin().arg(&p).args(["--me-name", "443Blood", "--me-name", "M8_Blood"]).output().unwrap();
+        if !o.status.success() { continue; }
+        let v: serde_json::Value = serde_json::from_slice(&o.stdout).unwrap();
+        let heat: f64 = v["d"]["heat"].as_array().unwrap().iter().map(|x| x.as_f64().unwrap()).sum::<f64>() / 10.0;
+        let kicks = v["d"]["kickoffs"].as_array().unwrap().len() as f64;
+        assert!(heat <= v["play"].as_f64().unwrap() - 2.0 * kicks, "carte {heat} s, jeu {} s, {kicks} coups d'envoi ({:?})", v["play"], p);
+        n += 1;
+    }
+    eprintln!("{n} cartes vérifiées");
 }

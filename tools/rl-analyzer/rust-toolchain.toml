@@ -1,0 +1,6 @@
+# Version de Rust épinglée (top 15 n°9) : mêmes résultats de build et de clippy sur la machine de build et en CI.
+# boxcars 0.13 et l'édition 2024 demandent au moins 1.88 (voir rust-version dans Cargo.toml).
+[toolchain]
+channel = "1.100.1"
+components = ["clippy"]
+profile = "minimal"

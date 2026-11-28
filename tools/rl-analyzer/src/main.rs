@@ -63,19 +63,10 @@ fn main() {
             std::fs::create_dir_all(&dir).ok();
             let id = v["id"].as_str().unwrap_or("replay").to_string();
             std::fs::File::create(format!("{dir}/{id}.json")).and_then(|mut f| f.write_all(s.as_bytes())).expect("écriture");
-            // entrée d'index (compacte) : en-tête + stats + quelques séries légères pour les agrégats de l'onglet RL
+            // entrée d'index (compacte) : en-tête + stats `s` seulement (top 15 n°7). Les cartes, tirs, buts et coups d'envoi
+            // restent dans la fiche <id>.json ; tools/split_rl_index.py reconstruit deep.json à partir des fiches.
             let mut idx = v.clone();
-            if let Some(o) = idx.as_object_mut() {
-                let d = o.remove("d").unwrap_or(serde_json::Value::Null);
-                for k in ["heat", "heat_ball", "kick_stats", "periods", "team_stats"] { if let Some(x) = d.get(k) { o.insert(format!("d_{k}"), x.clone()); } }
-                // versions compactes (tableaux) des listes d'événements, pour les agrégats sans charger chaque détail
-                let g = |v: &serde_json::Value, k: &str| v.get(k).cloned().unwrap_or(serde_json::Value::Null);
-                let list = |k: &str| d.get(k).and_then(|x| x.as_array()).cloned().unwrap_or_default();
-                o.insert("d_shots".into(), serde_json::Value::Array(list("shots").iter().map(|s| serde_json::json!([g(s, "x"), g(s, "y"), g(s, "sp"), g(s, "on"), g(s, "air"), g(s, "o")])).collect()));
-                o.insert("d_goals".into(), serde_json::Value::Array(list("goals").iter().map(|s| serde_json::json!([g(s, "for"), g(s, "by"), g(s, "type"), g(s, "speed"), g(s, "air"), g(s, "t")])).collect()));
-                o.insert("d_kick".into(), serde_json::Value::Array(list("kickoffs").iter().map(|s| serde_json::json!([g(s, "spawn"), g(s, "role"), g(s, "first"), g(s, "out"), g(s, "react"), g(s, "flip")])).collect()));
-                o.insert("d_after_goal".into(), serde_json::Value::Array(list("after_goal")));
-            }
+            if let Some(o) = idx.as_object_mut() { o.remove("d"); }
             std::fs::File::create(format!("{dir}/{id}.idx.json")).and_then(|mut f| f.write_all(serde_json::to_string(&idx).unwrap().as_bytes())).expect("écriture");
             println!("{id}");
         }
