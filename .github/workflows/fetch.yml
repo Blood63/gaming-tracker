@@ -63,6 +63,6 @@ jobs:
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           python3 tools/build_home.py
-          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json steam_achievements.json home.json build.json
+          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json ballchasing_app.json ballchasing_analysis.json steam_achievements.json home.json build.json
           git diff --cached --quiet || git commit -m "Snapshot $(date -I)"
           git pull --rebase -q && git push

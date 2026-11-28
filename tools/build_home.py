@@ -3,11 +3,16 @@
 Fichiers ADDITIFS uniquement : aucun fichier de données existant n'est modifié.
 home.json contient des versions allégées (mêmes champs que ceux lus par l'accueil) ; les pages détaillées
 chargent les fichiers complets à la demande. build.json = empreinte des fichiers de données : l'app l'utilise
-comme clé de cache (?v=) au lieu de Date.now()."""
-import json, os, hashlib, datetime
+comme clé de cache (?v=) au lieu de Date.now(). build.json["f"] = empreinte de CHAQUE fichier (contenu) : l'appli demande
+fichier?h=<empreinte>, donc un fichier inchangé reste en cache (navigateur + service worker) quand un autre change.
+Régénère aussi les versions « appli » de ballchasing_latest.json (tabpack.pack_ballchasing : ballchasing_app.json + ballchasing_analysis.json)."""
+import json, os, sys, hashlib, datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tabpack import pack_ballchasing
 D=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA=["history/steam.jsonl","store.json","history/valorant.jsonl","history/rocket_league.jsonl","cod_mobile.json","cod_profile.json","cod_ranks.json",
-      "setup.json","valorant.json","goals.json","rocket_league.json","ballchasing_latest.json","steam_achievements.json","rl_local/index.json","rl_local/light.json","rl_local/deep.json"]
+      "setup.json","valorant.json","goals.json","rocket_league.json","ballchasing_latest.json","steam_achievements.json","rl_local/index.json","rl_local/summary.json","rl_local/deep.json",
+      "ballchasing_app.json","ballchasing_analysis.json","steam_latest.json"]
 def rd(p,default=None):
     try: return json.load(open(f"{D}/{p}",encoding="utf-8"))
     except Exception: return default
@@ -15,7 +20,11 @@ def jl(p):
     try: return [json.loads(l) for l in open(f"{D}/{p}",encoding="utf-8") if l.strip()]
     except Exception: return []
 pick=lambda o,ks:{k:o[k] for k in ks if k in o}
+def fhash(p):
+    try: return hashlib.sha1(open(f"{D}/{p}","rb").read()).hexdigest()[:10]
+    except Exception: return None
 def main():
+    pack_ballchasing(D)
     sh=jl("history/steam.jsonl"); full=[s for s in sh if s.get("games")]
     # l'accueil (chronologie) ne lit que le dernier relevé de chaque jour : on garde exactement ceux-là
     day=[]
@@ -46,8 +55,10 @@ def main():
         except Exception: h.update(p.encode()+b"\0-")
     ver=h.hexdigest()[:12]
     old=rd("build.json",{}) or {}
-    if old.get("v")==ver and os.path.exists(f"{D}/home.json") and open(f"{D}/home.json",encoding="utf-8").read()==out: print("home.json inchangé"); return
-    open(f"{D}/home.json","w",encoding="utf-8").write(out)
-    json.dump({"v":ver,"at":datetime.datetime.now().astimezone().isoformat(timespec="seconds")},open(f"{D}/build.json","w"),indent=1)
+    same=os.path.exists(f"{D}/home.json") and open(f"{D}/home.json",encoding="utf-8").read()==out
+    if not same: open(f"{D}/home.json","w",encoding="utf-8").write(out)
+    F={p:x for p in DATA+["home.json"] if (x:=fhash(p))}
+    if old.get("v")==ver and same and old.get("f")==F: print("home.json inchangé"); return
+    json.dump({"v":ver,"at":datetime.datetime.now().astimezone().isoformat(timespec="seconds"),"f":F},open(f"{D}/build.json","w"),indent=1)
     print(f"home.json {len(out)//1024} Ko · build {ver}")
 if __name__=="__main__": main()

@@ -52,6 +52,6 @@ jobs:
           git config user.name "gaming-tracker-bot"
           git config user.email "actions@users.noreply.github.com"
           python3 tools/build_home.py
-          git add valorant.json ballchasing_latest.json history/ballchasing.jsonl home.json build.json
+          git add valorant.json ballchasing_latest.json ballchasing_app.json ballchasing_analysis.json history/ballchasing.jsonl home.json build.json
           git diff --cached --quiet || git commit -m "Valorant $(date -I)"
           git pull --rebase -q && git push
