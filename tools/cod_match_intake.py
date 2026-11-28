@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Issue « Partie COD » (remplie par l'app après lecture des 2 captures) -> ajout idempotent dans cod_mobile.json.
 Données JSON : {"action":"add","matches":[{...}]}. Les parties existantes ne sont jamais modifiées.
-Aucun nom d'autre joueur n'est accepté (liste blanche de champs)."""
+Aucun nom d'autre joueur n'est accepté (liste blanche de champs ; duels réduits à {n,kills,deaths})."""
 import json, os, re, sys, datetime
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from gt_payload import extract
@@ -41,6 +41,20 @@ def clean(m):
         t=re.fullmatch(r"(\d{2}):(\d{2})",r["objective_time"])
         if not t: raise ValueError("temps sur l'objectif invalide")
         r["objective_time_s"]=int(t[1])*60+int(t[2])
+    if m.get("duels") is not None:
+        # Duels : jamais de pseudo d'adversaire (vie privée). Seuls le rang n (« Adversaire n ») et les compteurs sont gardés.
+        du=m["duels"]
+        if not isinstance(du,list) or len(du)>20: raise ValueError("duels invalides")
+        r["duels"]=[]
+        for i,x in enumerate(du):
+            if not isinstance(x,dict): raise ValueError("duel invalide")
+            y={"n":i+1}
+            for k in ("kills","deaths"):
+                v=x.get(k)
+                if isinstance(v,bool) or not isinstance(v,int) or not 0<=v<=100: raise ValueError("duel invalide")
+                y[k]=v
+            r["duels"].append(y)
+        if not r["duels"]: del r["duels"]
     if "kd" not in r: r["kd"]=round(r["kills"]/r["deaths"],2) if r["deaths"] else r["kills"]
     r["id"]="app-"+r["date"][:16].replace("-","").replace(":","").replace("T","")
     return r

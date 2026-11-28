@@ -30,7 +30,7 @@
   "first_kills": "int",
   "lone_wolf_wins": "int",
   "medals": "[{name,count}]",
-  "duels": "[{opponent,kills,deaths}] (mes éliminations - ses éliminations sur moi)",
+  "duels": "[{n,kills,deaths}] (n = « Adversaire n » dans l'ordre de la capture ; aucun pseudo stocké) — mes éliminations - ses éliminations sur moi",
   "screenshots": "[paths]",
   "objective_time": "mm:ss (temps sur l'objectif, mode Point stratégique / Domination…)",
   "objective_time_s": "int secondes",
@@ -249,27 +249,27 @@
    ],
    "duels": [
     {
-     "opponent": "Mallboro13",
+     "n": 1,
      "kills": 2,
      "deaths": 2
     },
     {
-     "opponent": "لابوبو>67",
+     "n": 2,
      "kills": 5,
      "deaths": 0
     },
     {
-     "opponent": "eeeealieeeee",
+     "n": 3,
      "kills": 3,
      "deaths": 0
     },
     {
-     "opponent": "loty61",
+     "n": 4,
      "kills": 4,
      "deaths": 2
     },
     {
-     "opponent": "Ja8il",
+     "n": 5,
      "kills": 2,
      "deaths": 1
     }
@@ -330,27 +330,27 @@
    ],
    "duels": [
     {
-     "opponent": "Hassaan069",
+     "n": 1,
      "kills": 1,
      "deaths": 3
     },
     {
-     "opponent": "Doctorithurts",
+     "n": 2,
      "kills": 1,
      "deaths": 0
     },
     {
-     "opponent": "CAPIT",
+     "n": 3,
      "kills": 1,
      "deaths": 1
     },
     {
-     "opponent": "Leo-n27",
+     "n": 4,
      "kills": 1,
      "deaths": 0
     },
     {
-     "opponent": "S*A*B*O",
+     "n": 5,
      "kills": 0,
      "deaths": 0
     }
@@ -410,27 +410,27 @@
    ],
    "duels": [
     {
-     "opponent": "7-L-M",
+     "n": 1,
      "kills": 0,
      "deaths": 3
     },
     {
-     "opponent": "ABUDHABI",
+     "n": 2,
      "kills": 0,
      "deaths": 2
     },
     {
-     "opponent": "ZORO",
+     "n": 3,
      "kills": 1,
      "deaths": 2
     },
     {
-     "opponent": "Leah",
+     "n": 4,
      "kills": 0,
      "deaths": 0
     },
     {
-     "opponent": "Mecure94",
+     "n": 5,
      "kills": 1,
      "deaths": 0
     }

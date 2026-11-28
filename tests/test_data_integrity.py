@@ -79,3 +79,32 @@ class AnonValorant(unittest.TestCase):
     def test_sans_tableau(self):
         fv=load("fetch_valorant","tools/fetch_valorant.py"); self.assertEqual(fv.anon_scoreboard({"id":1}),{"id":1})
 if __name__=="__main__": unittest.main()
+class CodPseudos(unittest.TestCase):
+    """Top 15 n°5 : aucun pseudo d'adversaire COD (duels) ni UID, dans les données comme dans home.json, et le robot n'en stocke jamais."""
+    def setUp(self):
+        self.cd=load("check_data","tools/check_data.py"); self.t=tempfile.mkdtemp(); os.makedirs(self.t+"/history")
+    def w(self,p,o): json.dump(o,open(os.path.join(self.t,p),"w"))
+    def test_pseudo_duel_detecte(self):
+        self.w("cod_mobile.json",{"player":"Moi","matches":[{"id":"a","date":"2026-01-01","duels":[{"opponent":"Xyz","kills":1,"deaths":0}]}]})
+        self.assertTrue(any("duels[].opponent" in p for p in self.cd.check(self.t)))
+    def test_pseudo_dans_home_detecte(self):
+        self.w("home.json",{"cod":{"matches":[{"id":"a","teammates":["Abc"]}]}})
+        self.assertTrue(any("home.json (cod)" in p for p in self.cd.check(self.t)))
+    def test_uid_detecte(self):
+        self.w("cod_profile.json",{"player":"Moi","player_card":{"player":"Moi","uid":"123456789"}})
+        self.assertTrue(any("player_card.uid" in p for p in self.cd.check(self.t)))
+    def test_duels_anonymes_et_medailles_ok(self):
+        self.w("cod_mobile.json",{"player":"Moi","matches":[{"id":"a","date":"2026-01-01","duels":[{"n":1,"kills":1,"deaths":0}],"medals":[{"name":"Premier sang","count":1}]}]})
+        self.assertEqual(self.cd.check(self.t),[])
+    def test_vraies_donnees_sans_pseudo_duel(self):
+        c=json.load(open(os.path.join(ROOT,"cod_mobile.json"),encoding="utf-8"))
+        for m in c["matches"]:
+            for i,x in enumerate(m.get("duels") or []): self.assertEqual(set(x),{"n","kills","deaths"}); self.assertEqual(x["n"],i+1)
+    def test_robot_ne_stocke_pas_les_pseudos(self):
+        ci=load("cod_match_intake","tools/cod_match_intake.py")
+        r=ci.clean({"date":"2026-11-28T20:00:00+01:00","result":"win","kills":5,"deaths":2,"opponent":"Zz","players":["Aa"],
+                    "duels":[{"opponent":"Bb","kills":2,"deaths":1},{"name":"Cc","kills":0,"deaths":3}]})
+        self.assertEqual(r["duels"],[{"n":1,"kills":2,"deaths":1},{"n":2,"kills":0,"deaths":3}])
+        txt=json.dumps(r); 
+        for n in ("Zz","Aa","Bb","Cc"): self.assertNotIn(n,txt)
+        with self.assertRaises(ValueError): ci.clean({"date":"2026-11-28T20:00:00+01:00","result":"win","kills":1,"deaths":1,"duels":[{"kills":"x"}]})

@@ -69,6 +69,7 @@ def check(root=None):
         c=rd("cod_mobile.json"); M=c.get("matches") or []
         if d:=dups([m for m in M if m.get("id")],lambda m:m.get("id")): P.append(f"cod_mobile.json : parties en double {d[:3]}")
         if any(not m.get("id") and not m.get("date") for m in M): P.append("cod_mobile.json : partie sans identifiant ni date")
+    P+=check_cod_names()
     if os.path.exists(os.path.join(D,"rocket_league.json")):
         rl=rd("rocket_league.json")
         if d:=dups(rl.get("rank_log") or [],lambda x:json.dumps(x,sort_keys=True)): P.append("rocket_league.json : rang en double dans rank_log")
@@ -83,6 +84,29 @@ def check(root=None):
             if d:=dups(r.get(m) or [],lambda x:(x.get("date"),x.get("tier"),x.get("sub"))): P.append(f"cod_ranks.json : rang {m} en double")
     P+=check_derived()
     return P
+
+# COD : aucun pseudo d'un autre joueur ni UID. Seuls champs « nom » permis : ton propre pseudo (player),
+# le nom d'un clan sur ta carte, et les noms de médailles (medals[].name).
+COD_NAME_KEYS=re.compile(r"(?i)^(opponents?|enemy(_name)?|enemies|teammates?|allies|ally|squad|players|scoreboard|killer|killed_by|victims?|nick(name)?|pseudo|gamertag|username|user_name|name|uid|player_?id|account_?id|open_?id)$")
+COD_ALLOWED={("cod_mobile.json","player"),("cod_profile.json","player"),("cod_profile.json","player_card.player"),("cod_mobile.json","matches[].medals[].name")}
+def check_cod_names():
+    P=[]
+    def walk(f,o,path,lab=None):
+        if isinstance(o,dict):
+            for k,v in o.items():
+                q=(path+"." if path else "")+k
+                if COD_NAME_KEYS.match(k) and (f,q) not in COD_ALLOWED and v not in (None,"",[],{}) and not isinstance(v,(int,float,bool)):
+                    P.append(f"{lab or f} : champ « {q} » contient un nom de joueur ou un identifiant (vie privée)")
+                walk(f,v,q,lab)
+        elif isinstance(o,list):
+            for v in o: walk(f,v,path+"[]",lab)
+    for f in ("cod_mobile.json","cod_profile.json","cod_ranks.json"):
+        if os.path.exists(os.path.join(D,f)): walk(f,rd(f),"")
+    if os.path.exists(os.path.join(D,"home.json")):
+        h=rd("home.json")
+        for k,f in (("cod","cod_mobile.json"),("codp","cod_profile.json"),("codr","cod_ranks.json")):
+            if k in h: walk(f,h[k],"",f"home.json ({k})")
+    return sorted(set(P))
 
 def check_derived():
     """Fichiers dérivés (format tableau) identiques à leur source, et build.json à jour."""
