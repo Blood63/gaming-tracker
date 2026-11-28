@@ -30,7 +30,7 @@ def main():
 
         except Exception as e: x=""; out["profile_xml_error"]=str(e)
 
-        for t in ["steamID","privacyState","onlineState","memberSince","hoursPlayed2Wk","location","vacBanned"]:
+        for t in ["steamID","privacyState","onlineState","memberSince","hoursPlayed2Wk","vacBanned"]:  # vie privée : jamais la ville (location) du profil
 
             m=re.search(rf"<{t}>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</{t}>",x,re.S); out[t]=m.group(1) if m else None
 
