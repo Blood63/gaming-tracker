@@ -8,13 +8,13 @@
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/rajdhani-500.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/rajdhani-600.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/rajdhani-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=46">
+<link rel="stylesheet" href="app.css?v=47">
 <script>/* Démarrage rapide : build.json + home.json + gros fichiers de la page demandée sont demandés dès maintenant, sans attendre app.js ;
 app.js réutilise ces réponses (GT_PRE, même adresse ?h=<empreinte>). Listes vérifiées par les tests (= fichiers NEED / CHART_R / adresse de Chart.js dans app.js). */
-{const r=location.hash.replace(/^#\/?/,'').split('/')[0];if(['rl','valorant','profil'].includes(r)){const l=document.createElement('link');l.rel='preload';l.as='script';l.href='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';document.head.appendChild(l)}}
+{const r=location.hash.replace(/^#\/?/,'').split('/')[0];if(['rl','valorant','profil','cod','steam'].includes(r)){const l=document.createElement('link');l.rel='preload';l.as='script';l.href='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';l.integrity='sha384-NrKB+u6Ts6AtkIhwPixiKTzgSKNblyhlk0Sohlgar9UHUBzai/sgnNNWWd291xqt';l.crossOrigin='anonymous';document.head.appendChild(l)}}
 window.GT_PRE={};window.GT_BJ=fetch('build.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{const f=(j&&j.f)||{},P=['home.json'].concat({rl:['ballchasing_app.json','rl_local/summary.json'],valorant:['valorant.json']}[location.hash.replace(/^#\/?/,'').split('/')[0]]||[]);
 for(const n of P)if(/^[0-9a-f]{6,16}$/.test(f[n]||'')){const u=n+'?h='+f[n];(GT_PRE[u]=fetch(u)).catch(()=>{})}return j}).catch(()=>null);</script>
-<link rel="preload" href="core.js?v=9" as="script"><link rel="preload" href="app.js?v=53" as="script">
+<link rel="preload" href="core.js?v=10" as="script"><link rel="preload" href="app.js?v=54" as="script">
 </head>
 <body><div id="rlbg" aria-hidden="true"><i class="img"></i><i class="sh"></i><i class="h"></i><i class="f"></i></div>
 <header><button class="back" aria-label="Retour" onclick="goBack()">‹</button><img class="logo" src="icons/logo-104.webp" alt=""><h1 id="ttl">GameTrack</h1><span id="upd"></span></header>
@@ -28,8 +28,8 @@ for(const n of P)if(/^[0-9a-f]{6,16}$/.test(f[n]||'')){const u=n+'?h='+f[n];(GT_
 </nav>
 <main id="app"></main>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Capture agrandie (Échap pour fermer)" tabindex="-1" onclick="lbClose()"><img alt=""></div>
-<script src="cod-ocr.js?v=24"></script>
-<script src="core.js?v=9"></script>
-<script src="app.js?v=53"></script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=9').catch(()=>{});</script>
+<script src="cod-ocr.js?v=25"></script>
+<script src="core.js?v=10"></script>
+<script src="app.js?v=54"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js?v=10').catch(()=>{});</script>
 </body></html>

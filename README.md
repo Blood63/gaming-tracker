@@ -46,8 +46,14 @@ Suivi de mes stats Steam, Valorant, Rocket League + COD Mobile (saisie dans l'ap
 - La localisation du profil Steam (ville, région, pays) n'est pas relevée (`fetch_stats.py`) ; elle a été retirée des anciens relevés
   et `check_data.py` échoue si un champ `location` / `city` / `country`… réapparaît dans un fichier publié.
 - Les fichiers de replay ne sont jamais publiés : seules les analyses (chiffres, sans noms) arrivent dans `rl_local/`.
+- COD : les duels ne gardent que « Adversaire n » et les compteurs ; le robot d'intégration n'accepte aucun nom, et `check_data.py`
+  échoue si un champ nom / pseudo / UID d'un autre joueur apparaît dans `cod_*.json` ou `home.json`.
 
 ## Sécurité
 - Jeton GitHub : uniquement dans le navigateur de l'appareil (localStorage), jamais exporté ni affiché ; envoyé seulement à `api.github.com`.
+  Seuls les jetons **à grain fin** (`github_pat_…`, limités à ce dépôt) sont acceptés ; un jeton classique (`ghp_…`) est refusé.
+- Scripts du CDN épinglés avec empreinte **SRI** (sha384) : Chart.js 4.4.4, Tesseract.js 5.1.1 (bibliothèque, worker et cœur
+  WebAssembly, téléchargés avec contrôle d'intégrité puis lancés depuis une URL blob). Les données de langue OCR ne sont pas du code.
+- Pas de `script-src` strict dans la CSP : le worker OCR est lancé depuis une URL blob et l'appli a du script en ligne (compromis voulu, sans chaîne de build).
 - `index.html` déclare une politique de sécurité (CSP) : l'appli ne peut contacter que le site lui-même, `api.github.com` et le CDN
   (Chart.js, moteur OCR) : protection supplémentaire qui empêche les requêtes de l'appli vers tout autre serveur.

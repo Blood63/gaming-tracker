@@ -11,7 +11,10 @@ const codStepVal=(tier,sub)=>{const i=COD_STEPS.findIndex(x=>x.tier==tier&&(x.su
 const codPtsOf=(tier,sub,points)=>points!=null?points:(COD_STEPS[codStepVal(tier,sub)-1]?.pts??null);
 const D={};
 const VFR={Iron:'Fer',Bronze:'Bronze',Silver:'Argent',Gold:'Or',Platinum:'Platine',Diamond:'Diamant',Ascendant:'Ascendant',Immortal:'Immortel',Radiant:'Radiant',Unrated:'Non classé'};
-const vTier=t=>t?String(t).replace(/^(\w+)/,w=>VFR[w]||w):'—';
+// palier Valorant traduit, échappé (vient de l'API : jamais injecté brut dans le HTML)
+const vTier=t=>t?esc(String(t).replace(/^(\w+)/,w=>VFR[w]||w)):'—';
+// couleur sûre pour un attribut style (hex, rgb/hsl, nom) ; sinon vide (déclaration ignorée, comme avant)
+const safeCol=c=>typeof c=='string'&&/^(#[0-9a-f]{3,8}|(rgb|hsl)a?\([\d\s.,%/+-]+\)|[a-z]+)$/i.test(c.trim())?c.trim():'';
 const VMODE={Competitive:'Compétition',Unrated:'Non classé',Swiftplay:'Vélocité',Deathmatch:'Combat à mort','Team Deathmatch':'Combat à mort par équipe',Spikerush:'Spike Rush',Premier:'Premier'};
 const vMode=m=>VMODE[m]||m||'—';
 const vAgg=a=>{const s=k=>a.reduce((t,x)=>t+(num(x[k])||0),0),r=a.filter(x=>x.result),sh=s('head')+s('body')+s('leg'),rd=a.filter(x=>x.rounds),fk=a.filter(x=>x.first_kills!=null);

@@ -18,6 +18,12 @@ class Statique(unittest.TestCase):
     def test_pages_chart_desynchronisees(self):
         a=self.a.replace("const CHART_R=['rl',","const CHART_R=['steam','rl',",1)
         self.assertTrue(any("CHART_R" in p for p in self.cv.static_problems(self.h,a)))
+    def test_sri_chart_desynchronisee(self):
+        a=self.a.replace("CHART_SRI='sha384-N","CHART_SRI='sha384-M",1)
+        self.assertTrue(any("SRI" in p for p in self.cv.static_problems(self.h,a)))
+    def test_sri_chart_retiree(self):
+        a=self.a.replace("sc.integrity=CHART_SRI;","",1)
+        self.assertTrue(any("SRI" in p for p in self.cv.static_problems(self.h,a)))
 class Numeros(unittest.TestCase):
     def test_fichier_modifie_sans_nouveau_numero(self):
         if not shutil.which("git"): self.skipTest("git absent")

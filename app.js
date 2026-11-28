@@ -15,7 +15,9 @@ const ago=t=>{const d=Math.floor((Date.now()-t)/864e5);return d<=0?"aujourd'hui"
 let BV=null,BF={};const vq=f=>f&&BF[f]?'?h='+BF[f]:'?v='+(BV||Date.now());
 async function stamp(){try{let j=null;const pre=window.GT_BJ;window.GT_BJ=null;if(pre)j=await pre; // 1er chargement : build.json déjà demandé par index.html
   if(!j){const r=await fetch('build.json',{cache:'no-store'});if(r.ok)j=await r.json()}{if(j&&j.v){BV=String(j.v).replace(/[^\w.-]/g,'');const F={};if(j.f&&typeof j.f=='object')for(const[k,v]of Object.entries(j.f))if(typeof v=='string'&&/^[0-9a-f]{6,16}$/.test(v))F[k]=v;BF=F}}}catch(e){}}
-const get=async(f,j=true)=>{try{const u=f+vq(f),pre=window.GT_PRE&&GT_PRE[u];if(pre)delete GT_PRE[u];const r=await (pre||fetch(u));if(!r.ok)return null;return j?await r.json():await r.text()}catch(e){return null}};
+// préchargement (index.html) raté (réseau, HTTP ≠ 200, réponse tronquée) : une seconde requête avant de renoncer
+const get=async(f,j=true)=>{const u=f+vq(f),pre=window.GT_PRE&&GT_PRE[u];if(pre)delete GT_PRE[u];
+  for(const p of pre?[pre,null]:[null]){try{const r=await (p||fetch(u));if(!r.ok){if(p)continue;return null}return j?await r.json():await r.text()}catch(e){if(!p)return null}}return null};
 const jlParse=t=>(t||'').trim().split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean);
 const jl=async f=>jlParse(await get(f,false));
 const COL={cy:'#22d3ee',vi:'#a855f7',gr:'#4ade80',pk:'#e879f9',warn:'#fbbf24',bad:'#fb7185',bl:'#60a5fa',or:'#fb923c',rlA:'#3b82f6',rlB:'#22c55e'};
@@ -45,7 +47,9 @@ function bindGarage(){const g=$('#garage');if(!g)return;const set=id=>{if(String
  g.onclick=e=>{const b=e.target.closest('[data-carb]');if(b){e.stopPropagation();return set(b.dataset.carb)}const cur=+(localStorage.getItem('gt-rl-car')||1);set(cur==1?2:1)}}
 const PAL=[COL.cy,COL.vi,COL.gr,COL.pk,COL.warn,COL.bl,COL.or,COL.bad];
 /* Chart.js chargé à la demande (premier graphique affiché) ; mis en cache par le service worker pour le hors-ligne. */
-let chartP=null;const loadChart=()=>window.Chart?Promise.resolve():chartP||(chartP=new Promise((ok,ko)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';sc.async=true;sc.onload=()=>{try{chartDefaults();const b=document.body,t=b.dataset.theme||'',k=t=='rl'?'rl'+(b.dataset.car||''):t;if(THM[k]){Chart.defaults.color=THM[k][0]||'#9692c2';Chart.defaults.borderColor=THM[k][1]||'rgba(160,150,255,.1)'}}catch(e){}ok()};sc.onerror=()=>{chartP=null;sc.remove();ko(new Error('Chart.js indisponible'))};document.head.appendChild(sc)}));
+// empreinte SRI de Chart.js 4.4.4 (identique dans index.html) : un fichier du CDN modifié est refusé par le navigateur
+const CHART_SRI='sha384-NrKB+u6Ts6AtkIhwPixiKTzgSKNblyhlk0Sohlgar9UHUBzai/sgnNNWWd291xqt';
+let chartP=null;const loadChart=()=>window.Chart?Promise.resolve():chartP||(chartP=new Promise((ok,ko)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';sc.integrity=CHART_SRI;sc.crossOrigin='anonymous';sc.async=true;sc.onload=()=>{try{chartDefaults();const b=document.body,t=b.dataset.theme||'',k=t=='rl'?'rl'+(b.dataset.car||''):t;if(THM[k]){Chart.defaults.color=THM[k][0]||'#9692c2';Chart.defaults.borderColor=THM[k][1]||'rgba(160,150,255,.1)'}}catch(e){}ok()};sc.onerror=()=>{chartP=null;sc.remove();ko(new Error('Chart.js indisponible'))};document.head.appendChild(sc)}));
 function chartDefaults(){Chart.defaults.color='#9692c2';Chart.defaults.borderColor='rgba(160,150,255,.1)';Chart.defaults.font.family='Rajdhani,system-ui';Chart.defaults.font.size=12;Chart.defaults.maintainAspectRatio=false;Chart.defaults.plugins.legend.labels.boxWidth=10;Chart.defaults.plugins.legend.position='bottom';Chart.defaults.interaction={mode:'index',intersect:false,axis:'x'};Chart.defaults.plugins.tooltip={enabled:true,mode:'index',intersect:false,axis:'x',position:'nearest',caretSize:8,padding:10,titleFont:{size:13,weight:'bold'},bodyFont:{size:13},callbacks:{label:c=>` ${c.dataset.label?c.dataset.label+' : ':''}${c.parsed&&c.parsed.y!=null?fnum(c.parsed.y,Number.isInteger(c.parsed.y)?0:2):c.formattedValue}`}};Chart.defaults.elements.point.hitRadius=18;Chart.defaults.elements.point.hoverRadius=7;Chart.register({id:'gtCross',afterDatasetsDraw(ch){if(['doughnut','pie','polarArea','radar'].includes(ch.config.type))return;const a=ch.getActiveElements&&ch.getActiveElements()[0];if(!a||!a.element)return;const{ctx,chartArea:{top,bottom}}=ch,x=a.element.x;ctx.save();ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.lineWidth=1;ctx.strokeStyle='rgba(235,230,255,.6)';ctx.setLineDash([4,4]);ctx.stroke();ctx.restore()}})}
 let charts=[];
 const chart=(el,cfg)=>{if(!el)return;try{
@@ -59,8 +63,12 @@ const chart=(el,cfg)=>{if(!el)return;try{
   const mk=()=>{if(!el.isConnected||!read.isConnected)return;Chart.getChart(el)?.destroy();const ch=new Chart(el,cfg);ch.$read=read;charts.push(ch);bindCursor(ch,arc);
   // valeur par défaut : dernier point, pour que le cadre ne soit jamais vide
   const n=Math.max(0,...cfg.data.datasets.map(d=>(d.data||[]).length));for(let i=n-1;i>=0;i--){const els=cfg.data.datasets.map((d,di)=>({datasetIndex:di,index:i})).filter(e=>cfg.data.datasets[e.datasetIndex].data[i]!=null);if(els.length){ch.setActiveElements(els);showRead(ch,els);ch.draw();break}}};
-  const q=()=>{chartQ.push(()=>{try{mk()}catch(e){console.error(e)}});if(!chartQ.t)chartQ.t=requestAnimationFrame(()=>setTimeout(chartRun,0))};if(window.Chart)q();else loadChart().then(q,()=>{if(read.isConnected)read.innerHTML='<span class="mut">Graphique indisponible hors connexion.</span>'});
+  const q=()=>{chartQ.push(()=>{try{mk()}catch(e){console.error(e)}});if(!chartQ.t)chartQ.t=requestAnimationFrame(()=>setTimeout(chartRun,0))},start=()=>{if(window.Chart)q();else loadChart().then(q,()=>{if(read.isConnected)read.innerHTML='<span class="mut">Graphique indisponible hors connexion.</span>'})};
+  // top 15 n°8 : le graphique n'est construit que lorsque son canvas approche de l'écran (une page RL en compte une dizaine)
+  // graphique créé à l'approche de l'écran ; la bibliothèque, elle, est préchargée au repos pour qu'il apparaisse sans attente
+  if(chartIO){el.$mk=start;chartIO.observe(el);if(!window.Chart)(window.requestIdleCallback||setTimeout)(()=>loadChart().catch(()=>{}))}else start();
  }catch(e){console.error(e)}};
+const chartIO='IntersectionObserver' in window?new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){chartIO.unobserve(e.target);const f=e.target.$mk;e.target.$mk=null;if(f)f()}},{rootMargin:'600px 0px'}):null;
 const chartQ=[];function chartRun(){const f=chartQ.shift();if(f)f();if(chartQ.length)chartQ.t=requestAnimationFrame(()=>setTimeout(chartRun,0));else chartQ.t=0}
 const mkDP=(ch,di,idx)=>{const ds=ch.data.datasets[di],raw=ds.data[idx];return{dataset:ds,datasetIndex:di,dataIndex:idx,label:ch.data.labels?ch.data.labels[idx]:'',raw,parsed:{y:raw&&typeof raw=='object'?raw.y:raw,x:raw&&typeof raw=='object'?raw.x:idx},formattedValue:raw==null?'—':(typeof raw=='object'?String(raw.y??''):String(raw))}};
 function showRead(ch,els){if(!ch.$read||!els.length)return;const cb=ch.config.options?.plugins?.tooltip?.callbacks||{};
@@ -69,7 +77,7 @@ function showRead(ch,els){if(!ch.$read||!els.length)return;const cb=ch.config.op
   const lines=dps.map(dp=>{let lab='';if(cb.label){try{lab=cb.label(dp)}catch(e){}}
     if(!lab){const v=dp.parsed.y;lab=`${dp.dataset.label?dp.dataset.label+' : ':''}${v==null?'—':fnum(v,Number.isInteger(v)?0:2)}`}
     let col=dp.dataset.borderColor||dp.dataset.backgroundColor;if(Array.isArray(col))col=col[dp.dataIndex];
-    return `<span class="cri"><i style="background:${col||'#aab'}"></i>${esc(String(lab).trim())}</span>`}).join('');
+    return `<span class="cri"><i style="background:${safeCol(col||'#aab')}"></i>${esc(String(lab).trim())}</span>`}).join('');
   if(title&&lines.replace(/<[^>]+>/g,'').trim().startsWith(String(title).trim()))title='';
   ch.$read.innerHTML=`${title?`<b>${esc(String(title))}</b> `:''}${lines}`}
 function bindCursor(ch,arc){const c=ch.canvas;let down=false;
@@ -93,7 +101,7 @@ const codBtn=(cls='')=>`<a class="btn ${cls}" href="#/cod/ajouter">📸 Ajouter 
 /* Chargement : home.json (résumé compact généré par les robots) suffit pour l'accueil ; les fichiers détaillés sont chargés
    à la demande, page par page (NEED). Sans home.json (ancienne version des données), tout est chargé comme avant. */
 const SRC={steamH:['history/steam.jsonl',1],store:['store.json'],val:['history/valorant.jsonl',1],rl:['history/rocket_league.jsonl',1],cod:['cod_mobile.json'],codp:['cod_profile.json'],codr:['cod_ranks.json'],setup:['setup.json'],vh:['valorant.json'],gj:['goals.json'],rlm:['rocket_league.json'],bc:['ballchasing_app.json'],bca:['ballchasing_analysis.json'],rll:['rl_local/summary.json'],rlld:['rl_local/deep.json'],sach:['steam_achievements.json']};
-const CHART_R=['rl','valorant','profil'];
+const CHART_R=['rl','valorant','profil','cod','steam'];
 const NEED={steam:['steamH','store','sach'],valorant:['vh'],rl:['bc','rll'],setup:['setup'],bilan:['vh','bc','bca','steamH'],comparer:['vh','bc','steamH'],activite:['vh','bc','steamH','val','rl'],profil:['vh','steamH','store']};
 /* rll = index LÉGER (rl_local/summary.json, sans les blocs d_*, format « tableau » décodé par untabFile), rlld = détails (deep.json) chargés après l'affichage ;
    bc = ballchasing_app.json (= ballchasing_latest.json sans les conseils par replay, format tableau), bca = ces conseils (chargés à la demande : bcA()).
@@ -296,6 +304,7 @@ function rerender(){const y=scrollY;render();scrollTo(0,y)}
 /* Réglage du jeton (page Profil) */
 function syncSettingsHTML(){const t=ghTok();return `<h2 id="sync">🔄 Synchronisation GitHub</h2><div class="glass pad" id="tokbox">
   <p style="margin:0 0 .5rem">${t?'<span class="pill ok">Jeton enregistré sur cet appareil</span> Synchro en un geste activée.':'<span class="pill warn">Aucun jeton</span> Synchro par demande GitHub (formulaire à valider).'}</p>
+  ${/^gh[pous]_/.test(t)?'<p class="down" role="alert" style="font-size:.85rem;margin:0 0 .5rem">⚠️ Le jeton enregistré est un jeton classique (accès à tous tes dépôts). Remplace-le par un jeton à grain fin limité à ce dépôt (étapes ci-dessous), puis retire l’ancien sur GitHub.</p>':''}
   <form class="form" id="tokf" style="padding:0" autocomplete="off"><label>Jeton GitHub à grain fin<input id="tokin" type="password" name="gt-token" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${t?'•••••••• (enregistré)':'github_pat_…'}" aria-describedby="toktest"></label>
    <div class="two" style="margin:0"><button class="btn" type="submit">💾 Enregistrer</button><button class="btn ghost" type="button" id="tokt"${t?'':' disabled'}>🧪 Tester</button></div>
    ${t?'<button class="btn ghost full" type="button" id="tokdel">🗑️ Retirer le jeton de cet appareil</button>':''}</form>
@@ -309,7 +318,8 @@ function syncSettingsHTML(){const t=ghTok();return `<h2 id="sync">🔄 Synchroni
    <p class="mut" style="font-size:.8rem;margin:0">Le jeton reste uniquement dans ce navigateur (jamais dans le dépôt, jamais affiché). À l'expiration, recrée-en un de la même façon. Sur un appareil partagé, retire-le après usage.</p></details></div>`}
 function bindSyncSettings(){const f=$('#tokf');if(!f)return;const out=$('#toktest');
   f.onsubmit=e=>{e.preventDefault();const v=$('#tokin').value.trim();if(!v){out.textContent='Colle d\'abord le jeton.';return}
-    if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(v)){out.textContent='⚠️ Ce texte ne ressemble pas à un jeton GitHub (il commence par github_pat_).';return}
+    if(/^(ghp|gho|ghu|ghs)_/.test(v)){out.textContent='⚠️ Jeton classique refusé : il ouvre l’accès à tous tes dépôts. Crée un jeton à grain fin (il commence par github_pat_), limité au dépôt Blood63/gaming-tracker : étapes ci-dessous.';return}
+    if(!/^github_pat_[A-Za-z0-9_]{20,}$/.test(v)){out.textContent='⚠️ Ce texte ne ressemble pas à un jeton GitHub à grain fin (il commence par github_pat_).';return}
     try{localStorage.setItem(TOKK,v)}catch(e){out.textContent='⚠️ Stockage bloqué sur cet appareil (navigation privée ?)';return}
     $('#tokin').value='';toast('🔑 Jeton enregistré sur cet appareil');rerender();setTimeout(()=>$('#tokt')?.click(),50)};
   const d=$('#tokdel');if(d)d.onclick=()=>{if(confirm('Retirer le jeton de cet appareil ? (la synchro repassera par les demandes GitHub)')){localStorage.removeItem(TOKK);toast('Jeton retiré');rerender()}};
@@ -495,7 +505,7 @@ function rllBindDots(id,pts,txt){const s=$('#'+id);if(!s)return;const g=s.queryS
   const f=e=>{const r=s.getBoundingClientRect(),vx=-6+(e.clientX-r.left)/r.width*172,vy=-8+(e.clientY-r.top)/r.height*216;let b=-1,bd=1e9;pts.forEach((p,i)=>{const d=Math.hypot(rllX(p.x)-vx,rllY(p.y)-vy);if(d<bd){bd=d;b=i}});if(b<0||bd>14)return;
     g.querySelectorAll('circle').forEach((c,i)=>{c.setAttribute('stroke',i==b?'#fff':'#000');c.setAttribute('stroke-width',i==b?1.2:.4);c.setAttribute('stroke-opacity',i==b?1:.5)});rd.innerHTML=txt(pts[b]);const c=g.children[b];if(c)g.appendChild(c)};
   s.addEventListener('pointermove',f);s.addEventListener('pointerdown',f)}
-const rllLegend=a=>`<div class="rll-leg">${a.map(([c,n])=>`<span><i style="background:${c}"></i>${esc(n)}</span>`).join('')}</div>`;
+const rllLegend=a=>`<div class="rll-leg">${a.map(([c,n])=>`<span><i style="background:${safeCol(c)}"></i>${esc(n)}</span>`).join('')}</div>`;
 const rllMapBox=(svg,hint,leg='')=>`<div class="glass pad rll-map">${svg}<div class="chart-read rll-read"><span class="mut">${hint}</span></div>${leg}</div>`;
 /* graphique par replay d'une métrique choisie (barres/points + moyenne glissante), curseur glissant comme les autres graphiques */
 function rllMetricChart(group,cid){const keys=RLL_G[group],sk='rllM'+group,k=keys.includes(sessionStorage.getItem(sk))?sessionStorage.getItem(sk):keys[0],A=rllSel(),v=A.map(r=>num(r.s[k])),el=$('#'+cid);if(!el)return;
@@ -518,7 +528,11 @@ let rllDK=0;
 function rllDeepKick(){if(D.rllDeep!==false||rllDK||!(D.rll||[]).length)return;rllDK=1;
   // gros fichier (détails) demandé après Chart.js, pour ne pas ralentir l'affichage des graphiques sur mobile
   (window.Chart?Promise.resolve():loadChart().catch(()=>{})).then(()=>fetchKeys(['rlld'])).then(()=>{rllDK=0;if(FULL.has('rlld'))rllMerge();else D.rllDeep='fail';
-    if(/^#\/rl\/?$/.test(location.hash)&&D.rlm&&!$('form')){const y=scrollY;charts.forEach(ch=>{try{ch.destroy()}catch(e){}});charts=[];rlManual();scrollTo(0,y)}})}
+    // top 15 n°8 : à l'arrivée des détails, seule la section « Replays analysés » est reconstruite (pas toute la page ni ses autres graphiques)
+    if(/^#\/rl\/?$/.test(location.hash)&&D.rlm&&!$('form')){const y=scrollY,sec=$('#rllsec');
+      if(sec){charts=charts.filter(ch=>{if(sec.contains(ch.canvas)){try{ch.destroy()}catch(e){}return false}return true});if(chartIO)sec.querySelectorAll('canvas').forEach(c=>chartIO.unobserve(c));sec.innerHTML=rllHTML();rllBind()}
+      else{charts.forEach(ch=>{try{ch.destroy()}catch(e){}});charts=[];rlManual()}
+      scrollTo(0,y)}})}
 function rllHTML(){
   const L=D.rll;if(!L||!L.length)return `<h2>🔬 Replays analysés</h2><div class="glass wait"><div class="ico">🔬</div><h3>En attente des premiers replays analysés</h3><p class="mut">À la fin d'un match, choisis <b>« Sauvegarder le replay »</b> dans Rocket League : l'outil de ton PC l'analyse (sur ton ordinateur) puis envoie seulement tes statistiques ici, en quelques minutes. Cartes de chaleur, coups d'envoi, tirs, boost, rotations… apparaîtront sur cette page. Installation : <a href="https://github.com/Blood63/gaming-tracker/blob/main/tools/rl-uploader/README.md" target="_blank" rel="noopener">guide README</a>.</p></div>`;
   const dp=D.rllDeep===true,sk=c=>`<div class="glass rll-sk sk-${c}${D.rllDeep=='fail'?' fail':''}" role="status"><span class="mut">${D.rllDeep=='fail'?'Détails indisponibles pour le moment (réseau ?). Recharge la page pour réessayer.':'Chargement des détails…'}</span></div>`,
@@ -552,7 +566,7 @@ function rllBind(){
     box.innerHTML=`<div class="two"><div class="glass pad rll-map">${rllHeatSvg('rllhm',hm)}<div class="chart-read rll-read"><span class="mut">👆 Touche ou glisse sur la carte pour lire une zone.</span></div></div><div class="glass pad"><div class="kv"><span>Tiers défensif</span><span>${rllP(hz&&hz.def,0)}</span><span>Milieu</span><span>${rllP(hz&&hz.neu,0)}</span><span>Tiers offensif</span><span>${rllP(hz&&hz.off,0)}</span><span>Ton camp (moitié)</span><span>${rllP(hz&&hz.defH,0)}</span><span>Camp adverse (moitié)</span><span>${rllP(hz&&hz.offH,0)}</span></div><p class="mut" style="font-size:.8rem;margin-top:.5rem">${hk=='heat'?'Temps passé par ta voiture à chaque endroit (en marche, hors coup d\'envoi figé).':'Temps passé par la balle à chaque endroit.'} Ton but est en bas, le but adverse en haut ; les tirets marquent les tiers.</p></div></div>`;rllBindHeat('rllhm',hm)};
   drawHeat();$$('#rllh button').forEach(b=>b.onclick=()=>{sessionStorage.setItem('rllH',b.dataset.h);$$('#rllh button').forEach(x=>x.classList.toggle('on',x==b));drawHeat()});
   const sh=rllShots(A),pts=sh.pts.map(s=>({x:s[0],y:s[1],sp:s[2],on:s[3],air:s[4],o:s[5],c:RLL_COL[s[5]]||'#aaa'}));
-  rllBindDots('rllshots',pts,p=>`<span class="cri"><i style="background:${p.c}"></i><b>${RLL_OL[p.o]||p.o}</b></span><span class="cri">${p.sp?fnum(p.sp,0)+' uu/s':'vitesse ?'}</span><span class="cri">${p.air?'aérien':'au sol'}</span>`);
+  rllBindDots('rllshots',pts,p=>`<span class="cri"><i style="background:${safeCol(p.c)}"></i><b>${esc(RLL_OL[p.o]||p.o)}</b></span><span class="cri">${p.sp?fnum(p.sp,0)+' uu/s':'vitesse ?'}</span><span class="cri">${p.air?'aérien':'au sol'}</span>`);
   const k=rllKick(A),ks=rllKickSeries(A);if($('#rllk1'))chart($('#rllk1'),{type:'line',data:{labels:A.map(r=>fshort(r.date)),datasets:[lineDS('Coups d\'envoi gagnés (%)',ks,COL.rlA,{fill:false,showLine:false,pointRadius:A.length>40?3:5}),lineDS('Moyenne glissante (5)',rllRoll(ks,5),COL.cy)]},options:{scales:{y:{min:0,max:100},x:{ticks:{maxTicksLimit:7,maxRotation:0}}},plugins:{title:{display:true,text:'Coups d\'envoi gagnés par replay (%)'}}}});
   const g=rllGoals(A),tk=[...new Set([...Object.keys(g.me.types),...Object.keys(g.opp.types)])];
   if($('#rllg1'))chart($('#rllg1'),{type:'bar',data:{labels:tk.map(t=>RLL_GOAL[t]||t),datasets:[{label:'Marqués par toi',data:tk.map(t=>g.me.types[t]||0),backgroundColor:COL.gr+'cc',borderRadius:6},{label:'Marqués par l\'équipe',data:tk.map(t=>g.team.types[t]||0),backgroundColor:COL.cy+'99',borderRadius:6},{label:'Encaissés',data:tk.map(t=>g.opp.types[t]||0),backgroundColor:COL.bad+'cc',borderRadius:6}]},options:{plugins:{title:{display:true,text:'Types de buts'}}}});
@@ -594,7 +608,7 @@ async function rllDetail(x){const box=$('#rlldet');if(!box)return;
   const dh=()=>{const k=$('#rlldh .on')?.dataset.h||'heat',hm=rllHeat([{d_heat:d.heat,d_heat_ball:d.heat_ball}],k=='heat'?'d_heat':'d_heat_ball'),hz=rllHeatZones(hm),bx=$('#rlldheat');
     bx.innerHTML=`<div class="two"><div class="glass pad rll-map">${rllHeatSvg('rlldhm',hm)}<div class="chart-read rll-read"><span class="mut">👆 Touche ou glisse sur la carte pour lire une zone.</span></div></div><div class="glass pad"><div class="kv"><span>Tiers défensif</span><span>${rllP(hz&&hz.def,0)}</span><span>Milieu</span><span>${rllP(hz&&hz.neu,0)}</span><span>Tiers offensif</span><span>${rllP(hz&&hz.off,0)}</span><span>Ton camp (moitié)</span><span>${rllP(hz&&hz.defH,0)}</span></div></div></div>`;rllBindHeat('rlldhm',hm)};
   dh();$$('#rlldh button').forEach(b=>b.onclick=()=>{$$('#rlldh button').forEach(x=>x.classList.toggle('on',x==b));dh()});
-  const sp=[...(d.shots||[]).map(t=>({x:t.x,y:t.y,c:RLL_COL[t.o]||'#aaa',r:t.air?3.2:2.4,txt:`<span class="cri"><i style="background:${RLL_COL[t.o]||'#aaa'}"></i><b>Tir : ${RLL_OL[t.o]||t.o}</b></span><span class="cri">${rllT(t.t)}</span><span class="cri">${t.sp?fnum(t.sp,0)+' uu/s':''}</span><span class="cri">${t.air?'aérien':'au sol'}</span><span class="cri">${t.d!=null?fnum(t.d/100,0)+' m du but':''}</span>`})),
+  const sp=[...(d.shots||[]).map(t=>({x:t.x,y:t.y,c:RLL_COL[t.o]||'#aaa',r:t.air?3.2:2.4,txt:`<span class="cri"><i style="background:${safeCol(RLL_COL[t.o]||'#aaa')}"></i><b>Tir : ${esc(RLL_OL[t.o]||t.o)}</b></span><span class="cri">${rllT(t.t)}</span><span class="cri">${t.sp?fnum(t.sp,0)+' uu/s':''}</span><span class="cri">${t.air?'aérien':'au sol'}</span><span class="cri">${t.d!=null?fnum(t.d/100,0)+' m du but':''}</span>`})),
     ...(d.saves||[]).map(t=>({x:t.x,y:t.y,c:'#fff',r:2.4,txt:`<span class="cri"><b>Arrêt</b></span><span class="cri">${rllT(t.t)}</span><span class="cri">${t.sp?fnum(t.sp,0)+' uu/s':''}</span>`}))];
   rllBindDots('rlldshots',sp,p=>p.txt);
   const aeg=new Set((d.aerials||[]).filter(a=>a.goal).map(a=>a.t)),tp=(d.touches||[]).map(t=>({x:t[1],y:t[2],c:aeg.has(t[0])?'#4ade80':t[3]>250?'#e879f9':'#22d3ee',r:1.8,t}));
@@ -642,10 +656,12 @@ function rlManual(){
   <h2>Évolution du MMR (3v3)</h2><div class="glass chart"><canvas id="r1"></canvas></div>
   <h2>Sessions récentes</h2><div class="glass tbl"><table><tr><th>Date</th><th>Parties</th><th>Vict.</th><th>%</th><th>Buts / tirs</th><th>Passes</th><th>Arrêts</th><th>MMR</th></tr>${R.sessions.map(x=>`<tr><td>${fdate(x.date)}</td><td>${x.matches??(x.note?esc(x.note):'—')}</td><td>${x.wins??'—'}</td><td>${x.matches&&x.wins!=null?fnum(100*x.wins/x.matches,1)+' %':'—'}</td><td>${x.goals!=null?x.goals+' / '+x.shots:'—'}</td><td>${x.assists??'—'}</td><td>${x.saves??'—'}</td><td>${x.mmr?Object.entries(x.mmr).map(([k,v])=>`${k} ${v[0]}→${v[1]} <span class="${v[1]<v[0]?'down':'up'}">(${v[1]-v[0]>0?'+':''}${v[1]-v[0]})</span>`).join(' '):'—'}</td></tr>`).join('')}</table></div>
   <h2>Répartition des actions</h2><div class="two"><div class="glass chart"><canvas id="r2"></canvas></div><div class="glass pad"><div class="kv"><span>⚽ Buts</span><span>${fnum(pf.goals_pct,1)} %</span><span>🛡️ Arrêts</span><span>${fnum(pf.saves_pct,1)} %</span><span>🤝 Passes décisives</span><span>${fnum(pf.assists_pct,1)} %</span></div><p class="mut" style="font-size:.8rem;margin-top:.5rem">Part de chaque action dans tes contributions (tracker.gg). ${rlStyle(pf)}</p></div></div>
-  <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>${bcHTML()}${rllHTML()}`;
+  <p class="mut" style="font-size:.78rem">Source : captures tracker.gg, mise à jour manuelle. Les valeurs ≈ sont approximatives.</p>${bcHTML()}<div id="rllsec">${rllHTML()}</div>`;
   app.innerHTML=h;bindGarage();bindGoalDel(rlManual);animBars();bcProgressChart();rllBind();rllDeepKick();$$('tr[data-bc]').forEach(r=>r.onclick=()=>go('#/rl/'+r.dataset.bc));
   $$('[data-rg]').forEach(b=>b.onclick=()=>{const p=P.find(x=>x.id==b.dataset.rg);if(addGoal({type:'rl_rank',playlist:p.id,target:rlNext(p),div:1,start:rlVal(p.tier,p.div)}))rlManual()});
-  chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),COL.rlA),lineDS('Record S38 (654)',H.map(()=>654),COL.rlB,{fill:false,borderDash:[6,4],pointRadius:0})]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
+  // record 3v3 lu dans les données (rocket_league.json) : la droite suit le record au lieu d'une valeur figée
+  const P3=P.find(p=>p.id=='3v3'),rec3=Number.isFinite(+P3?.best_mmr)&&P3?.best_mmr!=null?+P3.best_mmr:null;
+  chart($('#r1'),{type:'line',data:{labels:H.map(x=>fshort(x.date)+' · '+(x.note||'').replace('de session','')),datasets:[lineDS('MMR 3v3',H.map(x=>x.mmr),COL.rlA),...(rec3!=null?[lineDS(`Record${P3?.best_season?' '+P3.best_season:''} (${rec3})`,H.map(()=>rec3),COL.rlB,{fill:false,borderDash:[6,4],pointRadius:0})]:[])]},options:{plugins:{title:{display:true,text:'MMR 3v3 (relevés des captures)'}}}});
   chart($('#r2'),{type:'doughnut',data:{labels:['Buts','Arrêts','Passes'],datasets:[{data:[pf.goals_pct,pf.saves_pct,pf.assists_pct],backgroundColor:[COL.rlA,COL.rlB,COL.vi],borderWidth:0}]},options:{plugins:{legend:{position:'bottom'}}}});
 }
 
@@ -1370,13 +1386,13 @@ function lb(u){const b=$('#lb');lbBack=document.activeElement;$('#lb img').src=u
 /* Captures cliquables (jeu Steam, partie COD, carte COD) : agrandissement au toucher, à la souris ET au clavier (Entrée / Espace). */
 function shotsBind(){$$('.shots img').forEach(i=>{if(!i.alt)i.alt='Capture';i.tabIndex=0;i.setAttribute('role','button');i.setAttribute('aria-label','Agrandir la capture');i.onclick=()=>lb(i.dataset.full);i.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();lb(i.dataset.full)}}})}
 function lbClose(){const b=$('#lb');if(b.style.display!='flex')return;b.style.display='none';const f=lbBack;lbBack=null;if(f&&f.isConnected&&f.focus)f.focus({preventScroll:true})}
-document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#lb').style.display=='flex'){e.preventDefault();lbClose()}});
+document.addEventListener('keydown',e=>{if($('#lb').style.display!='flex')return;if(e.key=='Escape'){e.preventDefault();lbClose()}else if(e.key=='Tab'){e.preventDefault();$('#lb').focus()}}); // le focus reste dans la capture agrandie
 function go(h){location.hash=h}
 let navCount=0;
 function goBack(){if(navCount>0){navCount-=2;history.back()}else location.hash='#/'}
 function render(){
   syncShown=false;
-  charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];
+  charts.forEach(c=>{try{c.destroy()}catch(e){}});charts=[];if(chartIO)chartIO.disconnect();
   const p=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean),r=p[0]||'';
   const top=['','steam','compet','setup','objectifs','profil'].includes(r)&&!p[1];
   document.body.classList.toggle('sub',!top);document.body.classList.toggle('cod-amb',r=='cod');setTheme(r=='rl'?'rl':r=='cod'?'cod':r=='valorant'?valAgent():'');document.body.dataset.skin=r=='steam'?'px':'';
@@ -1387,7 +1403,11 @@ function render(){
   try{({bilan, '':home,steam:()=>p[1]?steamGame(+p[1]):library(),compet,valorant:()=>D.vh?(p[1]?valMatch(p[1]):valPage()):tracker('valorant'),rl:()=>p[1]=='rang'&&D.rlm?rlRankForm():p[1]&&D.bc?rlReplay(p[1]):D.rlm&&!D.rOk.length?rlManual():tracker('rl'),setup:()=>p[1]=='conseils'?advice():p[1]=='reglages'?reglages():setupPage(),cod:()=>p[1]=='profil'?codCardForm():p[1]=='rang'?codRankForm():p[1]=='ajouter'?codAdd():p[1]=='modes'?codModes():p[1]!=null?codMatch(decodeURIComponent(p[1])):cod(),profil,objectifs,activite,comparer:()=>comparer(p[1],p[2])}[r]||home)()}
   catch(e){console.error(e);app.innerHTML=`<div class="glass wait"><div class="ico">⚠️</div><h3>Erreur d'affichage</h3><p class="mut">${esc(e.message)}</p><a class="btn" href="#/">Accueil</a></div>`}
   window.scrollTo({top:0});
+  // après un changement de page, le focus ne reste pas sur un élément disparu : il revient sur le titre (lecteurs d'écran, clavier)
+  const ae=document.activeElement;if(rendered&&(!ae||ae===document.body||!ae.isConnected)){const t=$('#ttl');t.tabIndex=-1;t.focus({preventScroll:true})}
+  rendered=true;
 }
+let rendered=false;
 let ready=false; // pas de rendu avant la fin du chargement des données (sinon erreur si on change de page pendant le chargement)
 function route(){
   navCount++;if(!ready)return;
@@ -1410,10 +1430,14 @@ addEventListener('online',()=>{if(!ready)return;const had=FAILED.size;FAILED.cle
   const r=location.hash.replace(/^#\/?/,'').split('/')[0];if(had&&(NEED[r]||[]).some(k=>!FULL.has(k))&&!document.activeElement?.closest?.('form'))render();pendingCheck()});
 /* Accessibilité (appliquée après chaque rendu) : tableaux défilants atteignables au clavier, en-têtes de colonne vides nommés,
    niveaux de titres continus pour les lecteurs d'écran (sans changer l'apparence). */
+const ROWLINK='tr[data-v],tr[data-bc],tr[data-g],tr[data-m]';
+document.addEventListener('keydown',e=>{if((e.key=='Enter'||e.key==' ')&&e.target.matches&&e.target.matches(ROWLINK)){e.preventDefault();e.target.click()}});
 function a11yFix(){
   const used=new Set([...app.querySelectorAll('[role=region][aria-label]')].map(e=>e.getAttribute('aria-label')));
   for(const t of app.querySelectorAll('.tbl:not([tabindex]),.tiers:not([tabindex])')){t.tabIndex=0;t.setAttribute('role','region');const h=t.previousElementSibling;
     let l=h&&/^H[2-4]$/.test(h.tagName)?h.textContent.trim():t.classList.contains('tiers')?'Paliers de niveau':'Tableau';const l0=l;for(let i=2;used.has(l);i++)l=l0+' ('+i+')';used.add(l);t.setAttribute('aria-label',l)}
   for(const th of app.querySelectorAll('th:empty'))th.innerHTML='<span class="sr">Élément</span>';
+  // lignes cliquables (partie, replay, jeu) : atteignables au clavier, Entrée / Espace ouvrent (voir écouteur keydown plus bas)
+  for(const tr of app.querySelectorAll(ROWLINK+':not([tabindex])')){tr.tabIndex=0;tr.classList.add('rowlink');tr.setAttribute('aria-label','Ouvrir le détail : '+tr.textContent.replace(/\s+/g,' ').trim().slice(0,90))}
   let prev=1;for(const h of app.querySelectorAll('h2,h3,h4,h5,h6')){if(h.closest('[hidden]'))continue;let l=+(h.getAttribute('aria-level')||h.tagName[1]);if(l>prev+1){l=prev+1;h.setAttribute('role','heading');h.setAttribute('aria-level',l)}prev=l}}
 let a11yQ=0;new MutationObserver(()=>{if(!a11yQ)a11yQ=requestAnimationFrame(()=>{a11yQ=0;a11yFix()})}).observe(app,{childList:true,subtree:true});

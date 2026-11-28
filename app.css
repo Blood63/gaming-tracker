@@ -421,7 +421,7 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 .ages{font-size:.78rem;line-height:1.6;margin:.55rem 0 0}.ages span,.ages a{white-space:nowrap;margin-right:.85rem}.ages span:last-child,.ages a:last-child{margin-right:0}.ages .stale{color:var(--warn)}
 .tlday{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:1.1rem 0 .5rem;font-weight:700}
 .tlday:first-child{margin-top:.2rem}
-#lb:focus{outline:none}
+#lb:focus:not(:focus-visible){outline:none}#lb:focus-visible{outline:2px solid var(--cy);outline-offset:-4px}
 /* ===== t94 : bilan hebdo, comparaison, records, nouveautés, notifications, export, dernier replay RL ===== */
 .recap{display:block;padding:.9rem;color:var(--txt);transition:transform .2s,border-color .2s,box-shadow .25s;-webkit-tap-highlight-color:transparent;contain:layout}
 .recap .rh{display:flex;align-items:center;gap:.8rem}
@@ -507,5 +507,9 @@ body[data-theme=cod]:before,body[data-theme=omen]:before,body[data-theme=sage]:b
 /* t127 accessibilité : texte réservé aux lecteurs d'écran, focus clavier visible sur les tableaux défilants */
 .sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .tbl:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+/* top 15 n°15 : lignes qui ouvrent une partie / un replay / un jeu, atteignables au clavier ; titre de page focusable après navigation */
+tr.rowlink:focus-visible{outline:2px solid var(--cy);outline-offset:-2px}
+#ttl:focus{outline:none}
+#rllsec{display:contents} /* section RL reconstruite seule à l'arrivée des détails ; aucune boîte propre (mise en page identique) */
 /* t141 Valorant : listes du bilan de la semaine */
 .vlist{margin:.2rem 0 0;padding-left:1.2rem}.vlist li{margin:.15rem 0;line-height:1.45}

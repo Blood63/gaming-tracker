@@ -241,7 +241,9 @@ test('rllRoll : moyenne glissante tolérante aux trous',()=>{
 test('index réel rl_local : cohérence des agrégats avec les compteurs de chaque replay',{skip:!fs.existsSync(idxPath)},()=>{
   // Les parties contre des bots (drapeau `bots`, ex. entraînement) restent dans l'index mais sont écartées des stats par rllClean :
   // les compteurs de référence se calculent donc sur les replays « réels » uniquement.
-  const all=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays;ctx.IDX=all;const idx=all.filter(r=>!r.bots);
+  // Depuis l'analyseur 0.2.0 l'index ne porte plus les blocs d_* : on les rattache depuis deep.json (rebâti à partir des fiches), comme l'appli
+  const deep=JSON.parse(fs.readFileSync(path.join(__dirname,'..','rl_local','deep.json'),'utf8')).deep;
+  const all=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays.map(r=>Object.assign({},r,deep[r.id]||{}));ctx.IDX=all;const idx=all.filter(r=>!r.bots);
   assert.ok(idx.length>0);
   const a=run('rllClean(IDX,"2026-10-01")');assert.equal(a.length,idx.length,'rien d’exclu à tort (seuls les replays contre des bots sont écartés)');
   assert.ok(!a.some(r=>r.bots),'aucun replay contre des bots dans les stats');
@@ -261,9 +263,12 @@ test('index réel rl_local : cohérence des agrégats avec les compteurs de chaq
 });
 
 /* ---- RL : index léger + détails différés (rl_local/summary.json, deep.json) ---- */
-test('rllDeepOf : le fichier détaillé redonne exactement les blocs d_* de l’index (sur tous les replays disponibles)',()=>{
+test('rllDeepOf (appli) = deep.json (tools/split_rl_index.py) pour chaque fiche disponible ; plus aucun bloc d_* dans l’index',()=>{
   if(!fs.existsSync(idxPath))return;
-  const idx=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays||[];let n=0;
+  const raw=JSON.parse(fs.readFileSync(idxPath,'utf8')).replays||[];let n=0;
+  assert.ok(!raw.some(e=>Object.keys(e).some(k=>k.startsWith('d_'))),'index sans blocs d_*');
+  const deep=JSON.parse(fs.readFileSync(path.join(__dirname,'..','rl_local','deep.json'),'utf8')).deep;
+  const idx=raw.map(e=>Object.assign({id:e.id},deep[e.id]||{}));
   for(const e of idx){const f=path.join(__dirname,'..','rl_local',e.id+'.json');if(!fs.existsSync(f))continue;
     ctx.__d=JSON.parse(fs.readFileSync(f,'utf8')).d;const m=J(run('rllDeepOf(__d)'));
     for(const k of Object.keys(m)){if(e[k]===undefined)continue;assert.deepEqual(m[k],J(e[k]),`${e.id} ${k}`)}n++}  // J des deux côtés : -0.0 (analyseur) et 0 ont la même valeur
@@ -400,4 +405,15 @@ test('valTilt : victoires juste après 2 défaites d’affilée le même jour',(
   ctx.M=[vm1('2026-11-10',{i:1,result:'loss'}),{...vm1('2026-11-10',{i:2,result:'loss'}),date:'2026-11-10T20:00:00Z'},{...vm1('2026-11-10',{i:3,result:'loss'}),date:'2026-11-10T21:00:00Z'},
     vm1('2026-11-11',{i:4,result:'win'})];
   const t=run('valTilt(M)');assert.equal(t.n,1);assert.equal(t.wr,0);near(t.all,25);
+});
+test('top 15 n°6 : palier Valorant échappé, couleur de style filtrée',()=>{
+  assert.equal(run("vTier('Gold 2')"),run("VFR.Gold")+' 2');
+  assert.ok(!run("vTier('<img src=x onerror=alert(1)>')").includes('<'));
+  assert.equal(run("vTier(null)"),'—');
+  assert.equal(run("safeCol('#22d3ee')"),'#22d3ee');
+  assert.equal(run("safeCol('rgba(1,2,3,.5)')"),'rgba(1,2,3,.5)');
+  assert.equal(run("safeCol('red')"),'red');
+  assert.equal(run("safeCol('red;background:url(x)')"),'');
+  assert.equal(run("safeCol('\"><script>')"),'');
+  assert.equal(run("safeCol({})"),'');
 });

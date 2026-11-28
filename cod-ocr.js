@@ -1,8 +1,19 @@
 /* OCR COD Mobile (client) — 2 captures par partie : 1) « Détails de la partie » (tableau des scores), 2) « Détails » onglet Impact.
    Mise en page relative (captures paysage, ex. 2712×1220). Tesseract.js chargé à la demande. */
 const COD_OCR={T:null,
-  async worker(){if(this.T)return this.T;if(!window.Tesseract)await new Promise((ok,ko)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>ko(new Error('Impossible de charger le moteur OCR (connexion ?)'));document.head.appendChild(s)});
-    this.T=await Tesseract.createWorker(['fra','eng'],1);return this.T},
+  // Moteur OCR épinglé + empreintes SRI (sha384) : bibliothèque, worker et cœur WebAssembly sont vérifiés avant exécution.
+  // Le worker et le cœur sont téléchargés avec contrôle d'intégrité puis lancés depuis une URL blob (importScripts n'accepte pas de SRI).
+  // Les données de langue (fra/eng) restent téléchargées par Tesseract (données, pas du code).
+  CDN:'https://cdn.jsdelivr.net/npm/',
+  SRI:{lib:'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F',worker:'sha384-zxn+VqofFzXpH99dUb3fa4ywoSBQJPy6/6oEaJHPlblZXr53a0g1Jl6720vgSzB7',
+    simd:'sha384-YM1G+zaWYy9VSRP2C101LCgzh7n3Hqb6OEm9qDoZYgCADsni3nnECskC3WialQB7',plain:'sha384-EKWY5JDwphQoyxhvYU7eaCcyQ0EdV6fZK3L2vzfZcv2ichRdNd6pSnyWPNv6fMuR'},
+  async blobOf(u,integrity){let r;try{r=await fetch(u,{integrity,mode:'cors',credentials:'omit'})}catch(e){throw new Error(navigator.onLine===false?'Impossible de charger le moteur OCR (pas de connexion)':'Moteur OCR refusé : fichier du CDN inaccessible ou modifié (contrôle d’intégrité)')}
+    if(!r.ok)throw new Error('Impossible de charger le moteur OCR (HTTP '+r.status+')');return URL.createObjectURL(new Blob([await r.blob()],{type:'text/javascript'}))},
+  async worker(){if(this.T)return this.T;if(!window.Tesseract)await new Promise((ok,ko)=>{const s=document.createElement('script');s.src=this.CDN+'tesseract.js@5.1.1/dist/tesseract.min.js';s.integrity=this.SRI.lib;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>{s.remove();ko(new Error('Impossible de charger le moteur OCR (connexion ? fichier du CDN modifié ?)'))};document.head.appendChild(s)});
+    let simd=false;try{simd=WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11]))}catch(e){}
+    const [wp,cp]=await Promise.all([this.blobOf(this.CDN+'tesseract.js@5.1.1/dist/worker.min.js',this.SRI.worker),this.blobOf(this.CDN+'tesseract.js-core@5.1.1/tesseract-core-'+(simd?'simd-':'')+'lstm.wasm.js',simd?this.SRI.simd:this.SRI.plain)]);
+    try{this.T=await Tesseract.createWorker(['fra','eng'],1,{workerPath:wp,corePath:cp+'#core.js',workerBlobURL:false})}finally{URL.revokeObjectURL(wp);URL.revokeObjectURL(cp)}
+    return this.T},
   async load(file){const url=URL.createObjectURL(file);try{const im=new Image();im.src=url;await im.decode();return im}finally{setTimeout(()=>URL.revokeObjectURL(url),5000)}},
   // découpe une zone (fractions) → canvas agrandi, niveaux de gris, inversé (texte clair sur fond sombre), contraste
   crop(im,x0,y0,x1,y1,{scale=3,inv=true,thr=null,nobars=false}={}){const W=im.naturalWidth,H=im.naturalHeight,sx=x0*W,sy=y0*H,sw=(x1-x0)*W,sh=(y1-y0)*H;

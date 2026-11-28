@@ -3,7 +3,7 @@
 Usage : python3 tools/check_versions.py [REF_DE_BASE]
 1) Toujours : index.html cohérent — chaque fichier de l'appli (app.js, core.js, app.css, cod-ocr.js, sw.js) est appelé avec UN seul numéro ?v=,
    identique dans les préchargements (<link rel=preload>) et dans les balises ; les listes de démarrage rapide (script en tête de index.html)
-   correspondent aux fichiers NEED et aux pages CHART_R de app.js, et à l'adresse de Chart.js.
+   correspondent aux fichiers NEED et aux pages CHART_R de app.js, et à l'adresse de Chart.js ; empreintes SRI (Chart.js, OCR) présentes et cohérentes.
 2) Avec REF_DE_BASE (ex. le commit précédent) : tout fichier de l'appli MODIFIÉ depuis REF doit avoir un ?v= différent dans index.html,
    sinon les téléphones garderaient l'ancienne version en cache. Si REF est introuvable (premier commit, historique absent), ce contrôle est sauté.
 Code de sortie 1 si un problème est trouvé."""
@@ -36,6 +36,14 @@ def static_problems(html,appjs):
     if not cr or not hc or sorted(re.findall(r"'(\w+)'",cr.group(1)))!=sorted(re.findall(r"'(\w+)'",hc.group(1))): P.append("index.html : pages préchargeant Chart.js ≠ CHART_R de app.js")
     cu=re.findall(r"https://cdn\.jsdelivr\.net/npm/chart\.js@[\w.]+/dist/chart\.umd\.min\.js",appjs+html)
     if len(set(cu))!=1: P.append(f"adresse de Chart.js différente entre app.js et index.html : {sorted(set(cu))}")
+    # empreinte SRI de Chart.js : la même dans app.js (CHART_SRI) et dans le préchargement de index.html
+    sa=re.findall(r"CHART_SRI='(sha384-[A-Za-z0-9+/=]{64})'",appjs); sh=re.findall(r"l\.integrity='(sha384-[A-Za-z0-9+/=]{64})'",html)
+    if len(sa)!=1 or sh!=sa: P.append("empreinte SRI de Chart.js absente ou différente entre app.js (CHART_SRI) et index.html")
+    if "sc.integrity=CHART_SRI" not in appjs: P.append("app.js : Chart.js chargé sans contrôle d'intégrité (SRI)")
+    try: ocr=open(os.path.join(D,"cod-ocr.js"),encoding="utf-8").read()
+    except OSError: ocr=""
+    if ocr and (len(re.findall(r"sha384-[A-Za-z0-9+/=]{64}",ocr))<4 or "s.integrity=this.SRI.lib" not in ocr or "workerBlobURL:false" not in ocr):
+        P.append("cod-ocr.js : moteur OCR chargé sans contrôle d'intégrité (SRI) complet")
     return P
 
 def git(*a):
