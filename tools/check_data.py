@@ -123,8 +123,11 @@ def check_derived():
     if ex("rl_local/index.json"):
         if not ex("rl_local/summary.json"): P.append("rl_local/summary.json absent : lancer tools/split_rl_index.py")
         else:
-            light,_=split_rl_index.split(rd("rl_local/index.json")); S=rd("rl_local/summary.json")
+            split_rl_index.D=D
+            light,deep=split_rl_index.split(rd("rl_local/index.json")); S=rd("rl_local/summary.json")
             if tabpack.untab(S.get("replays"))!=light["replays"] or S.get("v")!=light["v"]: P.append("rl_local/summary.json périmé (≠ index.json) : lancer tools/split_rl_index.py")
+            # deep.json = blocs d_* reconstruits depuis les fiches rl_local/<id>.json (ou l'index s'il les contient encore)
+            if ex("rl_local/deep.json") and rd("rl_local/deep.json")!=json.loads(json.dumps(deep)): P.append("rl_local/deep.json périmé (≠ fiches rl_local/<id>.json) : lancer tools/split_rl_index.py")
     if ex("build.json"):
         b=rd("build.json"); F=b.get("f")
         if isinstance(F,dict):
