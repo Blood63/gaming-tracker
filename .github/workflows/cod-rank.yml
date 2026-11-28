@@ -16,6 +16,7 @@ jobs:
       (github.event.issue.user.login == 'Blood63' && github.event.sender.login == 'Blood63' &&
        (contains(github.event.issue.labels.*.name, 'cod-rank') || startsWith(github.event.issue.title, 'COD – rang') || startsWith(github.event.issue.title, 'COD Mobile – rang')))
     runs-on: ubuntu-latest
+    concurrency: { group: data-commit, cancel-in-progress: false, queue: max }
     env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}", N: "${{ github.event.issue.number || inputs.issue }}" }
     steps:
       - uses: actions/checkout@v5
@@ -26,22 +27,20 @@ jobs:
           echo "state=$(python3 -c "import json;print(json.load(open('issue.json'))['state'])")" >> "$GITHUB_OUTPUT"
       - if: steps.ev.outputs.state == 'open'
         run: gh issue edit $N -R ${{ github.repository }} --add-label cod-rank || true
+      # File partagée « data-commit » (queue: max : les exécutions en attente ne sont plus annulées) + publication vérifiée
+      # (tools/push_data.sh : 5 essais sur la dernière version de main, check_data.py, commit présent sur origin/main).
+      # L'issue n'est fermée que si la donnée est réellement publiée (ou déjà présente).
       - id: run
         if: steps.ev.outputs.state == 'open'
-        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md, TZ: Europe/Paris }
+        env: { GT_EVENT: ev.json, COMMENT_FILE: comment.md, TZ: Europe/Paris, ADD: "cod_ranks.json cod_profile.json", REGEN: "python3 tools/cod_rank_intake.py > res.txt" }
         run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          for i in 1 2 3 4 5; do
-            git fetch -q origin main && git reset -q --hard origin/main
-            res=$(python3 tools/cod_rank_intake.py)
-            python3 tools/build_home.py >/dev/null
-            git add cod_ranks.json cod_profile.json home.json build.json
-            if git diff --cached --quiet; then break; fi
-            git commit -qm "COD rang : issue #$N" && git push -q origin HEAD:main && break
-            sleep $((RANDOM % 8 + 3))
-          done
-          echo "res=$res" >> "$GITHUB_OUTPUT"
-      - if: steps.ev.outputs.state == 'open'
+          rc=0; MSG="COD rang : issue #$N" bash tools/push_data.sh || rc=$?
+          echo "res=$(cat res.txt 2>/dev/null)" >> "$GITHUB_OUTPUT"
+          exit $rc
+      - if: always() && steps.ev.outputs.state == 'open'
         run: |
+          if [ "${{ steps.run.outputs.status }}" != "pushed" ] && [ "${{ steps.run.outputs.status }}" != "nochange" ]; then
+            printf '❌ Intégration NON publiée (envoi vers le dépôt refusé ou contrôle des données en échec). Rien n’est perdu : l’issue reste ouverte, relance ce workflow (Actions → Run workflow, numéro %s).\n' "$N" > comment.md
+          fi
           gh issue comment $N -R ${{ github.repository }} -F comment.md
-          if [ "${{ steps.run.outputs.res }}" = "OK" ]; then gh issue close $N -R ${{ github.repository }} --reason completed; fi
+          if [ "${{ steps.run.outputs.res }}" = "OK" ] && { [ "${{ steps.run.outputs.status }}" = "pushed" ] || [ "${{ steps.run.outputs.status }}" = "nochange" ]; }; then gh issue close $N -R ${{ github.repository }} --reason completed; fi

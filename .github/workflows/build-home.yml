@@ -8,19 +8,12 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency: { group: data-commit, cancel-in-progress: false }
+concurrency: { group: data-commit, cancel-in-progress: false, queue: max }
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          for i in 1 2 3; do
-            git fetch -q origin main && git reset -q --hard origin/main
-            python3 tools/build_home.py
-            git add home.json build.json ballchasing_app.json ballchasing_analysis.json
-            if git diff --cached --quiet; then break; fi
-            git commit -qm "Résumé accueil" && git push -q origin HEAD:main && break
-            sleep 5
-          done
+      - env: { ADD: "home.json" }
+        run: |
+          MSG="Résumé accueil" bash tools/push_data.sh

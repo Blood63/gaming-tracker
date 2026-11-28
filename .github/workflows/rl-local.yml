@@ -9,22 +9,17 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency: { group: data-commit, cancel-in-progress: false }
+concurrency: { group: data-commit, cancel-in-progress: false, queue: max }
 jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - env: { TZ: Europe/Paris }
+      # tools/push_data.sh relance merge_rl_local + split_rl_index + build_home à chaque essai, puis vérifie le commit sur origin/main.
+      - env: { TZ: Europe/Paris, ADD: "ballchasing_latest.json" }
         run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          for i in 1 2 3 4 5; do
-            git fetch -q origin main && git reset -q --hard origin/main
-            python3 tools/merge_rl_local.py
-            python3 tools/split_rl_index.py
-            python3 tools/build_home.py
-            git add -A ballchasing_latest.json ballchasing_app.json ballchasing_analysis.json rl_local/summary.json rl_local/deep.json home.json build.json
-            if git diff --cached --quiet; then break; fi
-            git commit -qm "Replays locaux : fusion" && git push -q origin HEAD:main && break
-            sleep $((RANDOM % 8 + 3))
-          done
+          MSG="Replays locaux : fusion" bash tools/push_data.sh
+      # Garde-fou : summary.json / deep.json / build.json publiés doivent correspondre à l'index.json publié, sinon job rouge.
+      - run: |
+          git fetch -q origin main && git reset -q --hard origin/main
+          python3 tools/check_data.py || { echo "::error::rl_local/summary.json ou dérivés pas à jour sur main : les nouveaux replays ne s'afficheraient pas"; exit 1; }

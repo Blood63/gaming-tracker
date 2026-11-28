@@ -20,9 +20,11 @@ on:
         default: ""
 permissions:
   contents: write
+# File partagée par TOUS les robots qui écrivent sur main ; queue: max = les exécutions en attente patientent au lieu d'être annulées.
 concurrency:
   group: data-commit
   cancel-in-progress: false
+  queue: max
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -59,10 +61,7 @@ jobs:
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
       - if: steps.season.outputs.run == 'true' && (steps.slot.outputs.skip != 'true' || inputs.only == 'achievements')
+        # Publication vérifiée (5 essais sur la dernière version de main, relevé conservé, check_data.py) : rouge si non publiée.
+        env: { KEEP: "1", ADD: "history steam_latest.json ballchasing_latest.json store.json valorant.json steam_achievements.json", TZ: Europe/Paris }
         run: |
-          git config user.name "gaming-tracker-bot"
-          git config user.email "actions@users.noreply.github.com"
-          python3 tools/build_home.py
-          git add -A history *_latest.json store.json valorant.json ballchasing_latest.json ballchasing_app.json ballchasing_analysis.json steam_achievements.json home.json build.json
-          git diff --cached --quiet || git commit -m "Snapshot $(date -I)"
-          git pull --rebase -q && git push
+          MSG="Snapshot $(date -I)" bash tools/push_data.sh

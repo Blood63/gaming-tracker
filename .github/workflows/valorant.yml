@@ -16,9 +16,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+# File partagée par TOUS les robots qui écrivent sur main ; queue: max = les exécutions en attente patientent au lieu d'être annulées.
 concurrency:
   group: data-commit
   cancel-in-progress: false
+  queue: max
 jobs:
   valorant:
     runs-on: ubuntu-latest
@@ -48,10 +50,7 @@ jobs:
           BALLCHASING_API_KEY: ${{ secrets.BALLCHASING_API_KEY }}
           TZ: Europe/Paris
       - if: steps.season.outputs.run == 'true' && steps.slot.outputs.skip != 'true'
+        # Publication vérifiée (5 essais sur la dernière version de main, relevé conservé, check_data.py) : rouge si non publiée.
+        env: { KEEP: "1", ADD: "valorant.json ballchasing_latest.json history/ballchasing.jsonl", TZ: Europe/Paris }
         run: |
-          git config user.name "gaming-tracker-bot"
-          git config user.email "actions@users.noreply.github.com"
-          python3 tools/build_home.py
-          git add valorant.json ballchasing_latest.json ballchasing_app.json ballchasing_analysis.json history/ballchasing.jsonl home.json build.json
-          git diff --cached --quiet || git commit -m "Valorant $(date -I)"
-          git pull --rebase -q && git push
+          MSG="Valorant $(date -I)" bash tools/push_data.sh

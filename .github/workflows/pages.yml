@@ -7,6 +7,14 @@ name: Pages
 on:
   push:
     branches: [main]
+    # Une fiche de replay seule (rl_local/<id>.json, un commit par replay depuis le PC) ne déclenche pas de déploiement :
+    # l'envoi de rl_local/index.json qui suit (et la fusion) le fait, avec toutes les fiches de la session.
+    paths:
+      - "**"
+      - "!rl_local/*.json"
+      - "rl_local/index.json"
+      - "rl_local/summary.json"
+      - "rl_local/deep.json"
   workflow_dispatch:
   workflow_run:
     workflows:

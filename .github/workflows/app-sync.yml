@@ -11,21 +11,16 @@ jobs:
   sync:
     if: github.actor == 'Blood63'
     runs-on: ubuntu-latest
+    concurrency: { group: data-commit, cancel-in-progress: false, queue: max }
     steps:
       - uses: actions/checkout@v5
-      # Pas de file d'attente partagée : on rejoue sur la dernière version et on réessaie si le push est refusé (409/non fast-forward).
+      # File partagée « data-commit » (queue: max) + publication vérifiée : 5 essais sur la dernière version de main,
+      # check_data.py, commit présent sur origin/main ; sinon job rouge (l'app garde les éléments en attente).
       - env:
           GT_ITEMS: ${{ toJSON(github.event.client_payload.items) }}
           TZ: Europe/Paris
+          ADD: "goals.json cod_mobile.json cod_ranks.json cod_profile.json rocket_league.json"
+          REGEN: "python3 tools/app_sync.py"
         run: |
-          git config user.name "gaming-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          for i in 1 2 3 4 5; do
-            git fetch -q origin main && git reset -q --hard origin/main
-            python3 tools/app_sync.py
-            python3 tools/build_home.py
-            git add goals.json cod_mobile.json cod_ranks.json cod_profile.json rocket_league.json home.json build.json
-            if git diff --cached --quiet; then break; fi
-            git commit -qm "Synchro app" && git push -q origin HEAD:main && break
-            sleep $((RANDOM % 8 + 3))
-          done
+          MSG="Synchro app" bash tools/push_data.sh
           if grep -q '"ok": false' sync_result.json; then echo "::error::Au moins un élément refusé (voir le détail ci-dessus)"; exit 1; fi
