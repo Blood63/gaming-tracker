@@ -5,10 +5,13 @@ RL REPLAY UPLOADER v2 - guide rapide
    - Permissions -> Repository permissions -> Contents : Read and write
    - Generate token, copie-le.
 2) Double-clique sur 1-Installer.bat
-   - colle la cle ballchasing (https://ballchasing.com/upload -> API key) puis le jeton GitHub.
+   - colle le jeton GitHub. (L'envoi des replays a ballchasing.com est coupe par defaut ;
+     pour le remettre : rl-replay-uploader.ps1 -BallchasingOn, qui demande et verifie la cle.)
 3) Pour tester sans rien envoyer : 5-Tester-un-replay.bat (glisse un .replay dans la fenetre).
 4) Joue : a la fin d'un match, clique "Sauvegarder le replay". C'est tout.
 
 Les cles sont stockees chiffrees sur ton PC (%APPDATA%\rl-replay-uploader), jamais dans le depot.
-Probleme ? 6-Voir-letat.bat, et le journal %APPDATA%\rl-replay-uploader\activity.log
+Probleme ? 6-Voir-letat.bat (dossiers surveilles, file, echecs), et le journal %APPDATA%\rl-replay-uploader\activity.log
+Un replay en echec (config corrigee, autre compte Epic...) : 3-Reessayer-les-analyses.bat.
+Mise a jour : 7-Mettre-a-jour.bat (verifie l'empreinte SHA-256 de chaque fichier).
 Guide complet : README.md (meme dossier).

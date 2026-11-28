@@ -1,7 +1,17 @@
 {
-  "version": "2.0.2",
+  "version": "2.0.3",
+  "analyzer": "0.2.0",
   "files": {
-    "rl-replay-uploader.ps1": "31b56c8005da29c6fc7c1db1bd772324971dd7e6e0976182249a038fa2000527",
-    "rl-analyzer.exe": "3d5eca1b0cb39efc28d01b3c41621107e1d0d7f26ae8b98ec16d27079d055b04"
+    "rl-replay-uploader.ps1": "0cfb6574a57e533b3ffcb45fca9c190d517559b556fe6c15a153933a9203c14e",
+    "rl-analyzer.exe": "de88f6b33061ebe6e3bae5a2e31301707523d7df94390879467d5bb336491e10",
+    "LISEZ-MOI.txt": "ff26887730815ee8b509918f91cdc726785b3862cbbfb7033216a049de916d7d",
+    "1-Installer.bat": "baf44e661ce59675c602ebb8a1f62beb23f5ea7093b7dc3d29df92cb7d8bebc7",
+    "2-Lancer-maintenant.bat": "acab65d5b2620b91622208583788930bb95e4e73ca10ca82187eeede409fe65e",
+    "3-Reessayer-les-analyses.bat": "64fdf58de5ad7e361071ca89ec41d293e005cd2e9126b11a49857cc685e4bb11",
+    "4-Changer-le-jeton-GitHub.bat": "3a00bbf64eb05858015b16c8316b00c45f37b82aa800fc9f27f8763b19c32efc",
+    "5-Tester-un-replay.bat": "7f69cf06e270fe0a62c7c755727ac3443fbe3817bf571c16a889e6c20c3126db",
+    "6-Voir-letat.bat": "9a7d0b591249a644e4b2486555af6e508bba00838b08537c79e2fdccb43a9636",
+    "7-Mettre-a-jour.bat": "e0c15bd8634125842c52f23e2309ae584d269c96b42c18cc95a8c0f2a1fd2755",
+    "8-Desinstaller.bat": "f71a9266dc0a5de2c30b1f39b7a407ef95c3657a6ccec2d41da708ddd60c3fb1"
   }
 }

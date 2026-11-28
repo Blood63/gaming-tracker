@@ -15,15 +15,20 @@
     -BallchasingOff / -BallchasingOn : coupe / remet l'envoi vers ballchasing (reglage conserve)
     -Install / -Uninstall : lancement automatique au demarrage de Windows (fenetre cachee)
     -Update          : telecharge la derniere version (ps1 + exe, verifiee par SHA-256) depuis le depot
-    -Status          : affiche l'etat (file d'attente, derniers envois)
+    -Status          : affiche l'etat (dossiers surveilles, file d'attente, echecs, derniers envois)
+    -RetryFailed     : efface les echecs d'analyse et remet les fiches bloquees (queue\failed) dans la file, pour un nouvel essai
+
+  config.json (%APPDATA%\rl-replay-uploader) accepte aussi :
+    "demos" : "D:\\Replays" ou une liste de dossiers de replays en plus (chemin choisi dans le jeu, autre disque)
+    "epic"  : un id Epic ou une liste d'ids (second compte Epic sur le meme Windows)
 #>
 [CmdletBinding()]
 param([switch]$Once,[switch]$DryRun,[string]$TestFile,[switch]$ResetKey,[switch]$ResetToken,[switch]$BallchasingOff,[switch]$BallchasingOn,
-      [switch]$Install,[switch]$Uninstall,[switch]$Update,[switch]$Ping,[switch]$Status,[switch]$Quiet,[int]$IntervalSec=15,
+      [switch]$Install,[switch]$Uninstall,[switch]$Update,[switch]$Ping,[switch]$Status,[switch]$RetryFailed,[switch]$Quiet,[int]$IntervalSec=15,
       [string]$Endpoint,[string]$GitHubApi,[string]$Analyzer,[string]$ConfigDir,[string]$DemosDir,[string]$UpdateBase)
 
 $ErrorActionPreference = 'Stop'
-$UploaderVersion = '2.0.2'
+$UploaderVersion = '2.0.3'
 $AppName  = 'rl-replay-uploader'
 $IsWin = ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)
 if ($ConfigDir) { $CfgDir = $ConfigDir }
@@ -34,7 +39,11 @@ $TextLog   = Join-Path $CfgDir 'activity.log'
 $QueueDir  = Join-Path $CfgDir 'queue'               # analyses pretes a pousser (file d'attente hors ligne)
 $AnLog     = Join-Path $CfgDir 'analyzed.log'        # nom:taille|id|etat|date
 $PushLog   = Join-Path $CfgDir 'pushed.log'          # id|date
-$FailLog   = Join-Path $CfgDir 'analysis-failed.log' # nom:taille|code|version exe|date
+$FailLog   = Join-Path $CfgDir 'analysis-failed.log' # nom:taille|code|version exe|date|essais|definitif(1/0)
+$FailedDir = Join-Path $QueueDir 'failed'            # fiches refusees 5 fois par GitHub : ecartees pour ne pas bloquer la file
+$PutFails  = Join-Path $QueueDir 'put-fails.txt'     # id|nombre d'echecs d'envoi
+$MaxAnalyzeTries = 3                                 # essais d'analyse (meme version de l'analyseur) avant d'abandonner
+$MaxPutTries = 5
 $ExpFile   = Join-Path $CfgDir 'token-expiry.txt'    # date d'expiration du jeton GitHub (lue dans les reponses de GitHub, pas un secret)
 $UploadUrl = 'https://ballchasing.com/api/v2/upload?visibility=public'
 if ($Endpoint) { $UploadUrl = $Endpoint }            # tests uniquement
@@ -52,6 +61,9 @@ $script:BackoffN = 0
 $script:GhDisabled = $false     # jeton refuse : on analyse et met en file, sans pousser
 $script:ExpWarnDay = ''          # avertissement d'expiration du jeton : une fois par jour
 $script:TokenCheckAt = [DateTime]::MinValue
+$script:SeenSize = @{}            # taille vue au passage precedent (fichier en cours d'ecriture ?)
+$script:Toast = $null
+$NulDev = '/dev/null'; if ($IsWin) { $NulDev = 'NUL' }
 
 function Write-Line([string]$msg, [string]$color = 'Gray') {
   $line = '{0}  {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $msg
@@ -67,12 +79,15 @@ function Show-Toast([string]$title, [string]$text) {
   if (-not $IsWin -or $DryRun) { return }
   try {
     Add-Type -AssemblyName System.Windows.Forms, System.Drawing -ErrorAction Stop
+    # pas d'attente bloquante (v2.0.3) : l'icone reste jusqu'a la bulle suivante ou la fin du script
+    if ($script:Toast) { try { $script:Toast.Dispose() } catch { } }
     $n = New-Object System.Windows.Forms.NotifyIcon
     $icons = 'System.Drawing.SystemIcons' -as [type]; $n.Icon = $icons::Information
     $n.BalloonTipTitle = $title; $n.BalloonTipText = $text; $n.Visible = $true
-    $n.ShowBalloonTip(5000); Start-Sleep -Milliseconds 5500; $n.Dispose()
+    $n.ShowBalloonTip(5000); $script:Toast = $n
   } catch { }
 }
+function Close-Toast { if ($script:Toast) { try { $script:Toast.Dispose() } catch { }; $script:Toast = $null } }
 
 function Protect-Dir([string]$path) {
   if (-not $IsWin) { return }
@@ -82,15 +97,34 @@ function Ensure-Dirs {
   if (-not (Test-Path $CfgDir)) { New-Item -ItemType Directory -Path $CfgDir -Force | Out-Null; Protect-Dir $CfgDir }
   if (-not (Test-Path $QueueDir)) { New-Item -ItemType Directory -Path $QueueDir -Force | Out-Null }
 }
+function Limit-Log([string]$file, [int]$keep = 5000) {
+  # journal > 1 Mo : on garde les dernieres lignes (la cle est en debut de ligne, rien d'autre a recharger)
+  try {
+    if ((Test-Path $file) -and ((Get-Item $file).Length -gt 1MB)) {
+      $tail = @(Get-Content $file -Tail $keep)
+      $tmp = $file + '.tmp'; Set-Content -Path $tmp -Value $tail -Encoding UTF8; Move-Item $tmp $file -Force
+      Write-Line ("Journal {0} raccourci aux {1} dernieres lignes." -f (Split-Path $file -Leaf), $keep) 'DarkGray'
+    }
+  } catch { }
+}
+function Clear-OldTemp {
+  # dossiers temporaires laisses par -TestFile (ou un arret brutal) : supprimes apres 7 jours
+  try {
+    Get-ChildItem -Path ([IO.Path]::GetTempPath()) -Directory -ErrorAction SilentlyContinue |
+      Where-Object { $_.Name -match '^rl[afu]-[0-9a-f]{32}$' -and $_.LastWriteTime -lt (Get-Date).AddDays(-7) } |
+      ForEach-Object { Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+  } catch { }
+}
 
 # ---------------- configuration / secrets ----------------
 function Read-Cfg {
-  $c = @{ names = @('443Blood','M8_Blood'); epic = '8d1cf32b760442a297d5e317093fe9b0'; repo = 'Blood63/gaming-tracker'; branch = 'main'; minDate = '2026-10-01'; bc = $true; key = $null; gh = $null }
+  $c = @{ names = @('443Blood','M8_Blood'); epic = '8d1cf32b760442a297d5e317093fe9b0'; repo = 'Blood63/gaming-tracker'; branch = 'main'; minDate = '2026-10-01'; bc = $false; key = $null; gh = $null; demos = @() }
   if (Test-Path $CfgFile) {
     try {
       $j = Get-Content $CfgFile -Raw | ConvertFrom-Json
       foreach ($p in $j.PSObject.Properties) { $c[$p.Name] = $p.Value }
       if ($c.names -is [string]) { $c.names = @($c.names) }
+      if ($null -eq $c.demos) { $c.demos = @() } elseif ($c.demos -is [string]) { $c.demos = @($c.demos) }
     } catch { Write-Line 'config.json illisible : ignore (cles a ressaisir).' 'Yellow' }
   }
   return $c
@@ -100,13 +134,17 @@ function Save-Cfg($c) {
   $o = @{}; foreach ($k in $c.Keys) { $o[$k] = $c[$k] }
   $o | ConvertTo-Json | Set-Content -Path $CfgFile -Encoding UTF8
 }
+function ConvertFrom-Secure($sec) {
+  # copie en clair puis effacement du tampon BSTR (ZeroFreeBSTR) : le secret ne traine pas en memoire non geree
+  $b = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
+  try { return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($b) } finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($b) }
+}
 function Unprotect-Str([string]$enc) {
-  $sec = ConvertTo-SecureString $enc
-  return [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
+  return (ConvertFrom-Secure (ConvertTo-SecureString $enc))
 }
 function Read-Secret([string]$prompt) {
   $sec = Read-Host -AsSecureString $prompt
-  $plain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
+  $plain = ConvertFrom-Secure $sec
   return @{ plain = $plain.Trim(); sec = $sec }
 }
 
@@ -118,7 +156,7 @@ function New-HeaderFile([string[]]$lines) {
 # --- ballchasing
 function Test-BcKey([string]$key) {
   $h = New-HeaderFile @("Authorization: $key")
-  try { $code = & $Curl -s -o ([IO.Path]::GetTempFileName()) -w '%{http_code}' --max-time 30 -H "@$h" 'https://ballchasing.com/api/' } finally { Remove-Item $h -Force -ErrorAction SilentlyContinue }
+  try { $code = & $Curl -s -o $NulDev -w '%{http_code}' --max-time 30 -H "@$h" 'https://ballchasing.com/api/' } finally { Remove-Item $h -Force -ErrorAction SilentlyContinue }
   return [int]$code
 }
 function Get-BcKey($cfg, [switch]$Force) {
@@ -218,11 +256,14 @@ function Get-GhToken($cfg, [switch]$Force) {
 # ---------------- dossiers de replays / fichiers ----------------
 function Get-DemoDirs {
   if ($DemosDir) { return @($DemosDir) }
+  $dirs = @()
+  # dossiers en plus choisis dans config.json ("demos" : chemin ou liste), v2.0.3 : le raccourci de demarrage ne passe pas -DemosDir
+  foreach ($x in @($script:Cfg.demos)) { if ($x -and (Test-Path -LiteralPath ([string]$x)) -and ($dirs -notcontains [string]$x)) { $dirs += [string]$x } }
   $docs = @([Environment]::GetFolderPath('MyDocuments'))
   if ($env:USERPROFILE) { $docs += (Join-Path $env:USERPROFILE 'Documents') }
   if ($env:OneDrive) { $docs += (Join-Path $env:OneDrive 'Documents'); $docs += (Join-Path $env:OneDrive 'Documents\Documents') }
   if ($env:OneDriveConsumer) { $docs += (Join-Path $env:OneDriveConsumer 'Documents') }
-  $dirs = @()
+  if ($env:OneDriveCommercial) { $docs += (Join-Path $env:OneDriveCommercial 'Documents') }
   foreach ($d in $docs) {
     if (-not $d) { continue }
     foreach ($sub in 'Demos','DemosEpic') {   # Epic : DemosEpic ; Steam : Demos
@@ -238,10 +279,15 @@ function Read-KeySet([string]$file) {
   return $set
 }
 function Test-FileReady([IO.FileInfo]$f) {
-  # fichier completement ecrit : taille stable pendant 3 s et ouvrable en exclusivite
-  $s1 = $f.Length; Start-Sleep -Seconds 3; $f.Refresh()
-  if ($f.Length -ne $s1 -or $f.Length -lt 1024) { return $false }
-  try { $fs = [IO.File]::Open($f.FullName, 'Open', 'Read', 'None'); $fs.Close(); return $true } catch { return $false }
+  # fichier completement ecrit (v2.0.3) : taille stable sur deux lectures, puis ouverture en lecture partagee.
+  # Le jeu garde un verrou d'ecriture tant qu'il ecrit (l'ouverture echoue) ; OneDrive, qui lit pour synchroniser, ne bloque plus.
+  if ($f.Length -lt 1024) { return $false }
+  $key = $f.FullName
+  if ($f.LastWriteTime -gt (Get-Date).AddSeconds(-60)) {
+    if ($Once -or $DryRun) { $s1 = $f.Length; Start-Sleep -Seconds 3; $f.Refresh(); if ($f.Length -ne $s1) { return $false } }
+    elseif (-not $script:SeenSize.ContainsKey($key) -or $script:SeenSize[$key] -ne $f.Length) { $script:SeenSize[$key] = $f.Length; return $false }   # 2e lecture au passage suivant, sans attente
+  }
+  try { $fs = [IO.File]::Open($f.FullName, 'Open', 'Read', 'Read'); $fs.Close(); [void]$script:SeenSize.Remove($key); return $true } catch { return $false }
 }
 
 # ---------------- ballchasing (inchange : envoi du replay brut) ----------------
@@ -289,7 +335,7 @@ function Invoke-Analyze([IO.FileInfo]$f, [string]$cfgNames, [string]$outDir) {
   $off = [int][TimeZoneInfo]::Local.GetUtcOffset($f.LastWriteTime).TotalMinutes
   $a = @($f.FullName, '--tz-offset-min', "$off", '--out', $outDir)
   foreach ($n in $cfg.names) { $a += @('--me-name', [string]$n) }
-  if ($cfg.epic) { $a += @('--me-epic', [string]$cfg.epic) }
+  foreach ($e in @($cfg.epic)) { if ($e) { $a += @('--me-epic', [string]$e) } }   # un ou plusieurs comptes Epic
   $err = [IO.Path]::GetTempFileName()
   try {
     $o = & $Exe @a 2>$err
@@ -306,35 +352,82 @@ function Format-Summary([string]$idxFile) {
   return ('{0} {1} {2}-{3} | buts {4} passes {5} arrets {6} tirs {7} | boost moy {8} | supersonique {9}%' -f $pl, $res, $j.team_goals, $j.opp_goals, $j.s.goals, $j.s.assists, $j.s.saves, $j.s.shots, $j.s.avg_boost, $j.s.pct_supersonic)
 }
 
+function Read-Fails {
+  # derniere ligne par replay et par version de l'analyseur : nom:taille|code|version|date|essais|definitif
+  $fails = @{}
+  if (Test-Path $FailLog) {
+    foreach ($l in Get-Content $FailLog) {
+      $p = $l -split '\|'; if ($p.Count -lt 4) { continue }
+      $n = $MaxAnalyzeTries; $perm = $true                      # ancien format (v2.0.2) : echec fige pour cette version
+      if ($p.Count -ge 6) { $n = [int]$p[4]; $perm = ($p[5] -eq '1') }
+      $d = [DateTime]::MinValue; try { $d = [DateTime]::Parse($p[3], [Globalization.CultureInfo]::InvariantCulture) } catch { }
+      $fails[$p[0] + '|' + $p[2]] = @{ code = [int]$p[1]; n = $n; perm = $perm; at = $d }
+    }
+  }
+  return $fails
+}
+function Test-PermanentFailure([int]$code, [string]$err) {
+  # definitif seulement si le fichier lui-meme est en cause : replay illisible (code 4) ou trop court.
+  # "joueur introuvable", fichier encore pris, exe en cours de remplacement, compteurs illisibles : nouvel essai.
+  return ($code -eq 4 -or $err -match 'trop court')
+}
 function Invoke-AnalyzePass($files) {
   $known = Read-KeySet $AnLog
-  $fails = @{}; if (Test-Path $FailLog) { foreach ($l in Get-Content $FailLog) { $p = $l -split '\|'; if ($p.Count -ge 3) { $fails[$p[0] + '|' + $p[2]] = [int]$p[1] } } }
+  $fails = Read-Fails
   $ver = Get-AnalyzerVersion; $n = 0
   foreach ($f in $files) {
     $key = '{0}:{1}' -f $f.Name, $f.Length
     if ($known.ContainsKey($key)) { continue }
-    if ($fails.ContainsKey($key + '|' + $ver)) { continue }     # deja en echec avec cette version de l'analyseur
-    if ($f.LastWriteTime.ToString('yyyy-MM-dd') -lt $script:Cfg.minDate) { continue }   # trop ancien : l'app l'ignore de toute facon
+    $fk = $key + '|' + $ver; $prev = $null
+    if ($fails.ContainsKey($fk)) {
+      $prev = $fails[$fk]
+      if ($prev.perm -or $prev.n -ge $MaxAnalyzeTries) { continue }      # abandonne pour cette version (-RetryFailed pour reessayer)
+      $wait = 5 * [Math]::Pow(4, $prev.n - 1)                              # 5 min puis 20 min entre deux essais
+      if ((Get-Date) -lt $prev.at.AddMinutes($wait)) { continue }
+    }
+    if ($f.LastWriteTime.AddDays(1).ToString('yyyy-MM-dd') -lt $script:Cfg.minDate) { continue }   # bien trop ancien (date exacte du match verifiee apres analyse)
     if (-not (Test-FileReady $f)) { continue }
     $tmp = Join-Path ([IO.Path]::GetTempPath()) ('rla-' + [Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $tmp -Force | Out-Null
     try {
       $r = Invoke-Analyze $f $null $tmp
       if ($r.code -ne 0 -or -not $r.id -or -not (Test-Path (Join-Path $tmp ($r.id + '.idx.json')))) {
-        Write-Line ("Analyse impossible ({0}, code {1}) : {2}" -f $f.Name, $r.code, (([string]$r.err).Trim() -split "`n" | Select-Object -First 1)) 'Yellow'
-        if (-not $DryRun) { Add-Content -Path $FailLog -Value ('{0}|{1}|{2}|{3}' -f $key, $r.code, $ver, (Get-Date -Format s)) -Encoding UTF8 }
+        $msg = (([string]$r.err).Trim() -split "`n" | Select-Object -First 1)
+        $tries = 1; if ($prev) { $tries = $prev.n + 1 }
+        $perm = Test-PermanentFailure $r.code $msg
+        $what = "essai $tries/$MaxAnalyzeTries, nouvel essai plus tard"
+        if ($perm) { $what = 'definitif' } elseif ($tries -ge $MaxAnalyzeTries) { $what = "abandon apres $tries essais : 3-Reessayer-les-analyses.bat pour relancer" }
+        Write-Line ("Analyse impossible ({0}, code {1}, {2}) : {3}" -f $f.Name, $r.code, $what, $msg) 'Yellow'
+        if (-not $DryRun) { Add-Content -Path $FailLog -Value ('{0}|{1}|{2}|{3}|{4}|{5}' -f $key, $r.code, $ver, (Get-Date -Format s), $tries, $(if ($perm) { 1 } else { 0 })) -Encoding UTF8 }
         continue
       }
-      $sum = Format-Summary (Join-Path $tmp ($r.id + '.idx.json'))
+      $idxFile = Join-Path $tmp ($r.id + '.idx.json')
+      # date reelle du match (heure locale du replay) plutot que la date du fichier (v2.0.3)
+      $mj = $null; try { $mj = Get-Content $idxFile -Raw | ConvertFrom-Json } catch { }
+      if ($mj -and $mj.date_local -and ([string]$mj.date_local).Length -ge 10 -and ([string]$mj.date_local).Substring(0, 10) -lt $script:Cfg.minDate) {
+        if (-not $DryRun) { Add-Content -Path $AnLog -Value ('{0}|{1}|old|{2}' -f $key, $r.id, (Get-Date -Format s)) -Encoding UTF8 }
+        continue
+      }
+      $sum = Format-Summary $idxFile
       if ($DryRun) { Write-Line ("[test] serait envoye a l'app : {0} ({1}) -> {2}" -f $f.Name, $r.id, $sum) 'Yellow'; $n++; continue }
       Move-Item (Join-Path $tmp ($r.id + '.json')) (Join-Path $QueueDir ($r.id + '.json')) -Force
-      Move-Item (Join-Path $tmp ($r.id + '.idx.json')) (Join-Path $QueueDir ($r.id + '.idx.json')) -Force
+      Move-Item $idxFile (Join-Path $QueueDir ($r.id + '.idx.json')) -Force
       Add-Content -Path $AnLog -Value ('{0}|{1}|queued|{2}' -f $key, $r.id, (Get-Date -Format s)) -Encoding UTF8
       Write-Line ("Analyse : {0} -> {1}" -f $f.Name, $sum) 'Cyan'; $n++
     } finally { Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue }
   }
   return $n
 }
+function Invoke-RetryFailed {
+  $nf = 0; if (Test-Path $FailLog) { $nf = @(Get-Content $FailLog).Count; Move-Item $FailLog ($FailLog + '.old') -Force }
+  $nq = 0
+  if (Test-Path $FailedDir) {
+    foreach ($it in @(Get-ChildItem -Path $FailedDir -File -ErrorAction SilentlyContinue)) { Move-Item $it.FullName (Join-Path $QueueDir $it.Name) -Force; $nq++ }
+  }
+  if (Test-Path $PutFails) { Remove-Item $PutFails -Force -ErrorAction SilentlyContinue }
+  Write-Line ("Echecs effaces : {0} ligne(s) d'analyse (analyzed.log intact), {1} fichier(s) remis dans la file. Nouvel essai au prochain passage." -f $nf, $nq) 'Green'
+}
+
 
 # ---------------- envoi vers GitHub (file d'attente) ----------------
 function Set-Backoff {
@@ -355,6 +448,17 @@ function Invoke-IndexMerge([string]$cur, [string[]]$entries, [string]$new) {
   $a = @('index-merge', $cur) + $entries + @('--out', $new)
   $o = & $Exe @a 2>$null
   return @{ code = $LASTEXITCODE; out = ($o -join "`n") }
+}
+function Add-PutFailure([string]$id) {
+  $m = @{}
+  if (Test-Path $PutFails) { foreach ($l in Get-Content $PutFails) { $p = $l -split '\|'; if ($p.Count -ge 2) { $m[$p[0]] = [int]$p[1] } } }
+  $m[$id] = 1 + [int]$m[$id]
+  Set-Content -Path $PutFails -Value @($m.Keys | ForEach-Object { '{0}|{1}' -f $_, $m[$_] }) -Encoding ASCII
+  return $m[$id]
+}
+function Move-ToFailed([string]$id) {
+  if (-not (Test-Path $FailedDir)) { New-Item -ItemType Directory -Path $FailedDir -Force | Out-Null }
+  foreach ($n in ($id + '.json'), ($id + '.idx.json')) { $src = Join-Path $QueueDir $n; if (Test-Path $src) { Move-Item $src (Join-Path $FailedDir $n) -Force } }
 }
 function Invoke-Flush([string]$token) {
   $cfg = $script:Cfg; $repo = $cfg.repo; $branch = $cfg.branch
@@ -393,6 +497,12 @@ function Invoke-Flush([string]$token) {
         Remove-Item $p.file -Force -ErrorAction SilentlyContinue
         if ($p.code -eq 201 -or $p.code -eq 200 -or $p.code -eq 422) { continue }    # 422 : la fiche existe deja (envoi interrompu avant) = OK
         if ($p.code -eq 401 -or ($p.code -eq 403 -and -not $p.limit)) { $script:GhDisabled = $true; Write-Line 'Jeton GitHub refuse.' 'Red'; return 0 }
+        # fiche refusee : apres $MaxPutTries echecs elle est ecartee (queue\failed) pour ne pas bloquer les suivantes (v2.0.3)
+        if ($p.code -ne 0 -and -not $p.limit -and (Add-PutFailure $id) -ge $MaxPutTries) {
+          Move-ToFailed $id
+          Write-Line ("Fiche {0} refusee {1} fois par GitHub (HTTP {2}) : ecartee dans queue\failed, la file continue (3-Reessayer-les-analyses.bat pour la remettre)." -f $id, $MaxPutTries, $p.code) 'Red'
+          return 0
+        }
         Set-Backoff; return 0
       }
       # 4) index
@@ -468,13 +578,14 @@ function Install-Startup {
     if (Test-Path $src) { if ((Resolve-Path $src).Path -ne (Join-Path $dest $n)) { Copy-Item -Path $src -Destination (Join-Path $dest $n) -Force } }
   }
   Get-ChildItem -Path $ScriptDir -Filter '*.bat' -File -ErrorAction SilentlyContinue | ForEach-Object { if ($_.DirectoryName -ne $dest) { Copy-Item $_.FullName (Join-Path $dest $_.Name) -Force } }
+  Protect-Dir $dest   # v2.0.3 : comme la config, le dossier du script lance au demarrage n'est modifiable que par ton compte
   $startup = [Environment]::GetFolderPath('Startup')
   $lnk = Join-Path $startup 'RL Replay Uploader.lnk'
   $ws = New-Object -ComObject WScript.Shell
   $s = $ws.CreateShortcut($lnk)
   $s.TargetPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
   $s.Arguments = ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "{0}" -Quiet' -f (Join-Path $dest 'rl-replay-uploader.ps1'))
-  $s.WorkingDirectory = $dest; $s.WindowStyle = 7; $s.Description = 'Analyse locale des replays Rocket League + envoi a l''app (et a ballchasing)'
+  $s.WorkingDirectory = $dest; $s.WindowStyle = 7; $s.Description = 'Analyse locale des replays Rocket League + envoi a l''app'
   $s.Save()
   Write-Line ('Installe : lancement automatique au demarrage de Windows ({0})' -f $lnk) 'Green'
   Start-Process -FilePath $s.TargetPath -ArgumentList $s.Arguments -WindowStyle Hidden
@@ -486,6 +597,7 @@ function Uninstall-Startup {
   Stop-Others
   Write-Line 'Lancement au demarrage retire et uploader arrete. (Tes cles restent dans %APPDATA%\rl-replay-uploader : supprime ce dossier pour les effacer.)' 'Green'
 }
+$AllowedUpdateFiles = @('rl-replay-uploader.ps1', 'rl-analyzer.exe', 'LISEZ-MOI.txt', '1-Installer.bat', '2-Lancer-maintenant.bat', '3-Reessayer-les-analyses.bat', '4-Changer-le-jeton-GitHub.bat', '5-Tester-un-replay.bat', '6-Voir-letat.bat', '7-Mettre-a-jour.bat', '8-Desinstaller.bat')
 function Get-Sha([string]$path) { return (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLower() }
 function Invoke-SelfUpdate {
   $tmp = Join-Path ([IO.Path]::GetTempPath()) ('rlu-' + [Guid]::NewGuid().ToString('N')); New-Item -ItemType Directory -Path $tmp -Force | Out-Null
@@ -495,8 +607,13 @@ function Invoke-SelfUpdate {
     if ([int]$c -ne 200) { throw "Impossible de lire latest.json (HTTP $c)." }
     $m = Get-Content $mf -Raw | ConvertFrom-Json
     $changed = @()
+    $root = [IO.Path]::GetFullPath($ScriptDir).TrimEnd('\', '/')
     foreach ($p in $m.files.PSObject.Properties) {
+      # liste blanche (v2.0.3) : seuls les fichiers de l'outil, dans ce dossier ; empreinte SHA-256 obligatoire
+      if ($AllowedUpdateFiles -notcontains $p.Name) { throw "Fichier inattendu dans latest.json : $($p.Name). Mise a jour annulee." }
+      if ([string]$p.Value -notmatch '^[0-9a-f]{64}$') { throw "Empreinte invalide pour $($p.Name) dans latest.json. Mise a jour annulee." }
       $target = Join-Path $ScriptDir $p.Name
+      if ([IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($target)).TrimEnd('\', '/') -ne $root) { throw "Chemin hors du dossier de l'outil : $($p.Name). Mise a jour annulee." }
       if ((Test-Path $target) -and ((Get-Sha $target) -eq $p.Value)) { continue }
       $dl = Join-Path $tmp $p.Name
       $c = & $Curl -s -S -L --max-time 300 -o $dl -w '%{http_code}' ($RawBase + '/' + $p.Name)
@@ -517,6 +634,7 @@ function Invoke-SelfUpdate {
     }
     Stop-Others
     foreach ($n in $changed) { Copy-Item (Join-Path $tmp $n) (Join-Path $ScriptDir $n) -Force }
+    if ($env:LOCALAPPDATA -and $root -eq [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA $AppName)).TrimEnd('\', '/')) { Protect-Dir $root }
     Write-Line ('Mis a jour vers la version {0} : {1}.' -f $m.version, ($changed -join ', ')) 'Green'
     if ($IsWin) {
       $pp = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
@@ -531,7 +649,15 @@ function Invoke-SelfUpdate {
 Ensure-Dirs
 if ($Uninstall) { Uninstall-Startup; return }
 if ($Update) { Invoke-SelfUpdate; return }
-if ($BallchasingOff -or $BallchasingOn) { $c0 = Read-Cfg; $c0.bc = [bool]$BallchasingOn; Save-Cfg $c0; Write-Line ('Envoi vers ballchasing : ' + $(if ($c0.bc) { 'active' } else { 'desactive' })) 'Green'; return }
+if ($BallchasingOff) { $c0 = Read-Cfg; $c0.bc = $false; Save-Cfg $c0; Write-Line 'Envoi vers ballchasing : desactive' 'Green'; return }
+if ($BallchasingOn) {
+  # v2.0.3 : active seulement avec une cle valide (cle enregistree verifiee, sinon saisie)
+  $c0 = Read-Cfg; $k = $null
+  if ($c0.key) { try { $k = Unprotect-Str $c0.key } catch { } }
+  if ($k -and (Test-BcKey $k) -eq 200) { $c0.bc = $true; Save-Cfg $c0 } else { [void](Get-BcKey $c0 -Force); $c0 = Read-Cfg }
+  Write-Line ('Envoi vers ballchasing : ' + $(if ($c0.bc) { 'active' } else { 'desactive' })) 'Green'; return
+}
+if ($RetryFailed) { Invoke-RetryFailed; return }
 if (-not (Test-Path $Exe)) { Write-Line ("rl-analyzer introuvable : $Exe. Garde rl-analyzer.exe dans le meme dossier que ce script (ou lance -Update).") 'Red'; exit 2 }
 $script:Cfg = Read-Cfg
 $ver = Get-AnalyzerVersion
@@ -543,14 +669,20 @@ if ($TestFile) {
     $r = Invoke-Analyze $f $null $tmp
     if ($r.code -ne 0) { Write-Line ("Echec de l'analyse (code {0}) : {1}" -f $r.code, $r.err) 'Red'; exit 1 }
     Write-Line ("Analyse reussie ({0}) : {1}" -f $ver, (Format-Summary (Join-Path $tmp ($r.id + '.idx.json')))) 'Green'
-    Write-Line ("Rien n'a ete envoye. Fichiers de test : {0}" -f $tmp) 'DarkGray'
+    Write-Line ("Rien n'a ete envoye. Fichiers de test gardes pour inspection : {0} (supprimes automatiquement apres 7 jours)" -f $tmp) 'DarkGray'
     exit 0
   } finally { }
 }
 
 if ($Status) {
   Write-Host ("Version uploader {0} | analyseur {1}" -f $UploaderVersion, $ver)
-  Write-Host ("En file d'attente : {0}" -f @(Get-ChildItem $QueueDir -Filter '*.idx.json' -ErrorAction SilentlyContinue).Count)
+  $dd = @(Get-DemoDirs); Write-Host ("Dossiers surveilles : {0}" -f $(if ($dd.Count) { $dd -join ' ; ' } else { 'aucun pour l''instant (ajoute "demos" dans config.json si tes replays sont ailleurs)' }))
+  Write-Host ("En file d'attente : {0}" -f @(Get-ChildItem $QueueDir -Filter '*.idx.json' -File -ErrorAction SilentlyContinue).Count)
+  $nfq = @(Get-ChildItem $FailedDir -Filter '*.idx.json' -File -ErrorAction SilentlyContinue).Count
+  if ($nfq) { Write-Host ("Fiches ecartees (refusees par GitHub) : {0} -> 3-Reessayer-les-analyses.bat" -f $nfq) -ForegroundColor Yellow }
+  $fl = Read-Fails; $fv = @($fl.Keys | Where-Object { $_.EndsWith('|' + $ver) })
+  $fperm = @($fv | Where-Object { $fl[$_].perm }).Count; $fstop = @($fv | Where-Object { -not $fl[$_].perm -and $fl[$_].n -ge $MaxAnalyzeTries }).Count; $fretry = $fv.Count - $fperm - $fstop
+  if ($fv.Count) { Write-Host ("Analyses en echec ({0}) : {1} definitif(s), {2} abandonne(s) apres {3} essais, {4} a reessayer -> 3-Reessayer-les-analyses.bat" -f $ver, $fperm, $fstop, $MaxAnalyzeTries, $fretry) -ForegroundColor Yellow }
   Write-Host ("Envoyes a l'app : {0}" -f (Read-KeySet $PushLog).Keys.Count)
   Write-Host ("ballchasing : {0}" -f $(if ($script:Cfg.bc) { 'actif' } else { 'desactive' }))
   if (Test-Path $ExpFile) { $e = ([string](Get-Content $ExpFile -Raw)).Trim(); Write-Host ("Jeton GitHub : expire le {0} (dans {1} j)" -f $e, (Get-DaysLeft $e)) } else { Write-Host 'Jeton GitHub : pas de date d''expiration connue' }
@@ -577,8 +709,15 @@ if ($Install) { Install-Startup; return }
 $mtx = $null
 if (-not $DryRun) {
   $mtx = New-Object System.Threading.Mutex($false, 'Local\rl-replay-uploader')
-  if (-not $mtx.WaitOne(0)) { Write-Line 'Deja en cours d''execution.' 'Yellow'; return }
+  $owned = $false
+  # v2.0.3 : apres un arret brutal (veille, mise a jour Windows, processus tue), le verrou est "abandonne" :
+  # WaitOne leve AbandonedMutexException MAIS nous en devenons proprietaires -> on continue (avant : arret silencieux)
+  try { $owned = $mtx.WaitOne(0) }
+  catch [System.Threading.AbandonedMutexException] { $owned = $true; Write-Line 'Verrou laisse par un arret brutal precedent : repris, la surveillance continue.' 'Yellow' }
+  if (-not $owned) { Write-Line 'Deja en cours d''execution.' 'Yellow'; return }
 }
+Clear-OldTemp
+foreach ($lf in $LogFile, $AnLog, $PushLog, $FailLog) { Limit-Log $lf }
 try {
   $dirs = Get-DemoDirs
   if (-not $dirs) { Write-Line 'Dossier des replays introuvable pour l''instant (Documents\My Games\Rocket League\TAGame\DemosEpic pour Epic, ou \Demos pour Steam). Il sera cree a ton 1er replay sauvegarde ; surveillance active.' 'Yellow' }
@@ -587,4 +726,4 @@ try {
   Write-Line ("Rattrapage termine : {0} replay(s) analyse(s)." -f $n) 'Cyan'
   if ($Once -or $DryRun) { return }
   while ($true) { Start-Sleep -Seconds $IntervalSec; [void](Invoke-Pass $bcKey $ghToken) }
-} finally { if ($mtx) { try { $mtx.ReleaseMutex() } catch { } } }
+} finally { Close-Toast; if ($mtx) { try { $mtx.ReleaseMutex() } catch { } } }
